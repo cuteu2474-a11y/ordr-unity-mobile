@@ -73,18 +73,24 @@ namespace Ordr.Mobile.Combat
                 completedMissions[index];
         }
 
+        public bool CanRecordVerifiedSharedMission(Original323SharedMissionKind kind,
+            string eventId, int currentRound)
+        {
+            int index = (int)kind;
+            return index >= 0 && index < completedMissions.Length &&
+                !string.IsNullOrWhiteSpace(eventId) &&
+                !completedMissions[index] && !acceptedSourceEvents.Contains(eventId) &&
+                (kind != Original323SharedMissionKind.FastAlabasta || currentRound < 9) &&
+                (kind != Original323SharedMissionKind.DestructionKing || currentRound < 30);
+        }
+
         public bool RecordVerifiedSharedMission(Original323SharedMissionKind kind,
             string eventId, int currentRound, string sourceEvidence)
         {
-            int index = (int)kind;
-            if (index < 0 || index >= completedMissions.Length ||
-                string.IsNullOrWhiteSpace(eventId) ||
-                string.IsNullOrWhiteSpace(sourceEvidence) ||
-                completedMissions[index] ||
-                acceptedSourceEvents.Contains(eventId) ||
-                (kind == Original323SharedMissionKind.FastAlabasta && currentRound >= 9) ||
-                (kind == Original323SharedMissionKind.DestructionKing && currentRound >= 30))
+            if (!CanRecordVerifiedSharedMission(kind, eventId, currentRound) ||
+                string.IsNullOrWhiteSpace(sourceEvidence))
                 return false;
+            int index = (int)kind;
             acceptedSourceEvents.Add(eventId);
             completedMissions[index] = true;
             SharedCompletedCount++;

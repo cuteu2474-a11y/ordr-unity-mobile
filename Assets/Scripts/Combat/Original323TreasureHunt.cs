@@ -178,6 +178,9 @@ namespace Ordr.Mobile.Combat
         private bool inSearch;
         public int SpawnCount => ordered.Count;
         public int CollectedCount { get; private set; }
+        // Last source-confirmed BeN cast that actually settled at least one chest.
+        // Never a UI preview or a guessed search success.
+        public string LastCollectedCastEvidence { get; private set; }
         public int UncollectedCount => SpawnCount-CollectedCount;
 
         // A mobile gacha policy must count only source-visible remaining
@@ -303,6 +306,7 @@ namespace Ordr.Mobile.Combat
                 Original323TreasureRules.SearchHalfExtent(
                     gaimon,gaimonAndNami);
             inSearch=true;
+            LastCollectedCastEvidence=null;
             try
             {
                 string cast;
@@ -335,6 +339,7 @@ namespace Ordr.Mobile.Combat
                     CollectedCount++;
                     done++;
                 }
+                if (done > 0) LastCollectedCastEvidence = cast;
                 return new Original323TreasureSearchResult(matched.Count,
                     done,true,"원본 보물 "+done+"/"+matched.Count+
                     "개 수집"+(done<matched.Count?" · 남은 항목 미정산":""),

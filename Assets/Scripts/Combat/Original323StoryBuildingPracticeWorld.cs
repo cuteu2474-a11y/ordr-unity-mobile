@@ -84,6 +84,7 @@ namespace Ordr.Mobile.Combat
         public string SourceSpawnEvidence { get; internal set; }
         public bool SourceSettlementConfirmed { get; internal set; }
         public string SourceSettlementEventId { get; internal set; }
+        public string SourceSettlementEvidence { get; internal set; }
         public bool RewardAwaitingSourceVerification =>
             State == Original323StoryBuildingState.Destroyed &&
             !SourceSettlementConfirmed;
@@ -249,6 +250,7 @@ namespace Ordr.Mobile.Combat
             settledStages.Add(encounter.Building.Stage);
             encounter.SourceSettlementConfirmed = true;
             encounter.SourceSettlementEventId = settlementEventId;
+            encounter.SourceSettlementEvidence = evidence;
             return true;
         }
 

@@ -114,7 +114,11 @@ namespace Ordr.Mobile.Combat
     public sealed class Original323MobileStoryHeroExperienceWorld :
         IOriginal323StoryNativeRewardPort
     {
-        private const string ExperiencePrefix = "story:hero-xp:actor:";
+        // This is a shared, source-model hero XP balance consumed by the
+        // actual level/attribute resolver; story and shared missions use it.
+        public const string ExperiencePrefix = "story:hero-xp:actor:";
+        public static string ExperienceWalletId(long instanceId) =>
+            ExperiencePrefix + instanceId;
         private readonly CharacterCombatRuntime combat;
         private readonly SharedEconomySession economy;
         private readonly OriginalMapBaseStatCatalog objects;

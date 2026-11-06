@@ -856,10 +856,26 @@ namespace Ordr.Mobile.Unity
         public bool TryRecordObservedStoryBuildingSettlement(
             string enemyId, string settledEventId)
         {
-            return PracticeStoryBuildings != null &&
-                originalStoryClearWitness != null &&
-                PracticeStoryBuildings.TryRecordSettledClear(
-                    enemyId, settledEventId, originalStoryClearWitness);
+            if (PracticeStoryBuildings == null || originalStoryClearWitness == null ||
+                !PracticeStoryBuildings.TryRecordSettledClear(
+                    enemyId, settledEventId, originalStoryClearWitness))
+                return false;
+            // This branch is source-settled only. Practice model story deaths
+            // never auto-complete the original shared missions.
+            var settled = PracticeStoryBuildings.FindEncounter(enemyId);
+            if (settled != null && SharedMissionRewards != null)
+            {
+                Original323SharedMissionKind kind;
+                if (settled.Building.Stage == 2)
+                    kind = Original323SharedMissionKind.FastAlabasta;
+                else if (settled.Building.Stage == 11)
+                    kind = Original323SharedMissionKind.DestructionKing;
+                else return true;
+                SharedMissionRewards.TrySettle(kind, "story-settled:" +
+                    settledEventId, Combat.Game.CurrentWave,
+                    settled.SourceSettlementEvidence);
+            }
+            return true;
         }
         public SourceModelRegularMoneyGambling PracticeMoneyGambling { get; private set; }
         public SourceModelMoneyGamblingDesk PracticeMoneyGamblingDesk { get; private set; }
@@ -2172,6 +2188,7 @@ namespace Ordr.Mobile.Unity
 
         public Original323TreasureHunt OriginalTreasureHunt { get; private set; }
         public Original323PoneglyphSession Poneglyph { get; private set; }
+        public Original323SharedMissionRewardWorld SharedMissionRewards { get; private set; }
         private IOriginal323PoneglyphEventWitness originalPoneglyphWitness;
         public MobileTreasureGacha MobileTreasureGacha { get; private set; }
         public Original323GaimonRevealPort GaimonReveal { get; private set; }
@@ -2200,9 +2217,8 @@ namespace Ordr.Mobile.Unity
             int round = Combat.Game.CurrentWave;
             return originalPoneglyphWitness.TryConfirmSharedMission(
                     kind, sourceEventId, round, out evidence) &&
-                Original323BossRoundRules.TrustedRuntimeEvidence(evidence) &&
-                Poneglyph.RecordVerifiedSharedMission(kind, sourceEventId,
-                    round, evidence);
+                SharedMissionRewards != null &&
+                SharedMissionRewards.TrySettle(kind, sourceEventId, round, evidence);
         }
 
         public bool ObserveOriginal323InterpreterCommand(
@@ -2423,9 +2439,22 @@ namespace Ordr.Mobile.Unity
             if (OriginalTreasureHunt == null || Combat == null)
                 return new Original323TreasureSearchResult(0,0,false,
                     "원본 보물 탐색 월드가 연결되지 않았습니다.");
-            return OriginalTreasureHunt.SearchObserved(
+            var search = OriginalTreasureHunt.SearchObserved(
                 Combat.Game.CurrentWave,castX,castY,gaimon,
                 gaimonAndNami,extraQuantityRoll,berryDisabled,revealOnly);
+            // YI is the number of successfully found source-world chests.
+            // Only actual settled discoveries count; reveal-only searches,
+            // model previews and insufficient finds cannot complete CNf.
+            if (!revealOnly && search.WasAuthorized && search.Collected > 0 &&
+                OriginalTreasureHunt.CollectedCount >= 16 &&
+                SharedMissionRewards != null &&
+                !string.IsNullOrWhiteSpace(
+                    OriginalTreasureHunt.LastCollectedCastEvidence))
+                SharedMissionRewards.TrySettle(
+                    Original323SharedMissionKind.TreasureHunter,
+                    "treasure:found-16", Combat.Game.CurrentWave,
+                    OriginalTreasureHunt.LastCollectedCastEvidence);
+            return search;
         }
 
         public void ConfigureOriginal323TreasureWalletWorld(
@@ -3355,6 +3384,11 @@ namespace Ordr.Mobile.Unity
                         new MobileUniformWispRandom()));
             PersonalMissions = preparedMissions;
             Poneglyph = new Original323PoneglyphSession();
+            SharedMissionRewards = new Original323SharedMissionRewardWorld(
+                Combat, SharedEconomy, MapBaseStats, Poneglyph,
+                originalSharedScriptRandom == null ? sessionScriptRandom :
+                    originalSharedScriptRandom.ForPurpose(
+                        Original323ScriptRandomPurpose.OtherOriginalScriptCall));
             AttachVerifiedSoloHelperCow();
         }
 
