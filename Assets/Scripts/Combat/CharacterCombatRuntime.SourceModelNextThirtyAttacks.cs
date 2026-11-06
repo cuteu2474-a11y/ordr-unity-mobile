@@ -385,6 +385,8 @@ namespace Ordr.Mobile.Combat
                 ScheduleSourceModelLightningVolley(caster, accepted, targets);
             else if (accepted.Id == "D-04:skill:0")
                 ApplySourcePeronaKamikaze(caster, primary, accepted, targets);
+            else if (accepted.Id == "I-07:skill:0")
+                ScheduleSourceModelSengokuExplosion(caster, primary, accepted);
             else
                 ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);
             // Sans's added 30-bone Gaster packet uses the same accepted

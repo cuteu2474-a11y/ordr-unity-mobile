@@ -245,9 +245,13 @@ namespace Ordr.Mobile.Combat
                 (skill.Id == "D-04:skill:0" &&
                  SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill) &&
                  specialAllowed != null);
+            bool approvedSengokuExplosion = skill.Id == "I-07:skill:0" &&
+                SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill) &&
+                specialAllowed != null;
             bool approvedTwentyFourth =
                 SourceModelTwentyFourthSkillCatalog.CanModelExactActive(skill);
             if (!supportedSelfForm && !approvedImplicitArea &&
+                !approvedSengokuExplosion &&
                 !(approvedTwentyFourth && skill.Target == "line") &&
                 skill.Target != "single" &&
                 skill.Target != "area" && skill.Target != "targetCircle" &&

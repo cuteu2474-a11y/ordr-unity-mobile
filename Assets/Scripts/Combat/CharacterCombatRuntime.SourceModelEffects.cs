@@ -92,6 +92,7 @@ namespace Ordr.Mobile.Combat
                 OnSourceModelNinthSuccessfulBasicHit(attacker, rawcode, target, actual);
                 OnSourceModelTwentyFifthSuccessfulBasicHit(attacker, rawcode, target, actual);
                 OnBulkAutoSuccessfulHit(attacker, rawcode, target, actual);
+                OnSourceModelBurgessSuccessfulBasicHit(attacker, rawcode, target, actual);
             });
             attackPipeline.ConfigurePracticeAttackCadence((attack, effects, heroSpeed) => {
                 // Native AgiAttackSpeedBonus = 1% per gained AGI. Add it to

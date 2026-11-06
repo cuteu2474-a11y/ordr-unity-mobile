@@ -3,6 +3,32 @@
   "policy": "Validated static handler+entry+component witnesses only; no test/parity claim.",
   "witnesses": [
     {
+      "skillId": "D-06:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBurgessBasic.cs",
+      "handlerSymbol": "OnSourceModelBurgessSuccessfulBasicHit",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEffects.cs",
+      "entryCall": "OnSourceModelBurgessSuccessfulBasicHit(attacker, rawcode, target, actual);",
+      "identityTokens": [
+        "\"D-06\"",
+        "\"h09V\""
+      ],
+      "effectIndexes": [0],
+      "note": "원본 객체 h09V의 성공 기본 타격에서만 10만 마법·일반 적 타격 전 현재 HP 11% 폭발·특수 적 22만 추가 피해 실행. 퍼센트 11/10 구 버전 충돌 및 폭발 방어 타입/실기 미검증."
+    },
+    {
+      "skillId": "I-07:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSengokuExplosion.cs",
+      "handlerSymbol": "ScheduleSourceModelSengokuExplosion",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",
+      "entryCall": "ScheduleSourceModelSengokuExplosion(caster, primary, accepted);",
+      "identityTokens": [
+        "\"I-07\"",
+        "\"h04E\""
+      ],
+      "effectIndexes": [0, 1],
+      "note": "체력 75를 한 번 차감해 450 범위 1초 총 200만 마법 피해와 300 범위 최종 폭발 200만을 예약. 0.1초 분할은 모바일 연습 모델이며 원본 틱 간격·방어·실기 검증은 미실시."
+    },
+    {
       "skillId": "L-08:skill:2",
       "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
       "handlerSymbol": "ApplySourceManualSupport",

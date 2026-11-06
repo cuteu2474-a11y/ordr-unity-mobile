@@ -358,6 +358,28 @@ namespace Ordr.Mobile.Combat
 
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
+            // Sengoku's HP skill contains a complete one-second area DoT
+            // followed by a distinct smaller explosion. Keep this as an
+            // exact owner-bound exception; the ordinary area executor would
+            // silently discard the timer and explosion geometry.
+            if (skill != null && skill.Id == "I-07:skill:0")
+                return skill.Name == "체력 소모 폭발 공격" &&
+                    skill.Trigger == "activeHealth" &&
+                    skill.Target == "areaThenExplosion" &&
+                    skill.Number("healthCost") == 75 &&
+                    skill.Radius == 450 &&
+                    skill.Number("explosionRadius") == 300 &&
+                    !skill.ChancePercent.HasValue &&
+                    skill.OriginalFields.Count == 7 &&
+                    skill.Components.Count == 2 &&
+                    skill.Components[0].Type == "magicalDamageOverTime" &&
+                    skill.Components[0].Fields.Count == 3 &&
+                    skill.Components[0].Number("totalAmount") == 2000000 &&
+                    skill.Components[0].Number("durationSeconds") == 1 &&
+                    skill.Components[1].Type == "magical" &&
+                    skill.Components[1].Fields.Count == 3 &&
+                    skill.Components[1].Number("amount") == 2000000 &&
+                    Equals(skill.Components[1].Get("onExplosion"), true);
             // Perona's imported packet omits the optional target selector.
             // Its source-backed 500-radius explosive hit and 1.5s stun are
             // complete; never generalize this exception to other null targets.
