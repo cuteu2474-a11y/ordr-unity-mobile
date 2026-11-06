@@ -40,6 +40,8 @@
 | 확장 카탈로그 집계 | [build_character_runtime_coverage.py](../tools/build_character_runtime_coverage.py) | 현재 카탈로그·저장된 실행 범위·원본/도감 JSON |
 | 돈 도박 상점 | [extract_original_money_gambling_shop.py](../tools/extract_original_money_gambling_shop.py) | 원본 W3X |
 
+**연구·강화소 단계별 수치:** 현재 저장소에는 2.323[C] W3X 원본과 각 단계의 비용·효과를 내보낸 전용 증거표/추출기가 없습니다. [현재 확인된 4개 연구·18개 강화 목록과 원본 추출 순서](../docs/전체-아이템-시설-목록.md)를 따릅니다. 원본 `Units/UpgradeData.slk`·문자열·있다면 `war3map.w3q` 수정 정보·JASS 실행 사건을 함께 대조해야 하며, **테스트 fixture·툴팁만으로 가격/전투 효과를 승인하지 않습니다.**
+
 도구별 입력과 옵션은 소스를 확인하고, 실행 허가가 있으면 `--help`를 사용합니다. 원본·외부 도구가 없는 환경에서 가짜 입력이나 임시 완료 플래그를 만들지 않습니다. 도박 상점 재고 모델과 R009 해금·유닛 도박의 승인 범위도 구분합니다.
 
 실제 TSV를 준비한 뒤 사용하는 유닛 표 생성 예:
