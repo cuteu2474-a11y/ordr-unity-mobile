@@ -97,7 +97,8 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(28500, model.AttackBonus("H0AE"), "Secondary R00C: 22500 + 6000");
             Assert.IsFalse(model.TryApply(step, 1), "Stale step cannot increment twice");
             Assert.AreEqual(24650, model.AttackBonus("H08U"));
-            Assert.AreEqual(0, model.AttackBonus("h0AD"), "Unlisted object gets no grade-based guess");
+            Assert.AreEqual(67500, model.AttackBonus("h0AD"), "Explicit R023 mapping receives the original initial upgrade");
+            Assert.AreEqual(0, model.AttackBonus("ZZZZ"), "Unlisted object gets no grade-based guess");
         }
 
         [Test]

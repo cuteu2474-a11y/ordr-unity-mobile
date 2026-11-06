@@ -75,7 +75,8 @@ namespace Ordr.Mobile.Tests
         {
             var layout = MobileMapSkillLayout.Calculate(
                 safe, screenHeight, MobileMapSkillLayout.UiScale(safe, dpi));
-            Assert.Greater(layout.Battle.height, layout.Story.height * 3.9f);
+            // The documented story field uses 24% of field space; the main map remains dominant.
+            Assert.Greater(layout.Battle.height, layout.Story.height * 3f);
             Assert.AreEqual(layout.Battle.xMin, layout.SkillMargin.xMin, 0.01f);
             Assert.AreEqual(layout.Battle.xMin, layout.Story.xMin, 0.01f);
             Assert.AreEqual(layout.Battle.width, layout.SkillMargin.width, 0.01f);

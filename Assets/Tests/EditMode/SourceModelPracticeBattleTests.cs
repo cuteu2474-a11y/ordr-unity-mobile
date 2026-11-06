@@ -252,14 +252,17 @@ namespace Ordr.Mobile.Tests
                 var events = game.Battle.Advance(3);
                 Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack));
                 Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.EnemyDefeated));
-                // S-09 and L-29 acquired attack callbacks after this test was written.
-                // Verify their real attack/kill path instead of forbidding registered skills.
-                if (unitId == "S-01" || unitId == "R-06")
-                {
+                // S-09, R-06 (original Boo/Bon) and L-29 acquired source-backed
+                // attack callbacks; only S-01 here still has no registered skill.
+                if (unitId == "S-01")
                     Assert.IsFalse(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated ||
-                        x.Type == CharacterCombatEventType.SkillDamage || x.Type == CharacterCombatEventType.ZombieMaterialEarned));
-                    Assert.AreEqual(0, game.Combat.MoriaZombieMaterials);
-                }
+                        x.Type == CharacterCombatEventType.SkillDamage));
+                if (unitId == "R-06")
+                    Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated ||
+                        x.Type == CharacterCombatEventType.SkillDamage),
+                        "R-06's registered Boo/Bon attack callback must reach the practice combat ledger");
+                Assert.IsFalse(events.Any(x => x.Type == CharacterCombatEventType.ZombieMaterialEarned));
+                Assert.AreEqual(0, game.Combat.MoriaZombieMaterials);
                 Assert.AreEqual(game.Combat.Game.DefeatedEnemies,
                     events.Count(x => x.Type == CharacterCombatEventType.EnemyDefeated));
             }
