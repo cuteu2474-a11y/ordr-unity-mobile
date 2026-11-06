@@ -61,7 +61,11 @@ namespace Ordr.Mobile.Combat
             // on-attack proc, and must not be re-rolled when casting.
             new SourceManualSupportSpec("L-31", "h03E", "용기의 외침",
                 "activeMana", "alliedArea", 0, 20, 1, 1, 5, 0,
-                area: true, manaCost: 115)
+                area: true, manaCost: 115),
+            // The imported Cracker biscuit has no duration. A removable,
+            // owner-bound aura lease avoids inventing a timed expiration.
+            new SourceManualSupportSpec("L-33", "h03H", "크래커 비스킷",
+                "manual", "ownedAlly", 9, 19, 0, 0, 0, 240)
         };
 
         private readonly Dictionary<long, double> sourceManualReadyAt =
@@ -218,6 +222,17 @@ namespace Ordr.Mobile.Combat
                     skill.Components[1].Type == "healthRegeneration" &&
                     skill.Components[1].Number("perSecond") == spec.HealthRegen &&
                     skill.Components[1].Number("durationSeconds") == spec.Duration;
+            if (spec.CatalogId == "L-33")
+                return skill.Id == "L-33:skill:1" &&
+                    skill.OriginalFields.Count == 6 &&
+                    Equals(skill.Get("cannotStackOnSameUnit"), true) &&
+                    skill.Components.Count == 2 &&
+                    skill.Components[0].Fields.Count == 2 &&
+                    skill.Components[0].Type == "allyAttackPowerBuff" &&
+                    skill.Components[0].Number("percent") == 19 &&
+                    skill.Components[1].Fields.Count == 2 &&
+                    skill.Components[1].Type == "allyAttackSpeedBuff" &&
+                    skill.Components[1].Number("percent") == 9;
             if (skill.Components.Count != 1) return false;
             var effect = skill.Components[0];
             return (spec.Speed > 0 && effect.Type == "allyAttackSpeedBuff" &&
@@ -259,10 +274,20 @@ namespace Ordr.Mobile.Combat
                     IsStoryDeployed(candidate) != story) continue;
                 var attack = ally.Mapping.AttackSpec.BasicAttack;
                 if (attack == null || attack.IntervalSeconds <= 0) continue;
-                if (spec.Speed > 0 &&
+                if (spec.Speed > 0 && spec.CatalogId != "L-33" &&
                     unitStatuses[InstanceKey(candidate)].HasActiveEffect(
                         CombatEffectType.AttackSpeedBuff,
                         CombatEffectOrigin.TriggeredSkill)) continue;
+                // Cracker cannot cast a second biscuit onto the same ally.
+                // Other speed buffs do not block this distinct named effect.
+                if (spec.CatalogId == "L-33")
+                {
+                    bool alreadyBiscuit = false;
+                    foreach (var active in unitStatuses[InstanceKey(candidate)].Snapshot())
+                        if (active.SourceId.Contains(":L-33:"))
+                        { alreadyBiscuit = true; break; }
+                    if (alreadyBiscuit) continue;
+                }
                 double dps = attack.NominalAttackPower / attack.IntervalSeconds;
                 candidates.Add(new LawDpsCandidate(candidate, story, true, dps));
             }
@@ -283,14 +308,16 @@ namespace Ordr.Mobile.Combat
                     spec.CatalogId + ":" + recipientId;
                 var status = unitStatuses[InstanceKey(recipientId)];
                 status.RemoveSource(source);
+                var origin = spec.CatalogId == "L-33" ?
+                    CombatEffectOrigin.Aura : CombatEffectOrigin.TriggeredSkill;
                 if (spec.Speed > 0)
                     status.Apply(new CombatEffect(source,
                         CombatEffectType.AttackSpeedBuff,
-                        CombatEffectOrigin.TriggeredSkill, spec.Speed, spec.Duration));
+                        origin, spec.Speed, spec.Duration));
                 if (spec.Power > 0)
                     status.Apply(new CombatEffect(source,
                         CombatEffectType.AttackPowerBuff,
-                        CombatEffectOrigin.TriggeredSkill, spec.Power, spec.Duration));
+                        origin, spec.Power, spec.Duration));
                 sourceManualRecipients[source] = recipientId;
                 if (spec.HealthRegen > 0 || spec.ManaRegen > 0)
                     sourceManualRegens[source] = new SourceManualRegenLease {

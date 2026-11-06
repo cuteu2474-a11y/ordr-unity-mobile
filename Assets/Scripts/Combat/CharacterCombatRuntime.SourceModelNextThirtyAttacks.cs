@@ -383,6 +383,8 @@ namespace Ordr.Mobile.Combat
                 SourceModelAceDelayedUltimate(caster, primary, accepted, targets);
             else if (accepted.Id == "I-02:skill:0")
                 ScheduleSourceModelLightningVolley(caster, accepted, targets);
+            else if (accepted.Id == "D-04:skill:0")
+                ApplySourcePeronaKamikaze(caster, primary, accepted, targets);
             else
                 ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);
             // Sans's added 30-bone Gaster packet uses the same accepted
@@ -394,6 +396,18 @@ namespace Ordr.Mobile.Combat
                 ExecuteAdditionalAutoFollowup(caster, primary, accepted);
             RemoveDefeatedEnemies();
             return true;
+        }
+
+        private void ApplySourcePeronaKamikaze(CharacterInstance caster,
+            SpatialCombatEnemy primary, ImportedCombatSkill accepted,
+            IReadOnlyList<SpatialCombatEnemy> targets)
+        {
+            // Exact owner-bound D-04:skill:0 packet was approved and paid for
+            // in TryCastApprovedSourceModelActive. Explosion follows the
+            // shared spells-defense model; stun is only for ordinary lines.
+            if (accepted.Id != "D-04:skill:0")
+                throw new InvalidOperationException("페로나 폭발 스킬 소유자 불일치");
+            ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);
         }
 
         private static bool SourceModelNextThirtyComponentTargets(

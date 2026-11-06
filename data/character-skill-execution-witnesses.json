@@ -283,8 +283,28 @@
       "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
       "entryCall": "Combat.AutoCastSourceModelManualUtility();",
       "identityTokens": ["\"L-32\"", "\"전이\""],
-      "effectIndexes": [0],
-      "note": "같은 라인 반경275 적을 시전자 앞쪽으로 이동시키는 모바일 결과 모델. 보유 스턴 기술의 네이티브 시전은 보류."
+      "effectIndexes": [0, 1],
+      "note": "같은 라인 반경275 전방 이동 후 소유 발바닥 기술(범위500, 20만 마법피해·1.4초 라인 기절)을 10% 재추첨 없이 한 번 모델 시전. 원본 네이티브 시점·면역은 미검증."
+    },
+    {
+      "skillId": "D-04:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",
+      "handlerSymbol": "ApplySourcePeronaKamikaze",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",
+      "entryCall": "ApplySourcePeronaKamikaze(caster, primary, accepted, targets);",
+      "identityTokens": ["\"D-04:skill:0\"", "ApplySourceModelNextThirtySkill"],
+      "effectIndexes": [0, 1],
+      "note": "소유자 확인·100MP 공통 자원 차감 후 500범위 200만 폭발 피해와 일반 라인 1.5초 기절. 원본 주문 방어·면역/Unity 기동 미검증."
+    },
+    {
+      "skillId": "L-33:skill:1",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "ApplySourceManualSupport",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": ["\"L-33\"", "\"크래커 비스킷\""],
+      "effectIndexes": [0, 1],
+      "note": "소유 아군 공격력+19%/공속+9%, 240초 재사용, 동일 대상 크래커 버프 중복 방지. 툴팁에 지속시간 부재로 소유자·전장 종속 무기한 Aura 모델이며 원본 지속·대상 선택 미검증."
     }
   ]
 }

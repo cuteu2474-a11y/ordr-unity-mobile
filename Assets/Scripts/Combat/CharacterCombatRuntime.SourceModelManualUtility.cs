@@ -91,6 +91,7 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy primary)
         {
             var skill = SourceManualSkill(actor, "전이");
+            var ownedStun = SourceManualSkill(actor, "발바닥발바닥 열매");
             if (skill == null || skill.Id != "L-32:skill:2" ||
                 skill.Trigger != "manual" ||
                 skill.Target != "enemiesOwnLine" ||
@@ -98,7 +99,16 @@ namespace Ordr.Mobile.Combat
                 skill.Radius != 275 || skill.Components.Count != 2 ||
                 skill.Components[0].Type != "pull" ||
                 skill.Components[0].Text("to") != "inFrontOfCaster" ||
-                skill.Components[1].Type != "castOwnedStunSkill")
+                skill.Components[1].Type != "castOwnedStunSkill" ||
+                ownedStun == null || ownedStun.Id != "L-32:skill:1" ||
+                ownedStun.Trigger != "onAttack" ||
+                ownedStun.Target != "area" || ownedStun.Radius != 500 ||
+                ownedStun.ChancePercent != 10 ||
+                ownedStun.Components.Count != 2 ||
+                ownedStun.Components[0].Type != "magical" ||
+                ownedStun.Components[0].Number("amount") != 200000 ||
+                ownedStun.Components[1].Type != "stun" ||
+                ownedStun.Components[1].Number("durationSeconds") != 1.4)
                 return false;
             // Move the owning lane's line enemies near the selected target
             // towards the caster. This models the visible 'pull' result;
@@ -123,16 +133,25 @@ namespace Ordr.Mobile.Combat
                 moved++;
             }
             if (moved == 0) return false;
+            // The second component explicitly CASTS the owner's stun spell.
+            // It is not a separate 10% on-attack roll: the transfer already
+            // fired. Resolve the spell's complete 200k + 1.4s source packet
+            // against the newly gathered group, using the shared executor.
+            var stunnedTargets = SourceScriptTargets(actor, primary,
+                new SourceScriptHit(SourceScriptHitShape.Circle, 500, 0, 0,
+                    1, 1, Ordr323AttackType.Spells));
+            int eventStart = events.Count;
+            ApplySourceModelNextThirtySkill(actor, primary, ownedStun,
+                stunnedTargets);
+            RemoveDefeatedEnemies();
+            for (int i = eventStart; i < events.Count; i++)
+                pendingCommandEvents.Add(events[i]);
             sourceManualReadyAt[actor.Id] = Time + 60;
             pendingCommandEvents.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
                 primary.Id, skill.Name,
                 "TOOLTIP_MODEL_ONLY 라인 적 " + moved +
-                "기 전방 이동. 원본 보유 스턴 스킬 재시전은 미연결", 0));
-            pendingCommandEvents.Add(new CharacterCombatEvent(
-                CharacterCombatEventType.EffectDeferred, InstanceKey(actor.Id),
-                primary.Id, skill.Name,
-                "보유 스턴 기술의 원본 주문/면역·시점 미확정", 0));
+                "기 전방 이동 + 보유 스턴 기술 1회 발동. 원본 주문/면역·시점 미검증", 0));
             return true;
         }
     }

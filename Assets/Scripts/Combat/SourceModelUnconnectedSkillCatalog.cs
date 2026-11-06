@@ -258,7 +258,7 @@ namespace Ordr.Mobile.Combat
             new SourceModelUnconnectedSkillRow("T-04", "h0CK",
                 new[] { "람각" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("D-04", "h048",
-                new[] { "고스트 랩" }, Array.Empty<string>()),
+                new[] { "고스트 랩" }, new[] { "카미카제 랩" }),
             new SourceModelUnconnectedSkillRow("T-03", "h07N",
                 new[] { "무기무기열매" }, Array.Empty<string>()),
         };

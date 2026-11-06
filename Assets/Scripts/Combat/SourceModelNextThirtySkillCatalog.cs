@@ -358,6 +358,24 @@ namespace Ordr.Mobile.Combat
 
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
+            // Perona's imported packet omits the optional target selector.
+            // Its source-backed 500-radius explosive hit and 1.5s stun are
+            // complete; never generalize this exception to other null targets.
+            if (skill != null && skill.Id == "D-04:skill:0")
+            {
+                return skill.Name == "카미카제 랩" &&
+                    skill.Trigger == "activeMana" && skill.Target == null &&
+                    skill.Radius == 500 && skill.Number("manaCost") == 100 &&
+                    !skill.ChancePercent.HasValue &&
+                    skill.OriginalFields.Count == 5 &&
+                    skill.Components.Count == 2 &&
+                    skill.Components[0].Fields.Count == 2 &&
+                    skill.Components[0].Type == "explosive" &&
+                    skill.Components[0].Number("amount") == 2000000 &&
+                    skill.Components[1].Fields.Count == 2 &&
+                    skill.Components[1].Type == "stun" &&
+                    skill.Components[1].Number("durationSeconds") == 1.5;
+            }
             // Sunny's source-conditional 100-MP salvo has a registered knowledge
             // witness at the cast boundary. Accept only its exact imported
             // packet; an unverified "requires" on another skill stays blocked.
