@@ -48,7 +48,7 @@
 
 ## 다음 작업과 실행 안내
 
-- **무엇을 구현할지:** [남은 작업 27건·실행 검증 5건](PLAYABLE_ROADMAP.md). 특히 전투 C03/C04, 연구·강화 P04/P05, 해왕류/환전소 M03/M06, 저장 S01~S03.
+- **무엇을 구현할지:** [남은 구현·원본 조사 28건·실행 검증 5건](PLAYABLE_ROADMAP.md). 특히 전투 C03/C04, 연구·강화 P04/P05, 해왕류/환전소 M03/M06, 저장 S01~S03.
 - **어디를 수정할지:** [코드 구조](CODE_MAP.md). 세부 수치는 [시스템 문서 목차](README.md)와 `data/` 원본 근거에서 확인합니다.
 - **어떻게 실행·검사할지:** [Unity/Actions/APK 안내](unity-editmode-test.md). Unity **6000.3.26f1**, 시작 씬 `Assets/Scenes/MainGame.unity`. 검사는 성현 님이 요청할 때만 실행합니다.
 
