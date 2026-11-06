@@ -216,7 +216,7 @@ namespace Ordr.Mobile.Combat
             if (!ActiveUnitId.HasValue) return false;
             if (!unitStillExists)
             {
-                Interrupt("해독 유닛 사망·소멸 · 재시도 가능");
+                Interrupt("해독 유닛 소멸·전장 이탈 · 재시도 가능");
                 return true;
             }
             if (combatTime < FinishesAt) return false;

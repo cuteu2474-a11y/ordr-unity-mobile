@@ -186,6 +186,9 @@ namespace Ordr.Mobile.Combat
                 {
                     world.internalOriginalFusionMutation = false;
                 }
+                // No removal observer fires while the replacement can roll back.
+                foreach (long id in materialIds)
+                    world.RaiseCharacterRemoved(id);
             }
 
             public void Dispose()
@@ -1432,6 +1435,14 @@ namespace Ordr.Mobile.Combat
         // Reconcile all lane-filtered auras with the newly committed lane.
         public void RefreshAfterCommittedStoryLaneChange(long instanceId)
         {
+            RefreshAfterCommittedCombatLaneChange(instanceId);
+        }
+
+        // Story dispatch, shared-objective sortie and decoding are exclusive
+        // lanes. Every committed lane change cancels the same owner-bound
+        // pending attacks, summons and auras.
+        private void RefreshAfterCommittedCombatLaneChange(long instanceId)
+        {
             if (!characters.ContainsKey(instanceId))
                 throw new KeyNotFoundException("파견 대상 유닛이 없습니다.");
             CancelOriginalUnitCast(instanceId);
@@ -1558,7 +1569,7 @@ namespace Ordr.Mobile.Combat
             CancelOriginalUnitCast(instanceId);
             roster.Move(instanceId, target.X, target.Y);
             sharedObjectiveDeployed.Add(instanceId, assignment);
-            RefreshEnemyAuras();
+            RefreshAfterCommittedCombatLaneChange(instanceId);
             return true;
         }
 
@@ -1576,7 +1587,7 @@ namespace Ordr.Mobile.Combat
             {
                 CancelOriginalUnitCast(instanceId);
                 roster.Move(instanceId, assignment.ReturnX, assignment.ReturnY);
-                RefreshEnemyAuras();
+                RefreshAfterCommittedCombatLaneChange(instanceId);
             }
             return true;
         }
@@ -1603,14 +1614,33 @@ namespace Ordr.Mobile.Combat
                         "포네그리프 해독은 메인 전장의 보유 유닛으로만 시작합니다.");
                 CancelOriginalUnitCast(instanceId);
                 originalPoneglyphChanneling.Add(instanceId);
+                RefreshAfterCommittedCombatLaneChange(instanceId);
             }
-            else originalPoneglyphChanneling.Remove(instanceId);
-            RefreshEnemyAuras();
+            else if (originalPoneglyphChanneling.Remove(instanceId))
+                RefreshEnemyAuras();
         }
 
         // Independent observer for per-enemy defeat or escape. Driven by
         // CombatResolution after the original session counters are updated.
         public event Action<string, CombatEnemyExitReason> EnemyExited;
+        public event Action<long> CharacterRemoved;
+        public event Action<Exception> CharacterRemovalObserverFailed;
+
+        private void RaiseCharacterRemoved(long instanceId)
+        {
+            var handlers = CharacterRemoved;
+            if (handlers == null) return;
+            // A committed unit transaction must never be rolled back because
+            // one post-commit observer throws (same policy as fusion observers).
+            foreach (Action<long> observer in handlers.GetInvocationList())
+                try { observer(instanceId); }
+                catch (Exception error)
+                {
+                    try { CharacterRemovalObserverFailed?.Invoke(error); }
+                    catch { }
+                }
+        }
+
         public GameSession Game { get { return game; } }
         public UnitRoster Roster { get { return roster; } }
         public int CharacterCount { get { return characters.Count; } }
@@ -2404,6 +2434,8 @@ namespace Ordr.Mobile.Combat
             roster.Remove(instanceId);
             var storyLifecycle = storyDispatch as IOriginal323StoryDispatchUnitLifecycle;
             if (storyLifecycle != null) storyLifecycle.OnUnitRemoved(instanceId);
+            if (!internalOriginalFusionMutation)
+                RaiseCharacterRemoved(instanceId);
         }
 
         // Used only by an uncommitted Wisp transaction. A failed reward must

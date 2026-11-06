@@ -1220,7 +1220,21 @@ namespace Ordr.Mobile.Unity
             runGate.SetManualPause(paused);
         }
 
-        private void OnDestroy() { Wisps?.Dispose(); PracticeBattle?.Dispose(); SoloStory?.Dispose(); PracticeCreeps?.Dispose(); PracticeStoryBuildings?.Dispose(); SharedObjectives?.Dispose(); UnitDecompositions?.Dispose(); }
+        private void OnDestroy()
+        {
+            if (Combat != null)
+            {
+                Combat.CharacterRemoved -= OnPoneglyphUnitRemoved;
+                Combat.CharacterRemovalObserverFailed -= Debug.LogException;
+            }
+            Wisps?.Dispose();
+            PracticeBattle?.Dispose();
+            SoloStory?.Dispose();
+            PracticeCreeps?.Dispose();
+            PracticeStoryBuildings?.Dispose();
+            SharedObjectives?.Dispose();
+            UnitDecompositions?.Dispose();
+        }
 
         private void OnApplicationPause(bool paused)
         {
@@ -2296,6 +2310,14 @@ namespace Ordr.Mobile.Unity
                 Original323BossRoundRules.TrustedRuntimeEvidence(evidence) &&
                 Poneglyph.EnableVerifiedInterpreter(originalCommand,
                     sourceEventId, evidence);
+        }
+
+        private void OnPoneglyphUnitRemoved(long instanceId)
+        {
+            // A committed fusion, sale or direct combat removal destroys the
+            // actual instance. Its dynamic ability overrides cannot leak into
+            // the next actor, nor may its decoding channel remain active.
+            Poneglyph?.ForgetUnit(instanceId);
         }
 
         private bool TryGetOwnedPoneglyphUnit(long instanceId, out UnitState unit)
@@ -3456,6 +3478,8 @@ namespace Ordr.Mobile.Unity
                         new MobileUniformWispRandom()));
             PersonalMissions = preparedMissions;
             Poneglyph = new Original323PoneglyphSession();
+            Combat.CharacterRemoved += OnPoneglyphUnitRemoved;
+            Combat.CharacterRemovalObserverFailed += Debug.LogException;
             SharedMissionRewards = new Original323SharedMissionRewardWorld(
                 Combat, SharedEconomy, MapBaseStats, Poneglyph,
                 originalSharedScriptRandom == null ? sessionScriptRandom :
@@ -3890,12 +3914,16 @@ namespace Ordr.Mobile.Unity
                 long activeId = Poneglyph.ActiveUnitId.Value;
                 UnitState activeUnit;
                 bool exists = TryGetOwnedPoneglyphUnit(activeId, out activeUnit);
-                if (Poneglyph.Advance(Combat.Time, exists,
+                bool remainsInDecodeLane = exists &&
+                    !Combat.IsStoryDeployed(activeId) &&
+                    !Combat.IsSharedObjectiveDeployed(activeId);
+                if (Poneglyph.Advance(Combat.Time, remainsInDecodeLane,
                     OriginalTreasureHunt, Combat.Game.CurrentWave))
                 {
                     // Always unlock, including death/removal and zero-chest completion.
                     Combat.SetOriginalPoneglyphChanneling(activeId, false);
-                    Poneglyph.ForgetUnit(activeId);
+                    // A successful decoder is still alive: retain its native
+                    // ability changes until the character is actually removed.
                     RecordSessionIssue("포네그리프", Poneglyph.LastMessage);
                 }
             }
