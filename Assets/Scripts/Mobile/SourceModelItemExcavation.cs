@@ -141,13 +141,33 @@ namespace Ordr.Mobile.Mobile
                 pending = null;
                 return new ManualActionResult(ManualActionState.Succeeded,
                     (uniqueStack ? "유니크 발굴" : "아이템 발굴") + " 완료 · " +
-                    rawcode + " 획득 (고유 효과·외형 일부 후속 연결 필요)");
+                    rawcode + " 획득" + ItemEffectNote(rawcode));
             }
             catch (Exception error)
             {
                 return Reject("아이템 발굴 실패 · " + error.Message + " · 결과는 재시도까지 보류됩니다.");
             }
             finally { processing = false; }
+        }
+
+        private static string ItemEffectNote(string rawcode)
+        {
+            switch (rawcode)
+            {
+                case "AI10":
+                    return " · 기록지침 탐색 알람 기준 97→77초 (실제 시전 이벤트 연결 대기)";
+                case "AI13":
+                    return " · 라인 골드 +100% (원본 dL 관측) / 졸업 목재 상점 구매권 +2 적용";
+                case "AI19":
+                    return " · 이후 생성되는 라인 적 마법저항 -5% (연습 모델, 원본 A04Q 관측 별도)";
+                case "AI15":
+                case "AI18":
+                    return " · 도움소 마나 재생 증가 적용";
+                case "AI20":
+                    return " · 이후 생성되는 라인 적 폭발 피해 보정 적용";
+                default:
+                    return " (개별 효과·장착/사용 경로는 후속 연결 필요)";
+            }
         }
 
         private static ManualActionResult Reject(string reason) =>

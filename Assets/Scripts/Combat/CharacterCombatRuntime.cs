@@ -3155,6 +3155,7 @@ namespace Ordr.Mobile.Combat
             effectExecutor.CancelTarget(id);
             enemies.Remove(id);
             sourceModelNativeTesoroSpawnA11S.Remove(id);
+            sourceModelLineItemMagicAtSpawn.Remove(id);
             statuses.Remove(id);
             armorBreakStacks.Remove(id);
             provenA04MStacks.Remove(id);

@@ -130,6 +130,12 @@ namespace Ordr.Mobile.Combat
                 !Original323BossRoundRules.TrustedRuntimeEvidence(evidence))
                 return false;
 
+            // BhL/AI13 permanently raises dL by 1. The source witness's
+            // *observed* dL already contains it. A missing application is
+            // inconsistent; crediting an extra 100% here would double-pay.
+            if (bonus < Ordr.Mobile.Mobile.Original323SourceItemPassiveRules
+                    .SourceLineGoldFactorIncrease(wallet))
+                return false;
             int calculated;
             if (!Original323MonsterGoldRules.TryEvaluateObservedRoll(
                     originalRound, roll, bonus, out calculated) ||

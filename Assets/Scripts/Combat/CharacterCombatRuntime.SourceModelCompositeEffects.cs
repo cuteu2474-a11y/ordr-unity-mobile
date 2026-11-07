@@ -375,10 +375,19 @@ namespace Ordr.Mobile.Combat
                 statuses, CombatEffectType.MagicDamageAmplification);
             double resistanceReduction = SourceModelUnitEffects.ResolvePracticeMagicModifier(
                 statuses, CombatEffectType.MagicResistanceReduction);
+            // BhL/AI19 is a permanent *player* line-monster reduction.
+            // In actual native damage A04Q is supplied by the verified spawn
+            // witness, including item mutations. Never apply a second -5%
+            // to an already verified resistance profile.
+            double itemReduction = target.Kind == CharacterEnemyKind.Line &&
+                !target.Enemy.Defenses.HasVerifiedMagicResistance
+                ? SourceModelLineItemMagicResistanceAtSpawn(target.Id)
+                : 0;
             // Practice enemies without a native resistance provider receive
-            // a relative bonus for the documented reduction; do not overwrite
-            // a hypothetical native base resistance or original combat rules.
-            return (1 + amp / 100) * (1 + resistanceReduction / 100);
+            // a relative bonus for documented reductions. This model does
+            // not overwrite or claim parity with the original A04Q/Def5.
+            return (1 + amp / 100) *
+                (1 + (resistanceReduction + itemReduction) / 100);
         }
 
         private void ApplySourceModelCompositeAllyPower(CharacterInstance actor,

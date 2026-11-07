@@ -61,6 +61,11 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, int>();
         private readonly Dictionary<string, int> sourceModelNativeTesoroSpawnA11S =
             new Dictionary<string, int>(StringComparer.Ordinal);
+        // AI19, like A04Q itself, is determined when each line monster
+        // spawns. A later item draw must not retroactively weaken old enemies.
+        // Verified native profiles already include their original A04Q level.
+        private readonly Dictionary<string, double> sourceModelLineItemMagicAtSpawn =
+            new Dictionary<string, double>(StringComparer.Ordinal);
         private readonly HashSet<long> sourceModelUtaIntroStarted =
             new HashSet<long>();
         // B7U/B6t and B61 run on the SAME E-09 actor (h067/h0AF).
@@ -254,6 +259,13 @@ namespace Ordr.Mobile.Combat
         private void RecordSourceModelNativeTesoroSpawnA11S(
             string enemyId, CharacterEnemyKind kind)
         {
+            SpatialCombatEnemy spawned;
+            if (kind == CharacterEnemyKind.Line &&
+                enemies.TryGetValue(enemyId, out spawned) &&
+                !spawned.Enemy.Defenses.HasVerifiedMagicResistance &&
+                SourceModelFusionNativeBalance("source:unique-obtained:AI19") > 0)
+                sourceModelLineItemMagicAtSpawn[enemyId] =
+                    Original323SourceItemPassiveRules.UniqueLineMagicDefenseDecrease;
             if (kind == CharacterEnemyKind.Enraged)
                 sourceModelNativeTesoroSpawnA11S[enemyId] = 1;
             else if (kind == CharacterEnemyKind.Line ||
@@ -274,6 +286,13 @@ namespace Ordr.Mobile.Combat
             int level;
             return sourceModelNativeTesoroSpawnA11S.TryGetValue(enemyId, out level)
                 ? level - 21 : 0;
+        }
+
+        private double SourceModelLineItemMagicResistanceAtSpawn(string enemyId)
+        {
+            double reduction;
+            return sourceModelLineItemMagicAtSpawn.TryGetValue(enemyId,
+                out reduction) ? reduction : 0;
         }
 
         private double SourceModelNativeTesoroCorrection(SpatialCombatEnemy enemy)
