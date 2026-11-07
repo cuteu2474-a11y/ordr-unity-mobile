@@ -3843,6 +3843,26 @@ namespace Ordr.Mobile.Unity
                     Original323SourceItemPassiveRules.HasLineExplosionBonus(
                         passiveWallet) ? "+5% · AI20 획득" : "AI20 미획득",
                     OrdrMobileUiTheme.Gold);
+                int woodExtra = Original323SourceItemPassiveRules
+                    .ExtraGraduatedWoodStock(passiveWallet);
+                long woodSpent = passiveWallet.Balance(
+                    SourceModelMoneyGamblingDesk.Ai13WoodStockSpentResource);
+                OrdrMobileUiTheme.DrawStatusRow("목재 추가 구매권",
+                    Math.Max(0L, woodExtra - woodSpent) +
+                    "/" + woodExtra + " · AI13",
+                    OrdrMobileUiTheme.Aqua);
+                OrdrMobileUiTheme.DrawStatusRow("탐색 알람 기준",
+                    Original323SourceItemPassiveRules.TreasureAlarmSeconds(
+                        passiveWallet, true) +
+                    "초 · AI10 (실제 시전 알람은 별도)",
+                    OrdrMobileUiTheme.Gold);
+                OrdrMobileUiTheme.DrawStatusRow("라인 골드/마방",
+                    (Original323SourceItemPassiveRules.SourceLineGoldFactorIncrease(
+                        passiveWallet) > 0 ? "골드 +100% " : "") +
+                    (Original323SourceItemPassiveRules.SourceLineMagicDefenseLevelIncrease(
+                        passiveWallet) > 0 ? "마방 -5% " : "") +
+                    "· 원본 전투 관측 필요",
+                    OrdrMobileUiTheme.Gold);
             }
             bool enabled = GUI.enabled;
             GUI.enabled = enabled && excavation.CanDraw(false);

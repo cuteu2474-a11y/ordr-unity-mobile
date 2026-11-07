@@ -192,6 +192,43 @@ namespace Ordr.Mobile.Mobile
         public const double OrdinaryCowRegeneration = 0.2; // AI15 -> R035
         public const double UniqueCowRegeneration = 0.5;   // AI18 -> R03A
         public const int UniqueLineExplosionPercent = 5;  // AI20 -> LL[player] +5
+        public const int OrdinaryWoodStockIncrease = 2;   // AI13 -> i5[player] +2
+        public const float OrdinaryLineGoldFactorIncrease = 1f; // AI13 -> dL[player] +1.0
+        public const int UniqueLineMagicDefenseDecrease = 5; // AI19 -> LK[player] +5
+        public const int BasicTreasureAlarmSeconds = 97; // CJm level1 100 -> BJI 97
+        public const int ImprovedTreasureAlarmSeconds = 77; // CJm level2 80 -> BJI 77
+
+        public static bool HasOrdinary(EconomyWallet wallet, string rawcode)
+        {
+            if (wallet == null) throw new ArgumentNullException(nameof(wallet));
+            return wallet.Balance(SourceModelItemExcavation.OrdinaryItemWalletId(rawcode)) > 0;
+        }
+
+        public static int ExtraGraduatedWoodStock(EconomyWallet wallet) =>
+            HasOrdinary(wallet, "AI13") ? OrdinaryWoodStockIncrease : 0;
+
+        // Source JASS projections, not additional damage/gold grants:
+        // native observed dL and A04Q already include these values.
+        // A caller must not add them a second time to a witnessed result.
+        public static float SourceLineGoldFactorIncrease(EconomyWallet wallet) =>
+            HasOrdinary(wallet, "AI13") ? OrdinaryLineGoldFactorIncrease : 0f;
+
+        public static int SourceLineMagicDefenseLevelIncrease(EconomyWallet wallet)
+        {
+            if (wallet == null) throw new ArgumentNullException(nameof(wallet));
+            return Original323FusionSourceItemLedger.WasEverObtained(wallet, "AI19")
+                ? UniqueLineMagicDefenseDecrease : 0;
+        }
+
+        // Only record-guidance RV gets AI10's A05D level increase. Shinobu's
+        // independent A05D is unchanged. BJI is an informational alarm timer,
+        // not the native cast cooldown or a search probability.
+        public static int TreasureAlarmSeconds(EconomyWallet wallet,
+            bool castByRecordGuidance)
+        {
+            return castByRecordGuidance && HasOrdinary(wallet, "AI10") ?
+                ImprovedTreasureAlarmSeconds : BasicTreasureAlarmSeconds;
+        }
 
         public static double HelperCowExtraManaPerSecond(EconomyWallet wallet)
         {

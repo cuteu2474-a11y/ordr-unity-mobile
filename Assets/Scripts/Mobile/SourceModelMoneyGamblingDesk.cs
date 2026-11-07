@@ -21,6 +21,11 @@ namespace Ordr.Mobile.Mobile
         public const string HighReturnResource = "source:money-gambling:high-gross-return";
         public const string HighCountResource = "source:money-gambling:high-purchases";
         public const string WoodRightsResource = "source:money-gambling:graduate-wood-rights";
+        // BhL AI13 adds two native h08C/h0AK shop stocks even if acquired
+        // before CJC graduation. Count spent extras separately; the actual
+        // item receipt itself is permanent and must never be minted again.
+        public const string Ai13WoodStockSpentResource =
+            "source:money-gambling:AI13-wood-stock-spent";
         public const string RarePurchasedResource = "source:money-gambling:H0B0:claimed";
         public const int GraduationGold = 35000;
         public const int TraitGoldCost = 15000;
@@ -54,7 +59,19 @@ namespace Ordr.Mobile.Mobile
             UnitTiers = service ?? throw new ArgumentNullException(nameof(service));
         }
         public bool Graduated => wallet.Balance(GraduatedResource) > 0;
-        public long WoodRights => wallet.Balance(WoodRightsResource);
+        public long WoodRights
+        {
+            get
+            {
+                long extra = Original323SourceItemPassiveRules
+                    .ExtraGraduatedWoodStock(wallet);
+                long spentExtra = wallet.Balance(Ai13WoodStockSpentResource);
+                if (spentExtra < 0 || spentExtra > extra)
+                    throw new InvalidOperationException(
+                        "AI13 목재 구매 추가 재고 장부가 일치하지 않습니다.");
+                return checked(wallet.Balance(WoodRightsResource) + extra - spentExtra);
+            }
+        }
         public bool HasBoughtRare => wallet.Balance(RarePurchasedResource) > 0;
         public int TraitStock { get { RefreshGraduatedStock(); return traitStock; } }
         public int RareStock { get { RefreshGraduatedStock(); return rareStock; } }
@@ -211,9 +228,15 @@ namespace Ordr.Mobile.Mobile
                 return new ManualActionResult(ManualActionState.Rejected,
                     "10000골드와 목재 구매 기회 1회가 필요합니다.");
             long next = checked(sequence + 1);
-            if (!TryWalletExchange(receiptPrefix + next,
-                new ResourceBundle().Add("gold", 10000).Add(WoodRightsResource, 1),
-                new ResourceBundle().Add("wood", 1)))
+            // Existing five CJC rights are consumed first. AI13's two
+            // native i5 stock units remain spendable after the regular
+            // rights are exhausted, with their own durable spend receipt.
+            bool spendBase = wallet.Balance(WoodRightsResource) > 0;
+            var cost = new ResourceBundle().Add("gold", 10000);
+            var gain = new ResourceBundle().Add("wood", 1);
+            if (spendBase) cost.Add(WoodRightsResource, 1);
+            else gain.Add(Ai13WoodStockSpentResource, 1);
+            if (!TryWalletExchange(receiptPrefix + next, cost, gain))
                 return new ManualActionResult(ManualActionState.Rejected, "목재 구매 거래 실패");
             sequence = next;
             return new ManualActionResult(ManualActionState.Succeeded,
