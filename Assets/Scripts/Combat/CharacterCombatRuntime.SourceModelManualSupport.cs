@@ -114,7 +114,7 @@ namespace Ordr.Mobile.Combat
                 CombatStatusEngine status;
                 if (!characters.TryGetValue(lease.Owner, out owner) ||
                     !characters.TryGetValue(lease.Recipient, out ally) ||
-                    IsStoryDeployed(lease.Owner) != IsStoryDeployed(lease.Recipient) ||
+                    !CanShareAllyCombatLane(lease.Owner, lease.Recipient) ||
                     !unitStatuses.TryGetValue(InstanceKey(lease.Recipient), out status))
                 {
                     stale.Add(item.Key);
@@ -258,7 +258,7 @@ namespace Ordr.Mobile.Combat
                 {
                     CharacterInstance ally;
                     if (characters.TryGetValue(candidate, out ally) &&
-                        IsStoryDeployed(candidate) == story)
+                        CanShareAllyCombatLane(actor.Id, candidate))
                         result.Add(candidate);
                 }
                 return result;
@@ -271,7 +271,7 @@ namespace Ordr.Mobile.Combat
                     !characters.TryGetValue(candidate, out ally) ||
                     !ally.AttackReady || ally.Mapping == null ||
                     IsOriginalUnitCasting(candidate) ||
-                    IsStoryDeployed(candidate) != story) continue;
+                    !CanShareAllyCombatLane(actor.Id, candidate)) continue;
                 var attack = ally.Mapping.AttackSpec.BasicAttack;
                 if (attack == null || attack.IntervalSeconds <= 0) continue;
                 if (spec.Speed > 0 && spec.CatalogId != "L-33" &&
@@ -449,6 +449,7 @@ namespace Ordr.Mobile.Combat
                 if (!characters.TryGetValue(id, out actor) ||
                     actor.Profile == null || actor.Mapping == null ||
                     IsOriginalUnitCasting(id) ||
+                    IsOriginalPoneglyphChanneling(id) ||
                     SourceFormIsCasting(id)) continue;
                 double ready;
                 if (sourceManualReadyAt.TryGetValue(id, out ready) &&
@@ -510,7 +511,7 @@ namespace Ordr.Mobile.Combat
             foreach (var ally in characters.Values)
             {
                 if (!ally.AttackReady ||
-                    IsStoryDeployed(ally.Id) != IsStoryDeployed(actor.Id)) continue;
+                    !CanShareAllyCombatLane(ally.Id, actor.Id)) continue;
                 string key = "practice-source-buggy:" + actor.Id + ":" + ally.Id;
                 var status = unitStatuses[InstanceKey(ally.Id)];
                 status.RemoveSource(key);

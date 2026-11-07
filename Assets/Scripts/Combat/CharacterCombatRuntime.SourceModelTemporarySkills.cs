@@ -43,7 +43,8 @@ namespace Ordr.Mobile.Combat
             var summon = new SourceModelSummonState(++sourceNextSummonId,
                 owner.Id, skillName, name, effectExecutor.Time + lifetimeSeconds,
                 IsStoryDeployed(owner.Id), autonomous, sourceRawcode,
-                unresolvedLootAbility, spawnX, spawnY);
+                unresolvedLootAbility, spawnX, spawnY,
+                SourceModelLaneRevision(owner.Id));
             if (autonomous && sourceRawcode != null)
                 RegisterSourceIndependentAttack(SummonAttackKey(summon.Id),
                     sourceRawcode, summon.StoryLane, spawnX, spawnY,
@@ -144,7 +145,8 @@ namespace Ordr.Mobile.Combat
                 if (summon.OwnerId == ownerId &&
                     summon.ExpiresAt > effectExecutor.Time &&
                     characters.ContainsKey(ownerId) &&
-                    IsStoryDeployed(ownerId) == summon.StoryLane)
+                    IsStoryDeployed(ownerId) == summon.StoryLane &&
+                    SourceModelLaneRevision(ownerId) == summon.LaneRevision)
                     result.Add(summon);
             return result.AsReadOnly();
         }
@@ -174,7 +176,9 @@ namespace Ordr.Mobile.Combat
             sourceTemporarySummons.RemoveAt(index);
             if (!nativeDeath || summon.SourceUnitRawcode != "h06O" ||
                 !characters.ContainsKey(summon.OwnerId) ||
-                IsStoryDeployed(summon.OwnerId) != summon.StoryLane) return;
+                (IsStoryDeployed(summon.OwnerId) != summon.StoryLane ||
+                 SourceModelLaneRevision(summon.OwnerId) != summon.LaneRevision))
+                return;
             double x = deathX ?? summon.SpawnX;
             double y = deathY ?? summon.SpawnY;
             events.Add(new CharacterCombatEvent(
@@ -209,7 +213,8 @@ namespace Ordr.Mobile.Combat
             {
                 var summon = sourceTemporarySummons[i];
                 bool validOwnerLane = characters.ContainsKey(summon.OwnerId) &&
-                    IsStoryDeployed(summon.OwnerId) == summon.StoryLane;
+                    IsStoryDeployed(summon.OwnerId) == summon.StoryLane &&
+                    SourceModelLaneRevision(summon.OwnerId) == summon.LaneRevision;
                 if (validOwnerLane && summon.ExpiresAt > effectExecutor.Time) continue;
                 // Warcraft timed life fires the unit death trigger. Explicit
                 // owner removal and transfer between lanes do not count as

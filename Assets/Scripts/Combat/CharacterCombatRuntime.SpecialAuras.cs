@@ -110,7 +110,7 @@ namespace Ordr.Mobile.Combat
                 {
                     foreach (long targetId in ids)
                     {
-                        if (IsStoryDeployed(id) != IsStoryDeployed(targetId) ||
+                        if (!CanShareAllyCombatLane(id, targetId) ||
                             !aura.AllowsAllyRole(id == targetId)) continue;
                         var target = roster.Get(targetId);
                         // 모바일 오라는 원본 반경과 무관하게 같은 전장의 적격 아군에게 적용.

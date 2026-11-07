@@ -61,7 +61,7 @@ namespace Ordr.Mobile.Combat
                     var ally = characters[candidateId];
                     if (!ally.AttackReady || ally.Mapping == null ||
                         IsOriginalUnitCasting(candidateId) ||
-                        IsStoryDeployed(candidateId) != story)
+                        !CanShareAllyCombatLane(id, candidateId))
                         continue;
                     if (unitStatuses[InstanceKey(candidateId)]
                         .HasActiveEffect(CombatEffectType.AttackSpeedBuff,

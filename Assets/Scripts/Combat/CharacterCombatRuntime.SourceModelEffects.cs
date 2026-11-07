@@ -288,12 +288,17 @@ namespace Ordr.Mobile.Combat
             var contributions = new List<Original323AuraContribution>();
             Original323SpecialAura first = null;
             bool recipientIsAlly = ally.HasValue || independentTarget != null;
-            bool recipientStoryLane = ally.HasValue ? IsStoryDeployed(ally.Value) :
-                independentTarget != null && independentTarget.StoryLane;
             foreach (long id in casters)
             {
                 if (activeOriginalFusionSwap != null && activeOriginalFusionSwap.Hides(id)) continue;
-                if (recipientIsAlly && IsStoryDeployed(id) != recipientStoryLane) continue;
+                if (ally.HasValue && !CanShareAllyCombatLane(id, ally.Value))
+                    continue;
+                if (independentTarget != null &&
+                    (!CanShareAllyCombatLane(id, independentTarget.OwnerInstanceId) ||
+                     IsSharedObjectiveDeployed(independentTarget.OwnerInstanceId) ||
+                     independentTarget.StoryLane !=
+                         IsStoryDeployed(independentTarget.OwnerInstanceId)))
+                    continue;
                 if (!recipientIsAlly && !CanAttackInThisLane(characters[id], enemy)) continue;
                 string form = sourceModelRules.SourceFormRawcodeOf(InstanceKey(id));
                 var definitions = form == null

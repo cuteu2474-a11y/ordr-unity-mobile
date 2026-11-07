@@ -29,11 +29,10 @@ namespace Ordr.Mobile.Combat
         private int SourceBuggySharedAuraLevel(long allyId)
         {
             if (!characters.ContainsKey(allyId)) return 0;
-            bool story = IsStoryDeployed(allyId);
             int level = 0;
             foreach (var unit in characters.Values)
                 if (unit.Catalog.Id == "E-05" &&
-                    IsStoryDeployed(unit.Id) == story)
+                    CanShareAllyCombatLane(unit.Id, allyId))
                     level = Math.Max(level, SourceBuggyEloquenceUsesOf(unit.Id));
             // Multiple Buggy auras use the strongest, never an unverified sum.
             return level;

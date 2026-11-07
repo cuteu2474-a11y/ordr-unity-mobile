@@ -69,7 +69,7 @@ namespace Ordr.Mobile.Combat
                     bool hasExcludedJinbe = false;
                     foreach (var ally in characters.Values)
                         if (ally.Catalog.Id == excludedAlly && ally.AttackReady &&
-                            IsStoryDeployed(ally.Id) == IsStoryDeployed(actor.Id))
+                            CanShareAllyCombatLane(ally.Id, actor.Id))
                             hasExcludedJinbe = true;
                     if (hasExcludedJinbe) continue;
                     bool appliedPreviously = false;
@@ -388,7 +388,7 @@ namespace Ordr.Mobile.Combat
             foreach (var ally in characters.Values)
             {
                 if (!ally.AttackReady ||
-                    IsStoryDeployed(ally.Id) != IsStoryDeployed(actor.Id)) continue;
+                    !CanShareAllyCombatLane(ally.Id, actor.Id)) continue;
                 CombatStatusEngine status;
                 if (!unitStatuses.TryGetValue(InstanceKey(ally.Id), out status)) continue;
                 status.RemoveSource(source);

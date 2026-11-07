@@ -1139,7 +1139,7 @@ namespace Ordr.Mobile.Combat
             var candidates = new List<LawDpsCandidate>();
             foreach (var target in MobileUnitSnapshot())
             {
-                if (IsStoryDeployed(target.InstanceId) != inStory) continue;
+                if (!CanShareAllyCombatLane(lawId, target.InstanceId)) continue;
                 double dps;
                 if (!lawCastService.TryEvaluateTarget(lawId, target.InstanceId, Time, out dps))
                     continue;
@@ -1147,7 +1147,7 @@ namespace Ordr.Mobile.Combat
             }
             long? chosen = SpecialGradeMobilePolicy.ChooseLawTarget(inStory, candidates);
             if (!chosen.HasValue || !characters.ContainsKey(chosen.Value) ||
-                IsStoryDeployed(lawId) != IsStoryDeployed(chosen.Value)) return false;
+                !CanShareAllyCombatLane(lawId, chosen.Value)) return false;
             if (!lawCastService.TryCast(lawId, chosen.Value, Time)) return false;
             lawReadyAt[lawId] = Time + 50;
             return true;
@@ -1538,6 +1538,25 @@ namespace Ordr.Mobile.Combat
             SharedObjectiveDeployment assignment;
             return sharedObjectiveDeployed.TryGetValue(instanceId, out assignment)
                 ? assignment.EnemyId : null;
+        }
+
+        // Ally buffs, support selection and native auras must use the same
+        // combat partition as attacks. A shared-objective sortie is NOT part
+        // of the ordinary "non-story" lane; different objectives also never
+        // exchange buffs. A decoder is paused and outside combat support.
+        private bool CanShareAllyCombatLane(long casterId, long recipientId)
+        {
+            if (!characters.ContainsKey(casterId) ||
+                !characters.ContainsKey(recipientId) ||
+                IsOriginalPoneglyphChanneling(casterId) ||
+                IsOriginalPoneglyphChanneling(recipientId))
+                return false;
+            string casterObjective = SharedObjectiveTargetOf(casterId);
+            string recipientObjective = SharedObjectiveTargetOf(recipientId);
+            if (casterObjective != null || recipientObjective != null)
+                return casterObjective != null &&
+                    casterObjective == recipientObjective;
+            return IsStoryDeployed(casterId) == IsStoryDeployed(recipientId);
         }
 
         // Manual side-objective sortie: one live actor, one source-observed

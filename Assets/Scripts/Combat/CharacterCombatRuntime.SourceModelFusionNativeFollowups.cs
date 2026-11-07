@@ -858,7 +858,7 @@ namespace Ordr.Mobile.Combat
                     foreach (var ally in characters.Values)
                     {
                         if (ally.Id == actorId || !ally.AttackReady ||
-                            IsStoryDeployed(ally.Id) != IsStoryDeployed(actorId))
+                            !CanShareAllyCombatLane(ally.Id, actorId))
                             continue;
                         var point = sourceModelNativePointValues == null ? null :
                             sourceModelNativePointValues.Find(ally.Catalog.Id);
@@ -890,7 +890,7 @@ namespace Ordr.Mobile.Combat
                                     !caster.AttackReady ||
                                     !characters.TryGetValue(targetId, out target) ||
                                     !target.AttackReady ||
-                                    IsStoryDeployed(targetId) != isStory) return;
+                                    !CanShareAllyCombatLane(actorId, targetId)) return;
                                 ApplySourceModelFusionSharkInnerFire(actorId, targetId);
                             });
                     }

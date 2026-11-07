@@ -145,7 +145,15 @@ namespace Ordr.Mobile.Combat
         private bool CanSourceIndependentAttack(SourceIndependentAttacker actor,
             SpatialCombatEnemy enemy)
         {
-            if (!enemy.Enemy.IsAlive) return false;
+            // The independent actor is fixed to its origin lane. Its owner
+            // cannot drag its attacks into ordinary combat while fighting
+            // a side objective or decoding the Poneglyph.
+            if (!enemy.Enemy.IsAlive ||
+                !characters.ContainsKey(actor.OwnerInstanceId) ||
+                IsSharedObjectiveDeployed(actor.OwnerInstanceId) ||
+                IsOriginalPoneglyphChanneling(actor.OwnerInstanceId) ||
+                actor.StoryLane != IsStoryDeployed(actor.OwnerInstanceId))
+                return false;
             return actor.StoryLane ? enemy.Kind == CharacterEnemyKind.Story :
                 enemy.Kind == CharacterEnemyKind.Line ||
                 enemy.Kind == CharacterEnemyKind.Boss ||
@@ -286,15 +294,29 @@ namespace Ordr.Mobile.Combat
         {
             if (radius < 0 || rawDamage < 0 || double.IsNaN(rawDamage) ||
                 double.IsInfinity(rawDamage)) throw new ArgumentOutOfRangeException(nameof(rawDamage));
+            // Real roster attackers use the same objective-specific lane
+            // filter as basic hits. The legacy story boolean alone would
+            // discard every shared boss/Sea King area hit, or allow a native
+            // summon to keep attacking the main lane while its owner sorties.
+            long rosterActorId;
+            CharacterInstance rosterActor = null;
+            SourceIndependentAttacker independentActor = null;
+            if (!string.IsNullOrWhiteSpace(attackerId) &&
+                long.TryParse(attackerId, out rosterActorId))
+                characters.TryGetValue(rosterActorId, out rosterActor);
+            if (rosterActor == null &&
+                !sourceIndependentAttackers.TryGetValue(attackerId ?? "",
+                    out independentActor))
+                return;
             var targets = new List<SpatialCombatEnemy>();
             foreach (var target in enemies.Values)
             {
                 if (!target.Enemy.IsAlive ||
                     (radius == 0 && target.Id != center.Id) ||
-                    (storyLane ? target.Kind != CharacterEnemyKind.Story :
-                    target.Kind != CharacterEnemyKind.Line &&
-                    target.Kind != CharacterEnemyKind.Boss &&
-                    target.Kind != CharacterEnemyKind.Enraged)) continue;
+                    (rosterActor != null ?
+                        !CanAttackInThisLane(rosterActor, target) :
+                        !CanSourceIndependentAttack(independentActor, target)))
+                    continue;
                 double dx = target.X - centerX, dy = target.Y - centerY;
                 if (dx * dx + dy * dy <= radius * radius) targets.Add(target);
             }

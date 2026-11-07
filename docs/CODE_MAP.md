@@ -4,6 +4,8 @@
 
 ## 이번 추가 연결(2026-11-07, 코드만)
 
+- 공유 목표 전장 격리: `CharacterCombatRuntime.CanShareAllyCombatLane`가 메인/스토리/공유 목표 ID별/포네그리프 해독 유닛을 분리. 아군 스킬·특수 오라·지원·언변 버프의 기존 `IsStoryDeployed` 이진 판정을 교체했습니다. `SourceModelIndependentAttacks` 광역 공격도 실물의 `CanAttackInThisLane` 또는 소환수의 원래 레인 판정에 맡기고, 독립 공격자 소유자 이탈 시 공격을 중단합니다. `SourceModelSummonState.LaneRevision`으로 출전·복귀·해독 변경 때 잔류 소환수를 폐기합니다. **원본 공유 목표 공급자·실기 검증은 미완료**.
+
 - 기록지침 보물 탐색: `OrdrMobileTouchPanel.DrawTreasureGacha` → `OrdrCharacterCombatController.RequestMobileTreasureGacha` → `MobileTreasureGacha` → `Original323TreasureHunt`; 가이몬은 필수 조건이 아닌 범위/수량 보정, 실제 16개 보물사냥꾼 정산 공통 메서드.
 - 환전소: `SourceModelGamblingNavigation`의 `ExchangeHouse` → `SourceModelCompuExchange`(CKD~CKJ, I009 공유 잔액·1회 거래·보류 추첨) → `Original323CompuUnitWorld`(해적선/랜덤전용/토큰 실물 소환·원자 롤백) → 모바일 도박 화면. 콤푸 공급자/일반·유니크 아이템 실물 포트는 **미연결**.
 - 연구소: `Original323PlayerResearchSession.SourceCost`는 공유 지갑 `wood` 키를 사용. `OrdrMobileTouchPanel.UpgradeResourceName`은 `wood/lumber` 모두 목재로 표시.

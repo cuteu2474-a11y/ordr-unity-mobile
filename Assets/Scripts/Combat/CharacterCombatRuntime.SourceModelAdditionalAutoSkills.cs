@@ -337,7 +337,7 @@ namespace Ordr.Mobile.Combat
                 foreach (var unit in characters.Values)
                 {
                     if (unit.Id == actor.Id || !unit.AttackReady ||
-                        IsStoryDeployed(unit.Id) != IsStoryDeployed(actor.Id) ||
+                        !CanShareAllyCombatLane(unit.Id, actor.Id) ||
                         unit.Profile == null) continue;
                     foreach (var other in unit.Profile.Skills)
                         if (other.Name == "방어구 관통") return;

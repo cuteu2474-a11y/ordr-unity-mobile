@@ -58,7 +58,7 @@ namespace Ordr.Mobile.Combat
                 !IsBulkSourceOwner(sans.Catalog.Id,
                     sans.Mapping.AttackSpec.UnitRawCode) ||
                 sans.Catalog.Id != "MY-07" ||
-                IsStoryDeployed(sansInstanceId) != IsStoryDeployed(brookInstanceId))
+                !CanShareAllyCombatLane(sansInstanceId, brookInstanceId))
                 return false;
             string grade = brook.Catalog.Id == "U-03" ? "안흔함" :
                 brook.Catalog.Id == "R-18" ? "희귀함" : null;
@@ -827,8 +827,8 @@ namespace Ordr.Mobile.Combat
             var point = roster.Get(actor.Id);
             foreach (var ally in characters.Values)
             {
-                if (!ally.AttackReady || IsStoryDeployed(ally.Id) !=
-                    IsStoryDeployed(actor.Id)) continue;
+                if (!ally.AttackReady ||
+                    !CanShareAllyCombatLane(ally.Id, actor.Id)) continue;
                 var other = roster.Get(ally.Id);
                 double dx = point.X - other.X, dy = point.Y - other.Y;
                 if (dx * dx + dy * dy > 900 * 900) continue;
@@ -910,7 +910,7 @@ namespace Ordr.Mobile.Combat
                 foreach (var ally in characters.Values)
                 {
                     if (!ally.AttackReady ||
-                        IsStoryDeployed(ally.Id) != IsStoryDeployed(owner.Id))
+                        !CanShareAllyCombatLane(ally.Id, owner.Id))
                         continue;
                     CombatStatusEngine status;
                     if (!unitStatuses.TryGetValue(InstanceKey(ally.Id), out status))
@@ -957,7 +957,7 @@ namespace Ordr.Mobile.Combat
             foreach (var ally in characters.Values)
             {
                 if (ally.Id == actor.Id || !ally.AttackReady ||
-                    IsStoryDeployed(ally.Id) != IsStoryDeployed(actor.Id))
+                    !CanShareAllyCombatLane(ally.Id, actor.Id))
                     continue;
                 var pool = ally.Abilities.Resources;
                 if (pool == null || pool.MaximumMana <= 0) continue;

@@ -211,7 +211,9 @@ namespace Ordr.Mobile.Combat
                 foreach (var actor in characters.Values)
                 {
                     // h06S's line-zone AUau/AHab do not heal story assaulters.
-                    if (IsStoryDeployed(actor.Id)) continue;
+                    if (IsStoryDeployed(actor.Id) ||
+                        IsSharedObjectiveDeployed(actor.Id) ||
+                        IsOriginalPoneglyphChanneling(actor.Id)) continue;
                     ProvisionSourceModelAuraRecipientResources(actor);
                     var pool = actor.Abilities.Resources;
                     if (pool == null) continue;
