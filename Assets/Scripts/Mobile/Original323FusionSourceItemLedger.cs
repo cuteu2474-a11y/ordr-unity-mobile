@@ -56,12 +56,12 @@ namespace Ordr.Mobile.Mobile
                 new Original323FusionItemShell(UtaItemRawcode, "우타(영원) 조합 재료"),
                 new Original323FusionItemShell(NikaItemRawcode, "니카(영원) 조합 재료"),
                 new Original323FusionItemShell("AI03", "고유 아이템 후속 능력 연결 대기"),
-                new Original323FusionItemShell("AI18", "도움소 마나 재생 +0.5 후속 효과 연결 대기"),
+                new Original323FusionItemShell("AI18", "도움소 마나 재생 +0.5/초 적용 (고유 획득 영구)"),
                 new Original323FusionItemShell("AI21", "고유 아이템 후속 능력 연결 대기"),
                 new Original323FusionItemShell("AI17", "고유 아이템 후속 능력 연결 대기"),
                 new Original323FusionItemShell("AI19", "라인존 마법방어력 -5% 후속 효과 연결 대기"),
                 new Original323FusionItemShell("AI16", "고유 아이템 후속 능력 연결 대기"),
-                new Original323FusionItemShell("AI20", "라인존 폭발 피해 +5% 후속 효과 연결 대기")
+                new Original323FusionItemShell("AI20", "라인존 폭발형 피해 +5% 적용 (고유 획득 영구)")
             });
 
         public static IReadOnlyList<Original323FusionItemShell> ItemShells => itemShells;
@@ -180,6 +180,52 @@ namespace Ordr.Mobile.Mobile
                 if (wallet.HasCompletedTransaction(receipt)) return true;
                 throw;
             }
+        }
+    }
+
+    // BhP -> BhL is fired at first source-verified item acquisition. These
+    // bonuses are permanent player upgrades, not an equipped-slot buff:
+    // consuming AI00/01/02 as fusion ingredients must not revoke them.
+    // Original war3map.j 10509-10556, SHA-256 96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d.
+    public static class Original323SourceItemPassiveRules
+    {
+        public const double OrdinaryCowRegeneration = 0.2; // AI15 -> R035
+        public const double UniqueCowRegeneration = 0.5;   // AI18 -> R03A
+        public const int UniqueLineExplosionPercent = 5;  // AI20 -> LL[player] +5
+
+        public static double HelperCowExtraManaPerSecond(EconomyWallet wallet)
+        {
+            if (wallet == null) throw new ArgumentNullException(nameof(wallet));
+            double extra = wallet.Balance(
+                SourceModelItemExcavation.OrdinaryItemWalletId("AI15")) > 0
+                ? OrdinaryCowRegeneration : 0;
+            if (Original323FusionSourceItemLedger.WasEverObtained(wallet, "AI18"))
+                extra += UniqueCowRegeneration;
+            return extra;
+        }
+
+        // Combat consumes a single read-only wallet projection. Legacy
+        // source:item:AIxx receipts and unique-box transaction history are
+        // equally valid, even if an older save lacks the newer acquired flag.
+        public static long CombatReceiptBalance(EconomyWallet wallet, string receiptId)
+        {
+            if (wallet == null) throw new ArgumentNullException(nameof(wallet));
+            if (string.IsNullOrWhiteSpace(receiptId)) return 0;
+            string prefix = Original323FusionSourceItemLedger.EverObtainedPrefix;
+            if (receiptId.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                string rawcode = receiptId.Substring(prefix.Length);
+                if (Original323FusionSourceItemLedger.FindShell(rawcode) != null)
+                    return Original323FusionSourceItemLedger.WasEverObtained(wallet, rawcode)
+                        ? 1L : 0L;
+            }
+            return wallet.Balance(receiptId);
+        }
+
+        public static bool HasLineExplosionBonus(EconomyWallet wallet)
+        {
+            if (wallet == null) throw new ArgumentNullException(nameof(wallet));
+            return Original323FusionSourceItemLedger.WasEverObtained(wallet, "AI20");
         }
     }
 }

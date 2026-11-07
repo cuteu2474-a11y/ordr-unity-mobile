@@ -4,6 +4,8 @@
 
 ## 이번 추가 연결(2026-11-07, 코드만)
 
+- 아이템 패시브: `Original323FusionSourceItemLedger.cs`에 선언된 `Original323SourceItemPassiveRules` → 공유 지갑 원본 발굴 AI15·고유 AI18/AI20 수령 장부 → `Ordr323OriginalHelperCowActor.AdvanceBaseManaRegeneration`의 전투시계 기반 재생 가산 / `CharacterCombatRuntime.SourceModelFusionNativeFollowups`의 `LL→A11S` 출현시 스냅샷 → `SourceModelCompositeEffects`의 라인 폭발형 피해 가산. `OrdrMobileTouchPanel.DrawItemExcavation`에서 현재 보너스를 표시합니다. **원본 BhL 확인·코드만 연결**, Unity/Android 미검증. AI13 골드/목재 재고, AI19 마법저항, AI10 탐색 기술, 개별 패시브는 미완료.
+
 - 공유 목표 전장 격리: `CharacterCombatRuntime.CanShareAllyCombatLane`가 메인/스토리/공유 목표 ID별/포네그리프 해독 유닛을 분리. 아군 스킬·특수 오라·지원·언변 버프의 기존 `IsStoryDeployed` 이진 판정을 교체했습니다. `SourceModelIndependentAttacks` 광역 공격도 실물의 `CanAttackInThisLane` 또는 소환수의 원래 레인 판정에 맡기고, 독립 공격자 소유자 이탈 시 공격을 중단합니다. `SourceModelSummonState.LaneRevision`으로 출전·복귀·해독 변경 때 잔류 소환수를 폐기합니다. **원본 공유 목표 공급자·실기 검증은 미완료**.
 
 - 기록지침 보물 탐색: `OrdrMobileTouchPanel.DrawTreasureGacha` → `OrdrCharacterCombatController.RequestMobileTreasureGacha` → `MobileTreasureGacha` → `Original323TreasureHunt`; 가이몬은 필수 조건이 아닌 범위/수량 보정, 실제 16개 보물사냥꾼 정산 공통 메서드.

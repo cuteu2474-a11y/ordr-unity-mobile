@@ -199,12 +199,25 @@ namespace Ordr.Mobile.Combat
 
         public void AdvanceBaseManaRegeneration(double elapsedSeconds)
         {
+            AdvanceBaseManaRegeneration(elapsedSeconds, 0);
+        }
+
+        // BhL AI15/R035 and AI18/R03A are permanent research-like boosts.
+        // The controller obtains both from the authoritative shared wallet
+        // at each COMBAT clock advance, not from GUI repaint/wall clock.
+        public void AdvanceBaseManaRegeneration(double elapsedSeconds,
+            double extraManaPerSecond)
+        {
             if (double.IsNaN(elapsedSeconds) || double.IsInfinity(elapsedSeconds) ||
-                elapsedSeconds < 0) throw new ArgumentOutOfRangeException(nameof(elapsedSeconds));
+                elapsedSeconds < 0 ||
+                double.IsNaN(extraManaPerSecond) ||
+                double.IsInfinity(extraManaPerSecond) ||
+                extraManaPerSecond < 0)
+                throw new ArgumentOutOfRangeException(nameof(elapsedSeconds));
             if (!IsAlive || elapsedSeconds == 0) return;
             CurrentMana = Math.Min(MaximumMana,
-                CurrentMana + Ordr323OriginalHelperSource.BaseManaRegenPerSecond *
-                elapsedSeconds);
+                CurrentMana + (Ordr323OriginalHelperSource.BaseManaRegenPerSecond +
+                    extraManaPerSecond) * elapsedSeconds);
         }
     }
 }

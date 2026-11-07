@@ -3831,6 +3831,19 @@ namespace Ordr.Mobile.Unity
             OrdrMobileUiTheme.DrawStatusRow("유니크 발굴",
                 excavation.UniqueStock + "스택 · 미획득 " +
                 excavation.UniqueRemaining + "종", OrdrMobileUiTheme.Gold);
+            if (controller.SharedEconomy != null)
+            {
+                var passiveWallet = controller.SharedEconomy.Wallet;
+                double cowBonus = Original323SourceItemPassiveRules
+                    .HelperCowExtraManaPerSecond(passiveWallet);
+                OrdrMobileUiTheme.DrawStatusRow("도움소 재생 추가",
+                    "+" + cowBonus.ToString("0.0") + "/초 · AI15/AI18",
+                    OrdrMobileUiTheme.Aqua);
+                OrdrMobileUiTheme.DrawStatusRow("라인 폭발형 추가",
+                    Original323SourceItemPassiveRules.HasLineExplosionBonus(
+                        passiveWallet) ? "+5% · AI20 획득" : "AI20 미획득",
+                    OrdrMobileUiTheme.Gold);
+            }
             bool enabled = GUI.enabled;
             GUI.enabled = enabled && excavation.CanDraw(false);
             if (OrdrMobileUiTheme.DrawActionRow(

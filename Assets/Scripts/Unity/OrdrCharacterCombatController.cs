@@ -1056,7 +1056,8 @@ namespace Ordr.Mobile.Unity
             Combat.ConfigureSourceModelPlayerGold(() => SharedEconomy.Wallet.Balance("gold"));
             Combat.ConfigureSourceModelAccumulatedClearCount(() => AccumulatedClearCount);
             Combat.ConfigureSourceModelFusionNativeReceipts(
-                id => SharedEconomy.Wallet.Balance(id));
+                id => Original323SourceItemPassiveRules.CombatReceiptBalance(
+                    SharedEconomy.Wallet, id));
             if (originalEquippedItemWitness != null || originalEquippedInventoryWitness != null)
                 Combat.ConfigureSourceModelEquippedItems(originalEquippedItemWitness,
                     originalEquippedInventoryWitness);
@@ -4010,7 +4011,10 @@ namespace Ordr.Mobile.Unity
             // UI redraws and wall time must not regenerate extra mana.
             if (Original323HelperCow != null)
                 Original323HelperCow.AdvanceBaseManaRegeneration(
-                    Math.Max(0.0, Combat.Time - timeBeforeStep));
+                    Math.Max(0.0, Combat.Time - timeBeforeStep),
+                    SharedEconomy == null ? 0 :
+                    Original323SourceItemPassiveRules.HelperCowExtraManaPerSecond(
+                        SharedEconomy.Wallet));
             foreach (var item in results)
             {
                 var handler = OnCombatEvent;

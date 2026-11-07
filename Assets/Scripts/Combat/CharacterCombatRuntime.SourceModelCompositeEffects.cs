@@ -359,11 +359,11 @@ namespace Ordr.Mobile.Combat
                 double localAmplification = SourceModelUnitEffects.ResolvePracticeMagicModifier(
                     target.Enemy.Status.Snapshot(),
                     CombatEffectType.ExplosiveDamageAmplification);
-                // JASS B99/B2F/B4J add +20/+10/-10 to LL[player].
-                // Only line-zone explosive packets consume its net modifier;
-                // boss/story/ordinary magic hits do not receive this buff.
+                // Original LL is captured as A11S when each monster
+                // spawns, not evaluated against the current player wallet.
+                // AI20 (+5) and fusion updates affect future line spawns.
                 double lineAmplification = target.Kind == CharacterEnemyKind.Line
-                    ? SourceModelFusionLineExplosionBonus() : 0;
+                    ? SourceModelLineExplosionSpawnAdjustment(target.Id) : 0;
                 // Repeated Koby acquisitions can make the signed native
                 // modifier negative. Never turn damage into accidental
                 // healing via a negative practice multiplier.

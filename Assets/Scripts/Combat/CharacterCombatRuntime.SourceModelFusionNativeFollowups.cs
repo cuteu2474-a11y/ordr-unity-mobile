@@ -237,8 +237,14 @@ namespace Ordr.Mobile.Combat
             // The native LL player variable is shared by Dragon (+20),
             // Lucci (+10) and Koby (-10). Every producer commits its own
             // durable positive receipt, then consumers derive the net value.
-            return Original323FusionNativeFollowupLedger
+            // BhP/BhL AI20 permanently increments the same native LL[player]
+            // variable by five. Include it in both line packet damage and
+            // A11S spawn snapshots; never add a second, unrelated aura.
+            double fusion = Original323FusionNativeFollowupLedger
                 .SignedLineExplosionAdjustment(SourceModelFusionNativeBalance);
+            bool item = SourceModelFusionNativeBalance(
+                "source:unique-obtained:AI20") > 0;
+            return fusion + (item ? 5 : 0);
         }
 
         // LL[player] starts at 21 (JASS initialisation 4738), and fusion
@@ -257,6 +263,17 @@ namespace Ordr.Mobile.Combat
                 sourceModelNativeTesoroSpawnA11S[enemyId] =
                     (int)Math.Min(int.MaxValue, Math.Max(0, initialLevel));
             }
+        }
+
+        // Bvi/CVX/CVY copy LL to each new monster's A11S. Any later
+        // item or fusion upgrade applies only to later spawns, not an
+        // already living line enemy. This same snapshot is also used for
+        // Tesoro's source-native health correction below.
+        private double SourceModelLineExplosionSpawnAdjustment(string enemyId)
+        {
+            int level;
+            return sourceModelNativeTesoroSpawnA11S.TryGetValue(enemyId, out level)
+                ? level - 21 : 0;
         }
 
         private double SourceModelNativeTesoroCorrection(SpatialCombatEnemy enemy)
