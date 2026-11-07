@@ -23,17 +23,8 @@ namespace Ordr.Mobile.Mobile
         void Commit();
     }
 
-    // CKH/CKI are ITEM excavation stacks, not a virtual currency voucher.
-    // Until an actual item inventory port is installed those recipes stay locked.
-    public interface IOriginal323CompuItemWorld
-    {
-        IOriginal323CompuItemTransaction Begin(bool unique);
-    }
-    public interface IOriginal323CompuItemTransaction : IDisposable
-    {
-        bool TryCreate();
-        void Commit();
-    }
+    // CKH/CKI call Bhd(...,1,0/1): they grant excavation CHARGES
+    // on the native player ability, not a physical inventory item.
 
     public sealed class SourceModelCompuExchange
     {
@@ -47,7 +38,6 @@ namespace Ordr.Mobile.Mobile
         private readonly Func<bool> gate;
         private readonly Func<Original323GamblingNavigation> navigation;
         private readonly IOriginal323CompuUnitWorld units;
-        private IOriginal323CompuItemWorld items;
         private IOriginal323CompuAwardWitness witness;
         private bool processing;
         private PendingRoll pending;
@@ -67,7 +57,6 @@ namespace Ordr.Mobile.Mobile
             IOriginalWispRandom scriptRandom, Func<bool> interaction,
             Func<Original323GamblingNavigation> chosenNavigation,
             IOriginal323CompuUnitWorld unitWorld,
-            IOriginal323CompuItemWorld itemWorld = null,
             IOriginal323CompuAwardWitness sourceWitness = null)
         {
             wallet = sharedWallet ?? throw new ArgumentNullException(nameof(sharedWallet));
@@ -76,13 +65,7 @@ namespace Ordr.Mobile.Mobile
             gate = interaction ?? throw new ArgumentNullException(nameof(interaction));
             navigation = chosenNavigation ?? throw new ArgumentNullException(nameof(chosenNavigation));
             units = unitWorld ?? throw new ArgumentNullException(nameof(unitWorld));
-            items = itemWorld;
             witness = sourceWitness;
-        }
-
-        public void ConfigureItemWorld(IOriginal323CompuItemWorld sourceItems)
-        {
-            items = sourceItems ?? throw new ArgumentNullException(nameof(sourceItems));
         }
 
         public void ConfigureVerifiedAwardWitness(IOriginal323CompuAwardWitness sourceWitness)
@@ -127,9 +110,15 @@ namespace Ordr.Mobile.Mobile
         {
             if (!IsOpen || processing || Cost(recipe) == 0 || Compu < Cost(recipe) ||
                 (pending != null && pending.Recipe != recipe)) return false;
-            if ((recipe == "CKH" || recipe == "CKI") && items == null) return false;
-            return (recipe != "CKH" || wallet.Balance(OrdinaryUsed) == 0) &&
-                (recipe != "CKI" || wallet.Balance(UniqueUsed) == 0);
+            // Bhc/Bhd cap each charge pool at ten; full stacks cannot be credited.
+            return (recipe != "CKH" ||
+                (wallet.Balance(OrdinaryUsed) == 0 &&
+                 wallet.Balance(SourceModelItemExcavation.OrdinaryStacks) <
+                     SourceModelItemExcavation.MaximumStacks)) &&
+                (recipe != "CKI" ||
+                (wallet.Balance(UniqueUsed) == 0 &&
+                 wallet.Balance(SourceModelItemExcavation.UniqueStacks) <
+                     SourceModelItemExcavation.MaximumStacks));
         }
 
         private int Roll(PendingRoll state, int minimum, int maximum)
@@ -147,9 +136,7 @@ namespace Ordr.Mobile.Mobile
         {
             if (!CanExchange(recipe))
                 return new ManualActionResult(ManualActionState.Rejected,
-                    items == null && (recipe == "CKH" || recipe == "CKI")
-                    ? "원본 아이템 발굴 실물 지급 연결 대기"
-                    : "환전소 선택·콤푸·1회 제한 또는 보류 거래를 확인해 주세요.");
+                    "환전소 선택·콤푸·발굴 스택 최대 10회·1회 제한 또는 보류 거래를 확인해 주세요.");
             processing = true;
             try
             {
@@ -179,11 +166,13 @@ namespace Ordr.Mobile.Mobile
                 else if (recipe == "CKH")
                 {
                     outcome.Add(OrdinaryUsed, 1);
+                    outcome.Add(SourceModelItemExcavation.OrdinaryStacks, 1);
                     label = "일반 아이템 발굴 1스택";
                 }
                 else if (recipe == "CKI")
                 {
                     outcome.Add(UniqueUsed, 1);
+                    outcome.Add(SourceModelItemExcavation.UniqueStacks, 1);
                     label = "유니크 아이템 발굴 1스택";
                 }
                 else
@@ -200,18 +189,13 @@ namespace Ordr.Mobile.Mobile
                 // Stage every physical result before the single wallet debit.
                 using (var spawned = recipe == "CKG" || recipe == "CKJ"
                     ? units.Begin(recipe, pending.Rawcode) : null)
-                using (var item = recipe == "CKH" || recipe == "CKI"
-                    ? items.Begin(recipe == "CKI") : null)
                 {
-                    if (((recipe == "CKG" || recipe == "CKJ") && spawned == null) ||
-                        ((recipe == "CKH" || recipe == "CKI") && item == null))
+                    if ((recipe == "CKG" || recipe == "CKJ") && spawned == null)
                         return Reject("원본 실물 거래 준비 실패. 콤푸는 유지됩니다.");
                     string physicalDescription;
                     if (spawned != null &&
                         !spawned.TrySpawn(out physicalDescription))
                         return Reject("유닛/토큰 실물 생성 실패. 콤푸는 유지됩니다.");
-                    if (item != null && !item.TryCreate())
-                        return Reject("아이템 발굴 실물 생성 실패. 콤푸는 유지됩니다.");
                     bool committed;
                     try { committed = wallet.TryExchangeOnce(receipt, costs, outcome); }
                     catch
@@ -221,7 +205,6 @@ namespace Ordr.Mobile.Mobile
                     }
                     if (!committed) return Reject("환전 거래 불가. 콤푸는 유지됩니다.");
                     if (spawned != null) spawned.Commit();
-                    if (item != null) item.Commit();
                     pending = null;
                     return new ManualActionResult(ManualActionState.Succeeded,
                         Cost(recipe) + "콤푸 교환 완료 · " + label);

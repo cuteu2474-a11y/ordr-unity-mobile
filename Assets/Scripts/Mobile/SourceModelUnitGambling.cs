@@ -53,6 +53,9 @@ namespace Ordr.Mobile.Mobile
             foreach (OriginalGambleTier tier in Enum.GetValues(typeof(OriginalGambleTier)))
             {
                 if (navigation() == Original323GamblingNavigation.Casino && tier != OriginalGambleTier.High) continue;
+                // CKR(3) disables h06D only. CJS remains purchasable and earns kj +1.
+                if (navigation() == Original323GamblingNavigation.ExchangeHouse &&
+                    tier == OriginalGambleTier.High) continue;
                 offers.Add(new MobileManualOffer(Original323UnitGamblingRules.OfferId(tier),
                     Original323UnitGamblingRules.Label(tier) + " 유닛 도박",
                     Original323UnitGamblingRules.GoldCost(tier) + "골드 + 목재 " +
@@ -60,6 +63,8 @@ namespace Ordr.Mobile.Mobile
                     (tier == OriginalGambleTier.Low ? "실패 15% / 성공 시 해적선·흔함·안흔함" :
                      tier == OriginalGambleTier.Middle ? "실패 30% / 성공 시 해적선·특별함" :
                      "실패 30%: 토큰 / 성공 시 레일리·특별함·희귀함") +
+                    (navigation() == Original323GamblingNavigation.ExchangeHouse && tier == OriginalGambleTier.Middle
+                        ? " · 환전소 콤푸 +1 (성공/실패 무관)" : "") +
                     (pending != null && pending.Tier != tier ? " · 다른 등급 보류 거래를 먼저 재시도해 주세요" : "")));
             }
             return offers.AsReadOnly();
@@ -136,8 +141,11 @@ namespace Ordr.Mobile.Mobile
             if (processing || game.Phase != SessionPhase.Running || !gate()) return Reject("진행 중에만 실행할 수 있습니다.");
             if (navigation() == Original323GamblingNavigation.Casino && kind != OriginalGambleTier.High)
                 return Reject("카지노 항법에서는 하급·중급 도박을 이용할 수 없습니다.");
-            if (navigation() == Original323GamblingNavigation.ExchangeHouse)
-                return Reject("환전소 실물 거래 연결이 필요합니다.");
+            // CKR(3) forbids high h06D, not middle h06C. CJS earns
+            // I009 +1 immediately after the paid middle-tier attempt.
+            if (navigation() == Original323GamblingNavigation.ExchangeHouse &&
+                kind == OriginalGambleTier.High)
+                return Reject("환전소 항법에서는 고급 도박을 이용할 수 없습니다.");
             if (pending != null && (pending.Tier != kind || pending.Navigation != navigation()))
                 return Reject("보류된 유닛 도박을 같은 등급으로 먼저 재시도해 주세요.");
             int gold = Original323UnitGamblingRules.GoldCost(kind), wood = Original323UnitGamblingRules.WoodCost(kind);
@@ -151,6 +159,10 @@ namespace Ordr.Mobile.Mobile
                 string countId = "source:unit-gambling:" + kind + ":attempts";
                 string receipt = "source:unit-gambling:" + kind + ":" + checked(wallet.Balance(countId) + 1);
                 var rewards = new ResourceBundle().Add(countId, 1);
+                bool earnsCompu = kind == OriginalGambleTier.Middle &&
+                    pending.Navigation == Original323GamblingNavigation.ExchangeHouse;
+                if (earnsCompu)
+                    rewards.Add(SourceModelCompuExchange.CompuResource, 1);
                 if (pending.WoodReward > 0) rewards.Add("wood", pending.WoodReward);
                 bool won = pending.Won;
                 using (var transaction = world.Begin(pending.Rawcodes.AsReadOnly(), pending.Ability))
@@ -165,7 +177,9 @@ namespace Ordr.Mobile.Mobile
                     if (!committed) return Reject("유닛 도박 결제 실패. 보류 결과를 유지합니다.");
                     transaction.Commit();
                     string text = Original323UnitGamblingRules.Label(kind) + " 도박 " +
-                        (won ? "성공" : "실패") + " · " + label + (pending.WoodReward > 0 ? " · 목재 +1" : "");
+                        (won ? "성공" : "실패") + " · " + label +
+                        (pending.WoodReward > 0 ? " · 목재 +1" : "") +
+                        (earnsCompu ? " · 콤푸 +1" : "");
                     pending = null;
                     recent.Insert(0, text); if (recent.Count > 6) recent.RemoveAt(6);
                     try { mission?.Invoke(receipt, kind, won); } catch (Exception error) { Report(error); }

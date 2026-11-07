@@ -3613,6 +3613,7 @@ namespace Ordr.Mobile.Unity
             {
                 DrawGamblingNavigation();
                 DrawCompuExchange();
+                DrawItemExcavation();
             }
 
             if (category == ManualEconomyCategory.Gambling && controller.PracticeUnitGambling != null)
@@ -3791,7 +3792,7 @@ namespace Ordr.Mobile.Unity
             GUILayout.Label("원본 환전소 · 콤푸 교환", OrdrMobileUiTheme.Subheading);
             OrdrMobileUiTheme.DrawStatusRow("콤푸(I009) 잔량",
                 exchange.Compu + "개", OrdrMobileUiTheme.Aqua);
-            GUILayout.Label("원본 최초 충전 0 · 콤푸 실제 획득 이벤트 확인분만 사용할 수 있습니다.",
+            GUILayout.Label("원본 최초 충전 0 · 환전소 항법 중급 유닛 도박 1회당 콤푸 +1 (실패 포함).",
                 OrdrMobileUiTheme.Overline);
             string[] recipes = { "CKD", "CKE", "CKF", "CKG", "CKH", "CKI", "CKJ" };
             string[] titles = {
@@ -3813,7 +3814,43 @@ namespace Ordr.Mobile.Unity
                 }
                 GUI.enabled = enabled;
             }
-            GUILayout.Label("아이템 발굴 2종은 원본 아이템 실물 지급 연결 전까지 사용 불가.",
+            GUILayout.Label("아이템 발굴 2종은 스택을 충전합니다. 아래 발굴 버튼에서 소모합니다.",
+                OrdrMobileUiTheme.Overline);
+            GUILayout.EndVertical();
+        }
+
+        private void DrawItemExcavation()
+        {
+            var excavation = controller.PracticeItemExcavation;
+            if (excavation == null) return;
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            GUILayout.Label("원본 아이템 발굴", OrdrMobileUiTheme.Subheading);
+            OrdrMobileUiTheme.DrawStatusRow("일반 발굴",
+                excavation.OrdinaryStock + "스택 · 미획득 " +
+                excavation.OrdinaryRemaining + "종", OrdrMobileUiTheme.Aqua);
+            OrdrMobileUiTheme.DrawStatusRow("유니크 발굴",
+                excavation.UniqueStock + "스택 · 미획득 " +
+                excavation.UniqueRemaining + "종", OrdrMobileUiTheme.Gold);
+            bool enabled = GUI.enabled;
+            GUI.enabled = enabled && excavation.CanDraw(false);
+            if (OrdrMobileUiTheme.DrawActionRow(
+                "일반 발굴 · 90% 일반/10% 유니크 · 스택 1 소모",
+                "발굴", OrdrMobileUiTheme.Gold, 80f))
+            {
+                notice = controller.RequestItemExcavation(false).Message;
+                RefreshCurrent();
+            }
+            GUI.enabled = enabled && excavation.CanDraw(true);
+            if (OrdrMobileUiTheme.DrawActionRow(
+                "유니크 확정 발굴 · 스택 1 소모",
+                "발굴", OrdrMobileUiTheme.Gold, 80f))
+            {
+                notice = controller.RequestItemExcavation(true).Message;
+                RefreshCurrent();
+            }
+            GUI.enabled = enabled;
+            GUILayout.Label("원본 중복 없는 12종 일반·10종 유니크 획득 장부 연결. " +
+                "일부 아이템의 고유 효과·외형은 후속 구현 대상입니다.",
                 OrdrMobileUiTheme.Overline);
             GUILayout.EndVertical();
         }

@@ -882,15 +882,21 @@ namespace Ordr.Mobile.Unity
         public SourceModelOtherworldUnitGambling PracticeUnitGambling { get; private set; }
         public SourceModelGamblingNavigation PracticeGamblingNavigation { get; private set; }
         public SourceModelCompuExchange PracticeCompuExchange { get; private set; }
-        public void ConfigureCompuExchangeSources(
-            IOriginal323CompuAwardWitness verifiedAwards,
-            IOriginal323CompuItemWorld physicalItems = null)
+        public SourceModelItemExcavation PracticeItemExcavation { get; private set; }
+        public ManualActionResult RequestItemExcavation(bool unique)
+        {
+            if (PracticeItemExcavation == null)
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "원본 아이템 발굴이 연결되지 않았습니다.");
+            return PracticeItemExcavation.DrawItem(unique);
+        }
+        // Optional importer for additional witnessed source awards. Normal
+        // CJS Compu accrual is already atomic in SourceModelUnitGambling.
+        public void ConfigureCompuExchangeSources(IOriginal323CompuAwardWitness verifiedAwards)
         {
             if (PracticeCompuExchange == null || verifiedAwards == null)
                 throw new InvalidOperationException("콤푸 환전소와 원본 보상 증빙이 필요합니다.");
             PracticeCompuExchange.ConfigureVerifiedAwardWitness(verifiedAwards);
-            if (physicalItems != null)
-                PracticeCompuExchange.ConfigureItemWorld(physicalItems);
         }
 
         public bool RecordSourceConfirmedCompuAward(string originalEventId, long amount) =>
@@ -3382,8 +3388,10 @@ namespace Ordr.Mobile.Unity
                                 () => (PracticeUnitGambling != null && PracticeUnitGambling.HasPendingDraw) ||
                                     (PracticeTierUnitGambling != null && PracticeTierUnitGambling.HasPendingDraw) ||
                                     (PracticeUnitReroll != null && PracticeUnitReroll.HasPendingDraw),
+                                // CJS supplies Compu directly in the paid, witnessed middle-tier
+                                // wallet transaction; no external award witness is required.
                                 () => PracticeCompuExchange != null &&
-                                    PracticeCompuExchange.HasVerifiedAwardWitness);
+                                    PracticeTierUnitGambling != null);
                             PracticeGamblingNavigation.PostCommitObserverFailed += Debug.LogException;
                             var gamblingRoutes = new Original323CwrAcquisitionRoutes(OriginalJassFusions, Units, MapBaseStats);
                             PracticeCompuExchange = new SourceModelCompuExchange(
@@ -3392,6 +3400,9 @@ namespace Ordr.Mobile.Unity
                                 () => PracticeGamblingNavigation.Navigation,
                                 new Original323CompuUnitWorld(
                                     Combat, Units, MapBaseStats, gamblingRoutes));
+                            PracticeItemExcavation = new SourceModelItemExcavation(
+                                SharedEconomy.Wallet, Combat.Game, sessionScriptRandom,
+                                () => runGate.CanAdvance);
                             var gamblingRoster = new Original323UnitGamblingWorld(Combat, Units, MapBaseStats,
                                 map, gamblingRoutes, deferredWispAbilities);
                             PracticeTierUnitGambling = new SourceModelUnitGambling(SharedEconomy.Wallet, Combat.Game,
