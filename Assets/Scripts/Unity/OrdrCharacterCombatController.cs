@@ -2237,6 +2237,19 @@ namespace Ordr.Mobile.Unity
         public Original323SharedMissionRewardWorld SharedMissionRewards { get; private set; }
         public Original323SharedObjectiveWorld SharedObjectives { get; private set; }
         private IOriginal323SharedObjectiveWitness originalSharedObjectiveWitness;
+        private IOriginal323SharedMissionFollowUpWitness originalSharedMissionFollowUpWitness;
+
+        // Native admiral buffs are applied by the verified original-world
+        // adapter, never manufactured from a mobile mission reward marker.
+        public void ConfigureOriginal323SharedMissionFollowUps(
+            IOriginal323SharedMissionFollowUpWitness witness)
+        {
+            if (witness == null || originalSharedMissionFollowUpWitness != null ||
+                (Combat != null && Combat.Game.Phase != SessionPhase.NotStarted))
+                throw new InvalidOperationException(
+                    "공유 미션 후속 사건 공급자는 시작 전 한 번만 연결해야 합니다.");
+            originalSharedMissionFollowUpWitness = witness;
+        }
 
         // A real runtime/replay must authorize the full Nightmare spawn plan
         // and independently certify the matching death. No default model
@@ -2263,6 +2276,15 @@ namespace Ordr.Mobile.Unity
             string enemyId, string sourceDefeatEventId) =>
             SharedObjectives != null &&
             SharedObjectives.TrySettleDefeat(enemyId, sourceDefeatEventId);
+
+        // The source witness certifies a buff already applied to the
+        // actual native game state, not a reward inferred from boss death.
+        public bool ObserveOriginal323AppliedAdmiralBuff(
+            string enemyId, string sourceEventId) =>
+            SharedObjectives != null &&
+            originalSharedMissionFollowUpWitness != null &&
+            SharedObjectives.TryObserveAppliedAdmiralBuff(
+                enemyId, sourceEventId, originalSharedMissionFollowUpWitness);
 
         public string RequestSharedObjectiveDispatch(long instanceId, string enemyId)
         {

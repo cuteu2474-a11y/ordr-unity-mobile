@@ -5,13 +5,24 @@ using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
+    // The native adapter must confirm that the original admiral-specific
+    // buff was actually applied, not just that the boss was defeated.
+    public interface IOriginal323SharedMissionFollowUpWitness
+    {
+        bool TryConfirmAppliedAdmiralBuff(string sourceEventId,
+            string originalAdmiralRawcode, out string sourceEvidence);
+    }
+
     // One wallet receipt per distinct original CN*/CM* shared-mission clear.
     // The source witness certifies the in-game event; this class never
     // manufactures a building death, treasure, admiral or native item dig.
     public sealed class Original323SharedMissionRewardWorld
     {
         public const string ReceiptPrefix = "shared:original323:mission:";
-        public const string PendingExcavationResource = "shared:pending:item-excavation";
+        // Shared-mission Bhd grants the SAME fZ ordinary excavation stack
+        // that source-confirmed BhS consumes. There is no second voucher.
+        public const string ExcavationStackResource = SourceModelItemExcavation.OrdinaryStacks;
+        public const string PendingExcavationResource = ExcavationStackResource; // old caller alias
         public const string PendingGateAdmiralResource = "shared:pending:gate-admiral";
         public const string PendingAdmiralBuffResource = "shared:pending:admiral-buff";
 
@@ -37,15 +48,57 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentException("공유 도전과제는 악몽 이세계의 같은 전투·지갑에서만 처리합니다.");
         }
 
-        public long PendingExcavations => economy.Wallet.Balance(PendingExcavationResource);
+        public long OrdinaryExcavationStock => economy.Wallet.Balance(ExcavationStackResource);
+        public long PendingExcavations => OrdinaryExcavationStock; // compatibility getter
         public long PendingGateAdmirals => economy.Wallet.Balance(PendingGateAdmiralResource);
         public long PendingAdmiralBuffs => economy.Wallet.Balance(PendingAdmiralBuffResource);
 
+        // Called only after the objective world has witnessed the matching
+        // admiral's buff effect; never infer a buff from a defeat alone.
+        internal bool TryRecordRealAdmiralBuff(string sourceEventId,
+            string originalAdmiralRawcode, string verifiedAppliedEvidence)
+        {
+            if (combat.Game.Phase != SessionPhase.Running ||
+                !ValidSourceId(sourceEventId) ||
+                !Original323SharedObjectiveSpawnPlan.IsOriginalIdentity(
+                    Original323SharedMissionKind.MarineAdmiral,
+                    "CM3", originalAdmiralRawcode) ||
+                !missions.IsSharedMissionCompleted(
+                    Original323SharedMissionKind.MarineAdmiral) ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(
+                    verifiedAppliedEvidence))
+                return false;
+            return TryConsumeNativeFollowUp(
+                "shared:original323:admiral-buff:" + sourceEventId,
+                PendingAdmiralBuffResource);
+        }
+
+        private bool TryConsumeNativeFollowUp(string receipt, string pendingId)
+        {
+            if (economy.Wallet.HasCompletedTransaction(receipt)) return true;
+            try
+            {
+                if (economy.Wallet.TryExchangeOnce(receipt,
+                    new ResourceBundle().Add(pendingId, 1),
+                    new ResourceBundle()))
+                    return true;
+            }
+            catch
+            {
+                // Granted observers run after the durable wallet commit.
+                if (!economy.Wallet.HasCompletedTransaction(receipt)) throw;
+            }
+            return economy.Wallet.HasCompletedTransaction(receipt);
+        }
+
+        private static bool ValidSourceId(string id) =>
+            !string.IsNullOrWhiteSpace(id) && id.Length <= 160;
+
         // A gate outcome is no longer pending only after the randomly
         // selected, source-witnessed admiral has physically spawned.
-        public bool TryRecordRealGateAdmiralSpawn(string sourceSpawnEventId)
+        internal bool TryRecordRealGateAdmiralSpawn(string sourceSpawnEventId)
         {
-            if (string.IsNullOrWhiteSpace(sourceSpawnEventId)) return false;
+            if (!ValidSourceId(sourceSpawnEventId)) return false;
             string receipt = "shared:original323:gate-admiral-spawn:" +
                 sourceSpawnEventId;
             if (economy.Wallet.HasCompletedTransaction(receipt)) return true;
@@ -100,42 +153,44 @@ namespace Ordr.Mobile.Combat
                      Original323SharedMissionKind.JusticeGate)))
                 return false;
 
-            // Keep the original award fixed for each kind. Native excavation,
-            // boss spawn and admiral-specific buff are UNAPPLIED obligations,
-            // never silently represented as a usable item or spawned enemy.
+            // Shared missions credit the original fZ excavation stack;
+            // BhS alone draws an item. Boss spawn and admiral-specific buff
+            // remain pending until their source-world events are observed.
             var rewards = new ResourceBundle();
+            bool excavationDue = false;
             switch (kind)
             {
                 case Original323SharedMissionKind.RumbarSouls:
-                    rewards.Add("gold", 3000).Add("wood", 1)
-                        .Add(PendingExcavationResource, 1);
+                    rewards.Add("gold", 3000).Add("wood", 1);
+                    excavationDue = true;
                     break;
                 case Original323SharedMissionKind.JusticeGate:
                     rewards.Add("gold", 20000).Add(WispResourceIds.Choice, 2)
-                        .Add(PendingExcavationResource, 1)
                         .Add(PendingGateAdmiralResource, 1);
+                    excavationDue = true;
                     break;
                 case Original323SharedMissionKind.ShandoraBell:
-                    rewards.Add("gold", 3000).Add(WispResourceIds.Random, 1)
-                        .Add(PendingExcavationResource, 1);
+                    rewards.Add("gold", 3000).Add(WispResourceIds.Random, 1);
+                    excavationDue = true;
                     break;
                 case Original323SharedMissionKind.SeaKing:
                     // CNU calls BdL(EK,1) in the very same verified completion.
                     // Share this mission receipt with the other awards so a
                     // replay cannot credit the same charge independently.
                     rewards.Add("gold", 3000).Add(WispResourceIds.Choice, 1)
-                        .Add(PendingExcavationResource, 1)
                         .Add(Original323OtherworldGamblingRules.ChargesResource,
                             Original323OtherworldGamblingRules.ChargesPerBdLEvent(
                                 economy.Wallet.Balance(SourceModelGamblingNavigation.NavigationResource) ==
                                     (int)Original323GamblingNavigation.Casino));
                     AddLiveHeroExperience(rewards, 325);
+                    excavationDue = true;
                     break;
                 case Original323SharedMissionKind.FastAlabasta:
                     rewards.Add(WispResourceIds.Random, 1);
                     break;
                 case Original323SharedMissionKind.DestructionKing:
-                    rewards.Add("wood", 2).Add(PendingExcavationResource, 1);
+                    rewards.Add("wood", 2);
+                    excavationDue = true;
                     break;
                 case Original323SharedMissionKind.MarineAdmiral:
                     rewards.Add("wood", 1)
@@ -148,6 +203,12 @@ namespace Ordr.Mobile.Combat
                     break;
                 default: return false;
             }
+
+            // Bhd caps fZ at 10. A capped charge is omitted without
+            // dropping the OTHER rewards from the same mission receipt.
+            if (excavationDue && OrdinaryExcavationStock <
+                SourceModelItemExcavation.MaximumStacks)
+                rewards.Add(ExcavationStackResource, 1);
 
             string receipt = ReceiptPrefix + kind;
             bool wasPaid = economy.Wallet.HasCompletedTransaction(receipt);

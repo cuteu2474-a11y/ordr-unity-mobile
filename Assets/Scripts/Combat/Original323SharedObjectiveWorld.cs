@@ -112,6 +112,9 @@ namespace Ordr.Mobile.Combat
         public string ConfirmedDefeatEventId { get; internal set; }
         public string ConfirmedDefeatEvidence { get; internal set; }
         public bool GateSpawnDebtSettled { get; internal set; }
+        public string AppliedAdmiralBuffEventId { get; internal set; }
+        public string AppliedAdmiralBuffEvidence { get; internal set; }
+        public bool AdmiralBuffDebtSettled { get; internal set; }
     }
 
     // Native-authorized side objectives share the real combat damage/death
@@ -167,8 +170,22 @@ namespace Ordr.Mobile.Combat
         public Original323SharedObjectiveEncounter ObserveSpawn(
             Original323SharedObjectiveSpawnPlan plan)
         {
-            if (disposed || plan == null || combat.Game.Phase != SessionPhase.Running ||
-                missions.IsSharedMissionCompleted(plan.Mission) ||
+            if (disposed || plan == null || combat.Game.Phase != SessionPhase.Running)
+                throw new InvalidOperationException("원본 공유 목표의 전투 시점이 아닙니다.");
+            // Native replay may deliver the SAME spawn more than once.
+            // It must not create a duplicate body or consume a second gate debt.
+            foreach (var previous in history)
+                if (previous.Plan.SourceEventId == plan.SourceEventId)
+                {
+                    if (!SameSpawnPlan(previous.Plan, plan))
+                        throw new InvalidOperationException(
+                            "동일한 원본 등장 ID에 서로 다른 목표 자료가 전달됐습니다.");
+                    if (!previous.GateSpawnDebtSettled)
+                        previous.GateSpawnDebtSettled =
+                            awards.TryRecordRealGateAdmiralSpawn(plan.SourceEventId);
+                    return previous;
+                }
+            if (missions.IsSharedMissionCompleted(plan.Mission) ||
                 usedSpawnIds.Contains(plan.SourceEventId))
                 throw new InvalidOperationException("실제 공유 목표의 신규 등장 사건이 아닙니다.");
             if (plan.Mission == Original323SharedMissionKind.MarineAdmiral &&
@@ -216,6 +233,16 @@ namespace Ordr.Mobile.Combat
             return record;
         }
 
+        private static bool SameSpawnPlan(Original323SharedObjectiveSpawnPlan a,
+            Original323SharedObjectiveSpawnPlan b) =>
+            a.Mission == b.Mission && a.SourceKey == b.SourceKey &&
+            a.ObjectRawcode == b.ObjectRawcode &&
+            a.SourceEventId == b.SourceEventId &&
+            a.Health == b.Health && a.Armor == b.Armor &&
+            a.ArmorType == b.ArmorType &&
+            a.MagicResistancePercent == b.MagicResistancePercent &&
+            a.X == b.X && a.Y == b.Y;
+
         // Native death and local combat death may arrive in either order.
         // A witnessed native event is claimed once, but payout requires both.
         public bool TrySettleDefeat(string enemyId, string sourceDefeatEventId)
@@ -223,6 +250,9 @@ namespace Ordr.Mobile.Combat
             if (disposed || string.IsNullOrWhiteSpace(sourceDefeatEventId) ||
                 sourceDefeatEventId.Length > 256) return false;
             var record = Find(enemyId);
+            if (record != null &&
+                record.State == Original323SharedObjectiveState.Completed)
+                return record.ConfirmedDefeatEventId == sourceDefeatEventId;
             if (record == null ||
                 (record.State != Original323SharedObjectiveState.Alive &&
                  record.State != Original323SharedObjectiveState.DefeatedUnverified))
@@ -251,6 +281,49 @@ namespace Ordr.Mobile.Combat
                 TryFinalizeDefeat(record);
         }
 
+        // The original CM1/CM0 buff may arrive before the mobile combat
+        // death. Keep its verified event until both defeat receipts settle.
+        public bool TryObserveAppliedAdmiralBuff(string enemyId,
+            string sourceEventId, IOriginal323SharedMissionFollowUpWitness followUps)
+        {
+            if (disposed || followUps == null ||
+                string.IsNullOrWhiteSpace(sourceEventId) ||
+                sourceEventId.Length > 160 ||
+                combat.Game.Phase != SessionPhase.Running)
+                return false;
+            var record = Find(enemyId);
+            if (record == null || record.Plan.Mission !=
+                Original323SharedMissionKind.MarineAdmiral ||
+                record.State == Original323SharedObjectiveState.Removed)
+                return false;
+            if (record.AppliedAdmiralBuffEventId != null)
+                return record.AppliedAdmiralBuffEventId == sourceEventId &&
+                    (record.State != Original323SharedObjectiveState.Completed ||
+                     TrySettleAppliedAdmiralBuff(record));
+            string evidence;
+            if (!followUps.TryConfirmAppliedAdmiralBuff(sourceEventId,
+                    record.Plan.ObjectRawcode, out evidence) ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(evidence))
+                return false;
+            record.AppliedAdmiralBuffEventId = sourceEventId;
+            record.AppliedAdmiralBuffEvidence = evidence;
+            return record.State != Original323SharedObjectiveState.Completed ||
+                TrySettleAppliedAdmiralBuff(record);
+        }
+
+        private bool TrySettleAppliedAdmiralBuff(
+            Original323SharedObjectiveEncounter record)
+        {
+            if (record.AdmiralBuffDebtSettled) return true;
+            if (record.State != Original323SharedObjectiveState.Completed ||
+                string.IsNullOrWhiteSpace(record.AppliedAdmiralBuffEventId))
+                return false;
+            record.AdmiralBuffDebtSettled = awards.TryRecordRealAdmiralBuff(
+                record.AppliedAdmiralBuffEventId, record.Plan.ObjectRawcode,
+                record.AppliedAdmiralBuffEvidence);
+            return record.AdmiralBuffDebtSettled;
+        }
+
         private bool TryFinalizeDefeat(Original323SharedObjectiveEncounter record)
         {
             if (record.State != Original323SharedObjectiveState.DefeatedUnverified ||
@@ -266,6 +339,8 @@ namespace Ordr.Mobile.Combat
                 return false;
             record.DefeatEvidence = record.ConfirmedDefeatEvidence;
             record.State = Original323SharedObjectiveState.Completed;
+            if (record.AppliedAdmiralBuffEventId != null)
+                TrySettleAppliedAdmiralBuff(record);
             return true;
         }
 

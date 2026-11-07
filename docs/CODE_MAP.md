@@ -11,6 +11,8 @@
 - 연구소: `Original323PlayerResearchSession.SourceCost`는 공유 지갑 `wood` 키를 사용. `OrdrMobileTouchPanel.UpgradeResourceName`은 `wood/lumber` 모두 목재로 표시.
 - 세 경로 모두 실행·실기 검증은 미실시.
 
+- 공유 F04 후속 연결: `Original323SharedMissionRewardWorld`가 룸바·문·종·해왕류·파괴왕 발굴 보상을 기존 `SourceModelItemExcavation.OrdinaryStacks`에 합쳐 실제 `BhS` 발굴 메뉴가 소비하도록 만듭니다. `Original323SharedObjectiveWorld`가 중복 등장/격파 사건을 멱등 수신하고 원본 `CM1/CM0` 버프 적용의 선행 사건을 보관하며, `OrdrCharacterCombatController.ConfigureOriginal323SharedMissionFollowUps`가 버프 적용 증거 공급자를 연결합니다. 기본 APK에 해당 대장 버프 적용 증거와 5종 목표 최종 출현 자료는 미연결, 통합/실기 검사 미실시.
+
 ## 1. 실행 흐름
 
 ```mermaid
