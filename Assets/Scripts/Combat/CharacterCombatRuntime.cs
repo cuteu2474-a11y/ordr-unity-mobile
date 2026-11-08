@@ -3159,6 +3159,7 @@ namespace Ordr.Mobile.Combat
             ForgetSourceKaidoArmorEnemy(id);
             moriaParticipation.Forget(id);
             sourcePracticeA04RLevels.Remove(id);
+            ForgetSourceBlackbeardTarget(id);
             sourceSpecialPullHeldUntil.Remove(id);
             effectExecutor.CancelTarget(id);
             enemies.Remove(id);

@@ -2,6 +2,10 @@
 
 > **새 작업의 코드 지도:** 무엇을 고쳐야 하는지 빠르게 찾는 문서입니다. 기능 구현률·APK 차이는 [현재 상태](START_HERE.md), 미완료 작업은 [개발 작업](PLAYABLE_ROADMAP.md), 실제 조작은 [화면·조작](화면-조작-시스템.md)에 있습니다. **이 문서에 날짜별 개발 일지나 기능별 확률·비용을 중복 기록하지 않습니다.**
 
+## 캐릭터 C03/C04 원본 분기 연결(2026-11-08, 코드만)
+
+- `CharacterCombatRuntime.SourceModelRemainingCallbacks.cs`: `RemainingBlackbeardForcesBzq`가 A903 광폭화의 무조건 발동 및 Bdi 보스의 대상별 최초 prop-window 64 게이트를 관리하고, `OnSourceRemainingDeclared`의 TR-01 `Bz1`이 표적별 `Bzq` 지연 피해를 분리합니다. L-36의 `BtV → BtT`는 선언 시 버프만 검사하고, 양성 적중 때는 등록 표적을 검증합니다. `CharacterCombatRuntime.RemoveEnemyRuntimeState`에서 보스의 게이트 기록을 지워 동일 ID로 재출현한 적에게 이전 상태가 새지 않도록 합니다. 모든 변경은 코드만 연결되었고 원본 A904·A0HS 2레벨·Unity/Android는 미검증입니다.
+
 ## 이번 추가 연결(2026-11-07, 코드만)
 
 - 아이템 패시브: `Original323FusionSourceItemLedger.cs`에 선언된 `Original323SourceItemPassiveRules` → 공유 지갑 원본 발굴 AI15·고유 AI18/AI20 수령 장부 → `Ordr323OriginalHelperCowActor.AdvanceBaseManaRegeneration`의 전투시계 기반 재생 가산 / `CharacterCombatRuntime.SourceModelFusionNativeFollowups`의 `LL→A11S` 출현시 스냅샷 → `SourceModelCompositeEffects`의 라인 폭발형 피해 가산. `OrdrMobileTouchPanel.DrawItemExcavation`에서 현재 보너스를 표시합니다. **원본 BhL 확인·코드만 연결**, Unity/Android 미검증. **후속:** `SourceModelMoneyGamblingDesk.WoodRights/BuyWood`에서 AI13의 `i5+2`를 5회 기본 재고와 별도 소모 영수증으로 적용. `Original323SourceItemPassiveRules`는 AI10 기록지침 A05D/BJI 알림·AI13 `dL`·AI19 `LK` 원본 변화량을 조회합니다. `Original323TreasureHunt`의 승인된 시전 증빙 → 선택적 `IOriginal323TreasureCastOriginWitness` 시전자 확인 → `Original323TreasureAlarmJournal` 전투 시계 예약 → 컨트롤러 `AdvanceWitnessedTreasureAlarms` → UI 일반 공지/기록지침 남은 시간으로 연결했습니다. `Original323MonsterGoldService`는 AI13 상태에서 원본 `dL` 부족 증명을 거부합니다. `CharacterCombatRuntime.SourceModelFusionNativeFollowups`는 AI19의 생성 시점 16→21 A04Q 원본 `Def5` 피해 배율 비율을 미확인 연습 라인 몬스터에만 스냅샷해 `SourceModelCompositeMagicFactor`에 반영합니다. 이미 증명된 A04Q에 이중 적용하지 않으며 원본 시전·골드 증명 공급자·A04Q·전체 스킬/실기 검증은 여전히 미완료.

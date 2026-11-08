@@ -96,6 +96,28 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<long, string> remainingHancockEnhancedTarget =
             new Dictionary<long, string>();
         private long remainingCallbackSerial;
+        // Bz1 changes the attacked boss's prop window to 64 once. The
+        // marker belongs to the enemy, not to a particular Blackbeard.
+        private readonly Dictionary<string, SpatialCombatEnemy> remainingBlackbeardWindow64 =
+            new Dictionary<string, SpatialCombatEnemy>(StringComparer.Ordinal);
+
+        private void ForgetSourceBlackbeardTarget(string enemyId)
+        {
+            remainingBlackbeardWindow64.Remove(enemyId);
+        }
+
+        private bool RemainingBlackbeardForcesBzq(SpatialCombatEnemy target)
+        {
+            // A903 makes Bzq unconditional in the original Bz1. Bdi boss
+            // targets have a one-time prop-window gate, unless A903 is set.
+            if (target.Kind == CharacterEnemyKind.Enraged) return true;
+            if (target.Kind != CharacterEnemyKind.Boss) return false;
+            SpatialCombatEnemy marked;
+            if (remainingBlackbeardWindow64.TryGetValue(target.Id, out marked) &&
+                ReferenceEquals(marked, target)) return false;
+            remainingBlackbeardWindow64[target.Id] = target;
+            return true;
+        }
 
         private void ForgetSourceRemainingCallbacks(long actorId)
         {
@@ -587,11 +609,45 @@ namespace Ordr.Mobile.Combat
                 }
                 else RemainingDeferred(actor, target, spec,
                     "HP85 원본 자원 미공급");
-                if (sourceModelRules.NextScriptRoll(1000) < 175)
+                // Bz1 tests the special target markers before the 175/1000
+                // draw: A903 always triggers Bzq, while a Bdi boss does so
+                // once until its original prop-window marker becomes 64.
+                // The model has no witnessed A0HS level-2 state (225/1000),
+                // so that upgrade is not guessed from character rank.
+                bool forcedBzq = RemainingBlackbeardForcesBzq(target);
+                if (forcedBzq || sourceModelRules.NextScriptRoll(1000) < 175)
                 {
-                    RemainingProc(actor, target, spec, "175/1000 연계 공격");
-                    RemainingDelayedHits(actor, target, spec, .01,
-                        RemainingDirect(3000000));
+                    RemainingProc(actor, target, spec,
+                        forcedBzq ? "원본 Bz1 특수 대상 강제 Bzq" :
+                            "175/1000 Bzq 연계 공격");
+                    if (target.Kind == CharacterEnemyKind.Enraged)
+                    {
+                        // Bzq state 2 at .01s: A903 gets 4m Chaos; state 3
+                        // after .08s adds 2m normal damage.
+                        RemainingDelayedHits(actor, target, spec, .01,
+                            RemainingDirect(4000000, Ordr323AttackType.Chaos));
+                        RemainingDelayedHits(actor, target, spec, .09,
+                            RemainingDirect(2000000));
+                    }
+                    else if (target.Kind == CharacterEnemyKind.Boss)
+                    {
+                        // A904 is not separately witnessed on every mobile
+                        // boss. Retain the existing 3m packet as a provisional
+                        // A904 route; do not claim native marker parity.
+                        RemainingDelayedHits(actor, target, spec, .01,
+                            RemainingDirect(3000000));
+                        RemainingDeferred(actor, target, spec,
+                            "Bzq 보스 A904 표식 여부/2m 후속 분기 미확인");
+                    }
+                    else
+                    {
+                        // Without A903/A904, Bzq's state 3 applies 2m
+                        // normal damage at .01+.08s, not a 3m packet.
+                        RemainingDelayedHits(actor, target, spec, .09,
+                            RemainingDirect(2000000));
+                        RemainingDeferred(actor, target, spec,
+                            "Bzq 일반 대상 원본 버프 제거·berserk 보조 주문 미연결");
+                    }
                 }
                 if (sourceModelRules.NextScriptRoll(100) < 10)
                 {
@@ -771,9 +827,10 @@ namespace Ordr.Mobile.Combat
             if (spec.CatalogId == "L-36")
             {
                 string expected;
+                // BtV checks B01A before it arms BtT; the .45-second
+                // positive-hit listener is not revoked if the buff expires.
                 if (!remainingHancockEnhancedTarget.TryGetValue(actor.Id,
-                        out expected) || expected != target.Id ||
-                    !RemainingHasNativeBuff(actor, "B01A"))
+                        out expected) || expected != target.Id)
                 {
                     remainingHancockEnhancedTarget.Remove(actor.Id);
                     return;
