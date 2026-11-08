@@ -28,6 +28,7 @@ namespace Ordr.Mobile.Combat
 
         private readonly List<Item> pending = new List<Item>();
         private long nextSequence;
+        private bool advancing;
         public double Time { get; private set; }
         public int PendingCount { get { return pending.Count; } }
 
@@ -56,15 +57,20 @@ namespace Ordr.Mobile.Combat
             if (string.IsNullOrWhiteSpace(casterId) ||
                 string.IsNullOrWhiteSpace(targetId))
                 throw new ArgumentException("예약 피해의 공격자·대상이 필요합니다.");
+            // A positive duration smaller than binary64 precision at this
+            // battle time cannot create a future event. Reject it so a
+            // self-rescheduling effect cannot fire forever at one instant.
+            double dueAt = Time + offsetSeconds;
             if (double.IsNaN(offsetSeconds) || double.IsInfinity(offsetSeconds) ||
-                offsetSeconds <= 0 || double.IsInfinity(Time + offsetSeconds))
+                offsetSeconds <= 0 || double.IsInfinity(dueAt) ||
+                dueAt <= Time)
                 throw new ArgumentOutOfRangeException(nameof(offsetSeconds));
             if (callback == null) throw new ArgumentNullException(nameof(callback));
             if (nextSequence == long.MaxValue)
                 throw new OverflowException("예약 타격 순번이 초과되었습니다.");
             pending.Add(new Item {
                 CasterId = casterId, TargetId = targetId,
-                At = Time + offsetSeconds,
+                At = dueAt,
                 Sequence = ++nextSequence, Execute = callback
             });
         }
@@ -79,41 +85,73 @@ namespace Ordr.Mobile.Combat
             pending.RemoveAll(item => item.TargetId == targetId);
         }
 
+        // A lane change cancels outgoing hits against live enemies while
+        // retaining the owner's self-clocked recurring passives. CancelCaster
+        // would also kill those periodic schedulers permanently.
+        public void CancelCasterTargets(string casterId,
+            Func<string, bool> isTargetInCombatWorld)
+        {
+            if (string.IsNullOrWhiteSpace(casterId))
+                throw new ArgumentException("공격자 ID가 필요합니다.", nameof(casterId));
+            if (isTargetInCombatWorld == null)
+                throw new ArgumentNullException(nameof(isTargetInCombatWorld));
+            pending.RemoveAll(item => item.CasterId == casterId &&
+                isTargetInCombatWorld(item.TargetId));
+        }
+
         public void Advance(double deltaSeconds, Action<double> advanceOtherClocks)
         {
+            if (advancing)
+                throw new InvalidOperationException(
+                    "전투 시계 갱신 중 재진입할 수 없습니다.");
             if (double.IsNaN(deltaSeconds) || double.IsInfinity(deltaSeconds) ||
                 deltaSeconds < 0 || double.IsInfinity(Time + deltaSeconds))
                 throw new ArgumentOutOfRangeException(nameof(deltaSeconds));
             if (advanceOtherClocks == null)
                 throw new ArgumentNullException(nameof(advanceOtherClocks));
-            double end = Time + deltaSeconds;
-            int processed = 0;
-            while (true)
+
+            advancing = true;
+            try
             {
-                int index = -1;
-                for (int i = 0; i < pending.Count; i++)
+                double end = Time + deltaSeconds;
+                int processed = 0;
+                while (true)
                 {
-                    var item = pending[i];
-                    if (item.At > end) continue;
-                    if (index < 0 || item.At < pending[index].At ||
-                        (item.At == pending[index].At &&
-                         item.Sequence < pending[index].Sequence))
-                        index = i;
+                    int index = -1;
+                    for (int i = 0; i < pending.Count; i++)
+                    {
+                        var item = pending[i];
+                        if (item.At > end) continue;
+                        if (index < 0 || item.At < pending[index].At ||
+                            (item.At == pending[index].At &&
+                             item.Sequence < pending[index].Sequence))
+                            index = i;
+                    }
+                    if (index < 0) break;
+                    if (++processed > 100000)
+                        throw new InvalidOperationException(
+                            "동일 프레임의 예약 타격이 지나치게 많습니다.");
+
+                    Item due = pending[index];
+                    double elapsed = due.At - Time;
+                    // Other clocks may cancel this caster or target, or
+                    // schedule another effect. Publish the new battle time
+                    // first so newly scheduled effects start after this step.
+                    Time = due.At;
+                    advanceOtherClocks(elapsed);
+                    // The clock callback may have removed/reordered items.
+                    // Never execute a canceled hit or remove a stale index.
+                    if (!pending.Remove(due)) continue;
+                    due.Execute();
                 }
-                if (index < 0) break;
-                if (++processed > 100000)
-                    throw new InvalidOperationException(
-                        "동일 프레임의 예약 타격이 지나치게 많습니다.");
-                Item due = pending[index];
-                double advance = due.At - Time;
-                advanceOtherClocks(advance);
-                Time = due.At;
-                pending.RemoveAt(index);
-                due.Execute();
+                double remaining = end - Time;
+                Time = end;
+                advanceOtherClocks(remaining);
             }
-            double remaining = end - Time;
-            advanceOtherClocks(remaining);
-            Time = end;
+            finally
+            {
+                advancing = false;
+            }
         }
     }
 }

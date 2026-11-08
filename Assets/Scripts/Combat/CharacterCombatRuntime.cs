@@ -1446,6 +1446,13 @@ namespace Ordr.Mobile.Combat
             if (!characters.ContainsKey(instanceId))
                 throw new KeyNotFoundException("파견 대상 유닛이 없습니다.");
             CancelOriginalUnitCast(instanceId);
+            // Cancel timed enemy hits from the previous lane and all pending
+            // effects targeted at this actor. Preserve self-clocked periodic
+            // passives, which would otherwise never re-arm after a recall.
+            string actorKey = InstanceKey(instanceId);
+            effectExecutor.CancelCasterTargets(actorKey,
+                targetId => enemies.ContainsKey(targetId));
+            effectExecutor.CancelTarget(actorKey);
             // A timed mobile song summon cannot follow its owner between
             // mutually exclusive main and story combat lanes.
             sourceSongSoldierExpiry.Remove(instanceId);
@@ -2423,6 +2430,7 @@ namespace Ordr.Mobile.Combat
             if (instance.AttackReady) attackPipeline.RemoveUnit(InstanceKey(instanceId));
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
             effectExecutor.CancelCaster(InstanceKey(instanceId));
+            effectExecutor.CancelTarget(InstanceKey(instanceId));
             RemoveSourceTemporaryActors(instanceId);
             sourceModelStoryLaneRevisions.Remove(instanceId);
             lawReadyAt.Remove(instanceId);

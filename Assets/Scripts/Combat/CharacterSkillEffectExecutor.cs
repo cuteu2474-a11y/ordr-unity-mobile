@@ -197,6 +197,11 @@ namespace Ordr.Mobile.Combat
 
         public void CancelCaster(string id) { timedEffects.CancelCaster(id); }
         public void CancelTarget(string id) { timedEffects.CancelTarget(id); }
+        public void CancelCasterTargets(string id,
+            Func<string, bool> isTargetInCombatWorld)
+        {
+            timedEffects.CancelCasterTargets(id, isTargetInCombatWorld);
+        }
 
         public CharacterSkillEffectExecutor(CombatResolution resolution,
             IVerifiedCharacterSkillDamageResolver damageFormula,
