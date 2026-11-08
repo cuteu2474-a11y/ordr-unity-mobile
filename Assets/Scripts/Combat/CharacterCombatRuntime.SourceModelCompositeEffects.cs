@@ -379,15 +379,16 @@ namespace Ordr.Mobile.Combat
             // In actual native damage A04Q is supplied by the verified spawn
             // witness, including item mutations. Never apply a second -5%
             // to an already verified resistance profile.
-            double itemReduction = target.Kind == CharacterEnemyKind.Line &&
+            double itemFactor = target.Kind == CharacterEnemyKind.Line &&
                 !target.Enemy.Defenses.HasVerifiedMagicResistance
-                ? SourceModelLineItemMagicResistanceAtSpawn(target.Id)
-                : 0;
-            // Practice enemies without a native resistance provider receive
-            // a relative bonus for documented reductions. This model does
-            // not overwrite or claim parity with the original A04Q/Def5.
+                ? SourceModelLineItemMagicFactorAtSpawn(target.Id)
+                : 1;
+            // Practice-only: preserve the original A04Q Def5 ratio at
+            // Nightmare's baseline (level 16 -> 21 with AI19).
+            // A native resistance provider takes precedence, avoiding
+            // double application to source-witnessed level mutations.
             return (1 + amp / 100) *
-                (1 + (resistanceReduction + itemReduction) / 100);
+                (1 + resistanceReduction / 100) * itemFactor;
         }
 
         private void ApplySourceModelCompositeAllyPower(CharacterInstance actor,

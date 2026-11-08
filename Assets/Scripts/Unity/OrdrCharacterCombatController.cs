@@ -2234,6 +2234,9 @@ namespace Ordr.Mobile.Unity
         }
 
         public Original323TreasureHunt OriginalTreasureHunt { get; private set; }
+        public Original323TreasureAlarmJournal TreasureAlarms { get; private set; }
+        public string TreasureAlarmNotice { get; private set; }
+        public long TreasureAlarmNoticeSequence { get; private set; }
         public Original323PoneglyphSession Poneglyph { get; private set; }
         public Original323SharedMissionRewardWorld SharedMissionRewards { get; private set; }
         public Original323SharedObjectiveWorld SharedObjectives { get; private set; }
@@ -2532,6 +2535,12 @@ namespace Ordr.Mobile.Unity
                 GaimonDream != null && GaimonDream.Applied && GaimonDream.NamiBonusWhenApplied,
                 GaimonReveal == null ? null :
                 GaimonReveal.ActiveRevealedChests(Combat.Game.CurrentWave));
+            // Misses also trigger BJI, but no alarm is forged for an
+            // unapproved ticket or an unidentifiable native caster.
+            TryScheduleWitnessedTreasureAlarm(
+                result.Outcome == MobileTreasureOutcome.Miss ||
+                result.Outcome == MobileTreasureOutcome.Found ||
+                result.Outcome == MobileTreasureOutcome.Partial);
             TrySettleTreasureHunterAfterCollection(result.Collected > 0, result.Collected);
             return result;
         }
@@ -2550,6 +2559,9 @@ namespace Ordr.Mobile.Unity
                     "원본 보물 탐색은 전투 시작 전 한 번만 연결할 수 있습니다.");
             OriginalTreasureHunt = new Original323TreasureHunt(
                 liveNativeWorld, verifiedSharedScriptRandom);
+            TreasureAlarms = new Original323TreasureAlarmJournal();
+            TreasureAlarmNotice = null;
+            TreasureAlarmNoticeSequence = 0;
         }
 
         // A source witness invokes this ONLY for a real native BeM spawn.
@@ -2587,9 +2599,38 @@ namespace Ordr.Mobile.Unity
             var search = OriginalTreasureHunt.SearchObserved(
                 Combat.Game.CurrentWave,castX,castY,gaimon,
                 gaimonAndNami,extraQuantityRoll,berryDisabled,revealOnly);
+            // CCQ has its own 297-second reveal alarm. This journal covers
+            // CJm collection casts only; never pass reveal-only events here.
+            TryScheduleWitnessedTreasureAlarm(
+                !revealOnly && search.WasAuthorized);
             TrySettleTreasureHunterAfterCollection(
                 !revealOnly && search.WasAuthorized, search.Collected);
             return search;
+        }
+
+        private void TryScheduleWitnessedTreasureAlarm(bool authorized)
+        {
+            if (!authorized || OriginalTreasureHunt == null ||
+                TreasureAlarms == null || Combat == null ||
+                SharedEconomy == null) return;
+            bool recordGuidanceCaster;
+            if (!OriginalTreasureHunt.TryIdentifyLastAuthorizedCaster(
+                    out recordGuidanceCaster)) return;
+            TreasureAlarms.RegisterAuthorizedCast(
+                OriginalTreasureHunt.LastAuthorizedCastEvidence,
+                Combat.Time, recordGuidanceCaster, SharedEconomy.Wallet);
+        }
+
+        private void AdvanceWitnessedTreasureAlarms()
+        {
+            if (TreasureAlarms == null || Combat == null) return;
+            var due = TreasureAlarms.DrainDue(Combat.Time);
+            if (due.Count == 0) return;
+            // No cooldown, damage, treasure spawn or resource mutation.
+            TreasureAlarmNotice = "[알람타이머] 보물찾기" +
+                (due.Count > 1 ? " · " + due.Count + "건" : "") +
+                " · 다시 탐색 가능 여부는 실제 시전 조건에 따릅니다.";
+            TreasureAlarmNoticeSequence++;
         }
 
         // Both UI-originated search and source-observed casts share the SAME
@@ -3917,6 +3958,9 @@ namespace Ordr.Mobile.Unity
             // The last enemy can die during Advance itself. Record once at
             // the transition, before the result panel is next rendered.
             RecordFullGameClearOnce();
+            // BJI/BJH counts only advancing battle time; a paused battle
+            // never catches up the alarm against the wall clock.
+            AdvanceWitnessedTreasureAlarms();
             if (observedMonsterPositions != null && Combat.PendingSimulationSeconds == 0)
             {
                 try { observedMonsterPositions.ApplyAtCurrentCombatTime(Combat); }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Core;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
@@ -133,6 +134,82 @@ namespace Ordr.Mobile.Combat
             string originalCastEvidence,string spawnEvidence);
     }
 
+    // Optional native proof of WHO cast the already-authorized CJm / BeN.
+    // The mobile button and source ticket alone cannot identify RV vs Shinobu.
+    public interface IOriginal323TreasureCastOriginWitness
+    {
+        bool TryIdentifyOriginalTreasureCaster(
+            string authorizedCastEvidence, out bool recordGuidanceCaster);
+    }
+
+    // BJI/BJH is an alarm, never an A05D cast cooldown or a second payment.
+    public sealed class Original323TreasureAlarm
+    {
+        public string CastEvidence { get; private set; }
+        public double DueAtCombatTime { get; private set; }
+        public int DelaySeconds { get; private set; }
+        public bool RecordGuidanceCaster { get; private set; }
+
+        internal Original323TreasureAlarm(string castEvidence, double dueAt,
+            int delaySeconds, bool recordGuidanceCaster)
+        {
+            CastEvidence = castEvidence; DueAtCombatTime = dueAt;
+            DelaySeconds = delaySeconds;
+            RecordGuidanceCaster = recordGuidanceCaster;
+        }
+    }
+
+    // One battle-clock journal for all witnessed treasure casts. A missed
+    // treasure still starts the source BJI alarm; pauses do not advance it.
+    public sealed class Original323TreasureAlarmJournal
+    {
+        private readonly HashSet<string> seenCasts =
+            new HashSet<string>(StringComparer.Ordinal);
+        private readonly List<Original323TreasureAlarm> pending =
+            new List<Original323TreasureAlarm>();
+        public int PendingCount => pending.Count;
+
+        public bool RegisterAuthorizedCast(string evidence, double combatTime,
+            bool recordGuidanceCaster, EconomyWallet itemWallet)
+        {
+            if (!Original323BossRoundRules.TrustedRuntimeEvidence(evidence) ||
+                double.IsNaN(combatTime) || double.IsInfinity(combatTime) ||
+                combatTime < 0 || itemWallet == null ||
+                !seenCasts.Add(evidence))
+                return false;
+            int delay = Original323SourceItemPassiveRules.TreasureAlarmSeconds(
+                itemWallet, recordGuidanceCaster);
+            pending.Add(new Original323TreasureAlarm(evidence,
+                combatTime + delay, delay, recordGuidanceCaster));
+            return true;
+        }
+
+        public double SecondsUntilNext(double combatTime)
+        {
+            double seconds = double.PositiveInfinity;
+            foreach (var alarm in pending)
+                seconds = Math.Min(seconds,
+                    Math.Max(0, alarm.DueAtCombatTime - combatTime));
+            return double.IsPositiveInfinity(seconds) ? -1 : seconds;
+        }
+
+        public IReadOnlyList<Original323TreasureAlarm> DrainDue(double combatTime)
+        {
+            var due = new List<Original323TreasureAlarm>();
+            if (double.IsNaN(combatTime) || double.IsInfinity(combatTime))
+                return due.AsReadOnly();
+            for (int i = pending.Count - 1; i >= 0; i--)
+                if (pending[i].DueAtCombatTime <= combatTime)
+                {
+                    due.Add(pending[i]);
+                    pending.RemoveAt(i);
+                }
+            due.Sort((a, b) =>
+                a.DueAtCombatTime.CompareTo(b.DueAtCombatTime));
+            return due.AsReadOnly();
+        }
+    }
+
     public sealed class Original323TreasureSearchResult
     {
         public int Matched { get; private set; }
@@ -181,6 +258,22 @@ namespace Ordr.Mobile.Combat
         // Last source-confirmed BeN cast that actually settled at least one chest.
         // Never a UI preview or a guessed search success.
         public string LastCollectedCastEvidence { get; private set; }
+        // Also available for a valid MISS, as original BJI schedules before
+        // BeN checks whether there is a treasure inside the search region.
+        public string LastAuthorizedCastEvidence { get; private set; }
+
+        public bool TryIdentifyLastAuthorizedCaster(
+            out bool recordGuidanceCaster)
+        {
+            recordGuidanceCaster = false;
+            var witnessed = native as IOriginal323TreasureCastOriginWitness;
+            return witnessed != null &&
+                Original323BossRoundRules.TrustedRuntimeEvidence(
+                    LastAuthorizedCastEvidence) &&
+                witnessed.TryIdentifyOriginalTreasureCaster(
+                    LastAuthorizedCastEvidence, out recordGuidanceCaster);
+        }
+
         public int UncollectedCount => SpawnCount-CollectedCount;
 
         // A mobile gacha policy must count only source-visible remaining
@@ -307,6 +400,7 @@ namespace Ordr.Mobile.Combat
                     gaimon,gaimonAndNami);
             inSearch=true;
             LastCollectedCastEvidence=null;
+            LastAuthorizedCastEvidence=null;
             try
             {
                 string cast;
@@ -315,6 +409,7 @@ namespace Ordr.Mobile.Combat
                     !Original323BossRoundRules.TrustedRuntimeEvidence(cast))
                     return new Original323TreasureSearchResult(0,0,false,
                         "원본 보물 탐색 시전/대상 검증 실패");
+                LastAuthorizedCastEvidence=cast;
                 var matched=PreviewAtOriginalRound(
                     originalRound,centerX,centerY,range);
                 if(revealOnly)

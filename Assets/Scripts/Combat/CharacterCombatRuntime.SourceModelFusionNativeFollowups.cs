@@ -61,10 +61,11 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, int>();
         private readonly Dictionary<string, int> sourceModelNativeTesoroSpawnA11S =
             new Dictionary<string, int>(StringComparer.Ordinal);
-        // AI19, like A04Q itself, is determined when each line monster
-        // spawns. A later item draw must not retroactively weaken old enemies.
-        // Verified native profiles already include their original A04Q level.
-        private readonly Dictionary<string, double> sourceModelLineItemMagicAtSpawn =
+        // AI19 is captured per LINE spawn. The practice-only incremental
+        // multiplier uses the verified A04Q Def5 object values, never a
+        // guessed flat 5% increase to the magical packet. A verified native
+        // A04Q profile already contains the original item mutation.
+        private readonly Dictionary<string, double> sourceModelLineItemMagicFactorAtSpawn =
             new Dictionary<string, double>(StringComparer.Ordinal);
         private readonly HashSet<long> sourceModelUtaIntroStarted =
             new HashSet<long>();
@@ -264,8 +265,20 @@ namespace Ordr.Mobile.Combat
                 enemies.TryGetValue(enemyId, out spawned) &&
                 !spawned.Enemy.Defenses.HasVerifiedMagicResistance &&
                 SourceModelFusionNativeBalance("source:unique-obtained:AI19") > 0)
-                sourceModelLineItemMagicAtSpawn[enemyId] =
-                    Original323SourceItemPassiveRules.UniqueLineMagicDefenseDecrease;
+            {
+                // Nightmare initial LK=16; AI19 changes the original
+                // A04Q level by +5. No runtime source LK witness exists
+                // for later level changes, so this is ONLY an incremental
+                // practice-model snapshot, not a fabricated native profile.
+                double withoutItem, withItem;
+                if (Ordr323VerifiedDefenseAbilities.TryGetMagicDamageTakenFactor(
+                        16, out withoutItem) &&
+                    Ordr323VerifiedDefenseAbilities.TryGetMagicDamageTakenFactor(
+                        16 + Original323SourceItemPassiveRules.UniqueLineMagicDefenseDecrease,
+                        out withItem) && withoutItem > 0)
+                    sourceModelLineItemMagicFactorAtSpawn[enemyId] =
+                        withItem / withoutItem;
+            }
             if (kind == CharacterEnemyKind.Enraged)
                 sourceModelNativeTesoroSpawnA11S[enemyId] = 1;
             else if (kind == CharacterEnemyKind.Line ||
@@ -288,11 +301,11 @@ namespace Ordr.Mobile.Combat
                 ? level - 21 : 0;
         }
 
-        private double SourceModelLineItemMagicResistanceAtSpawn(string enemyId)
+        private double SourceModelLineItemMagicFactorAtSpawn(string enemyId)
         {
-            double reduction;
-            return sourceModelLineItemMagicAtSpawn.TryGetValue(enemyId,
-                out reduction) ? reduction : 0;
+            double factor;
+            return sourceModelLineItemMagicFactorAtSpawn.TryGetValue(enemyId,
+                out factor) ? factor : 1;
         }
 
         private double SourceModelNativeTesoroCorrection(SpatialCombatEnemy enemy)

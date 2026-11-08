@@ -72,6 +72,7 @@ namespace Ordr.Mobile.Unity
         private long? pendingUnitReroll;
         private MobileTreasureGachaResult lastTreasureResult;
         private int lastTreasureRound;
+        private long observedTreasureAlarmSequence;
         private int poneglyphUnitPage;
         private long? pendingCommonSaleId;
         private string pendingCommonSaleName;
@@ -144,6 +145,16 @@ namespace Ordr.Mobile.Unity
 
         private void Update()
         {
+            // BJH alert is shown in the normal action notice across all
+            // menus, not only while the record-guidance drawer is open.
+            if (controller != null &&
+                controller.TreasureAlarmNoticeSequence != observedTreasureAlarmSequence)
+            {
+                observedTreasureAlarmSequence =
+                    controller.TreasureAlarmNoticeSequence;
+                if (!string.IsNullOrWhiteSpace(controller.TreasureAlarmNotice))
+                    notice = controller.TreasureAlarmNotice;
+            }
             if (Combat == null ||
                 !((visible && (currentTab == Tab.Play || currentTab == Tab.Fusion)) ||
                   fusionGoal.HasGoal) ||
@@ -2961,6 +2972,13 @@ namespace Ordr.Mobile.Unity
             if (treasure != null)
                 OrdrMobileUiTheme.DrawStatusRow("남은 보물",
                     treasure.UncollectedCount + "개", OrdrMobileUiTheme.Aqua);
+            if (controller.TreasureAlarms != null &&
+                controller.TreasureAlarms.PendingCount > 0 && Combat != null)
+                OrdrMobileUiTheme.DrawStatusRow("탐색 알람",
+                    controller.TreasureAlarms.PendingCount + "건 예약 · 다음 " +
+                    Math.Ceiling(controller.TreasureAlarms.SecondsUntilNext(
+                        Combat.Time)) + "초 후 (전투 시간)",
+                    OrdrMobileUiTheme.Aqua);
 
             bool valid = treasure != null && controller.MobileTreasureGacha != null &&
                 controller.MobileTreasureGacha.CanAttempt &&
@@ -3854,7 +3872,7 @@ namespace Ordr.Mobile.Unity
                 OrdrMobileUiTheme.DrawStatusRow("탐색 알람 기준",
                     Original323SourceItemPassiveRules.TreasureAlarmSeconds(
                         passiveWallet, true) +
-                    "초 · AI10 (실제 시전 알람은 별도)",
+                    "초 · AI10 (원본 시전자 확인 시 예약)",
                     OrdrMobileUiTheme.Gold);
                 OrdrMobileUiTheme.DrawStatusRow("라인 골드/마방",
                     (Original323SourceItemPassiveRules.SourceLineGoldFactorIncrease(

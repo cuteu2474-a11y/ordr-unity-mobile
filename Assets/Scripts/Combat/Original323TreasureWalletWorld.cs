@@ -17,7 +17,7 @@ namespace Ordr.Mobile.Combat
     // native cast witness, original BFj chest positions and original BFi
     // reward stream are all separate prerequisites.
     public sealed class Original323TreasureWalletWorld :
-        IOriginal323TreasureNativeWorld
+        IOriginal323TreasureNativeWorld, IOriginal323TreasureCastOriginWitness
     {
         private readonly EconomyWallet wallet;
         private readonly IOriginal323TreasureLiveCastWitness castWitness;
@@ -74,6 +74,17 @@ namespace Ordr.Mobile.Combat
             validatedCasts.Add(observed);
             originalCastEvidence = observed;
             return true;
+        }
+
+        public bool TryIdentifyOriginalTreasureCaster(
+            string authorizedCastEvidence, out bool recordGuidanceCaster)
+        {
+            recordGuidanceCaster = false;
+            var source = castWitness as IOriginal323TreasureCastOriginWitness;
+            return source != null &&
+                validatedCasts.Contains(authorizedCastEvidence ?? "") &&
+                source.TryIdentifyOriginalTreasureCaster(
+                    authorizedCastEvidence, out recordGuidanceCaster);
         }
 
         public bool TrySettleTreasureOnce(string originalChestId,
