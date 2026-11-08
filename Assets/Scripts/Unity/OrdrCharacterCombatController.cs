@@ -2498,9 +2498,16 @@ namespace Ordr.Mobile.Unity
                 IsUnitPreparation)
                 return new Original323GaimonRevealResult(false,0,0,
                     "원본 CCQ 시전/전투 라운드 관측 대기");
-            return GaimonReveal.ObserveOriginalCcq(
+            var result=GaimonReveal.ObserveOriginalCcq(
                 originalNativeEventId,Combat.Game.CurrentWave,
                 HasOwnedOriginalGaimon,GaimonDream.Applied);
+            // CCQ uses BeN(..., false): location reveal and a 297-second
+            // BJI reminder, but never an A05D loot search or second payment.
+            if (result.Authorized && TreasureAlarms != null)
+                TreasureAlarms.RegisterAuthorizedCcq(
+                    originalNativeEventId,
+                    OriginalTreasureHunt.LastAuthorizedCastEvidence,Combat.Time);
+            return result;
         }
 
         // Only register a source-calibrated gacha before gameplay begins.
@@ -2627,9 +2634,19 @@ namespace Ordr.Mobile.Unity
             var due = TreasureAlarms.DrainDue(Combat.Time);
             if (due.Count == 0) return;
             // No cooldown, damage, treasure spawn or resource mutation.
+            bool anySearch = false;
+            bool anyReveal = false;
+            foreach (var alarm in due)
+            {
+                if (alarm.RevealOnly) anyReveal = true;
+                else anySearch = true;
+            }
             TreasureAlarmNotice = "[알람타이머] 보물찾기" +
                 (due.Count > 1 ? " · " + due.Count + "건" : "") +
-                " · 다시 탐색 가능 여부는 실제 시전 조건에 따릅니다.";
+                (anyReveal ? " · 위치 공개" : "") +
+                (anySearch
+                    ? " · 다시 탐색 가능 여부는 실제 시전 조건에 따릅니다."
+                    : " · 위치 공개 알림은 보상을 지급하지 않습니다.");
             TreasureAlarmNoticeSequence++;
         }
 

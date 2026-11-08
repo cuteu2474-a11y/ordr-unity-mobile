@@ -149,13 +149,15 @@ namespace Ordr.Mobile.Combat
         public double DueAtCombatTime { get; private set; }
         public int DelaySeconds { get; private set; }
         public bool RecordGuidanceCaster { get; private set; }
+        public bool RevealOnly { get; private set; }
 
         internal Original323TreasureAlarm(string castEvidence, double dueAt,
-            int delaySeconds, bool recordGuidanceCaster)
+            int delaySeconds, bool recordGuidanceCaster, bool revealOnly=false)
         {
             CastEvidence = castEvidence; DueAtCombatTime = dueAt;
             DelaySeconds = delaySeconds;
             RecordGuidanceCaster = recordGuidanceCaster;
+            RevealOnly = revealOnly;
         }
     }
 
@@ -167,6 +169,7 @@ namespace Ordr.Mobile.Combat
             new HashSet<string>(StringComparer.Ordinal);
         private readonly List<Original323TreasureAlarm> pending =
             new List<Original323TreasureAlarm>();
+        public const int CcqRevealAlarmSeconds = 297; // CCQ -> BeN(300) -> BJI(297)
         public int PendingCount => pending.Count;
 
         public bool RegisterAuthorizedCast(string evidence, double combatTime,
@@ -181,6 +184,29 @@ namespace Ordr.Mobile.Combat
                 itemWallet, recordGuidanceCaster);
             pending.Add(new Original323TreasureAlarm(evidence,
                 combatTime + delay, delay, recordGuidanceCaster));
+            return true;
+        }
+
+        // CCQ's source-verified reveal-only BeN call also registers BJI.
+        // The independent Original323GaimonRevealPort already authenticated
+        // both the original CCQ event and its native collect=false cast.
+        // Never count this event as an A05D search or collect a reward.
+        public bool RegisterAuthorizedCcq(string originalEventId,
+            string authorizedNativeCastEvidence, double combatTime)
+        {
+            if (string.IsNullOrWhiteSpace(originalEventId) ||
+                originalEventId.Length > 128 ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(
+                    authorizedNativeCastEvidence) ||
+                double.IsNaN(combatTime) || double.IsInfinity(combatTime) ||
+                combatTime < 0 || combatTime > double.MaxValue - CcqRevealAlarmSeconds)
+                return false;
+            string key = "CCQ:" + originalEventId;
+            if (!seenCasts.Add(key)) return false;
+            pending.Add(new Original323TreasureAlarm(
+                authorizedNativeCastEvidence,
+                combatTime + CcqRevealAlarmSeconds,
+                CcqRevealAlarmSeconds, false, true));
             return true;
         }
 

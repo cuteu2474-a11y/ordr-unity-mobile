@@ -8,7 +8,7 @@
 
 - 공유 목표 전장 격리: `CharacterCombatRuntime.CanShareAllyCombatLane`가 메인/스토리/공유 목표 ID별/포네그리프 해독 유닛을 분리. 아군 스킬·특수 오라·지원·언변 버프의 기존 `IsStoryDeployed` 이진 판정을 교체했습니다. `SourceModelIndependentAttacks` 광역 공격도 실물의 `CanAttackInThisLane` 또는 소환수의 원래 레인 판정에 맡기고, 독립 공격자 소유자 이탈 시 공격을 중단합니다. `SourceModelSummonState.LaneRevision`으로 출전·복귀·해독 변경 때 잔류 소환수를 폐기합니다. **원본 공유 목표 공급자·실기 검증은 미완료**.
 
-- 기록지침 보물 탐색: `OrdrMobileTouchPanel.DrawTreasureGacha` → `OrdrCharacterCombatController.RequestMobileTreasureGacha` → `MobileTreasureGacha` → `Original323TreasureHunt`; 가이몬은 필수 조건이 아닌 범위/수량 보정, 실제 16개 보물사냥꾼 정산 공통 메서드.
+- 기록지침 보물 탐색: `OrdrMobileTouchPanel.DrawTreasureGacha` → `OrdrCharacterCombatController.RequestMobileTreasureGacha` → `MobileTreasureGacha` → `Original323TreasureHunt`; 가이몬은 필수 조건이 아닌 범위/수량 보정, 실제 16개 보물사냥꾼 정산 공통 메서드. 원본 시전·시전자 승인 시 `Original323TreasureAlarmJournal`에 AI10 97/77초 탐색 알람, 독립 `Original323GaimonRevealPort.ObserveOriginalCcq`와 네이티브 `collect=false` 승인 시 `RegisterAuthorizedCcq`에 297초 위치 공개 알람을 전투 시계로 예약·표시. 원본 시전 공급자·실기 연결은 미완료.
 - 환전소·발굴: `SourceModelGamblingNavigation.ExchangeHouse` → `SourceModelUnitGambling`의 원본 CJS 중급 시도 원자 보상(`CompuResource +1`, 도박 성공/실패 무관) → `SourceModelCompuExchange` 7종 환전 → `Original323CompuUnitWorld` 실물 해적선/랜덤전용/토큰 생성·실패 롤백. CKH/CKI는 `SourceModelItemExcavation`의 원본 BhS/BhT 스택(최대 10) 충전 → 12/10종 비복원 아이템 추첨 → 기존 `Original323FusionSourceItemLedger` 고유 아이템 장부로 연결. `OrdrMobileTouchPanel` 도박 화면에 상태/조작 추가. **BhL 개별 아이템 사용/패시브 효과·외형·전체 저장·실기 검증은 별도**.
 - 연구소: `Original323PlayerResearchSession.SourceCost`는 공유 지갑 `wood` 키를 사용. `OrdrMobileTouchPanel.UpgradeResourceName`은 `wood/lumber` 모두 목재로 표시.
 - 세 경로 모두 실행·실기 검증은 미실시.
