@@ -63,14 +63,25 @@ class FollowupSourceModelSkillTests(unittest.TestCase):
         self.assertIn(("LI-01", "h05G"), entries)
         i10 = self.listing.split('new SourceModelUnconnectedSkillRow("I-10", "h04G",')[1].split(
             'new SourceModelUnconnectedSkillRow(', 1)[0]
-        self.assertIn('new[] { "매 타격 스턴" }, new[] { "마나 광역 공격" }', i10,
-                      "Batch 15 adds the exact documented every-hit skill without losing the mana active.")
+        # Parse the two lists independently: later attack skills must not
+        # invalidate the original active-mana boundary or owner identity.
+        groups = re.findall(r'new\[\]\s*\{([^}]+)\}', i10)
+        self.assertEqual(2, len(groups))
+        attacks, active = [re.findall(r'"([^"]+)"', group) for group in groups]
+        self.assertEqual(len(attacks), len(set(attacks)), "No duplicate attack registration")
+        self.assertTrue({"매 타격 스턴", "직선 마법 공격", "차지 버스트"}.issubset(attacks))
+        self.assertEqual(["마나 광역 공격"], active)
+        self.assertFalse(set(attacks) & set(active))
+        profile = {s["name"]: s for s in self.profiles["I-10"]["skills"]}
+        for name in attacks:
+            self.assertIn(profile[name]["trigger"], ("onAttack", "onEveryAttack"))
+        for name in active:
+            self.assertEqual("activeMana", profile[name]["trigger"])
         li01 = self.listing.split('new SourceModelUnconnectedSkillRow("LI-01", "h05G",')[1].split(
             'new SourceModelUnconnectedSkillRow(', 1)[0]
         self.assertIn('new[] { "핏빛 범위 공격", "광역 마법 공격", "단일 스턴",', li01)
         self.assertIn('"평타 단일 고정" }, Array.Empty<string>()', li01)
-        for forbidden in ("직선 마법 공격", "차지 버스트", "단일 스턴"):
-            self.assertNotIn('new[] { "' + forbidden + '" }', i10)
+        self.assertNotIn("단일 스턴", attacks)
         self.assertNotIn('"직선 마법 공격"', li01)
         self.assertNotIn('"차지 버스트"', li01)
 
@@ -97,3 +108,4 @@ class FollowupSourceModelSkillTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

@@ -62,8 +62,18 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("DrawLeftTab(Tab.UpgradeOne, \"강화소 1\")", panel)
         self.assertIn("DrawLeftTab(Tab.UpgradeTwo, \"강화소 2\")", panel)
         self.assertIn("DrawHoldActionRow(", panel)
-        self.assertIn("DrawResearchPlate", theme)
-        self.assertIn("DrawResearchPlate(plate", panel)
+        # Research now uses the shared tap/hold action row, not the removed
+        # decorative plate. Keep the transaction and read-only detail paths.
+        research = panel.split("private void DrawPlayerBuildingResearch(", 1)[1].split(
+            "private static string ResearchStatusText(", 1)[0]
+        self.assertIn("laboratory?.Quote(research.Rawcode)", research)
+        self.assertIn("laboratory.Start(research.Rawcode)", research)
+        self.assertIn("service.Purchase(upgrade.Rawcode)", research)
+        self.assertEqual(2, research.count("press == MobileLongPressResult.Tap"))
+        self.assertEqual(2, research.count("press == MobileLongPressResult.Hold"))
+        self.assertIn("GUILayout.Label(research.EffectSummary)", research)
+        self.assertIn("UpgradeShortageText(quote.Cost)", research)
+        self.assertNotIn("DrawResearchPlate(", research)
         self.assertIn("DrawAccordionHeader(", panel)
         self.assertIn("expandedResearchCodes", panel)
         self.assertIn("DrawAccordionHeader", theme)
@@ -151,3 +161,4 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

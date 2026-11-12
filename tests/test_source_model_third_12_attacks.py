@@ -47,7 +47,7 @@ class ThirdTwelveAttackTests(unittest.TestCase):
                      'skillDamagePercent', 'bonusPercent',
                      'percentPerSoldier', 'amountPerSoldier',
                      'targetCurrentHealth', 'plusMissingHealthPercent',
-                     'sourceSongSoldierExpiry', 'TrySourceModelSongSoldier',
+                     'TrySourceModelSongSoldier',
                      'SourceModelSongSoldiers', 'ExplosiveDamageAmplification'):
             self.assertIn(name, self.damage)
         for name in ('CanModelThirdCompositeComponents',
@@ -55,8 +55,39 @@ class ThirdTwelveAttackTests(unittest.TestCase):
             self.assertIn(name, self.approval)
         self.assertIn('SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill)',
                       self.runtime)
-        self.assertIn('sourceSongSoldierExpiry.Remove(instanceId)',
-                      code('CharacterCombatRuntime.cs'))
+        # C05 consolidated expiry into the common temporary-actor lifecycle.
+        # Check registration, live owner/lane counting, and retirement together;
+        # resurrecting the old parallel expiry dictionary would double-count.
+        native = code('CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs')
+        temporary = code('CharacterCombatRuntime.SourceModelTemporarySkills.cs')
+        owner = code('CharacterCombatRuntime.cs')
+        self.assertNotIn('sourceSongSoldierExpiry', self.damage + native + temporary + owner)
+        add = self.damage.split('private void AddSourceModelUtaSongSoldier(', 1)[1].split(
+            'private double SourceModelCompositeRawDamage(', 1)[0]
+        self.assertIn('RegisterSourceModelUtaSongSoldier(actor, primary, lifetime,', add)
+        register = native.split('private bool RegisterSourceModelUtaSongSoldier(', 1)[1].split(
+            'private void RetireSourceModelUtaSongSoldierKey(', 1)[0]
+        self.assertIn('SpawnSourceTemporaryActor(', register)
+        self.assertIn('"h04O"', register)
+        self.assertIn('virtualAttackEffect: true', register)
+        self.assertNotIn('effectExecutor.Schedule', register)
+        count = self.damage.split('private int SourceModelSongSoldiers(', 1)[1].split(
+            'public int PracticeSongSoldierCount(', 1)[0]
+        for guard in ('soldier.OwnerInstanceId == casterId',
+                      'soldier.ExpiresAt.Value > Time',
+                      'soldier.StoryLane == IsStoryDeployed(casterId)',
+                      '!IsSharedObjectiveDeployed(casterId)',
+                      '!IsOriginalPoneglyphChanneling(casterId)'):
+            self.assertIn(guard, count)
+        retire = temporary.split('private void EndSourceTemporaryActorAt(', 1)[1].split(
+            'private bool RetireSourceTemporaryActor(', 1)[0]
+        for operation in ('RetireSourceModelUtaSongSoldierKey(',
+                          'UnregisterSourceIndependentAttack(',
+                          'sourceTemporarySummons.RemoveAt(index)'):
+            self.assertIn(operation, retire)
+        self.assertIn('EndSourceTemporaryActorAt(i, validOwnerLane)', temporary)
+        self.assertIn('RemoveSourceTemporaryActors(instanceId);', owner)
+        self.assertIn('ForgetSourceModelFusionNativeActor(instanceId);', owner)
 
     def test_no_fabricated_hero_strength_or_soldier_rawcode(self):
         policies = self.batch['mobilePolicies']
@@ -70,3 +101,4 @@ class ThirdTwelveAttackTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
