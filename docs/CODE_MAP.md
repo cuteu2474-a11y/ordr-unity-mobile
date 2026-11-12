@@ -2,6 +2,12 @@
 
 > **새 작업의 코드 지도:** 무엇을 고쳐야 하는지 빠르게 찾는 문서입니다. 기능 구현률·APK 차이는 [현재 상태](START_HERE.md), 미완료 작업은 [개발 작업](PLAYABLE_ROADMAP.md), 실제 조작은 [화면·조작](화면-조작-시스템.md)에 있습니다. **이 문서에 날짜별 개발 일지나 기능별 확률·비용을 중복 기록하지 않습니다.**
 
+## C05 삭제·해독 전환 공통 생명주기
+
+- `CharacterCombatRuntime.RemoveCharacter`가 `ForgetSourceManualSupport(true)` 및 `ForgetSourceModelEleventhActor`를 호출하여 다른 아군의 임대 버프·재생과 사라진 소유자의 폼/기술 카운터를 정리합니다.
+- `CharacterCombatRuntime.SetOriginalPoneglyphChanneling`는 해독 시작과 종료 모두 `RefreshAfterCommittedCombatLaneChange`를 사용합니다. 중복 시작은 해독 상태를 다시 초기화하지 않습니다.
+- `Assets/Tests/EditMode/CharacterCombatLifecycleCleanupTests.cs`에 두 경로의 회귀 검사 소스를 두었습니다(미실행). 원본 특수 기술 개별 종료·동등성 검증은 별도입니다.
+
 ## 캐릭터 C03/C04 원본 분기 연결(2026-11-08, 코드만)
 
 - `CharacterCombatRuntime.SourceModelRemainingCallbacks.cs`: `RemainingBlackbeardForcesBzq`가 A903 광폭화의 무조건 발동 및 Bdi 보스의 대상별 최초 prop-window 64 게이트를 관리하고, `OnSourceRemainingDeclared`의 TR-01 `Bz1`이 표적별 `Bzq` 지연 피해를 분리합니다. L-36의 `BtV → BtT`는 선언 시 버프만 검사하고, 양성 적중 때는 등록 표적을 검증합니다. `CharacterCombatRuntime.RemoveEnemyRuntimeState`에서 보스의 게이트 기록을 지워 동일 ID로 재출현한 적에게 이전 상태가 새지 않도록 합니다. 모든 변경은 코드만 연결되었고 원본 A904·A0HS 2레벨·Unity/Android는 미검증입니다.

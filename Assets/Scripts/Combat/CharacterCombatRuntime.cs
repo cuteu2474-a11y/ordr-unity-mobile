@@ -1632,18 +1632,24 @@ namespace Ordr.Mobile.Combat
 
         public void SetOriginalPoneglyphChanneling(long instanceId, bool channeling)
         {
+            BlockExternalMutationDuringOriginalFusion();
             if (channeling)
             {
+                // Duplicate notifications must not invalidate a live decoding clock.
+                if (originalPoneglyphChanneling.Contains(instanceId)) return;
                 if (!characters.ContainsKey(instanceId) || IsStoryDeployed(instanceId) ||
                     IsSharedObjectiveDeployed(instanceId))
                     throw new InvalidOperationException(
                         "포네그리프 해독은 메인 전장의 보유 유닛으로만 시작합니다.");
-                CancelOriginalUnitCast(instanceId);
                 originalPoneglyphChanneling.Add(instanceId);
                 RefreshAfterCommittedCombatLaneChange(instanceId);
             }
             else if (originalPoneglyphChanneling.Remove(instanceId))
-                RefreshEnemyAuras();
+            {
+                // Decoding -> main is also a lane transfer. Refreshing only
+                // auras lets delayed attacks and summoned actors leak back.
+                RefreshAfterCommittedCombatLaneChange(instanceId);
+            }
         }
 
         // Independent observer for per-enemy defeat or escape. Driven by
@@ -2431,6 +2437,10 @@ namespace Ordr.Mobile.Combat
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
             effectExecutor.CancelCaster(InstanceKey(instanceId));
             effectExecutor.CancelTarget(InstanceKey(instanceId));
+            // Clean owner AND recipient leases while status dictionaries live.
+            ForgetSourceManualSupport(instanceId, true);
+            // Form/counter cleanup was previously only called on lane transfers.
+            ForgetSourceModelEleventhActor(instanceId);
             RemoveSourceTemporaryActors(instanceId);
             sourceModelStoryLaneRevisions.Remove(instanceId);
             lawReadyAt.Remove(instanceId);
