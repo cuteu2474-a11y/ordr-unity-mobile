@@ -6,7 +6,9 @@
 
 - `CharacterCombatRuntime.SourceModelEffects.cs`의 실제 양성 평타 처치 판정 → `CharacterCombatRuntime.SourceModelNativeFollowups.cs`의 10초 가상 효과 생성. 기존 `SpawnCharacter(U-14)`은 사용하지 않음.
 - `SourceModelBasicCombatRules.cs`가 원본 `h00H` 공격 스탯을 독립 공격 처리기로 승인(영구 U-14의 기존 원본 매핑 증거와 중복 등록 금지), `CharacterCombatRuntime.SourceModelTemporarySkills.cs`는 가상 효과를 보유·소환 화면에서 제외하고 삭제/해독/전장 이동/시간 만료를 공통 정리. `CharacterCombatRuntime.SourceModelIndependentAttacks.cs`는 정확히 만료된 공격의 후속 1타를 막음.
-- `SourceModelPracticeBattleTests.cs`: 가상 공격과 영구 U-14 공존, 효과 만료/소유자 정리 회귀 검사 소스(미실행). 전설 모리아 그림자/장군좀비 및 다른 좀비 보상은 변경하지 않음.
+- `CharacterCombatRuntime.SourceModelEffects.cs`는 모리아의 **실제 양성 평타 적중**을 식별하고 `SourceModelNativeFollowups.cs`에 0.05초 `BNba/BNdm` 표식을 전달합니다. 전투 공통 `DamageApplied`는 처치 직전에 해당 표식이 유효하면 **다른 공격자 처치도 포함**하여 10초 `h00H` 가상 공격 효과로 전환합니다. 중복 사망·해제·대상 삭제·소유자 삭제/전장 변경 정리, 최초 적중 판정과 피해 합산을 분리했습니다.
+- `CombatStatusEngine.cs`에 별도 `SourceBlackArrowDeathMark` 상태형을 **기존 enum 마지막에 추가**해 표식이 피해/기절로 잘못 계산되지 않도록 했습니다. `CharacterCombatRuntime.SourceModelIndependentAttacks.cs`는 표시용 가상 공격 출발지 조회만 노출합니다. `OrdrUnitWorldPresenter.cs`는 이를 기존 재사용 투사체로 렌더링하며 소환수 유닛 아이콘은 만들지 않습니다.
+- `SourceModelPracticeBattleTests.cs`: 영구 U-14 공존, 10초 만료, 0.05초 표식+다른 공격자 사망, 즉시 사망, 해독/삭제/해제/보스 배제 회귀 소스 총 7건(실행 미검증). 전설 모리아 그림자/장군좀비 및 다른 좀비 보상은 변경하지 않음.
 
 ## C05 삭제·해독 전환 공통 생명주기
 

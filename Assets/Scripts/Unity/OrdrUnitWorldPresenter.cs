@@ -546,7 +546,9 @@ namespace Ordr.Mobile.Unity
                             combatEvent.Type == CharacterCombatEventType.ArmorBreakApplied
                                 ? new Color(1f, .38f, .32f, .95f)
                                 : combatEvent.Type == CharacterCombatEventType.StatusApplied
-                                    ? new Color(.36f, .90f, 1f, .94f)
+                                    ? combatEvent.SkillName == "모리아 · 블랙 애로우 표식"
+                                        ? new Color(.45f, .23f, .80f, .94f)
+                                        : new Color(.36f, .90f, 1f, .94f)
                                     : new Color(.83f, .52f, 1f, .98f), false);
                 }
                 return;
@@ -555,6 +557,31 @@ namespace Ordr.Mobile.Unity
                 combatEvent.Type != CharacterCombatEventType.AttackPreview &&
                 combatEvent.Type != CharacterCombatEventType.SkillActivated)
                 return;
+            // Native Black Arrow creates a 10-second attack effect, NOT a
+            // selectable zombie. Its non-numeric actor key has no roster
+            // marker. Draw the existing reusable magic projectile from
+            // the on-kill origin to the target on each actual effect hit.
+            if (combatEvent.Type == CharacterCombatEventType.Attack &&
+                controller != null && controller.Combat != null)
+            {
+                double effectX, effectY;
+                if (controller.Combat.TryGetSourceMoriaBlackArrowProjectileOrigin(
+                        combatEvent.ActorId, out effectX, out effectY))
+                {
+                    Vector3 hitPosition;
+                    if (!string.IsNullOrWhiteSpace(combatEvent.EnemyId) &&
+                        TryFindEnemyPosition(combatEvent.EnemyId, out hitPosition))
+                    {
+                        SpawnAttackCue(BasicAttackCueKind.Magic, false,
+                            new Vector3((float)effectX, (float)effectY, 0f),
+                            hitPosition);
+                        EnemyVisual struck;
+                        if (enemyVisuals.TryGetValue(combatEvent.EnemyId, out struck))
+                            struck.HitAt = Time.unscaledTime;
+                    }
+                    return;
+                }
+            }
             long instanceId;
             if (!long.TryParse(combatEvent.ActorId, NumberStyles.None,
                 CultureInfo.InvariantCulture, out instanceId)) return;

@@ -373,9 +373,9 @@ namespace Ordr.Mobile.Combat
             if (actor.Catalog.Id == "S-20" && hit.ActualDamage > 0 &&
                 primary.Enemy.IsAlive)
                 ScheduleSourceModelLiquidFire(actor, primary);
-            if (actor.Catalog.Id == "S-09" && hit.ActualDamage > 0 &&
-                !primary.Enemy.IsAlive && primary.Kind == CharacterEnemyKind.Line)
-                SpawnSourceModelMoriaZombie(actor, primary);
+            if (actor.Catalog.Id == "S-09" && hit.BasicHitApplied &&
+                hit.ActualDamage > 0)
+                ApplySourceMoriaBlackArrowAfterBasicHit(actor, primary);
             if (sourceModelUnitEffects == null) return;
             var passive = sourceModelUnitEffects.Take(InstanceKey(actor.Id), hit.TargetId);
             if (passive != null)

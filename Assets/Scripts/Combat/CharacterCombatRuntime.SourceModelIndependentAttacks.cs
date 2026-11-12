@@ -31,6 +31,9 @@ namespace Ordr.Mobile.Combat
             // Source zombie rawcode is not pinned; an explicit model shadow
             // inherits the owner's native attack object and common buffs.
             public bool ModelShadowZombie;
+            // Moria S-09 transient ANba h00H: rendered only as a
+            // projectile; not owned inventory, placement or fusion material.
+            public bool ModelBlackArrowEffect;
             public readonly List<string> ShadowInheritedSources = new List<string>();
         }
 
@@ -86,6 +89,25 @@ namespace Ordr.Mobile.Combat
                 !sourceIndependentAttackers.TryGetValue(attackerKey, out actor) ||
                 !characters.ContainsKey(actor.OwnerInstanceId)) return false;
             ownerId = actor.OwnerInstanceId;
+            return true;
+        }
+
+        // Presentation-only lookup: the same native independent attacker
+        // supplies actual damage while the Unity view draws a projectile.
+        // Permanent U-14 attacks have numeric roster actor IDs and never
+        // qualify as a transient Black Arrow effect.
+        public bool TryGetSourceMoriaBlackArrowProjectileOrigin(
+            string attackKey, out double x, out double y)
+        {
+            x = 0; y = 0;
+            SourceIndependentAttacker actor;
+            if (!UsesSourceModelBasicAttacks || string.IsNullOrWhiteSpace(attackKey) ||
+                !sourceIndependentAttackers.TryGetValue(attackKey, out actor) ||
+                !actor.ModelBlackArrowEffect ||
+                !characters.ContainsKey(actor.OwnerInstanceId))
+                return false;
+            x = actor.X;
+            y = actor.Y;
             return true;
         }
 

@@ -1173,7 +1173,15 @@ namespace Ordr.Mobile.Combat
             var listener = ActualEnemyDamage;
             if (listener != null) listener(actor, enemyId, actualDamage, killed);
             // The basic-only practice must not award Moria's passive materials.
-            if (UsesSourceModelBasicAttacks) return;
+            if (UsesSourceModelBasicAttacks)
+            {
+                // DamageApplied fires before a dead enemy is detached from
+                // the runtime. A preceding S-09/ANba mark may be converted
+                // by another attack or a skill within its native 0.05s.
+                if (killed && actualDamage > 0)
+                    TryConsumeSourceMoriaBlackArrowOnDeath(enemyId);
+                return;
+            }
             SpatialCombatEnemy enemy;
             if (!enemies.TryGetValue(enemyId, out enemy)) return;
             long actorId;
@@ -1465,6 +1473,7 @@ namespace Ordr.Mobile.Combat
                 sourceAttackPauseFinishes.Remove(instanceId);
                 sourceAttackPauseTokens.Remove(instanceId);
                 ForgetSourceAkainuBoss(instanceId);
+                ForgetSourceMoriaBlackArrowOwner(instanceId);
                 // End effects tied to the previous combat lane immediately:
                 // no summons or lasting roots may keep attacking/holding a
                 // main-lane enemy after their owner enters a story lane.
@@ -2439,6 +2448,7 @@ namespace Ordr.Mobile.Combat
             effectExecutor.CancelTarget(InstanceKey(instanceId));
             // Clean owner AND recipient leases while status dictionaries live.
             ForgetSourceManualSupport(instanceId, true);
+            ForgetSourceMoriaBlackArrowOwner(instanceId);
             // Form/counter cleanup was previously only called on lane transfers.
             ForgetSourceModelEleventhActor(instanceId);
             RemoveSourceTemporaryActors(instanceId);
@@ -2684,6 +2694,7 @@ namespace Ordr.Mobile.Combat
                 RefreshEnemyAuras();
             });
             RefreshSourceTemporaryActors();
+            ExpireSourceMoriaBlackArrowMarks();
         }
 
         private bool CanAttackInThisLane(CharacterInstance unit,
@@ -3167,6 +3178,7 @@ namespace Ordr.Mobile.Combat
             ForgetSourceModelNinthEnemy(id);
             RemoveSourceModelAceFlamesForTarget(id);
             ForgetSourceKaidoArmorEnemy(id);
+            ForgetSourceMoriaBlackArrowEnemy(id);
             moriaParticipation.Forget(id);
             sourcePracticeA04RLevels.Remove(id);
             ForgetSourceBlackbeardTarget(id);

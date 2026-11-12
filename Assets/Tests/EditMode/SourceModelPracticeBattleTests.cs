@@ -114,6 +114,14 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual("h00H", transient.SourceUnitRawcode);
                 Assert.AreEqual(10, transient.ExpiresAt - game.Combat.Time, 0.00001);
                 Assert.IsTrue(transient.HasIndependentCombat);
+                double projectileX, projectileY;
+                Assert.IsTrue(game.Combat.TryGetSourceMoriaBlackArrowProjectileOrigin(
+                    "practice-summon:" + transient.Id,
+                    out projectileX, out projectileY));
+                Assert.AreEqual(10, projectileX);
+                Assert.AreEqual(10, projectileY);
+                Assert.IsFalse(game.Combat.TryGetSourceMoriaBlackArrowProjectileOrigin(
+                    permanent.ToString(), out projectileX, out projectileY));
                 var attacks = game.Combat.Step(5);
                 Assert.IsTrue(attacks.Any(x => x.Type == CharacterCombatEventType.Attack &&
                     x.ActorId.StartsWith("practice-summon:", StringComparison.Ordinal)),
@@ -122,6 +130,9 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual("U-14", game.Combat.Roster.Get(permanent).UnitId);
 
                 game.Combat.Step(6);
+                Assert.IsFalse(game.Combat.TryGetSourceMoriaBlackArrowProjectileOrigin(
+                    "practice-summon:" + transient.Id,
+                    out projectileX, out projectileY));
                 Assert.IsFalse(MoriaModelEffects(game.Combat)
                     .Any(x => x.OwnerId == moria && x.IsVirtualAttackEffect));
                 Assert.AreEqual(before, game.Combat.CharacterCount);
@@ -151,6 +162,168 @@ namespace Ordr.Mobile.Tests
                 Assert.IsFalse(MoriaModelEffects(game.Combat)
                     .Any(x => x.IsVirtualAttackEffect),
                     "Removing the actual owner must cancel the transient combat effect.");
+            }
+        }
+
+        // The production pipeline calls this immediately AFTER a
+        // confirmed basic-hit receipt. CombatResolution sends DamageApplied
+        // earlier, so these fixtures exercise both post-hit marking and
+        // a subsequent different attacker's lethal receipt without Unity runs.
+        private static void ApplyConfirmedMoriaMark(
+            CharacterCombatRuntime world, long moriaId, string targetId)
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var characters = (System.Collections.IDictionary)typeof(CharacterCombatRuntime)
+                .GetField("characters", flags).GetValue(world);
+            var enemies = (System.Collections.IDictionary)typeof(CharacterCombatRuntime)
+                .GetField("enemies", flags).GetValue(world);
+            var method = typeof(CharacterCombatRuntime).GetMethod(
+                "ApplySourceMoriaBlackArrowAfterBasicHit", flags);
+            Assert.IsNotNull(method);
+            method.Invoke(world, new[] { characters[moriaId], enemies[targetId] });
+        }
+
+        private static long DealModelDamage(
+            CharacterCombatRuntime world, long attacker, string victim, long amount)
+        {
+            var f = typeof(CharacterCombatRuntime).GetField(
+                "resolution", BindingFlags.Instance | BindingFlags.NonPublic);
+            var resolution = (CombatResolution)f.GetValue(world);
+            long actual;
+            Assert.IsTrue(resolution.TryApplySkillDamage(
+                attacker.ToString(), victim, amount, out actual));
+            return actual;
+        }
+
+        [Test]
+        public void BlackArrowNativeMarkConvertsOnDifferentUnitKillDuringPointZeroFiveSeconds()
+        {
+            using (var game = Create())
+            {
+                long moria = game.Combat.SpawnCharacter("S-09", 0, 0);
+                long permanent = game.Combat.SpawnCharacter("U-14", 10, 0);
+                game.Combat.SpawnEnemy("marked", 1000000,
+                    CharacterEnemyKind.Line, 10, 10, 0);
+                int initialRoster = game.Combat.CharacterCount;
+                Assert.AreEqual(10, DealModelDamage(game.Combat, moria, "marked", 10));
+                ApplyConfirmedMoriaMark(game.Combat, moria, "marked");
+                Assert.IsTrue(game.Combat.StatusOf("marked").Snapshot()
+                    .Any(x => x.Type == CombatEffectType.SourceBlackArrowDeathMark &&
+                              x.DurationSeconds == .05));
+                game.Combat.Step(.02);
+                Assert.AreEqual(999990, DealModelDamage(
+                    game.Combat, permanent, "marked", 999990));
+                var effect = MoriaModelEffects(game.Combat)
+                    .Single(x => x.OwnerId == moria && x.IsVirtualAttackEffect);
+                Assert.AreEqual("h00H", effect.SourceUnitRawcode);
+                Assert.AreEqual(1, MoriaModelEffects(game.Combat)
+                    .Count(x => x.IsVirtualAttackEffect));
+                Assert.AreEqual(initialRoster, game.Combat.CharacterCount);
+                Assert.AreEqual("U-14", game.Combat.Roster.Get(permanent).UnitId);
+                Assert.IsFalse(game.Combat.StatusOf("marked").Snapshot()
+                    .Any(x => x.Type == CombatEffectType.SourceBlackArrowDeathMark));
+            }
+        }
+
+        [Test]
+        public void BlackArrowExpiresBeforeLaterKillAndNeverCreatesAPermanentMaterial()
+        {
+            using (var game = Create())
+            {
+                long moria = game.Combat.SpawnCharacter("S-09", 0, 0);
+                long ally = game.Combat.SpawnCharacter("U-14", 10, 0);
+                game.Combat.SpawnEnemy("marked", 1000000,
+                    CharacterEnemyKind.Line, 10, 10, 0);
+                DealModelDamage(game.Combat, moria, "marked", 1);
+                ApplyConfirmedMoriaMark(game.Combat, moria, "marked");
+                game.Combat.Step(.051);
+                Assert.IsFalse(game.Combat.StatusOf("marked").Snapshot()
+                    .Any(x => x.Type == CombatEffectType.SourceBlackArrowDeathMark));
+                DealModelDamage(game.Combat, ally, "marked", 999999);
+                Assert.IsFalse(MoriaModelEffects(game.Combat)
+                    .Any(x => x.IsVirtualAttackEffect));
+                Assert.AreEqual(2, game.Combat.CharacterCount);
+                Assert.AreEqual(0, game.Combat.MoriaZombieMaterials);
+            }
+        }
+
+        [Test]
+        public void BlackArrowMarkIsClearedOnOwnerRemovalAndDecodingLaneChange()
+        {
+            using (var game = Create())
+            {
+                long removedMoria = game.Combat.SpawnCharacter("S-09", 0, 0);
+                long survivor = game.Combat.SpawnCharacter("U-14", 10, 0);
+                game.Combat.SpawnEnemy("removed-owner", 1000,
+                    CharacterEnemyKind.Line, 10, 10, 0);
+                DealModelDamage(game.Combat, removedMoria, "removed-owner", 1);
+                ApplyConfirmedMoriaMark(game.Combat, removedMoria, "removed-owner");
+                game.Combat.RemoveCharacter(removedMoria);
+                Assert.IsFalse(game.Combat.StatusOf("removed-owner").Snapshot()
+                    .Any(x => x.Type == CombatEffectType.SourceBlackArrowDeathMark));
+                DealModelDamage(game.Combat, survivor, "removed-owner", 999);
+                Assert.IsFalse(MoriaModelEffects(game.Combat)
+                    .Any(x => x.IsVirtualAttackEffect));
+
+                long decoding = game.Combat.SpawnCharacter("S-09", 0, 0);
+                game.Combat.SpawnEnemy("decode-owner", 1000,
+                    CharacterEnemyKind.Line, 10, 10, 0);
+                DealModelDamage(game.Combat, decoding, "decode-owner", 1);
+                ApplyConfirmedMoriaMark(game.Combat, decoding, "decode-owner");
+                game.Combat.SetOriginalPoneglyphChanneling(decoding, true);
+                Assert.IsFalse(game.Combat.StatusOf("decode-owner").Snapshot()
+                    .Any(x => x.Type == CombatEffectType.SourceBlackArrowDeathMark));
+                DealModelDamage(game.Combat, survivor, "decode-owner", 999);
+                Assert.IsFalse(MoriaModelEffects(game.Combat)
+                    .Any(x => x.IsVirtualAttackEffect));
+            }
+        }
+
+        [Test]
+        public void BlackArrowLethalBasicHitConvertsOnceAndBossDoesNotReceiveMark()
+        {
+            using (var game = Create())
+            {
+                long moria = game.Combat.SpawnCharacter("S-09", 0, 0);
+                game.Combat.SpawnEnemy("boss", 1000,
+                    CharacterEnemyKind.Boss, 10, 10, 0);
+                DealModelDamage(game.Combat, moria, "boss", 1);
+                ApplyConfirmedMoriaMark(game.Combat, moria, "boss");
+                Assert.IsFalse(game.Combat.StatusOf("boss").Snapshot()
+                    .Any(x => x.Type == CombatEffectType.SourceBlackArrowDeathMark));
+                DealModelDamage(game.Combat, moria, "boss", 999);
+                Assert.IsFalse(MoriaModelEffects(game.Combat)
+                    .Any(x => x.IsVirtualAttackEffect));
+
+                game.Combat.SpawnEnemy("lethal", 1000,
+                    CharacterEnemyKind.Line, 10, 10, 0);
+                DealModelDamage(game.Combat, moria, "lethal", 1000);
+                ApplyConfirmedMoriaMark(game.Combat, moria, "lethal");
+                Assert.AreEqual(1, MoriaModelEffects(game.Combat)
+                    .Count(x => x.IsVirtualAttackEffect));
+                ApplyConfirmedMoriaMark(game.Combat, moria, "lethal");
+                Assert.AreEqual(1, MoriaModelEffects(game.Combat)
+                    .Count(x => x.IsVirtualAttackEffect));
+                Assert.AreEqual(1, game.Combat.CharacterCount);
+            }
+        }
+
+        [Test]
+        public void DispellingBlackArrowBeforeDeathPreventsConversion()
+        {
+            using (var game = Create())
+            {
+                long moria = game.Combat.SpawnCharacter("S-09", 0, 0);
+                long ally = game.Combat.SpawnCharacter("U-14", 10, 0);
+                game.Combat.SpawnEnemy("dispelled", 1000,
+                    CharacterEnemyKind.Line, 10, 10, 0);
+                DealModelDamage(game.Combat, moria, "dispelled", 1);
+                ApplyConfirmedMoriaMark(game.Combat, moria, "dispelled");
+                game.Combat.StatusOf("dispelled").RemoveSource(
+                    "practice-native:A087:BNba:" + moria);
+                DealModelDamage(game.Combat, ally, "dispelled", 999);
+                Assert.IsFalse(MoriaModelEffects(game.Combat)
+                    .Any(x => x.IsVirtualAttackEffect));
             }
         }
 

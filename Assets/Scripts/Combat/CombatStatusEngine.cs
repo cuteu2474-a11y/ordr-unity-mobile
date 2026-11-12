@@ -26,7 +26,10 @@ namespace Ordr.Mobile.Combat
         // Source-map A11L/AUfa: permanent defensive buff on Tezoro himself.
         ArmorBuff,
         // R00R/A11B AOae DataB1=.03: movement speed, NOT attack speed.
-        MovementSpeedBuff
+        MovementSpeedBuff,
+        // S-09/ANba negative death mark; no direct damage modifier.
+        // Append only, preserving all older numeric status identities.
+        SourceBlackArrowDeathMark
     }
 
     public enum CombatEffectOrigin

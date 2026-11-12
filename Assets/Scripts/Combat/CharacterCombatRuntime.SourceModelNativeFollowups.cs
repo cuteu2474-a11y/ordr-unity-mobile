@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Combat
@@ -83,6 +84,147 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        private sealed class SourceMoriaBlackArrowMark
+        {
+            public long OwnerId;
+            public double ExpiresAt;
+            public bool StoryLane;
+            public long LaneRevision;
+            public string StatusSource;
+        }
+
+        // ANba/A087 from the original W3A: Dur1/HeroDur1=.05,
+        // DataA1=0 bonus damage, DataC1=10 timed h00H attack,
+        // BuffID1=BNba,BNdm. The recorded target mask excludes Hero,
+        // Ancient and Sapper. This model restricts to standard line units
+        // until precise original corpse/organic flags are available.
+        private const double SourceMoriaBlackArrowMarkSeconds = .05;
+        private readonly Dictionary<string, SourceMoriaBlackArrowMark>
+            sourceMoriaBlackArrowMarks =
+                new Dictionary<string, SourceMoriaBlackArrowMark>(StringComparer.Ordinal);
+        private readonly HashSet<string> sourceMoriaBlackArrowConverted =
+            new HashSet<string>(StringComparer.Ordinal);
+
+        private static string SourceMoriaBlackArrowStatusId(long ownerId) =>
+            "practice-native:A087:BNba:" + ownerId;
+
+        private void ApplySourceMoriaBlackArrowAfterBasicHit(
+            CharacterInstance owner, SpatialCombatEnemy victim)
+        {
+            if (!UsesSourceModelBasicAttacks || owner == null ||
+                owner.Catalog.Id != "S-09" || victim == null ||
+                victim.Kind != CharacterEnemyKind.Line ||
+                !characters.ContainsKey(owner.Id) ||
+                sourceMoriaBlackArrowConverted.Contains(victim.Id) ||
+                !CanAttackInThisLane(owner, victim))
+                return;
+            // A successful weapon hit is the only mark source. It adds no
+            // fabricated damage, no extra RNG and no persistent corpse unit.
+            SourceMoriaBlackArrowMark old;
+            if (sourceMoriaBlackArrowMarks.TryGetValue(victim.Id, out old))
+            {
+                CombatStatusEngine prior;
+                if (statuses.TryGetValue(victim.Id, out prior))
+                    prior.RemoveSource(old.StatusSource);
+            }
+            var mark = new SourceMoriaBlackArrowMark {
+                OwnerId = owner.Id,
+                ExpiresAt = effectExecutor.Time + SourceMoriaBlackArrowMarkSeconds,
+                StoryLane = IsStoryDeployed(owner.Id),
+                LaneRevision = SourceModelLaneRevision(owner.Id),
+                StatusSource = SourceMoriaBlackArrowStatusId(owner.Id)
+            };
+            sourceMoriaBlackArrowMarks[victim.Id] = mark;
+            CombatStatusEngine status;
+            if (statuses.TryGetValue(victim.Id, out status))
+                status.Apply(new CombatEffect(mark.StatusSource,
+                    CombatEffectType.SourceBlackArrowDeathMark,
+                    CombatEffectOrigin.TriggeredSkill, 1,
+                    SourceMoriaBlackArrowMarkSeconds));
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.StatusApplied,
+                InstanceKey(owner.Id), victim.Id, "모리아 · 블랙 애로우 표식",
+                "MODEL_ONLY A087/ANba: BNba/BNdm 0.05초 / 물리 추가 피해 0", 0));
+            // CombatResolution emits DamageApplied before the normal attack
+            // caller receives BasicAttackResult. A lethal Black Arrow must
+            // still convert immediately, even without a later damage event.
+            if (!victim.Enemy.IsAlive)
+                TryConsumeSourceMoriaBlackArrowOnDeath(victim.Id);
+        }
+
+        private void TryConsumeSourceMoriaBlackArrowOnDeath(string enemyId)
+        {
+            if (sourceMoriaBlackArrowConverted.Contains(enemyId)) return;
+            SourceMoriaBlackArrowMark mark;
+            if (!sourceMoriaBlackArrowMarks.TryGetValue(enemyId, out mark)) return;
+            CharacterInstance owner = null;
+            SpatialCombatEnemy victim = null;
+            CombatStatusEngine status = null;
+            bool valid = effectExecutor.Time < mark.ExpiresAt &&
+                characters.TryGetValue(mark.OwnerId, out owner) &&
+                enemies.TryGetValue(enemyId, out victim) &&
+                victim.Kind == CharacterEnemyKind.Line &&
+                IsStoryDeployed(mark.OwnerId) == mark.StoryLane &&
+                SourceModelLaneRevision(mark.OwnerId) == mark.LaneRevision &&
+                !IsSharedObjectiveDeployed(mark.OwnerId) &&
+                !IsOriginalPoneglyphChanneling(mark.OwnerId) &&
+                statuses.TryGetValue(enemyId, out status) &&
+                HasSourceMoriaBlackArrowStatus(status, mark.StatusSource);
+            sourceMoriaBlackArrowMarks.Remove(enemyId);
+            if (statuses.TryGetValue(enemyId, out status))
+                status.RemoveSource(mark.StatusSource);
+            if (!valid) return;
+            sourceMoriaBlackArrowConverted.Add(enemyId);
+            SpawnSourceModelMoriaZombie(owner, victim);
+        }
+
+        private static bool HasSourceMoriaBlackArrowStatus(
+            CombatStatusEngine status, string source)
+        {
+            foreach (var effect in status.Snapshot())
+                if (effect.SourceId == source &&
+                    effect.Type == CombatEffectType.SourceBlackArrowDeathMark)
+                    return true;
+            return false;
+        }
+
+        private void ForgetSourceMoriaBlackArrowEnemy(string enemyId)
+        {
+            SourceMoriaBlackArrowMark mark;
+            if (sourceMoriaBlackArrowMarks.TryGetValue(enemyId, out mark))
+            {
+                CombatStatusEngine status;
+                if (statuses.TryGetValue(enemyId, out status))
+                    status.RemoveSource(mark.StatusSource);
+                sourceMoriaBlackArrowMarks.Remove(enemyId);
+            }
+            sourceMoriaBlackArrowConverted.Remove(enemyId);
+        }
+
+        private void ForgetSourceMoriaBlackArrowOwner(long ownerId)
+        {
+            var removed = new List<string>();
+            foreach (var entry in sourceMoriaBlackArrowMarks)
+                if (entry.Value.OwnerId == ownerId)
+                    removed.Add(entry.Key);
+            foreach (string enemyId in removed)
+                ForgetSourceMoriaBlackArrowEnemy(enemyId);
+        }
+
+        private void ExpireSourceMoriaBlackArrowMarks()
+        {
+            if (sourceMoriaBlackArrowMarks.Count == 0) return;
+            var expired = new List<string>();
+            foreach (var entry in sourceMoriaBlackArrowMarks)
+                if (effectExecutor.Time >= entry.Value.ExpiresAt ||
+                    !characters.ContainsKey(entry.Value.OwnerId) ||
+                    SourceModelLaneRevision(entry.Value.OwnerId) !=
+                        entry.Value.LaneRevision)
+                    expired.Add(entry.Key);
+            foreach (string enemyId in expired)
+                ForgetSourceMoriaBlackArrowEnemy(enemyId);
+        }
+
         private void SpawnSourceModelMoriaZombie(CharacterInstance actor,
             SpatialCombatEnemy defeated)
         {
@@ -94,7 +236,9 @@ namespace Ordr.Mobile.Combat
             // The 10s mobile proxy uses the original h00H attack object,
             // native dice and cadence through the shared attack pipeline.
             // No free material, roster slot, wisp or U-14 spawn is created.
-            // Original Black Arrow debuff/attack start timing remains MODEL_ONLY.
+            // Native mark duration and death listener now have source-backed
+            // windows. Initial h00H attack phase and corpse flags remain a
+            // model approximation until verified by Warcraft execution.
             if (sourceModelRules == null ||
                 sourceModelRules.SourceObjectAttack("h00H") == null)
             {
@@ -108,11 +252,15 @@ namespace Ordr.Mobile.Combat
                 "모리아 · 블랙 애로우", "모리아 일시 좀비 공격 효과",
                 10, "h00H", spawnX: defeated.X, spawnY: defeated.Y,
                 modeledCombat: true, virtualAttackEffect: true);
+            SourceIndependentAttacker projectile;
+            if (sourceIndependentAttackers.TryGetValue(
+                    SummonAttackKey(effect.Id), out projectile))
+                projectile.ModelBlackArrowEffect = true;
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
                 defeated.Id, "모리아 · 블랙 애로우",
                 "MODEL_ONLY A087/ANba: 10초 가상 공격 효과 " + effect.Id +
-                " / U-14 영구 보유·조합 미변경 / 원본 디버프·타이밍 미검증", 0));
+                " / U-14 영구 보유·조합 미변경 / 원본 첫 공격 위상·시체 조건 미검증", 0));
         }
     }
 }
