@@ -499,7 +499,11 @@ namespace Ordr.Mobile.Combat
                 (rawcode == "H0BX" || rawcode == "H0BY"))
                 SourceModelEleventhBonneyAttack(actor, primary);
             if (SourceModelTenthFormProfile(actor, "LI-03", "h08O") && rawcode == "h08O")
+            {
+                SourceModelMarcoHumanAttackEffect(actor, primary);
                 SourceModelEleventhMarcoAttack(actor, primary);
+                SourceModelMarcoPhoenixAttackHeal(actor);
+            }
         }
 
         private void SourceModelEleventhBonneyAttack(CharacterInstance actor,
@@ -552,17 +556,170 @@ namespace Ordr.Mobile.Combat
                 string.Equals(kinds[0] as string, "line", StringComparison.Ordinal);
         }
 
+        // All target selectors share the actual combat lane and a stable
+        // order. This avoids a duplicated hit or a UI-only enemy becoming
+        // one of the eight additional phoenix recipients.
+        private List<SpatialCombatEnemy> SourceModelMarcoAreaTargets(
+            CharacterInstance actor, SpatialCombatEnemy center,
+            double radius, bool excludePrimary)
+        {
+            var result = new List<SpatialCombatEnemy>();
+            double radiusSquared = radius * radius;
+            foreach (var target in enemies.Values)
+            {
+                if (!target.Enemy.IsAlive ||
+                    !CanAttackInThisLane(actor, target) ||
+                    (excludePrimary && target.Id == center.Id)) continue;
+                double dx = target.X - center.X, dy = target.Y - center.Y;
+                if (dx * dx + dy * dy <= radiusSquared)
+                    result.Add(target);
+            }
+            result.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
+            return result;
+        }
+
+        private static ImportedCombatEffect SourceModelMarcoPassive(
+            CharacterInstance actor, string type)
+        {
+            if (actor.Profile == null) return null;
+            foreach (var passive in actor.Profile.Passives)
+                if (passive.Type == type) return passive;
+            return null;
+        }
+
+        private void SourceModelMarcoHumanAttackEffect(
+            CharacterInstance actor, SpatialCombatEnemy target)
+        {
+            if (SourceModelEleventhMarcoForm(actor.Id) != "human" ||
+                !target.Enemy.IsAlive) return;
+            var passive = SourceModelMarcoPassive(
+                actor, "marcoHumanBonusExplosion");
+            if (passive == null ||
+                passive.Text("requiresForm") != "human" ||
+                passive.Number("chancePercent") != 10 ||
+                passive.Number("targetCurrentHealthPercent") != 20 ||
+                passive.Number("specialMonsterOverrideAmount") != 200000 ||
+                !SourceModelIsMarcoOwner(actor.Id) ||
+                sourceModelRules.NextScriptRoll(1000000) >= 100000)
+                return;
+            // Original tooltip: each declared human attack has an independent
+            // 10% target-current-HP explosion. Special monsters use 200k.
+            // There is no speculative cast cost or extra area volley.
+            double amount = target.Kind == CharacterEnemyKind.Line
+                ? target.Enemy.Health * .2 : 200000;
+            ApplySourceModelSeventhTimedHit(actor, target,
+                "새새열매 · 인간형 추가 폭발", amount, "explosive");
+            // The wave-step owner removes defeated enemies after all
+            // declared follow-ups, never in this callback.
+        }
+
+        private void SourceModelMarcoPhoenixAttackHeal(CharacterInstance actor)
+        {
+            if (SourceModelEleventhMarcoForm(actor.Id) != "phoenix") return;
+            var passive = SourceModelMarcoPassive(
+                actor, "marcoPhoenixAttackHealthRestore");
+            var pool = actor.Abilities.Resources;
+            if (passive == null || passive.Text("requiresForm") != "phoenix" ||
+                passive.Number("healthPerAttack") != 1 || pool == null)
+                return;
+            // This is a declared-attack +1 HP, not a heal for every enemy hit.
+            pool.SetHealth(Math.Min(pool.MaximumHealth, pool.Health + 1));
+        }
+
+        private void AdvanceSourceModelMarcoAllyRegeneration(double seconds)
+        {
+            if (seconds <= 0 || !UsesSourceModelBasicAttacks ||
+                !IsFiniteSourceModelMarcoTick(seconds)) return;
+            // One same-lane feather aura per recipient. Neither two Marcos
+            // nor an owner's own natural SLK +0.5 may multiply this +3.
+            foreach (var ally in characters.Values)
+            {
+                if (IsOriginalPoneglyphChanneling(ally.Id) ||
+                    IsSharedObjectiveDeployed(ally.Id)) continue;
+                bool hasFeathers = false;
+                foreach (var marco in characters.Values)
+                {
+                    if (!SourceModelIsMarcoOwner(marco.Id) ||
+                        IsOriginalPoneglyphChanneling(marco.Id) ||
+                        IsSharedObjectiveDeployed(marco.Id) ||
+                        !CanShareAllyCombatLane(marco.Id, ally.Id)) continue;
+                    var passive = SourceModelMarcoPassive(marco,
+                        "healthRegeneration");
+                    if (passive == null || passive.Number("perSecond") != 3)
+                        continue;
+                    hasFeathers = true;
+                    break;
+                }
+                if (!hasFeathers) continue;
+                ProvisionSourceModelAuraRecipientResources(ally);
+                var pool = ally.Abilities.Resources;
+                if (pool != null)
+                    pool.SetHealth(Math.Min(pool.MaximumHealth,
+                        pool.Health + 3 * seconds));
+            }
+        }
+
+        private static bool IsFiniteSourceModelMarcoTick(double seconds) =>
+            !double.IsNaN(seconds) && !double.IsInfinity(seconds);
+
+        // The native A15N human 15% x3.25 critical is already rolled in
+        // SourceModelUnitEffects/BasicDamageResolver. Do not roll it a second
+        // time here. Source exact phoenix 15% x3 remains a separate object
+        // replacement gap and must not silently inherit a fabricated roll.
+        private void SourceModelMarcoBasicSplash(CharacterInstance actor,
+            BasicAttackResult hit, SpatialCombatEnemy primary)
+        {
+            if (!hit.BasicHitApplied || hit.ActualDamage <= 0 ||
+                !SourceModelIsMarcoOwner(actor.Id)) return;
+            string form = SourceModelEleventhMarcoForm(actor.Id);
+            if (form == null) return;
+            bool phoenix = form == "phoenix";
+            var passive = SourceModelMarcoPassive(actor,
+                phoenix ? "marcoPhoenixBasicPhysicalSplash" :
+                    "basicAttackMagicSplash");
+            double rate = phoenix ? 80 : 100;
+            double radius = phoenix ? 400 : 375;
+            if (passive == null || passive.Number("basicDamagePercent") != rate ||
+                passive.Number("radius") != radius ||
+                (phoenix && passive.Text("requiresForm") != "phoenix")) return;
+            // The committed basic-hit HP loss is the only available source
+            // damage receipt. Use it as the tooltip splash basis, then send
+            // each hit through the existing armor/resistance/death system.
+            // This approximation is explicitly NOT a Warcraft native
+            // pre-armor splash or crit-order equivalence claim.
+            double amount = hit.ActualDamage * (rate / 100.0);
+            foreach (var victim in SourceModelMarcoAreaTargets(
+                         actor, primary, radius, false))
+                ApplySourceModelSeventhTimedHit(actor, victim,
+                    phoenix ? "환수종 · 불사조 광역 기본공격" :
+                        "환수종 · 인간형 광역 기본공격",
+                    amount, phoenix ? "physical" : "magical");
+            // The caller's shared wave step owns defeated-enemy removal;
+            // do not mutate its dictionary in the confirmed-hit callback.
+        }
+
+        private static bool SourceModelMarcoBossStoryOnly(ImportedCombatEffect part)
+        {
+            var types = part.Get("onlyTargetKinds") as IReadOnlyList<object>;
+            if (types == null || types.Count != 2) return false;
+            return string.Equals(types[0] as string, "boss",
+                       StringComparison.Ordinal) &&
+                string.Equals(types[1] as string, "story",
+                    StringComparison.Ordinal);
+        }
+
         private void SourceModelEleventhMarcoAttack(CharacterInstance actor,
             SpatialCombatEnemy primary)
         {
             string form = SourceModelEleventhMarcoForm(actor.Id);
-            if (form == null || actor.Abilities.Resources == null) return;
+            if (form == null || actor.Abilities.Resources == null ||
+                !primary.Enemy.IsAlive) return;
             bool phoenix = form == "phoenix";
             var skill = FindSourceSkill(actor, phoenix ?
                 "불사조 상태 폭발" : "인간형 돌진");
             if (!SourceModelEleventhSkill(skill, phoenix ? "LI-03:skill:0" :
                     "LI-03:skill:1", phoenix ? "불사조 상태 폭발" : "인간형 돌진",
-                    "onAttack", phoenix ? 2 : 3) ||
+                    "onAttack", phoenix ? 3 : 4) ||
                 skill.ChancePercent != (phoenix ? 18 : 15) ||
                 skill.Number("healthCost") != (phoenix ? 10 : 7) ||
                 skill.Number("minHealth") != 15 ||
@@ -573,7 +730,12 @@ namespace Ordr.Mobile.Combat
                              skill.Components[0].Number("flatAmount") != 500000 ||
                              skill.Components[1].Type != "fixed" ||
                              skill.Components[1].Number("bonusDamagePercent") != 40 ||
-                             skill.Components[1].Text("scope") != "singlePrimaryTarget")) ||
+                             skill.Components[1].Text("scope") != "singlePrimaryTarget" ||
+                             skill.Components[2].Type != "magical" ||
+                             skill.Components[2].Number("amount") != 750000 ||
+                             skill.Components[2].Number("maxAdditionalTargets") != 8 ||
+                             skill.Components[2].Number("radius") != 500 ||
+                             skill.Components[2].Text("scope") != "additionalEnemies")) ||
                 (!phoenix && (skill.Components[0].Number("amount") != 750000 ||
                               skill.Components[1].Type != "explosive" ||
                               skill.Components[1].Number("targetCurrentHealthPercent") != 30 ||
@@ -581,7 +743,11 @@ namespace Ordr.Mobile.Combat
                               !SourceModelMarcoLineOnly(skill.Components[1]) ||
                               skill.Components[2].Type != "stun" ||
                               skill.Components[2].Number("durationSeconds") != 2 ||
-                              skill.Components[2].Text("scope") != "singlePrimaryTarget")))
+                              skill.Components[2].Text("scope") != "singlePrimaryTarget" ||
+                              skill.Components[3].Type != "magical" ||
+                              skill.Components[3].Number("amount") != 200000 ||
+                              skill.Components[3].Text("scope") != "singlePrimaryTarget" ||
+                              !SourceModelMarcoBossStoryOnly(skill.Components[3]))))
                 return;
             var resource = actor.Abilities.Resources;
             double cost = phoenix ? 10 : 7;
@@ -614,13 +780,39 @@ namespace Ordr.Mobile.Combat
                     ApplySourceModelFixedPrimaryPacket(InstanceKey(actor.Id),
                         primary, fixedBonus, skill.Name + " · 단일 추가 고정 피해");
             }
-            if (!phoenix && primary.Enemy.IsAlive &&
-                primary.Kind == CharacterEnemyKind.Line)
+            if (phoenix)
             {
-                // Native ordering/target immunities remain model-only.
-                ApplySourceModelSeventhTimedHit(actor, primary, skill.Name,
-                    primary.Enemy.Health * .3, "explosive");
-                SourceModelEleventhStun(actor, primary, skill.Name, 2);
+                // Additional 8 distinct live enemies. The imported tooltip
+                // gives a count but not the native target priority; use a
+                // stable same-lane circle around the primary at model radius
+                // 500, without selecting the primary a second time.
+                int additional = 0;
+                foreach (var victim in SourceModelMarcoAreaTargets(
+                             actor, primary, 500, true))
+                {
+                    if (additional >= 8) break;
+                    ApplySourceModelSeventhTimedHit(actor, victim,
+                        skill.Name + " · 추가 8명 마법", 750000, "magical");
+                    additional++;
+                }
+            }
+            else if (primary.Enemy.IsAlive)
+            {
+                if (primary.Kind == CharacterEnemyKind.Line)
+                {
+                    ApplySourceModelSeventhTimedHit(actor, primary, skill.Name,
+                        primary.Enemy.Health * .3, "explosive");
+                    SourceModelEleventhStun(actor, primary, skill.Name, 2);
+                }
+                else if (primary.Kind == CharacterEnemyKind.Boss ||
+                         primary.Kind == CharacterEnemyKind.Story)
+                {
+                    ApplySourceModelSeventhTimedHit(actor, primary,
+                        skill.Name + " · 보스·스토리 추가 마법",
+                        200000, "magical");
+                    // Boss/story stun immunity and reduction are not yet
+                    // verified; never apply the ordinary line stun there.
+                }
             }
             RemoveDefeatedEnemies();
         }

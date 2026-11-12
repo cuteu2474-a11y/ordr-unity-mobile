@@ -41,6 +41,16 @@ namespace Ordr.Mobile.Combat
                 sourceFlatArmorMode = true;
             }
         }
+        private Func<string, bool> sourceMarcoIsPhoenix;
+        internal void ConfigureMarcoPhoenixCritical(Func<string, bool> isPhoenix)
+        {
+            if (sourceMarcoIsPhoenix != null)
+                throw new InvalidOperationException(
+                    "마르코 형태별 원본 치명타 연결이 중복됐습니다.");
+            sourceMarcoIsPhoenix = isPhoenix ??
+                throw new ArgumentNullException(nameof(isPhoenix));
+        }
+
         public OriginalNativePassive PassiveFor(string rawcode) => passives.ForRawcode(rawcode) ??
             passives.PracticeFirstLevelForRawcode(rawcode) ?? passives.PracticeBonusForRawcode(rawcode);
         public IReadOnlyList<Original323SpecialAura> AurasFor(string id) => auras.FindAll(id);
@@ -136,6 +146,33 @@ namespace Ordr.Mobile.Combat
             string key = request.UnitInstanceId + ":" + target.Id;
             pending.Remove(key);
             var passive = PassiveFor(request.UnitRawCode);
+            // h08O base A15N: 15% x3.25 in human form. The verified
+            // tooltip upgrades the SAME critical slot to 15% x3 in phoenix
+            // form; do not roll a second independent 15% effect.
+            if (passive != null && passive.CatalogId == "LI-03" &&
+                request.UnitRawCode == "h08O" &&
+                passive.AbilityRawcode == "A15N" &&
+                passive.Kind == OriginalNativePassiveKind.Critical &&
+                passive.ChancePerMillion == 150000 &&
+                passive.CriticalMultiplier == 3.25 &&
+                sourceMarcoIsPhoenix != null &&
+                sourceMarcoIsPhoenix(request.UnitInstanceId))
+            {
+                passive = new OriginalNativePassive {
+                    CatalogId = passive.CatalogId,
+                    OwnerRawcode = passive.OwnerRawcode,
+                    AbilityRawcode = passive.AbilityRawcode,
+                    Name = "마르코 · 불사조형 치명타",
+                    Kind = OriginalNativePassiveKind.Critical,
+                    ChancePerMillion = 150000,
+                    CriticalMultiplier = 3,
+                    BonusDamage = 0,
+                    NormalStunSeconds = 0,
+                    HeroStunSeconds = 0,
+                    DeclaredLevels = 1,
+                    OriginalTargetMask = passive.OriginalTargetMask
+                };
+            }
             if (!practiceTargets.Contains(target.Id) || passive == null || (target.Defenses.Kind != CharacterEnemyKind.Line &&
                 target.Defenses.Kind != CharacterEnemyKind.Boss)) return raw;
             // The development combat path treats its line/boss targets as air.

@@ -13135,6 +13135,39 @@
           "type": "basicAttackMagicSplash",
           "basicDamagePercent": 100,
           "radius": 375
+        },
+        {
+          "type": "marcoHumanBonusExplosion",
+          "requiresForm": "human",
+          "chancePercent": 10,
+          "targetCurrentHealthPercent": 20,
+          "specialMonsterOverrideAmount": 200000,
+          "scope": "singlePrimaryTarget"
+        },
+        {
+          "type": "marcoPhoenixBasicPhysicalSplash",
+          "requiresForm": "phoenix",
+          "basicDamagePercent": 80,
+          "radius": 400
+        },
+        {
+          "type": "marcoPhoenixAttackHealthRestore",
+          "requiresForm": "phoenix",
+          "healthPerAttack": 1
+        },
+        {
+          "type": "marcoHumanCritical",
+          "requiresForm": "human",
+          "chancePercent": 15,
+          "criticalMultiplier": 3.25,
+          "sourceNativeAbilityRawcode": "A15N"
+        },
+        {
+          "type": "marcoPhoenixCritical",
+          "requiresForm": "phoenix",
+          "chancePercent": 15,
+          "criticalMultiplier": 3,
+          "requiresNativeFormProof": true
         }
       ],
       "skills": [
@@ -13151,6 +13184,13 @@
               "type": "fixed",
               "bonusDamagePercent": 40,
               "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "magical",
+              "amount": 750000,
+              "maxAdditionalTargets": 8,
+              "scope": "additionalEnemies",
+              "radius": 500
             }
           ],
           "chancePercent": 18,
@@ -13179,6 +13219,15 @@
             {
               "type": "stun",
               "durationSeconds": 2,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "magical",
+              "amount": 200000,
+              "onlyTargetKinds": [
+                "boss",
+                "story"
+              ],
               "scope": "singlePrimaryTarget"
             }
           ],
@@ -13213,7 +13262,9 @@
       "unconfirmedFields": [
         "원본 스킬 rawcode",
         "실제 평타·공속",
-        "피해 공식·중첩 여부"
+        "피해 공식·중첩 여부",
+        "불사조형 능력치 증감량 및 원본 치명타 3배 적용 시 네이티브 A15N 교체 경로",
+        "단일 40% 고정 피해의 기준과 추가 8명 공격의 원본 대상 선정"
       ]
     },
     {

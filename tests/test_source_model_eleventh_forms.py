@@ -54,7 +54,7 @@ class EleventhSourceFormTests(unittest.TestCase):
         self.assertIn('FindSourceSkill(actor, "잔혹한 검술")', FORMS)
         self.assertIn('sourceModelKingExecutionUsed.Add(actor.Id)', FORMS)
 
-    def test_marco_requires_external_witness_no_fabricated_toggle(self):
+    def test_marco_manual_forms_and_tooltip_effects_share_one_owner(self):
         phoenix, human = PROFILES["LI-03"]["skills"][:2]
         self.assertEqual((18, 10, 15),
                          (phoenix["chancePercent"], phoenix["healthCost"], phoenix["minHealth"]))
@@ -73,6 +73,30 @@ class EleventhSourceFormTests(unittest.TestCase):
         self.assertIn('SourceModelSafeFixedAmount(firstHpLoss * .40', FORMS)
         self.assertIn('skill.Components[1].Number("targetCurrentHealthPercent") != 30', FORMS)
         self.assertIn('skill.Components[2].Number("durationSeconds") != 2', FORMS)
+        self.assertEqual(3, len(phoenix["components"]))
+        self.assertEqual(4, len(human["components"]))
+        self.assertEqual((750000, 8),
+                         (phoenix["components"][2]["amount"],
+                          phoenix["components"][2]["maxAdditionalTargets"]))
+        self.assertEqual(200000, human["components"][3]["amount"])
+        marcop = PROFILES["LI-03"]["passives"]
+        by_type = {p["type"]: p for p in marcop}
+        self.assertEqual((10, 20),
+                         (by_type["marcoHumanBonusExplosion"]["chancePercent"],
+                          by_type["marcoHumanBonusExplosion"]["targetCurrentHealthPercent"]))
+        self.assertEqual(80, by_type["marcoPhoenixBasicPhysicalSplash"]["basicDamagePercent"])
+        self.assertEqual(1, by_type["marcoPhoenixAttackHealthRestore"]["healthPerAttack"])
+        self.assertIn('SourceModelMarcoBasicSplash(actor, hit, primary)', EFFECTS)
+        self.assertIn('SourceModelMarcoPhoenixAttackHeal(actor)', FORMS)
+        self.assertIn('SourceModelMarcoHumanAttackEffect(actor, primary)', FORMS)
+        self.assertIn('AdvanceSourceModelMarcoAllyRegeneration(seconds)', (
+            COMBAT / "CharacterCombatRuntime.SourceModelResources.cs").read_text())
+        self.assertIn('SourceModelMarcoAreaTargets(', FORMS)
+        self.assertIn('additional >= 8', FORMS)
+        crit = (COMBAT / "SourceModelUnitEffects.cs").read_text()
+        self.assertIn('ConfigureMarcoPhoenixCritical', crit)
+        self.assertIn('CriticalMultiplier = 3,', crit)
+        self.assertIn('passive.AbilityRawcode == "A15N"', crit)
 
     def test_one_pipeline_and_previous_native_paths_remain(self):
         self.assertIn('TryCastSourceModelEleventhForm(actor, skillId, out result)', TEN)

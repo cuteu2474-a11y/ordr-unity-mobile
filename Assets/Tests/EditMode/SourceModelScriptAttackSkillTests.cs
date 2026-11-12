@@ -3557,6 +3557,98 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void MarcoPhoenixAdditionalMagicHitsEightDistinctEnemiesOnly()
+        {
+            using (var live = Create("LI-03", true, -4900, 5400,
+                withSourceResources: true))
+            {
+                SpawnMarcoModelTarget(live.Combat, "marco-focus");
+                for (int i = 0; i < 11; i++)
+                    SpawnMarcoModelTarget(live.Combat,
+                        "marco-extra-" + i.ToString("00"));
+                live.Combat.ConfigureSourceModelMarcoFormEvidence(id =>
+                    id == live.ActorId ? "phoenix" : null);
+                var eventsField = typeof(CharacterCombatRuntime).GetField(
+                    "events", System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+                var events = (List<CharacterCombatEvent>)eventsField.GetValue(live.Combat);
+                int before = events.Count;
+                TriggerWitnessedMarcoModelAttack(
+                    live.Combat, live.ActorId, "marco-focus");
+                var extra = events.Skip(before).Where(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "불사조 상태 폭발 · 추가 8명 마법" &&
+                    e.Amount > 0).ToList();
+                Assert.AreEqual(8, extra.Count);
+                Assert.AreEqual(8, extra.Select(e => e.EnemyId).Distinct().Count());
+                Assert.IsFalse(extra.Any(e => e.EnemyId == "marco-focus"));
+                Assert.AreEqual(75, live.Combat.ResourcesOf(live.ActorId).Health);
+            }
+        }
+
+        [Test]
+        public void MarcoHumanTenPercentExplosionUsesOnePrimaryTarget()
+        {
+            using (var live = Create("LI-03", true, -4900, 5400,
+                withSourceResources: true))
+            {
+                SpawnMarcoModelTarget(live.Combat, "marco-human");
+                SpawnMarcoModelTarget(live.Combat, "marco-bystander");
+                var eventField = typeof(CharacterCombatRuntime).GetField(
+                    "events", System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+                var events = (List<CharacterCombatEvent>)eventField.GetValue(live.Combat);
+                int before = events.Count;
+                var chars = (System.Collections.IDictionary)typeof(CharacterCombatRuntime)
+                    .GetField("characters", System.Reflection.BindingFlags.Instance |
+                        System.Reflection.BindingFlags.NonPublic).GetValue(live.Combat);
+                var targets = (System.Collections.IDictionary)typeof(CharacterCombatRuntime)
+                    .GetField("enemies", System.Reflection.BindingFlags.Instance |
+                        System.Reflection.BindingFlags.NonPublic).GetValue(live.Combat);
+                var method = typeof(CharacterCombatRuntime).GetMethod(
+                    "SourceModelMarcoHumanAttackEffect",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+                Assert.IsNotNull(method);
+                method.Invoke(live.Combat,
+                    new[] { chars[live.ActorId], targets["marco-human"] });
+                var extra = events.Skip(before).Where(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "새새열매 · 인간형 추가 폭발").ToList();
+                Assert.AreEqual(1, extra.Count);
+                Assert.AreEqual("marco-human", extra[0].EnemyId);
+                Assert.Greater(extra[0].Amount, 0);
+            }
+        }
+
+        [Test]
+        public void MarcoFeatherRegenIsPerRecipientNotPerNumberOfCasters()
+        {
+            using (var live = Create("LI-03", true, -4900, 5400,
+                withSourceResources: true))
+            {
+                long second = live.Combat.SpawnCharacter("LI-03", -4898, 5400);
+                var owner = live.Combat.ResourcesOf(live.ActorId);
+                var another = live.Combat.ResourcesOf(second);
+                owner.SetHealth(40);
+                another.SetHealth(50);
+                var method = typeof(CharacterCombatRuntime).GetMethod(
+                    "AdvanceSourceModelMarcoAllyRegeneration",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+                Assert.IsNotNull(method);
+                method.Invoke(live.Combat, new object[] { 2.0 });
+                Assert.AreEqual(46, owner.Health);
+                Assert.AreEqual(56, another.Health);
+                live.Combat.SetOriginalPoneglyphChanneling(second, true);
+                method.Invoke(live.Combat, new object[] { 1.0 });
+                Assert.AreEqual(49, owner.Health);
+                Assert.AreEqual(56, another.Health,
+                    "The decoding recipient is not eligible for the aura.");
+            }
+        }
+
+        [Test]
         public void MarcoWitnessedFormDoesNotProcDuringDecodeOrAfterRemoval()
         {
             using (var live = Create("LI-03", true, -4900, 5400,

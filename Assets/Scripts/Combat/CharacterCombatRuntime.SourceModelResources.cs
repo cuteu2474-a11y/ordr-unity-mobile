@@ -195,6 +195,10 @@ namespace Ordr.Mobile.Combat
                         source.ManaRegeneration + levelManaRegen, seconds);
                 }
             }
+            // The source tooltip's Marco feather healing is a permanent
+            // same-lane ally aura, not a cooldown-based self heal. Deduping
+            // per recipient prevents stacked +3 per additional Marco.
+            AdvanceSourceModelMarcoAllyRegeneration(seconds);
             // Count ally +0.25 HP/MP against the same status clock.
             AdvanceBulkAllyRegeneration(seconds);
             AdvanceSourceManualRegeneration(seconds);

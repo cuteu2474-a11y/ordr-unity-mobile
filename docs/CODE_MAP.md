@@ -1,5 +1,13 @@
 # 코드 구조
 
+## C07 마르코 형태별 전투 경로(스킬 설명 기반, 실행 미검증)
+
+- `data/character-skill-profiles.json`의 LI-03에 인간형 10% 현재체력20% 폭발/특수몹20만, 불사조 8인 75만 마법, 인간375범위100%마법 및 불사조400범위80%물리 평타, 불사조 공격시 HP+1, 형태별 치명타 도감 데이터를 보강. 원본 출처: https://ordsearch.net/characters/326
+- `CharacterCombatRuntime.SourceModelEleventhForms.cs`는 `ExecuteSourceModelEleventhFormDeclaredAttack`에서 형태별 스킬/공격시 후속을 재사용하고, `CompleteSourceModelHit`에서 이미 확정된 기본공격 결과에 추가 광역 피해를 연결합니다. 스킬 선언과 타격 성공을 구분해 취소 공격의 광역 중복 타격을 막습니다. 추가 8명은 같은 전장/반경 내 주 대상 제외, 안정적인 ID 순서의 TOOLTIP_MODEL_ONLY 선택입니다.
+- `SourceModelUnitEffects.BeforeBasicHit`의 기존 h08O 네이티브 A15N 15% 치명타 추첨을 유지하되 현재 F 변신 상태일 때 배수만 3.25(인간형)→3(불사조형)으로 변경합니다. 새 치명타 난수나 공격 콜백은 만들지 않습니다. `CharacterCombatRuntime.SourceModelResources.cs`는 동전장 아군 봉리력 +3 HP/초를 겹치지 않게 지급하고, 원본 SLK 자기 자연 재생 +0.5와 별도 계산합니다.
+- `SourceModelScriptAttackSkillTests` 및 `tests/test_source_model_eleventh_forms.py`에 추가 8명·단일 10% 폭발·아군 회복/중복·원본 기술 구성 확인 코드를 추가했습니다. Unity·Android/APK 검사 결과는 아직 미확인입니다.
+
+
 **UI 스크롤 연결:** `MobilePanelScrollGesture.Begin`의 선택적 가로축/스크롤바 여백 설정을 `OrdrMobileTouchPanel.HandleStripScroll`에서 재사용합니다. 왼쪽 목록과 스킬 줄은 Repaint에서 각각 viewport/최대 스크롤을 기록하고 화면 크기·배율 변경 시 입력 경계를 초기화합니다. `MobileMapSkillLayout`은 자원/스킬 공간 및 모든 고정 UI의 월드 입력 차단을, `OrdrMobileUiTheme.ResourceChip`은 자원 이름·정확한 숫자의 좁은 폭 2단 표시를 담당합니다.
 
 ## 마르코 F 스킬 발동 띠 연결 (코드·미검증)

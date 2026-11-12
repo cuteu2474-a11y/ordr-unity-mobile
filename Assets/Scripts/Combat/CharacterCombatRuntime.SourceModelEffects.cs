@@ -52,6 +52,16 @@ namespace Ordr.Mobile.Combat
         {
             sourceModelRules = rules;
             sourceModelUnitEffects = rules.UnitEffects;
+            // Same native critical slot in both forms, only the per-form
+            // multiplier changes. The original roll and source event stay
+            // in SourceModelUnitEffects.BeforeBasicHit.
+            if (sourceModelUnitEffects != null)
+                sourceModelUnitEffects.ConfigureMarcoPhoenixCritical(actorKey => {
+                    long id;
+                    return long.TryParse(actorKey, out id) &&
+                        SourceModelIsMarcoOwner(id) &&
+                        SourceModelEleventhMarcoForm(id) == "phoenix";
+                });
             // Upgrade IAS and gained hero AGI enter the existing shared cap once.
             // Resolve rawcodes at attack time so later units/forms inherit tech.
             attackPipeline.ConfigurePracticeHeroAgilitySpeed(actorKey =>
@@ -381,6 +391,11 @@ namespace Ordr.Mobile.Combat
             if (actor.Catalog.Id == "S-09" && hit.BasicHitApplied &&
                 hit.ActualDamage > 0)
                 ApplySourceMoriaBlackArrowAfterBasicHit(actor, primary);
+            // Marco's 375/400 splash is a separate confirmed-hit passive.
+            // It never fires for canceled declarations or zero HP damage.
+            if (actor.Catalog.Id == "LI-03" && hit.BasicHitApplied &&
+                hit.ActualDamage > 0)
+                SourceModelMarcoBasicSplash(actor, hit, primary);
             if (sourceModelUnitEffects == null) return;
             var passive = sourceModelUnitEffects.Take(InstanceKey(actor.Id), hit.TargetId);
             if (passive != null)
