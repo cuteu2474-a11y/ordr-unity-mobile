@@ -17,6 +17,8 @@ namespace Ordr.Mobile.Mobile
         public const string RogerCastActionPrefix = "source-native:roger:cast:";
         public const string UtaUnlockResourcePrefix = "source:native-trait:A0D2:";
         public const string UtaUnlockActionPrefix = "source-native:uta:unlock:";
+        public const string MarcoTransformActionPrefix = "source-native:marco:transform:";
+        public static string MarcoTransformAction(long id) => MarcoTransformActionPrefix + id;
         public static string UnlockResource(long id) => RogerUnlockResourcePrefix + id;
         public static string UnlockAction(long id) => RogerUnlockActionPrefix + id;
         public static string CastAction(long id) => RogerCastActionPrefix + id;
@@ -46,6 +48,30 @@ namespace Ordr.Mobile.Mobile
             bool ownsOtama = false;
             foreach (var unit in combat.MobileUnitSnapshot())
             {
+                if (unit.Unit.Id == "LI-03")
+                {
+                    long id = unit.InstanceId;
+                    bool phoenix = combat.PracticeFormOf(id) == "phoenix";
+                    double remaining =
+                        combat.SourceModelMarcoTransformCooldownRemaining(id);
+                    string direction = phoenix ? "인간형 복귀" : "불사조 변신";
+                    string timing = remaining > .00001
+                        ? " · 대기 " +
+                            Math.Ceiling(remaining * 10) / 10.0 + "초"
+                        : "";
+                    var offer = new MobileDedicatedSkillOffer(
+                        Original323SourceNativeActionKeys.MarcoTransformAction(id),
+                        "마르코 F · " + direction,
+                        "수동 변신 / 10.75초 쿨타임" + timing,
+                        true, combat.CanToggleSourceModelMarcoForm(id));
+                    // When the player selects a Marco, keep F in the visible
+                    // leftmost slot of the existing battle/story skill ribbon.
+                    if (combat.Roster.SelectedId.HasValue &&
+                        combat.Roster.SelectedId.Value == id)
+                        actions.Insert(0, offer);
+                    else
+                        actions.Add(offer);
+                }
                 if (unit.Unit.Id == SourceModelNativeCharacterRules.Vegapunk)
                     ownsVegapunk = true;
                 if (unit.Unit.Id == SpecialGradeMobilePolicy.Otama)
@@ -179,6 +205,29 @@ namespace Ordr.Mobile.Mobile
                 }
                 return new ManualActionResult(ManualActionState.Rejected,
                     "해당 로저를 보유하지 않았거나 원본 해금 조건이 맞지 않습니다.");
+            }
+            if (skillId.StartsWith(
+                    Original323SourceNativeActionKeys.MarcoTransformActionPrefix,
+                    StringComparison.Ordinal))
+            {
+                foreach (var unit in combat.MobileUnitSnapshot())
+                {
+                    if (unit.Unit.Id != "LI-03" ||
+                        skillId != Original323SourceNativeActionKeys.MarcoTransformAction(
+                            unit.InstanceId)) continue;
+                    bool succeeded = combat.TryToggleSourceModelMarcoForm(
+                        unit.InstanceId);
+                    string active = combat.PracticeFormOf(unit.InstanceId);
+                    return new ManualActionResult(
+                        succeeded ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                        succeeded
+                            ? (active == "phoenix" ? "마르코 불사조형 변신 완료" :
+                                "마르코 인간형 복귀 완료") +
+                              " · 다음 F 변신까지 10.75초"
+                            : "해독·공유 출전·재사용 대기·보유 상태를 확인해 주세요.");
+                }
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "해당 마르코를 보유하고 있지 않습니다.");
             }
             if (skillId.StartsWith(Original323SourceNativeActionKeys.UtaUnlockActionPrefix,
                     StringComparison.Ordinal))

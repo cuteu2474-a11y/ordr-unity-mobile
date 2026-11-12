@@ -61,8 +61,11 @@ class EleventhSourceFormTests(unittest.TestCase):
         self.assertEqual((15, 7, 15),
                          (human["chancePercent"], human["healthCost"], human["minHealth"]))
         self.assertIn('ConfigureSourceModelMarcoFormEvidence', FORMS)
-        self.assertIn('sourceModelMarcoVerifiedForm == null', FORMS)
-        self.assertIn('!SourceModelTenthFormProfile(actor, "LI-03", "h08O")', FORMS)
+        self.assertIn('sourceModelMarcoVerifiedForm != null', FORMS)
+        self.assertIn('return sourceModelMarcoManualForms.TryGetValue(id, out manual)', FORMS)
+        self.assertIn('SourceModelMarcoManualTransformCooldownSeconds = 10.75', FORMS)
+        self.assertIn('TryToggleSourceModelMarcoForm(long id)', FORMS)
+        self.assertIn('SourceModelTenthFormProfile(actor, "LI-03", "h08O")', FORMS)
         self.assertIn('IsOriginalPoneglyphChanneling(id)', FORMS)
         self.assertIn('resource.Health < 15', FORMS)
         self.assertNotIn('resource.Health - cost < 15', FORMS)

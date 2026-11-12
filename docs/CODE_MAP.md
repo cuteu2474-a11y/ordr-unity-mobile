@@ -1,5 +1,12 @@
 # 코드 구조
 
+## 마르코 F 스킬 발동 띠 연결 (코드·미검증)
+
+- `Original323SourceDedicatedSkillPort.AvailableSkills/Execute`가 LI-03/h08O 보유 개체의 F 수동 변신을 `MobileDedicatedSkillActions`의 공통 승인·실행 경로에 등록합니다. `OrdrMobileTouchPanel.DrawDedicatedSkillMargin`은 기존 가로 스킬 띠를 유지하며 선택한 마르코의 버튼을 맨 앞에 보이고 선택 변경 시 가로 스크롤을 초기화합니다.
+- `CharacterCombatRuntime.SourceModelEleventhForms.cs`가 기본 인간형/불사조형 상태·10.75초 소유자별 쿨타임·해독/공유출전 제한을 관리, `SourceModelEffects.cs`에서 인간형 +125% IAS를 기존 전투 속도 상한 공식에 합산합니다. 수동 F는 HP·MP·공격 타이머·기존 다른 폼 엔진을 재설정하지 않고 판매/조합 시 폼 상태·대기 장부만 삭제합니다.
+- 외부 원본 형태 증거를 연결한 실행 경로에서는 그 정보를 우선하고 수동 F를 혼합하지 않습니다. 불사조형 공격속도 감소와 양 형태의 정확한 공격력 증감 수치는 원본 값 미확정으로 보류합니다. `SourceModelScriptAttackSkillTests`에 리본 노출·왕복·쿨타임·레인·소유자·공속 회귀 소스를 추가했습니다(실행 미검증).
+
+
 ## C06 제한 마르코 형태·전투 근거 연결 (코드·미실행)
 
 - `CharacterCombatRuntime.SourceModelEleventhForms.cs`: 기존 `ConfigureSourceModelMarcoFormEvidence`를 그대로 사용하며 유효한 LI-03/h08O 소유자·비해독/비공유 레인 외에는 형태가 노출되지 않도록 제한. 원본 도감 기반 HP15 이상 **발동 전 검사**와 불사조 10 HP/18%, 인간형 7 HP/15% 정확히 분리. 스킬의 원본 프로필 구성(범위·추가 단일 타격·스턴)을 먼저 확인하므로 누락된 컴포넌트에 비용/피해를 잘못 적용하지 않습니다.
@@ -11,7 +18,7 @@
 - 기존 `SourceModelBasicCombatRules.SetSourceForm/FormAttackOf`와 `CombatAttackPipeline.ConfigurePracticeAttackOverride`, `CharacterActiveAbilities`의 자원·쿨타임 장부가 이미 동작합니다. 새로운 공통 폼 엔진을 만들지 않으며 자원/쿨타임 재초기화도 하지 않습니다.
 - `CharacterCombatRuntime.RefreshAfterCommittedCombatLaneChange` → `ForgetSourceModelFormsOnLaneChange`가 소유자 이전 레인의 스네이크맨 시전, 야마토/임시 변신 버프·이름, 보니 니카/기타 10차 폼을 **동일 커밋 즉시** 취소합니다. 니카 H0BY는 기존 `ForgetSourceModelTenthFormState`의 원본 MP 최대치 복원을 실행합니다. 스네이크맨 예약은 유효 완료 시각까지 같아야 새 변신 시전에 영향을 주지 않습니다.
 - `RemoveCharacter`는 기존 구현돼 있었지만 호출되지 않았던 `ForgetSourceModelFusionNativeActor`를 실행해 우타 B61/인트로·테소로·로저·샤크 상태를 정리합니다. 우타 해독·공유출전 중 B61 HP10 변신/회복 처리 차단, `PracticeFormOf`에서 h0AF를 신세계로 표시합니다.
-- `SourceModelScriptAttackSkillTests`에 야마토 임시 폼 즉시 정리, 도플라밍고 비용 보존, 보니 니카 MP 최대치 복원, 우타 삭제 상태와 해독 중 자동 회복 억제 검사 소스 5건 추가(미실행). 마르코는 외부 원본 폼 증거가 있어야만 변신/전투 처리 가능하다는 기존 정책 유지.
+- `SourceModelScriptAttackSkillTests`에 야마토 임시 폼 즉시 정리, 도플라밍고 비용 보존, 보니 니카 MP 최대치 복원, 우타 삭제 상태와 해독 중 자동 회복 억제 검사 소스 5건 추가(미실행). 마르코는 당시 외부 원본 폼 증거가 있어야만 전투 처리했으나, 후속으로 도감에서 확인한 수동 F 명령(10.75초)을 연결했습니다.
 
 ## C05 일시 스킬 공통화 (코드·실행 미검증)
 

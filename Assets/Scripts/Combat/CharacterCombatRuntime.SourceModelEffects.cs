@@ -60,7 +60,12 @@ namespace Ordr.Mobile.Combat
                 long id;
                 double hero = original323HeroLevelWorld != null && long.TryParse(actorKey, out id)
                     ? original323HeroLevelWorld.AddedAttackSpeedPercentOf(id) : 0;
+                // LI-03 human mode is +125% attack speed. F flips it
+                // immediately without resetting the underlying attack timer.
+                // No guessed phoenix slowdown is added without source data.
                 return hero + SourceBuggySpeedAura(actorKey) +
+                    (long.TryParse(actorKey, out id)
+                        ? SourceModelMarcoHumanAttackSpeedBonus(id) : 0) +
                     (rules.PlayerUpgrades?.AttackSpeedPercent(SourceUpgradeRawcodeOf(actorKey)) ?? 0);
             });
             rules.ConfigurePracticeFlatAttackPower(SourceModelTwentiethFlatAttackPower);

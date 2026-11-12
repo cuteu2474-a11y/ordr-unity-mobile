@@ -92,6 +92,7 @@ namespace Ordr.Mobile.Unity
         private bool showFullNotice;
         private string lastNotice;
         private Vector2 dedicatedScroll;
+        private long? dedicatedSkillLastSelectedUnit;
         private string dedicatedNotice;
         private string notice = "";
         private IReadOnlyList<MobileFusionPreview> fusionOffers =
@@ -1099,9 +1100,18 @@ namespace Ordr.Mobile.Unity
         {
             var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
             Rect area = MobileMapSkillLayout.Scaled(layout.SkillMargin, scale);
+            // When selecting a Marco in the battlefield, reveal its F
+            // transform at the start of the existing skill ribbon instead
+            // of leaving the row scrolled to an unrelated previous action.
+            long? selected = Combat == null ? null : Combat.Roster.SelectedId;
+            if (selected != dedicatedSkillLastSelectedUnit)
+            {
+                dedicatedSkillLastSelectedUnit = selected;
+                dedicatedScroll = Vector2.zero;
+            }
             GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
             GUILayout.BeginHorizontal();
-            GUILayout.Label("스킬",OrdrMobileUiTheme.Overline,GUILayout.Width(48f),
+            GUILayout.Label("스킬 발동",OrdrMobileUiTheme.Overline,GUILayout.Width(65f),
                 GUILayout.MinHeight(Mathf.Max(40f, area.height - 9f)));
 
             var actions = controller.DedicatedSkills;

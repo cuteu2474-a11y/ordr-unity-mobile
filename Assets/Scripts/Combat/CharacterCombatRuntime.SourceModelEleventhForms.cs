@@ -11,6 +11,11 @@ namespace Ordr.Mobile.Combat
     public sealed partial class CharacterCombatRuntime
     {
         private Func<long, string> sourceModelMarcoVerifiedForm;
+        private const double SourceModelMarcoManualTransformCooldownSeconds = 10.75;
+        private readonly Dictionary<long, string> sourceModelMarcoManualForms =
+            new Dictionary<long, string>();
+        private readonly Dictionary<long, double> sourceModelMarcoTransformReadyAt =
+            new Dictionary<long, double>();
         private readonly Dictionary<string, int> sourceModelBonneyAge =
             new Dictionary<string, int>(StringComparer.Ordinal);
         private readonly HashSet<long> sourceModelKingExecutionUsed =
@@ -21,35 +26,102 @@ namespace Ordr.Mobile.Combat
             sourceModelKingExecutionUsed.Remove(id);
         }
 
-        // The original imported LI-03 profile has attack packets in both
-        // forms, but no transformation trigger. Only an external witnessed
-        // form can authorize either packet. No invented toggle is exposed.
+        // Source 2.323(C) public F command: human <-> phoenix, 10.75s CD.
+        // An external original-form witness still overrides this fallback
+        // and may not be mixed with the mobile manual form clock.
         public void ConfigureSourceModelMarcoFormEvidence(Func<long, string> evidence)
         {
             if (!UsesSourceModelBasicAttacks || processingStep ||
-                pendingStepSeconds != 0 || sourceModelMarcoVerifiedForm != null)
-                throw new InvalidOperationException("마르코 폼 증거는 전투 전 한 번만 연결합니다.");
+                pendingStepSeconds != 0 || sourceModelMarcoVerifiedForm != null ||
+                sourceModelMarcoManualForms.Count != 0)
+                throw new InvalidOperationException(
+                    "마르코 원본 형태 증거는 수동 F 전환 전에 한 번만 연결합니다.");
             sourceModelMarcoVerifiedForm = evidence ??
                 throw new ArgumentNullException(nameof(evidence));
         }
 
+        private bool SourceModelIsMarcoOwner(long id)
+        {
+            CharacterInstance actor;
+            return UsesSourceModelBasicAttacks &&
+                characters.TryGetValue(id, out actor) &&
+                SourceModelTenthFormProfile(actor, "LI-03", "h08O");
+        }
+
         private string SourceModelEleventhMarcoForm(long id)
         {
-            // A real form witness must belong to the living LI-03/h08O
-            // instance. Never transfer it to another Marco grade, a clone,
-            // decoding, or a shared-objective staging lane. The imported
-            // tooltip does not prove a native transformation trigger.
-            CharacterInstance actor;
-            if (!UsesSourceModelBasicAttacks ||
-                sourceModelMarcoVerifiedForm == null ||
-                !characters.TryGetValue(id, out actor) ||
-                !SourceModelTenthFormProfile(actor, "LI-03", "h08O") ||
+            if (!SourceModelIsMarcoOwner(id) ||
+                IsOriginalPoneglyphChanneling(id) ||
+                IsSharedObjectiveDeployed(id)) return null;
+            // A supplied original form state is authoritative when present.
+            if (sourceModelMarcoVerifiedForm != null)
+            {
+                string witnessed = sourceModelMarcoVerifiedForm(id);
+                return witnessed == "phoenix" || witnessed == "human"
+                    ? witnessed : null;
+            }
+            string manual;
+            // h08O is the map's base (human) object. Its owner and
+            // cooldown never change on form transition.
+            return sourceModelMarcoManualForms.TryGetValue(id, out manual)
+                ? manual : "human";
+        }
+
+        public double SourceModelMarcoTransformCooldownRemaining(long id)
+        {
+            if (!SourceModelIsMarcoOwner(id)) return 0;
+            double readyAt;
+            return sourceModelMarcoTransformReadyAt.TryGetValue(id, out readyAt)
+                ? Math.Max(0, readyAt - Time) : 0;
+        }
+
+        public bool CanToggleSourceModelMarcoForm(long id)
+        {
+            if (!SourceModelIsMarcoOwner(id) ||
+                sourceModelMarcoVerifiedForm != null ||
+                Game.Phase != SessionPhase.Running ||
+                processingStep || pendingStepSeconds != 0 ||
+                activeOriginalFusionSwap != null ||
                 IsOriginalPoneglyphChanneling(id) ||
                 IsSharedObjectiveDeployed(id))
-                return null;
-            string witnessed = sourceModelMarcoVerifiedForm(id);
-            return witnessed == "phoenix" || witnessed == "human"
-                ? witnessed : null;
+                return false;
+            CharacterInstance actor;
+            if (!characters.TryGetValue(id, out actor) || !actor.AttackReady)
+                return false;
+            double readyAt;
+            return !sourceModelMarcoTransformReadyAt.TryGetValue(id, out readyAt) ||
+                CombatScheduler.HasReached(Time, readyAt);
+        }
+
+        // F is explicitly MANUAL, unlike the normal automatic Q/W/R.
+        // Never spawn another character, debit HP/MP or reset its attack
+        // clock. An unknown phoenix attack-power/interval object is not
+        // fabricated; the existing documented form skill callbacks switch.
+        public bool TryToggleSourceModelMarcoForm(long id)
+        {
+            if (!CanToggleSourceModelMarcoForm(id)) return false;
+            string previous = SourceModelEleventhMarcoForm(id);
+            string next = previous == "phoenix" ? "human" : "phoenix";
+            sourceModelMarcoManualForms[id] = next;
+            sourceModelMarcoTransformReadyAt[id] =
+                Time + SourceModelMarcoManualTransformCooldownSeconds;
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated,
+                InstanceKey(id), InstanceKey(id), "마르코 · 새새열매 F 변신",
+                "MODEL_ONLY 원본 F 수동 명령 / " + previous + " → " + next +
+                " / 10.75초 쿨타임 / 원본 형태별 공격력·속도 감소폭 미검증", 0));
+            return true;
+        }
+
+        // Human-form IAS +125% is explicitly source-documented; other
+        // transformation stats lack exact values and remain unmodified.
+        private double SourceModelMarcoHumanAttackSpeedBonus(long id) =>
+            SourceModelEleventhMarcoForm(id) == "human" ? 125 : 0;
+
+        private void ForgetSourceModelMarcoOwner(long id)
+        {
+            sourceModelMarcoManualForms.Remove(id);
+            sourceModelMarcoTransformReadyAt.Remove(id);
         }
 
         private void ForgetSourceModelEleventhActor(long id)

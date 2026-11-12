@@ -2455,6 +2455,9 @@ namespace Ordr.Mobile.Combat
             // Roger, Tesoro and Shark) must not survive a sold/fused owner.
             // Prior cleanup omitted this already-implemented handler.
             ForgetSourceModelFusionNativeActor(instanceId);
+            // The F-toggle form is permanent until next manual press, and
+            // its per-owner cooldown must survive lane changes but not sale.
+            ForgetSourceModelMarcoOwner(instanceId);
             sourceModelStoryLaneRevisions.Remove(instanceId);
             lawReadyAt.Remove(instanceId);
             sourceRareLawReadyAt.Remove(instanceId);

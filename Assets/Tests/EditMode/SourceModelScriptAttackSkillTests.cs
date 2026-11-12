@@ -3422,7 +3422,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void MarcoRequiresExplicitExternalFormEvidenceAndSnakeNikaCannotBorrowLuffyObject()
+        public void MarcoManualBaseFormOrExplicitWitnessAndSnakeNikaCannotBorrowLuffyObject()
         {
             using (var unknown = Create("E-02", true))
             {
@@ -3436,10 +3436,14 @@ namespace Ordr.Mobile.Tests
             }
             using (var live = Create("LI-03", true, -4900, 5400))
             {
-                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual("human", live.Combat.PracticeFormOf(live.ActorId),
+                    "The source documented F command begins on the base human object.");
                 live.Combat.ConfigureSourceModelMarcoFormEvidence(id =>
                     id == live.ActorId ? "phoenix" : null);
-                Assert.AreEqual("phoenix", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual("phoenix", live.Combat.PracticeFormOf(live.ActorId),
+                    "An explicit original witness overrides the mobile fallback.");
+                Assert.IsFalse(live.Combat.CanToggleSourceModelMarcoForm(live.ActorId),
+                    "A native witness and a mobile F clock cannot be mixed.");
             }
         }
 
@@ -3573,6 +3577,116 @@ namespace Ordr.Mobile.Tests
                 live.Combat.RemoveCharacter(live.ActorId);
                 Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
                 Assert.AreEqual(0, live.Combat.CharacterCount);
+            }
+        }
+
+        [Test]
+        public void MarcoFActionAppearsInExistingDedicatedSkillRibbonAndUsesOneOwner()
+        {
+            using (var live = Create("LI-03", true, -4900, 5400))
+            {
+                var port = new Original323SourceDedicatedSkillPort(
+                    live.Combat, new EconomyWallet());
+                var ribbon = new MobileDedicatedSkillActions();
+                ribbon.Configure(port);
+                string action = Original323SourceNativeActionKeys.MarcoTransformAction(
+                    live.ActorId);
+                var first = ribbon.Available().Single(x => x.Id == action);
+                Assert.IsTrue(first.IsUnlocked && first.CanExecute);
+                StringAssert.Contains("불사조", first.Title);
+                StringAssert.Contains("10.75초", first.OriginalCostAndRules);
+                int initialUnits = live.Combat.CharacterCount;
+                Assert.AreEqual(ManualActionState.Succeeded, ribbon.Request(action).State);
+                Assert.AreEqual("phoenix", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(initialUnits, live.Combat.CharacterCount);
+                Assert.AreEqual(10.75,
+                    live.Combat.SourceModelMarcoTransformCooldownRemaining(
+                        live.ActorId), .00001);
+                var cooling = ribbon.Available().Single(x => x.Id == action);
+                Assert.IsFalse(cooling.CanExecute);
+                StringAssert.Contains("인간형", cooling.Title);
+                StringAssert.Contains("대기", cooling.OriginalCostAndRules);
+                Assert.AreEqual(ManualActionState.Rejected, ribbon.Request(action).State);
+                Assert.AreEqual("phoenix", live.Combat.PracticeFormOf(live.ActorId));
+                live.Battle.Advance(10.8);
+                Assert.IsTrue(ribbon.Available().Single(x => x.Id == action).CanExecute);
+                Assert.AreEqual(ManualActionState.Succeeded, ribbon.Request(action).State);
+                Assert.AreEqual("human", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(initialUnits, live.Combat.CharacterCount);
+            }
+        }
+
+        [Test]
+        public void MarcoManualFBlocksDecodingAndKeepsCooldownAcrossStoryDispatch()
+        {
+            using (var live = Create("LI-03", false, -4900, 5400))
+            {
+                Assert.IsTrue(live.Combat.TryToggleSourceModelMarcoForm(live.ActorId));
+                var lane = new MutableStoryLane();
+                live.Combat.ConfigureStoryDeployment(lane);
+                lane.DeployedIds.Add(live.ActorId);
+                live.Combat.RefreshAfterCommittedStoryLaneChange(live.ActorId);
+                Assert.AreEqual("phoenix", live.Combat.PracticeFormOf(live.ActorId),
+                    "F is not a timed buff and should not be discarded on dispatch.");
+                Assert.IsFalse(live.Combat.CanToggleSourceModelMarcoForm(live.ActorId),
+                    "Dispatch must not reset the owner's 10.75s cooldown.");
+                lane.DeployedIds.Remove(live.ActorId);
+                live.Combat.RefreshAfterCommittedStoryLaneChange(live.ActorId);
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, true);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.IsFalse(live.Combat.TryToggleSourceModelMarcoForm(live.ActorId));
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, false);
+                Assert.AreEqual("phoenix", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.Greater(live.Combat.SourceModelMarcoTransformCooldownRemaining(
+                    live.ActorId), 0);
+            }
+        }
+
+        [Test]
+        public void MarcoFActionRejectsWrongOwnerAndRetiresFormOnSale()
+        {
+            using (var legend = Create("L-11", false, -4900, 5400))
+            {
+                var port = new Original323SourceDedicatedSkillPort(
+                    legend.Combat, new EconomyWallet());
+                Assert.IsFalse(port.AvailableSkills().Any(x =>
+                    x.Id.StartsWith(Original323SourceNativeActionKeys.
+                        MarcoTransformActionPrefix, StringComparison.Ordinal)));
+                Assert.IsFalse(legend.Combat.TryToggleSourceModelMarcoForm(
+                    legend.ActorId));
+            }
+            using (var live = Create("LI-03", false, -4900, 5400))
+            {
+                var port = new Original323SourceDedicatedSkillPort(
+                    live.Combat, new EconomyWallet());
+                string skill = Original323SourceNativeActionKeys.MarcoTransformAction(
+                    live.ActorId);
+                Assert.AreEqual(ManualActionState.Succeeded,
+                    port.Execute(skill).State);
+                live.Combat.RemoveCharacter(live.ActorId);
+                Assert.IsFalse(port.AvailableSkills().Any(x => x.Id == skill));
+                Assert.AreEqual(ManualActionState.Rejected, port.Execute(skill).State);
+                Assert.AreEqual(0, live.Combat.SourceModelMarcoTransformCooldownRemaining(
+                    live.ActorId));
+            }
+        }
+
+        [Test]
+        public void MarcoHumanSpeedIsExplicitOnlyAndDoesNotInventPhoenixAttackStats()
+        {
+            using (var live = Create("LI-03", false, -4900, 5400))
+            {
+                var method = typeof(CharacterCombatRuntime).GetMethod(
+                    "SourceModelMarcoHumanAttackSpeedBonus",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+                Assert.IsNotNull(method);
+                Assert.AreEqual(125d, (double)method.Invoke(
+                    live.Combat, new object[] { live.ActorId }));
+                Assert.IsTrue(live.Combat.TryToggleSourceModelMarcoForm(live.ActorId));
+                Assert.AreEqual(0d, (double)method.Invoke(
+                    live.Combat, new object[] { live.ActorId }));
+                Assert.AreEqual("phoenix", live.Combat.PracticeFormOf(live.ActorId));
             }
         }
 
