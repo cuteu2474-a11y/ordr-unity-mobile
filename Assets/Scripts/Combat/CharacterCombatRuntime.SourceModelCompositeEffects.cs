@@ -124,8 +124,6 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        private readonly Dictionary<long, List<double>> sourceSongSoldierExpiry =
-            new Dictionary<long, List<double>>();
         private Func<long, double?> sourceModelStrengthProvider;
         private Func<long, double?> sourceModelAgilityProvider;
         private readonly Dictionary<long, double> sourceModelFireFistReadyAt =
@@ -145,12 +143,25 @@ namespace Ordr.Mobile.Combat
 
         private int SourceModelSongSoldiers(long casterId)
         {
-            List<double> expiry;
+            // One h04O independent actor is one soldier. Do not overcount
+            // expired, recalled or removed actors in a second expiry ledger.
+            List<string> keys;
             if (!characters.ContainsKey(casterId) ||
-                !sourceSongSoldierExpiry.TryGetValue(casterId, out expiry)) return 0;
-            expiry.RemoveAll(until => until <= Time);
-            if (expiry.Count == 0) sourceSongSoldierExpiry.Remove(casterId);
-            return expiry.Count;
+                !sourceModelUtaSongSoldierKeys.TryGetValue(casterId, out keys))
+                return 0;
+            int living = 0;
+            foreach (string key in keys)
+            {
+                SourceIndependentAttacker soldier;
+                if (sourceIndependentAttackers.TryGetValue(key, out soldier) &&
+                    soldier.Rawcode == "h04O" && soldier.OwnerInstanceId == casterId &&
+                    soldier.ExpiresAt.HasValue && soldier.ExpiresAt.Value > Time &&
+                    soldier.StoryLane == IsStoryDeployed(casterId) &&
+                    !IsSharedObjectiveDeployed(casterId) &&
+                    !IsOriginalPoneglyphChanneling(casterId))
+                    living++;
+            }
+            return living;
         }
 
         public int PracticeSongSoldierCount(long casterId) =>
@@ -188,14 +199,6 @@ namespace Ordr.Mobile.Combat
         {
             if (!RegisterSourceModelUtaSongSoldier(actor, primary, lifetime,
                     spawnX, spawnY)) return;
-            List<double> expiry;
-            if (!sourceSongSoldierExpiry.TryGetValue(actor.Id, out expiry))
-            {
-                expiry = new List<double>();
-                sourceSongSoldierExpiry.Add(actor.Id, expiry);
-            }
-            expiry.RemoveAll(until => until <= Time);
-            expiry.Add(Time + lifetime);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 InstanceKey(actor.Id), primary == null ? null : primary.Id, sourceSkill,
                 "MODEL_ONLY B6s/h04O 독립 공격 객체 + 7초 음표 병사 기여; 원본 위치·HP 재생 만료 조건 미검증", 0));

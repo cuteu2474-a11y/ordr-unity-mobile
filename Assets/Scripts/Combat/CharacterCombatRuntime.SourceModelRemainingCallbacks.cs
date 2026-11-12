@@ -350,7 +350,15 @@ namespace Ordr.Mobile.Combat
                     // provisional until Asds geometry/movement are verified.
                     var doll = SpawnSourceTemporaryActor(actor,
                         "BpT · 장난감 자폭", "슈가 장난감 자폭", 3.5, "h06O",
-                        false, position.X, position.Y);
+                        false, position.X, position.Y,
+                        virtualAttackEffect: true);
+                    // Presentation is a projectile; no selectable doll or
+                    // extra fake combat attacker is added to the roster.
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.SkillActivated,
+                        InstanceKey(actor.Id), target.Id,
+                        "슈가 · 장난감 투사체",
+                        "MODEL_ONLY BpT/h06O: 0.35초 접근 모델 / 실물 소환 없음", 0));
                     RemainingProc(actor, target, spec,
                         "h06O 장난감 생성 / 3.5초 수명 / target selfdestruct");
                     bool dollLane = IsStoryDeployed(actor.Id);
@@ -538,7 +546,12 @@ namespace Ordr.Mobile.Combat
                     sourceModelRules.SourceObjectAttack("h05D") != null;
                 var shadow = SpawnSourceTemporaryActor(actor,
                     "BsL · 그림자 소환", "모리아 그림자", 18, "h05D", false,
-                    shadowX, shadowY, hasShadowAttack);
+                    shadowX, shadowY, hasShadowAttack,
+                    virtualAttackEffect: true);
+                SourceIndependentAttacker shadowAttack;
+                if (hasShadowAttack && sourceIndependentAttackers.TryGetValue(
+                        SummonAttackKey(shadow.Id), out shadowAttack))
+                    shadowAttack.RenderAsTransientProjectile = true;
                 RemainingProc(actor, target, spec,
                     "h05D 그림자 " + shadow.Id + " 소환 / 18초 / " +
                     (hasShadowAttack ? "객체 평타 연결" : "원본 공격 주사위 미공급"));

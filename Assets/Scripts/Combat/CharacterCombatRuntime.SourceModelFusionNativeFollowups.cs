@@ -44,7 +44,6 @@ namespace Ordr.Mobile.Combat
             new HashSet<long>();
         private double sourceModelUtaSongElapsed;
         private long sourceModelUtaSongRotations;
-        private long sourceModelUtaSongSoldierSequence;
         private readonly Dictionary<long, List<string>> sourceModelUtaSongSoldierKeys =
             new Dictionary<long, List<string>>();
         // B6m rotates two per-player Group handles. GroupClear/transfer does
@@ -536,12 +535,16 @@ namespace Ordr.Mobile.Combat
                 SourceModelFusionNativeBalance(
                     Original323FusionNativeFollowupLedger.UtaSongId) <= 0)
                 return false;
-            long sequence = checked(++sourceModelUtaSongSoldierSequence);
-            string key = "practice-uta-song:" + sequence;
             var position = roster.Get(actor.Id);
-            RegisterSourceIndependentAttack(key, "h04O", IsStoryDeployed(actor.Id),
-                spawnX ?? position.X, spawnY ?? position.Y,
-                actor.Id, Time + lifetime);
+            var summoned = SpawnSourceTemporaryActor(
+                actor, "B6s · 음표 병사", "우타 · 음표 병사", lifetime,
+                "h04O", spawnX: spawnX ?? position.X,
+                spawnY: spawnY ?? position.Y,
+                modeledCombat: true, virtualAttackEffect: true);
+            string key = SummonAttackKey(summoned.Id);
+            SourceIndependentAttacker visual;
+            if (sourceIndependentAttackers.TryGetValue(key, out visual))
+                visual.RenderAsTransientProjectile = true;
             List<string> keys;
             if (!sourceModelUtaSongSoldierKeys.TryGetValue(actor.Id, out keys))
             {
@@ -550,25 +553,27 @@ namespace Ordr.Mobile.Combat
             }
             keys.Add(key);
             sourceModelUtaSongPending.Add(key);
-            effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id), key,
-                lifetime, () =>
-                {
-                    UnregisterSourceIndependentAttack(key);
-                    sourceModelUtaSongActive.Remove(key);
-                    sourceModelUtaSongPending.Remove(key);
-                    List<string> active;
-                    if (sourceModelUtaSongSoldierKeys.TryGetValue(actor.Id, out active))
-                    {
-                        active.Remove(key);
-                        if (active.Count == 0)
-                            sourceModelUtaSongSoldierKeys.Remove(actor.Id);
-                    }
-                });
+            // The existing common summon lifecycle owns expiration, removal,
+            // and lane transfer; no parallel h04O timer or roster unit.
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
                 primary == null ? null : primary.Id, "우타 · 음표 병사",
                 "MODEL_ONLY B6s/h04O: 원본 공격 주사위·0.33초 주기 적용, 7초 생존/캐스터 근처 배치 모바일 모델", 0));
             return true;
+        }
+
+        private void RetireSourceModelUtaSongSoldierKey(
+            long ownerId, string key)
+        {
+            sourceModelUtaSongActive.Remove(key);
+            sourceModelUtaSongPending.Remove(key);
+            List<string> owned;
+            if (sourceModelUtaSongSoldierKeys.TryGetValue(ownerId, out owned))
+            {
+                owned.Remove(key);
+                if (owned.Count == 0)
+                    sourceModelUtaSongSoldierKeys.Remove(ownerId);
+            }
         }
 
         // B7W's "세계의가희" / "u-ta et" chat trigger starts B63 -> B61
@@ -985,15 +990,16 @@ namespace Ordr.Mobile.Combat
             List<string> keys;
             if (sourceModelUtaSongSoldierKeys.TryGetValue(actorId, out keys))
             {
-                foreach (string key in keys)
+                foreach (string key in new List<string>(keys))
                 {
-                    sourceModelUtaSongActive.Remove(key);
-                    sourceModelUtaSongPending.Remove(key);
+                    for (int i = sourceTemporarySummons.Count - 1; i >= 0; i--)
+                        if (sourceTemporarySummons[i].OwnerId == actorId &&
+                            SummonAttackKey(sourceTemporarySummons[i].Id) == key)
+                            EndSourceTemporaryActorAt(i, false);
+                    RetireSourceModelUtaSongSoldierKey(actorId, key);
                     UnregisterSourceIndependentAttack(key);
                 }
-                sourceModelUtaSongSoldierKeys.Remove(actorId);
             }
-            sourceSongSoldierExpiry.Remove(actorId);
         }
     }
 }

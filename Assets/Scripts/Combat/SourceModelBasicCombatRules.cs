@@ -84,6 +84,38 @@ namespace Ordr.Mobile.Combat
                     evidence.BaseDamagePlus + (long)evidence.DiceCount,
                     evidence.CooldownSeconds, DamageSchool.Physical, DamageTraits.None));
             }
+            // L-12's actual h05D shadow and tooltip model "장군좀비"
+            // inheriting h02N's original dice may attack only when those
+            // exact source-object fields exist. Missing evidence never
+            // becomes a guessed owner-stat or generic copied attack.
+            foreach (string raw in new[] { "h05D", "h02N" })
+            {
+                var source = objects.FindMapObjectAttack(raw);
+                if (source == null || !source.BaseDamagePlus.HasValue ||
+                    !source.DiceCount.HasValue || !source.DiceSides.HasValue ||
+                    !source.AttackCooldownSeconds.HasValue ||
+                    !source.AttackPointSeconds.HasValue ||
+                    source.DiceCount.Value <= 0 || source.DiceSides.Value <= 0 ||
+                    source.AttackCooldownSeconds.Value <= 0 ||
+                    source.AttackPointSeconds.Value >
+                        source.AttackCooldownSeconds.Value ||
+                    (source.OriginalAttackType != "normal" &&
+                     source.OriginalAttackType != "pierce" &&
+                     source.OriginalAttackType != "siege" &&
+                     source.OriginalAttackType != "hero"))
+                    continue;
+                OriginalMapCommonNativeAttackEvidence evidence;
+                if (!byRawcode.TryGetValue(raw, out evidence))
+                {
+                    evidence = new OriginalMapCommonNativeAttackEvidence(
+                        raw, raw, source);
+                    byRawcode.Add(raw, evidence);
+                }
+                independentAttacks.Add(raw, new BasicAttackSpec(
+                    evidence.BaseDamagePlus + (long)evidence.DiceCount,
+                    evidence.CooldownSeconds, DamageSchool.Physical,
+                    DamageTraits.None));
+            }
         }
         internal BasicAttackSpec SourceObjectAttack(string rawcode)
         {
@@ -104,7 +136,10 @@ namespace Ordr.Mobile.Combat
             string source = effect.SourceId;
             return ((effect.Type == CombatEffectType.AttackPowerBuff ||
                      effect.Type == CombatEffectType.AttackSpeedBuff) &&
-                    source.StartsWith("practice-aura:", StringComparison.Ordinal)) ||
+                    (source.StartsWith("practice-aura:", StringComparison.Ordinal) ||
+                     // The L-12 shadow copies only live OWNER attack-power
+                     // and speed effects; no unknown non-offensive buffs.
+                     source.StartsWith("practice-shadow:", StringComparison.Ordinal))) ||
                 (effect.Type == CombatEffectType.AttackSpeedBuff &&
                  (source.StartsWith("practice-native:A08B:", StringComparison.Ordinal) ||
                   source.StartsWith("practice-form:interval:", StringComparison.Ordinal) ||

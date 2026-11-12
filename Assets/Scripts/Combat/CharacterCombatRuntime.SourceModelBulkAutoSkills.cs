@@ -1005,14 +1005,31 @@ namespace Ordr.Mobile.Combat
                 // This skill says it inherits the owner's attack stats but
                 // supplies no zombie object ID. A model-only shadow uses
                 // the exact owner's source object, never a fake zombie ID.
+                // Tooltip-only shadow inherits the real Moria native
+                // weapon and owner buffs. It is not a playable inventory
+                // unit; use the same timed attack-effect lane as h05D/h04O.
+                if (sourceModelRules == null ||
+                    sourceModelRules.SourceObjectAttack(
+                        actor.Mapping.AttackSpec.UnitRawCode) == null)
+                {
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EffectDeferred,
+                        InstanceKey(actor.Id), null, skill.Name,
+                        "TOOLTIP_MODEL_ONLY 장군좀비: 원본 본체 공격 주사위 미공급", 0));
+                    return;
+                }
                 var summon = SpawnSourceTemporaryActor(actor, skill.Name,
                     "장군좀비", lifetime.Value,
                     actor.Mapping.AttackSpec.UnitRawCode,
-                    spawnX: point.X, spawnY: point.Y, modeledCombat: true);
+                    spawnX: point.X, spawnY: point.Y,
+                    modeledCombat: true, virtualAttackEffect: true);
                 SourceIndependentAttacker attacker;
                 if (sourceIndependentAttackers.TryGetValue(
                     SummonAttackKey(summon.Id), out attacker))
+                {
                     attacker.ModelShadowZombie = true;
+                    attacker.RenderAsTransientProjectile = true;
+                }
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated,
                     InstanceKey(actor.Id), null, skill.Name,

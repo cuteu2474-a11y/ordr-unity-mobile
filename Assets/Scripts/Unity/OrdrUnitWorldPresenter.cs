@@ -557,24 +557,29 @@ namespace Ordr.Mobile.Unity
                 combatEvent.Type != CharacterCombatEventType.AttackPreview &&
                 combatEvent.Type != CharacterCombatEventType.SkillActivated)
                 return;
-            // Native Black Arrow creates a 10-second attack effect, NOT a
-            // selectable zombie. Its non-numeric actor key has no roster
-            // marker. Draw the existing reusable magic projectile from
-            // the on-kill origin to the target on each actual effect hit.
+            // Black Arrow h00H, Moria h05D and Uta h04O have no roster
+            // marker. All use the same pooled projectile presentation; no
+            // independent model attacker is turned into a selectable unit.
             if (combatEvent.Type == CharacterCombatEventType.Attack &&
                 controller != null && controller.Combat != null)
             {
                 double effectX, effectY;
-                if (controller.Combat.TryGetSourceMoriaBlackArrowProjectileOrigin(
-                        combatEvent.ActorId, out effectX, out effectY))
+                string rawcode;
+                if (controller.Combat.TryGetSourceTransientProjectileOrigin(
+                        combatEvent.ActorId, out effectX, out effectY, out rawcode))
                 {
                     Vector3 hitPosition;
                     if (!string.IsNullOrWhiteSpace(combatEvent.EnemyId) &&
                         TryFindEnemyPosition(combatEvent.EnemyId, out hitPosition))
                     {
+                        Color tint = rawcode == "h04O"
+                            ? new Color(.35f, .91f, 1f, .94f)
+                            : rawcode == "h05D"
+                                ? new Color(.70f, .39f, 1f, .96f)
+                                : new Color(.47f, .26f, .85f, .96f);
                         SpawnAttackCue(BasicAttackCueKind.Magic, false,
                             new Vector3((float)effectX, (float)effectY, 0f),
-                            hitPosition);
+                            hitPosition, tint);
                         EnemyVisual struck;
                         if (enemyVisuals.TryGetValue(combatEvent.EnemyId, out struck))
                             struck.HitAt = Time.unscaledTime;
@@ -605,6 +610,30 @@ namespace Ordr.Mobile.Unity
                 : visual.IsPreviewFlash
                     ? new Color(0.62f, 0.85f, 1f, 0.8f)
                     : new Color(1f, 0.88f, 0.3f, 0.8f);
+            // BpT is a timed self-destruct projectile. Its visual cue must
+            // not add an extra hit; the actual 0.35s impact stays in the
+            // native skill callback and the explosion is an independent cue.
+            if (combatEvent.Type == CharacterCombatEventType.SkillActivated &&
+                combatEvent.SkillName == "슈가 · 장난감 투사체")
+            {
+                Vector3 ordered;
+                if (!string.IsNullOrWhiteSpace(combatEvent.EnemyId) &&
+                    TryFindEnemyPosition(combatEvent.EnemyId, out ordered))
+                    SpawnAttackCue(BasicAttackCueKind.Magic, false,
+                        visual.Root.transform.position, ordered,
+                        new Color(1f, .43f, .72f, .95f));
+                return;
+            }
+            if (combatEvent.Type == CharacterCombatEventType.SkillActivated &&
+                combatEvent.SkillName == "슈가 · 장난감 자폭 사망")
+            {
+                Vector3 explosion;
+                if (string.IsNullOrWhiteSpace(combatEvent.EnemyId) ||
+                    !TryFindEnemyPosition(combatEvent.EnemyId, out explosion))
+                    explosion = visual.Root.transform.position;
+                SpawnSkillCue(explosion, new Color(1f, .55f, .85f, .96f), false);
+                return;
+            }
             // A confirmed cast is not proof of HP damage. The actual impact
             // arrives as SkillDamage/StatusApplied/ArmorBreakApplied.
             if (visual.IsSkillFlash)
@@ -813,7 +842,7 @@ namespace Ordr.Mobile.Unity
         }
 
         private void SpawnAttackCue(BasicAttackCueKind kind, bool preview,
-            Vector3 attacker, Vector3 target)
+            Vector3 attacker, Vector3 target, Color? tintOverride = null)
         {
             var cue = GetAvailableCue();
             cue.Root.SetActive(true);
@@ -821,10 +850,11 @@ namespace Ordr.Mobile.Unity
             cue.From = attacker;
             cue.To = target;
             cue.StartedAt = Time.unscaledTime;
-            cue.Tint = preview ? new Color(0.58f, 0.80f, 1f, 0.60f)
+            cue.Tint = tintOverride ?? (preview
+                ? new Color(0.58f, 0.80f, 1f, 0.60f)
                 : kind == BasicAttackCueKind.Magic
                     ? new Color(0.73f, 0.47f, 1f, 0.90f)
-                    : new Color(1f, 0.87f, 0.29f, 0.92f);
+                    : new Color(1f, 0.87f, 0.29f, 0.92f));
             UpdateAttackCue(cue, 0f);
         }
 

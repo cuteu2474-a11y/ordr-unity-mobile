@@ -1463,7 +1463,6 @@ namespace Ordr.Mobile.Combat
             effectExecutor.CancelTarget(actorKey);
             // A timed mobile song summon cannot follow its owner between
             // mutually exclusive main and story combat lanes.
-            sourceSongSoldierExpiry.Remove(instanceId);
             RemoveSourceModelAceFlames(instanceId);
             if (UsesSourceModelBasicAttacks)
             {
@@ -1872,7 +1871,6 @@ namespace Ordr.Mobile.Combat
                 if (commonAttackPreview != null) commonAttackPreview.Remove(id);
                 characters.Remove(id);
                 ForgetOriginal323Shirahoshi(id);
-                sourceSongSoldierExpiry.Remove(id);
                 RemoveSourceModelAceFlames(id);
                 sourceModelFireFistReadyAt.Remove(id);
                 sourceModelPoseidonReadyAt.Remove(id);
@@ -2458,7 +2456,6 @@ namespace Ordr.Mobile.Combat
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
             ForgetOriginal323Shirahoshi(instanceId);
-            sourceSongSoldierExpiry.Remove(instanceId);
             RemoveSourceModelAceFlames(instanceId);
             sourceModelFireFistReadyAt.Remove(instanceId);
             sourceModelPoseidonReadyAt.Remove(instanceId);

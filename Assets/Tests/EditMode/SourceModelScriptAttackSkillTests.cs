@@ -289,20 +289,120 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void MoriaBlackArrowCreatesOneTemporaryRealZombieOnKillingBlow()
+        public void MoriaBlackArrowCreatesVirtualAttackNotAnOwnedZombie()
         {
             using (var live = Create("S-09", true, -4900, 5400, false))
             {
                 var events = live.Battle.Advance(2);
-                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
                     e.Detail.Contains("A087/ANba")));
-                var zombie = live.Combat.MobileUnitSnapshot()
-                    .FirstOrDefault(x => x.Unit.Id == "U-14");
-                Assert.IsNotNull(zombie, "Summon must be an attack-capable h00H unit");
-                long firstZombieId = zombie.InstanceId;
+                Assert.IsFalse(live.Combat.MobileUnitSnapshot().Any(x =>
+                    x.Unit.Id == "U-14"),
+                    "Only Absalom's original permanent acquisition may own a U-14.");
+                Assert.IsEmpty(live.Combat.PracticeSummonsOf(live.ActorId),
+                    "Moria's 10-second native attack effect is not a selectable summon.");
+                Assert.AreEqual(1, live.Combat.CharacterCount);
                 live.Battle.Advance(11);
                 Assert.IsFalse(live.Combat.MobileUnitSnapshot().Any(x =>
-                    x.InstanceId == firstZombieId), "DataC1=10 lifetime must expire");
+                    x.Unit.Id == "U-14"));
+            }
+        }
+
+        private static List<SourceModelSummonState> InternalSourceEffects(
+            CharacterCombatRuntime combat)
+        {
+            var field = typeof(CharacterCombatRuntime).GetField(
+                "sourceTemporarySummons",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic);
+            Assert.IsNotNull(field);
+            return (List<SourceModelSummonState>)field.GetValue(combat);
+        }
+
+        [Test]
+        public void SugarR24SelfDestructIsEffectOnlyAndRetiresWithOriginalTimedLife()
+        {
+            using (var live = Create("R-24", true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(1.2);
+                Assert.IsTrue(events.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "슈가 · 장난감 투사체"));
+                Assert.IsTrue(events.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "슈가 · 장난감 자폭 사망"));
+                Assert.IsTrue(events.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.Amount > 0), "Only the existing A03A damage packet may hit.");
+                Assert.IsFalse(InternalSourceEffects(live.Combat).Any(x =>
+                    x.SourceUnitRawcode == "h06O" && !x.IsVirtualAttackEffect));
+                Assert.IsEmpty(live.Combat.PracticeSummonsOf(live.ActorId));
+                Assert.AreEqual(1, live.Combat.CharacterCount);
+            }
+        }
+
+        [Test]
+        public void LegendMoriaShadowHasNoInventoryAndOnlySourceVerifiedAutonomousHit()
+        {
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"),
+                CharacterUnitCatalog.FromJson(Data("units.json")));
+            var native = map.FindMapObjectAttack("h05D");
+            bool sourceCanAttack = native != null &&
+                native.BaseDamagePlus.HasValue && native.DiceCount.HasValue &&
+                native.DiceSides.HasValue && native.AttackCooldownSeconds.HasValue &&
+                native.AttackPointSeconds.HasValue &&
+                native.AttackPointSeconds.Value <= native.AttackCooldownSeconds.Value;
+            using (var live = Create("L-12", true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(1);
+                Assert.IsTrue(events.Any(x => x.Type ==
+                    CharacterCombatEventType.SkillActivated &&
+                    x.Detail.Contains("h05D 그림자")));
+                var shadows = InternalSourceEffects(live.Combat).Where(x =>
+                    x.OwnerId == live.ActorId && x.SourceUnitRawcode == "h05D").ToList();
+                Assert.IsNotEmpty(shadows);
+                Assert.IsTrue(shadows.All(x => x.IsVirtualAttackEffect &&
+                    x.HasIndependentCombat == sourceCanAttack));
+                Assert.IsEmpty(live.Combat.PracticeSummonsOf(live.ActorId));
+                Assert.AreEqual(1, live.Combat.CharacterCount);
+                live.Combat.RemoveCharacter(live.ActorId);
+                Assert.IsFalse(InternalSourceEffects(live.Combat)
+                    .Any(x => x.SourceUnitRawcode == "h05D"));
+            }
+        }
+
+        [Test]
+        public void UtaSongUsesCommonSevenSecondEffectClockAndCancelsOnLaneChange()
+        {
+            using (var live = Create("E-09", true, -4900, 5400,
+                withSourceResources: true))
+            {
+                live.Combat.ConfigureSourceModelFusionNativeReceipts(id =>
+                    id == Original323FusionNativeFollowupLedger.UtaSongId ? 1 : 0);
+                for (int i = 0; i < 200 &&
+                    live.Combat.PracticeSongSoldierCount(live.ActorId) == 0; i++)
+                    live.Battle.Advance(.1);
+                Assert.Greater(live.Combat.PracticeSongSoldierCount(live.ActorId), 0);
+                var songs = InternalSourceEffects(live.Combat)
+                    .Where(x => x.OwnerId == live.ActorId &&
+                        x.SourceUnitRawcode == "h04O").ToList();
+                Assert.IsNotEmpty(songs);
+                Assert.IsTrue(songs.All(x => x.IsVirtualAttackEffect &&
+                    x.HasIndependentCombat && x.ExpiresAt > live.Combat.Time));
+                Assert.IsEmpty(live.Combat.PracticeSummonsOf(live.ActorId));
+                string raw;
+                double x, y;
+                Assert.IsTrue(live.Combat.TryGetSourceTransientProjectileOrigin(
+                    "practice-summon:" + songs[0].Id, out x, out y, out raw));
+                Assert.AreEqual("h04O", raw);
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, true);
+                Assert.AreEqual(0, live.Combat.PracticeSongSoldierCount(live.ActorId));
+                Assert.IsFalse(InternalSourceEffects(live.Combat).Any(s =>
+                    s.OwnerId == live.ActorId && s.SourceUnitRawcode == "h04O"));
+                Assert.IsFalse(live.Combat.TryGetSourceTransientProjectileOrigin(
+                    "practice-summon:" + songs[0].Id, out x, out y, out raw));
             }
         }
 

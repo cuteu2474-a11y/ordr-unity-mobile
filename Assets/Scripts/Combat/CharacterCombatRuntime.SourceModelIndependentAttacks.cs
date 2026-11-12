@@ -34,6 +34,9 @@ namespace Ordr.Mobile.Combat
             // Moria S-09 transient ANba h00H: rendered only as a
             // projectile; not owned inventory, placement or fusion material.
             public bool ModelBlackArrowEffect;
+            // All transient h00H/h05D/h04O attacks share one visual route.
+            // Rendering never changes their original dice/cadence/target.
+            public bool RenderAsTransientProjectile;
             public readonly List<string> ShadowInheritedSources = new List<string>();
         }
 
@@ -108,6 +111,24 @@ namespace Ordr.Mobile.Combat
                 return false;
             x = actor.X;
             y = actor.Y;
+            return true;
+        }
+
+        // Rendering-only source lookup for model shadow, Uta song and Black
+        // Arrow effects. It cannot be used to select or acquire a unit.
+        public bool TryGetSourceTransientProjectileOrigin(
+            string attackKey, out double x, out double y, out string rawcode)
+        {
+            x = 0; y = 0; rawcode = null;
+            SourceIndependentAttacker actor;
+            if (!UsesSourceModelBasicAttacks || string.IsNullOrWhiteSpace(attackKey) ||
+                !sourceIndependentAttackers.TryGetValue(attackKey, out actor) ||
+                !(actor.RenderAsTransientProjectile || actor.ModelBlackArrowEffect) ||
+                !characters.ContainsKey(actor.OwnerInstanceId))
+                return false;
+            x = actor.X;
+            y = actor.Y;
+            rawcode = actor.Rawcode;
             return true;
         }
 

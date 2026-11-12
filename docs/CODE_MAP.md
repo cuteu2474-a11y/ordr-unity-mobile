@@ -1,5 +1,15 @@
 # 코드 구조
 
+## C05 일시 스킬 공통화 (코드·실행 미검증)
+
+슈가 R-24: SourceModelRemainingCallbacks의 BpT 0.35초 근사 접근/500 직접 타격과 h06O 3.5초 공통 수명·BpS/e01M 사망 사건을 유지하며 실물 보유 유닛은 생성하지 않습니다. 폭발 범위는 네이티브 검증 전 임의 구현하지 않습니다.
+
+전설 모리아 L-12: SourceModelBasicCombatRules에서 h05D 및 본체 h02N의 원본 공격 데이터가 완전할 때만 독립 공격을 승인합니다. SourceModelRemainingCallbacks, SourceModelBulkAutoSkills는 18초 비보유 가상 효과를 공유하고 SourceModelIndependentAttacks는 장군좀비의 원본 공격 버프 상속 출처를 제한적으로 허용합니다.
+
+우타 E-09: SourceModelFusionNativeFollowups의 B6s/h04O 병사를 공통 임시 효과로 이전합니다. SourceModelCompositeEffects의 중복 sourceSongSoldierExpiry를 제거하고 실제 공격자·레인·수명으로 7초 병사를 집계합니다. 삭제·파견·해독 종료는 공통 정리에서 그룹/공격자 상태를 동시에 회수합니다.
+
+OrdrUnitWorldPresenter는 기존 재사용 투사체 풀과 TryGetSourceTransientProjectileOrigin 원점 조회를 사용합니다. 렌더링이 피해나 난수를 변경하지 않습니다. 압살롬 도박 영구 좀비 U-14, 특별함 모리아 S-09 블랙 애로우, 우타 원본 수치/확률은 변경하지 않습니다.
+
 > **새 작업의 코드 지도:** 무엇을 고쳐야 하는지 빠르게 찾는 문서입니다. 기능 구현률·APK 차이는 [현재 상태](START_HERE.md), 미완료 작업은 [개발 작업](PLAYABLE_ROADMAP.md), 실제 조작은 [화면·조작](화면-조작-시스템.md)에 있습니다. **이 문서에 날짜별 개발 일지나 기능별 확률·비용을 중복 기록하지 않습니다.**
 
 ## 특별함 모리아 S-09 블랙 애로우 (코드만)

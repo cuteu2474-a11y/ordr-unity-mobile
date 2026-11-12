@@ -21,7 +21,7 @@ namespace Ordr.Mobile.Combat
             bool unresolvedLootAbility = false, double spawnX = 0, double spawnY = 0,
             bool modeledCombat = false, bool virtualAttackEffect = false)
         {
-            if ((virtualAttackEffect && (!modeledCombat || sourceRawcode == null)) ||
+            if ((virtualAttackEffect && sourceRawcode == null) ||
                 !UsesSourceModelBasicAttacks || owner == null ||
                 !characters.ContainsKey(owner.Id) ||
                 double.IsNaN(lifetimeSeconds) || double.IsInfinity(lifetimeSeconds) ||
@@ -173,6 +173,10 @@ namespace Ordr.Mobile.Combat
             string targetId = null, double? deathX = null, double? deathY = null)
         {
             var summon = sourceTemporarySummons[index];
+            // One clock retires timed attack effects and their group membership.
+            if (summon.SourceUnitRawcode == "h04O")
+                RetireSourceModelUtaSongSoldierKey(
+                    summon.OwnerId, SummonAttackKey(summon.Id));
             UnregisterSourceIndependentAttack(SummonAttackKey(summon.Id));
             sourceTemporarySummons.RemoveAt(index);
             if (!nativeDeath || summon.SourceUnitRawcode != "h06O" ||
