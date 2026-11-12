@@ -61,8 +61,15 @@ class EleventhSourceFormTests(unittest.TestCase):
         self.assertEqual((15, 7, 15),
                          (human["chancePercent"], human["healthCost"], human["minHealth"]))
         self.assertIn('ConfigureSourceModelMarcoFormEvidence', FORMS)
-        self.assertIn('if (sourceModelMarcoVerifiedForm == null) return null', FORMS)
-        self.assertIn('resource.Health - cost < 15', FORMS)
+        self.assertIn('sourceModelMarcoVerifiedForm == null', FORMS)
+        self.assertIn('!SourceModelTenthFormProfile(actor, "LI-03", "h08O")', FORMS)
+        self.assertIn('IsOriginalPoneglyphChanneling(id)', FORMS)
+        self.assertIn('resource.Health < 15', FORMS)
+        self.assertNotIn('resource.Health - cost < 15', FORMS)
+        self.assertIn('skill.Components[1].Number("bonusDamagePercent") != 40', FORMS)
+        self.assertIn('SourceModelSafeFixedAmount(firstHpLoss * .40', FORMS)
+        self.assertIn('skill.Components[1].Number("targetCurrentHealthPercent") != 30', FORMS)
+        self.assertIn('skill.Components[2].Number("durationSeconds") != 2', FORMS)
 
     def test_one_pipeline_and_previous_native_paths_remain(self):
         self.assertIn('TryCastSourceModelEleventhForm(actor, skillId, out result)', TEN)

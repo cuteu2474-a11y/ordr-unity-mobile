@@ -35,9 +35,21 @@ namespace Ordr.Mobile.Combat
 
         private string SourceModelEleventhMarcoForm(long id)
         {
-            if (sourceModelMarcoVerifiedForm == null) return null;
+            // A real form witness must belong to the living LI-03/h08O
+            // instance. Never transfer it to another Marco grade, a clone,
+            // decoding, or a shared-objective staging lane. The imported
+            // tooltip does not prove a native transformation trigger.
+            CharacterInstance actor;
+            if (!UsesSourceModelBasicAttacks ||
+                sourceModelMarcoVerifiedForm == null ||
+                !characters.TryGetValue(id, out actor) ||
+                !SourceModelTenthFormProfile(actor, "LI-03", "h08O") ||
+                IsOriginalPoneglyphChanneling(id) ||
+                IsSharedObjectiveDeployed(id))
+                return null;
             string witnessed = sourceModelMarcoVerifiedForm(id);
-            return witnessed == "phoenix" || witnessed == "human" ? witnessed : null;
+            return witnessed == "phoenix" || witnessed == "human"
+                ? witnessed : null;
         }
 
         private void ForgetSourceModelEleventhActor(long id)
@@ -461,6 +473,13 @@ namespace Ordr.Mobile.Combat
             RemoveDefeatedEnemies();
         }
 
+        private static bool SourceModelMarcoLineOnly(ImportedCombatEffect effect)
+        {
+            var kinds = effect.Get("onlyTargetKinds") as IReadOnlyList<object>;
+            return kinds != null && kinds.Count == 1 &&
+                string.Equals(kinds[0] as string, "line", StringComparison.Ordinal);
+        }
+
         private void SourceModelEleventhMarcoAttack(CharacterInstance actor,
             SpatialCombatEnemy primary)
         {
@@ -475,26 +494,58 @@ namespace Ordr.Mobile.Combat
                 skill.ChancePercent != (phoenix ? 18 : 15) ||
                 skill.Number("healthCost") != (phoenix ? 10 : 7) ||
                 skill.Number("minHealth") != 15 ||
+                skill.Target != "area" ||
                 skill.Radius != (phoenix ? 500 : 450) ||
                 skill.Components[0].Type != (phoenix ? "physical" : "magical") ||
                 (phoenix && (skill.Components[0].Number("basicAttackPercent") != 400 ||
-                             skill.Components[0].Number("flatAmount") != 500000)) ||
-                (!phoenix && skill.Components[0].Number("amount") != 750000)) return;
+                             skill.Components[0].Number("flatAmount") != 500000 ||
+                             skill.Components[1].Type != "fixed" ||
+                             skill.Components[1].Number("bonusDamagePercent") != 40 ||
+                             skill.Components[1].Text("scope") != "singlePrimaryTarget")) ||
+                (!phoenix && (skill.Components[0].Number("amount") != 750000 ||
+                              skill.Components[1].Type != "explosive" ||
+                              skill.Components[1].Number("targetCurrentHealthPercent") != 30 ||
+                              skill.Components[1].Text("scope") != "singlePrimaryTarget" ||
+                              !SourceModelMarcoLineOnly(skill.Components[1]) ||
+                              skill.Components[2].Type != "stun" ||
+                              skill.Components[2].Number("durationSeconds") != 2 ||
+                              skill.Components[2].Text("scope") != "singlePrimaryTarget")))
+                return;
             var resource = actor.Abilities.Resources;
             double cost = phoenix ? 10 : 7;
-            if (resource.Health - cost < 15 || !resource.CanSpend(cost, 0) ||
+            // The recorded 2.323 tooltip says HP >= 15 BEFORE the proc
+            // consumes 10/7 HP. Previous code incorrectly required 25/22,
+            // making both low-health form skills fail too early.
+            if (resource.Health < 15 || !resource.CanSpend(cost, 0) ||
                 !SourceRollSkill(skill)) return;
             resource.Spend(cost, 0);
             double basic = SourceModelUpgradeAdjustedAttackPower(actor);
+            long primaryHealthBefore = primary.Enemy.Health;
             foreach (var target in SourceModelEleventhCircle(actor, primary,
                          phoenix ? 500 : 450))
                 ApplySourceModelSeventhTimedHit(actor, target, skill.Name,
                     phoenix ? 500000 + basic * 4 : 750000,
                     phoenix ? "physical" : "magical");
-            if (!phoenix && primary.Enemy.IsAlive && primary.Kind == CharacterEnemyKind.Line)
+            if (phoenix && primary.Enemy.IsAlive)
             {
-                // Only ordinary line targets have the practice boss/resistance
-                // model needed for the primary-only current-health packet.
+                // Tooltip: the primary target takes a separate 40% fixed
+                // follow-up. With no Warcraft hit receipt available here,
+                // use 40% of the ACTUAL first modeled HP loss, never 40%
+                // of an unobserved native crit or an extra radius hit.
+                // This is TOOLTIP_MODEL_ONLY, not certified JASS ordering.
+                long firstHpLoss = Math.Max(0L,
+                    primaryHealthBefore - primary.Enemy.Health);
+                long fixedBonus;
+                if (firstHpLoss > 0 &&
+                    SourceModelSafeFixedAmount(firstHpLoss * .40, out fixedBonus) &&
+                    fixedBonus > 0)
+                    ApplySourceModelFixedPrimaryPacket(InstanceKey(actor.Id),
+                        primary, fixedBonus, skill.Name + " · 단일 추가 고정 피해");
+            }
+            if (!phoenix && primary.Enemy.IsAlive &&
+                primary.Kind == CharacterEnemyKind.Line)
+            {
+                // Native ordering/target immunities remain model-only.
                 ApplySourceModelSeventhTimedHit(actor, primary, skill.Name,
                     primary.Enemy.Health * .3, "explosive");
                 SourceModelEleventhStun(actor, primary, skill.Name, 2);

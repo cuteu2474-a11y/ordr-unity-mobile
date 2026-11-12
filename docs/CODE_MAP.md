@@ -1,5 +1,11 @@
 # 코드 구조
 
+## C06 제한 마르코 형태·전투 근거 연결 (코드·미실행)
+
+- `CharacterCombatRuntime.SourceModelEleventhForms.cs`: 기존 `ConfigureSourceModelMarcoFormEvidence`를 그대로 사용하며 유효한 LI-03/h08O 소유자·비해독/비공유 레인 외에는 형태가 노출되지 않도록 제한. 원본 도감 기반 HP15 이상 **발동 전 검사**와 불사조 10 HP/18%, 인간형 7 HP/15% 정확히 분리. 스킬의 원본 프로필 구성(범위·추가 단일 타격·스턴)을 먼저 확인하므로 누락된 컴포넌트에 비용/피해를 잘못 적용하지 않습니다.
+- 불사조형 원래 기본 타격 외 추가 40% 단일 고정 스킬 피해를 **첫 모델 HP 피해의 40%**로 표현(TOOLTIP_MODEL_ONLY). 원본 실제 JASS 40% 기초량/면역/순서 미확정. 인간형 기존 마법·현재체력30%·2초 기절과 공통 체력/유닛/쿨타임 장부 유지. `SourceModelScriptAttackSkillTests`에 증거 없음, HP15 경계, 40% 단일 추가 피해, 해독·삭제 후 금지 관련 소스 검사 3건(미실행) 추가.
+
+
 ## C06 변신 사전 감사와 생명주기 정리 (코드·미실행)
 
 - 기존 `SourceModelBasicCombatRules.SetSourceForm/FormAttackOf`와 `CombatAttackPipeline.ConfigurePracticeAttackOverride`, `CharacterActiveAbilities`의 자원·쿨타임 장부가 이미 동작합니다. 새로운 공통 폼 엔진을 만들지 않으며 자원/쿨타임 재초기화도 하지 않습니다.

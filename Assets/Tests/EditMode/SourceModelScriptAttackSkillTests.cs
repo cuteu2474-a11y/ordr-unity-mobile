@@ -3443,6 +3443,139 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        // The original LI-03 tooltip describes an attack proc conditional
+        // on a witnessed form; it does NOT give a mobile-only transform key.
+        // Invoke the already existing callback with an explicit enemy so the
+        // HP threshold and fixed bonus are not polluted by unrelated ticks.
+        private static void TriggerWitnessedMarcoModelAttack(
+            CharacterCombatRuntime combat, long ownerId, string enemyId)
+        {
+            const System.Reflection.BindingFlags flags =
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic;
+            var characters = (System.Collections.IDictionary)typeof(CharacterCombatRuntime)
+                .GetField("characters", flags).GetValue(combat);
+            var enemies = (System.Collections.IDictionary)typeof(CharacterCombatRuntime)
+                .GetField("enemies", flags).GetValue(combat);
+            var callback = typeof(CharacterCombatRuntime).GetMethod(
+                "SourceModelEleventhMarcoAttack", flags);
+            Assert.IsNotNull(callback);
+            callback.Invoke(combat, new[] { characters[ownerId], enemies[enemyId] });
+        }
+
+        private static void SpawnMarcoModelTarget(
+            CharacterCombatRuntime combat, string enemyId)
+        {
+            combat.SpawnEnemyWithDefenses(enemyId, 1000000000,
+                CharacterEnemyKind.Line, -4900, 5400, 0,
+                new EnemyDefenseProfile(CharacterEnemyKind.Line, 0, 0,
+                    "medium", "MODEL_TEST_VERIFIED_DEFENSE"));
+        }
+
+        [Test]
+        public void MarcoFormEvidenceIsRequiredAndFifteenHpIsCheckedBeforeFormCost()
+        {
+            using (var live = Create("LI-03", true, -4900, 5400,
+                withSourceResources: true))
+            {
+                SpawnMarcoModelTarget(live.Combat, "marco-form-line");
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                Assert.AreEqual(85, pool.MaximumHealth,
+                    "Source h08O UnitBalance HP=85, not an invented ability meter.");
+                string evidence = null;
+                live.Combat.ConfigureSourceModelMarcoFormEvidence(id =>
+                    id == live.ActorId ? evidence : null);
+                pool.SetHealth(15);
+                TriggerWitnessedMarcoModelAttack(
+                    live.Combat, live.ActorId, "marco-form-line");
+                Assert.AreEqual(15, pool.Health, "No witness means no proc or HP cost.");
+
+                evidence = "unknown";
+                TriggerWitnessedMarcoModelAttack(
+                    live.Combat, live.ActorId, "marco-form-line");
+                Assert.AreEqual(15, pool.Health);
+
+                evidence = "phoenix";
+                Assert.AreEqual("phoenix", live.Combat.PracticeFormOf(live.ActorId));
+                pool.SetHealth(14);
+                TriggerWitnessedMarcoModelAttack(
+                    live.Combat, live.ActorId, "marco-form-line");
+                Assert.AreEqual(14, pool.Health,
+                    "Both form skills require HP >= 15 before the roll.");
+                pool.SetHealth(15);
+                TriggerWitnessedMarcoModelAttack(
+                    live.Combat, live.ActorId, "marco-form-line");
+                Assert.AreEqual(5, pool.Health,
+                    "Phoenix consumes 10 at exactly 15 HP, not only at 25.");
+
+                evidence = "human";
+                Assert.AreEqual("human", live.Combat.PracticeFormOf(live.ActorId));
+                pool.SetHealth(15);
+                TriggerWitnessedMarcoModelAttack(
+                    live.Combat, live.ActorId, "marco-form-line");
+                Assert.AreEqual(8, pool.Health,
+                    "Human consumes 7 at exactly 15 HP, not only at 22.");
+                Assert.AreEqual(1, live.Combat.CharacterCount,
+                    "A form is never a second material/roster instance.");
+            }
+        }
+
+        [Test]
+        public void MarcoPhoenixPrimaryGetsOnlyOneFortyPercentFixedBonus()
+        {
+            using (var live = Create("LI-03", true, -4900, 5400,
+                withSourceResources: true))
+            {
+                SpawnMarcoModelTarget(live.Combat, "marco-primary");
+                SpawnMarcoModelTarget(live.Combat, "marco-secondary");
+                live.Combat.ConfigureSourceModelMarcoFormEvidence(id =>
+                    id == live.ActorId ? "phoenix" : null);
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                var eventField = typeof(CharacterCombatRuntime).GetField(
+                    "events", System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+                Assert.IsNotNull(eventField);
+                var all = (List<CharacterCombatEvent>)eventField.GetValue(live.Combat);
+                int before = all.Count;
+                TriggerWitnessedMarcoModelAttack(
+                    live.Combat, live.ActorId, "marco-primary");
+                var effects = all.Skip(before).ToList();
+                Assert.AreEqual(75, pool.Health);
+                Assert.AreEqual(1, effects.Count(x =>
+                    x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "불사조 상태 폭발 · 단일 추가 고정 피해" &&
+                    x.EnemyId == "marco-primary" && x.Amount > 0),
+                    "The 40% packet is primary-only, never a second area volley.");
+                Assert.IsFalse(effects.Any(x =>
+                    x.SkillName == "불사조 상태 폭발 · 단일 추가 고정 피해" &&
+                    x.EnemyId == "marco-secondary"));
+            }
+        }
+
+        [Test]
+        public void MarcoWitnessedFormDoesNotProcDuringDecodeOrAfterRemoval()
+        {
+            using (var live = Create("LI-03", true, -4900, 5400,
+                withSourceResources: true))
+            {
+                SpawnMarcoModelTarget(live.Combat, "marco-decode-line");
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                live.Combat.ConfigureSourceModelMarcoFormEvidence(id =>
+                    id == live.ActorId ? "phoenix" : null);
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, true);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                double before = pool.Health;
+                TriggerWitnessedMarcoModelAttack(
+                    live.Combat, live.ActorId, "marco-decode-line");
+                Assert.AreEqual(before, pool.Health);
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, false);
+                Assert.AreEqual("phoenix", live.Combat.PracticeFormOf(live.ActorId));
+                live.Combat.RemoveCharacter(live.ActorId);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(0, live.Combat.CharacterCount);
+            }
+        }
+
         [Test]
         public void BonneyFortyAgeStacksTriggerBothOriginalFollowupsOncePerLiveTarget()
         {
