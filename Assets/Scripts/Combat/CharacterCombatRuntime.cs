@@ -1468,6 +1468,7 @@ namespace Ordr.Mobile.Combat
             {
                 sourceModelStoryLaneRevisions[instanceId] =
                     checked(SourceModelLaneRevision(instanceId) + 1);
+                ForgetSourceModelFormsOnLaneChange(instanceId);
                 // JASS EXPauseUnit must not follow a unit across story lanes.
                 sourceAttackPauseFinishes.Remove(instanceId);
                 sourceAttackPauseTokens.Remove(instanceId);
@@ -2450,6 +2451,10 @@ namespace Ordr.Mobile.Combat
             // Form/counter cleanup was previously only called on lane transfers.
             ForgetSourceModelEleventhActor(instanceId);
             RemoveSourceTemporaryActors(instanceId);
+            // Source-native cycle/intro/transform receipts for Uta (plus
+            // Roger, Tesoro and Shark) must not survive a sold/fused owner.
+            // Prior cleanup omitted this already-implemented handler.
+            ForgetSourceModelFusionNativeActor(instanceId);
             sourceModelStoryLaneRevisions.Remove(instanceId);
             lawReadyAt.Remove(instanceId);
             sourceRareLawReadyAt.Remove(instanceId);

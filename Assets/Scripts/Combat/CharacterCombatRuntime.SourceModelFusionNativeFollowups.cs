@@ -793,6 +793,12 @@ namespace Ordr.Mobile.Combat
                     sourceModelUtaSleepUntil.Remove(id);
                     continue;
                 }
+                // Unlike actual battlefield attacks, decoding and shared
+                // objective staging cannot trigger the B61 HP10 native
+                // transform/sleep loop. Resume the same clock on return.
+                if (IsOriginalPoneglyphChanneling(id) ||
+                    IsSharedObjectiveDeployed(id))
+                    continue;
                 var pool = actor.Abilities.Resources;
                 if (!sourceModelManagedResourceRows.ContainsKey(id) || pool == null)
                     continue;

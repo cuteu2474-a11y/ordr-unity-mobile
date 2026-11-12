@@ -1,5 +1,12 @@
 # 코드 구조
 
+## C06 변신 사전 감사와 생명주기 정리 (코드·미실행)
+
+- 기존 `SourceModelBasicCombatRules.SetSourceForm/FormAttackOf`와 `CombatAttackPipeline.ConfigurePracticeAttackOverride`, `CharacterActiveAbilities`의 자원·쿨타임 장부가 이미 동작합니다. 새로운 공통 폼 엔진을 만들지 않으며 자원/쿨타임 재초기화도 하지 않습니다.
+- `CharacterCombatRuntime.RefreshAfterCommittedCombatLaneChange` → `ForgetSourceModelFormsOnLaneChange`가 소유자 이전 레인의 스네이크맨 시전, 야마토/임시 변신 버프·이름, 보니 니카/기타 10차 폼을 **동일 커밋 즉시** 취소합니다. 니카 H0BY는 기존 `ForgetSourceModelTenthFormState`의 원본 MP 최대치 복원을 실행합니다. 스네이크맨 예약은 유효 완료 시각까지 같아야 새 변신 시전에 영향을 주지 않습니다.
+- `RemoveCharacter`는 기존 구현돼 있었지만 호출되지 않았던 `ForgetSourceModelFusionNativeActor`를 실행해 우타 B61/인트로·테소로·로저·샤크 상태를 정리합니다. 우타 해독·공유출전 중 B61 HP10 변신/회복 처리 차단, `PracticeFormOf`에서 h0AF를 신세계로 표시합니다.
+- `SourceModelScriptAttackSkillTests`에 야마토 임시 폼 즉시 정리, 도플라밍고 비용 보존, 보니 니카 MP 최대치 복원, 우타 삭제 상태와 해독 중 자동 회복 억제 검사 소스 5건 추가(미실행). 마르코는 외부 원본 폼 증거가 있어야만 변신/전투 처리 가능하다는 기존 정책 유지.
+
 ## C05 일시 스킬 공통화 (코드·실행 미검증)
 
 슈가 R-24: SourceModelRemainingCallbacks의 BpT 0.35초 근사 접근/500 직접 타격과 h06O 3.5초 공통 수명·BpS/e01M 사망 사건을 유지하며 실물 보유 유닛은 생성하지 않습니다. 폭발 범위는 네이티브 검증 전 임의 구현하지 않습니다.

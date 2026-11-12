@@ -130,6 +130,12 @@ namespace Ordr.Mobile.Combat
             string nativeForm;
             if (sourceNativeForms.TryGetValue(id, out nativeForm))
                 return nativeForm;
+            // E-09 B61 toggles the original h0AF attack object, but that
+            // native form was missing from the existing HUD/form lookup.
+            if (sourceActor != null && sourceActor.Catalog.Id == "E-09" &&
+                sourceModelRules != null &&
+                sourceModelRules.SourceFormRawcodeOf(InstanceKey(id)) == "h0AF")
+                return "신세계";
             string name;
             if (!sourceFormNames.TryGetValue(id, out name)) return null;
             foreach (var effect in unitStatuses[InstanceKey(id)].Snapshot())
@@ -150,6 +156,26 @@ namespace Ordr.Mobile.Combat
                     SourceModelLaneRevision(ownerId) == summon.LaneRevision)
                     result.Add(summon);
             return result.AsReadOnly();
+        }
+
+        // A committed lane transfer invalidates form-local attack buffs and
+        // pending form windups immediately. Permanent skill cooldowns live in
+        // CharacterActiveAbilities and are deliberately NOT reset here.
+        // Forest nutrient growth is a separate persistent resource.
+        private void ForgetSourceModelFormsOnLaneChange(long id)
+        {
+            sourceFormCastFinishes.Remove(id);
+            sourceFormNames.Remove(id);
+            sourceModelYamatoOpeningReady.Remove(id);
+            CombatStatusEngine status;
+            if (unitStatuses.TryGetValue(InstanceKey(id), out status))
+            {
+                status.RemoveSource("practice-form:power:" + id);
+                status.RemoveSource("practice-form:interval:" + id);
+            }
+            // Nika also restores the original source mana MAXIMUM and clears
+            // H0BY right now, not after the next combat tick or HUD read.
+            ForgetSourceModelTenthFormState(id);
         }
 
         private void RemoveSourceTemporaryActors(long ownerId)
@@ -313,17 +339,27 @@ namespace Ordr.Mobile.Combat
                 bool lane = IsStoryDeployed(actor.Id);
                 long revision = SourceModelLaneRevision(actor.Id);
                 string attacker = InstanceKey(actor.Id);
-                sourceFormCastFinishes[actor.Id] = effectExecutor.Time + castTime;
+                double expectedFinish = effectExecutor.Time + castTime;
+                sourceFormCastFinishes[actor.Id] = expectedFinish;
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, attacker,
                     primary.Id, skill.Name,
                     "MODEL_ONLY 변신 시전 시작 / " + castTime + "초", 0));
                 effectExecutor.SchedulePracticeSourceAttack(attacker,
                     "practice-form-cast:" + attacker, castTime, () => {
+                        // Check the lane revision BEFORE touching this
+                        // owner's new windup. Recast on the same scheduler
+                        // tick can have an identical expected finish time.
+                        if (!CanFinishSourceModelDelayedAttack(
+                                actor.Id, lane, revision)) return;
+                        double stillExpected;
+                        if (!sourceFormCastFinishes.TryGetValue(
+                                actor.Id, out stillExpected) ||
+                            stillExpected != expectedFinish)
+                            return;
                         sourceFormCastFinishes.Remove(actor.Id);
                         sourceFormCastWake = true;
-                        if (CanFinishSourceModelDelayedAttack(actor.Id, lane, revision))
-                            ApplySourceForm(actor.Id, skill, form);
+                        ApplySourceForm(actor.Id, skill, form);
                     });
                 return;
             }

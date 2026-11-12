@@ -3083,6 +3083,13 @@ namespace Ordr.Mobile.Tests
                 live.Rolls.Trigger = false;
                 lane.Deployed = true;
                 live.Combat.RefreshAfterCommittedStoryLaneChange(live.ActorId);
+                var castField = typeof(CharacterCombatRuntime).GetField(
+                    "sourceFormCastFinishes", System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+                Assert.IsNotNull(castField);
+                Assert.IsFalse(((Dictionary<long, double>)castField.GetValue(
+                    live.Combat)).ContainsKey(live.ActorId),
+                    "Canceled Snake Man windup cannot block later casting.");
                 lane.Deployed = false;
                 live.Combat.RefreshAfterCommittedStoryLaneChange(live.ActorId);
                 var after = live.Battle.Advance(3);
@@ -3108,6 +3115,142 @@ namespace Ordr.Mobile.Tests
                 live.Battle.Advance(4);
                 Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
                 Assert.AreEqual(905, resources.Health);
+            }
+        }
+
+        [Test]
+        public void YamatoTemporaryFormEndsImmediatelyOnDecodeWithoutRefillingHealth()
+        {
+            using (var live = Create("TR-18", false, -4900, 5400))
+            {
+                var pool = new CharacterResources(1000, 1000, 0, 0);
+                live.Combat.ConfigureCharacterResources(live.ActorId, pool);
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(
+                        live.ActorId, "TR-18:skill:0", null));
+                Assert.AreEqual("beast", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(905, pool.Health);
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, true);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(0, SourceModelTemporarySkillCatalog.FlatFormPower(
+                    live.Combat.UnitStatusOf(live.ActorId).Snapshot()));
+                Assert.AreEqual(905, pool.Health, "Changing lane is not healing.");
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, false);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(1, live.Combat.CharacterCount);
+            }
+        }
+
+        [Test]
+        public void DoflamingoEarlyReversionDoesNotRestoreManaOrCreateFreeRecast()
+        {
+            using (var live = Create("TR-03", false, -4900, 5400))
+            {
+                var pool = new CharacterResources(10, 10, 150, 150);
+                live.Combat.ConfigureCharacterResources(live.ActorId, pool);
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(
+                        live.ActorId, "TR-03:skill:0", null));
+                Assert.AreEqual(0, pool.Mana);
+                Assert.AreEqual("awakening", live.Combat.PracticeFormOf(live.ActorId));
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, true);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(0, SourceModelTemporarySkillCatalog.FormIntervalReduction(
+                    live.Combat.UnitStatusOf(live.ActorId).Snapshot()), .000001);
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, false);
+                // Original TR-03 profile does not specify a positive
+                // cooldown. Do not invent one: the actual native 150-MP
+                // cost alone prevents a free recast after dispatch.
+                Assert.AreEqual(AbilityCastResult.InsufficientResources,
+                    live.Combat.TryCastActiveSkill(
+                        live.ActorId, "TR-03:skill:0", null));
+                Assert.AreEqual(0, pool.Mana);
+            }
+        }
+
+        [Test]
+        public void BonneyNikaManaMaximumAndObjectRevertAtLaneCommitNotNextTick()
+        {
+            using (var live = Create("TR-21", false, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(
+                        live.ActorId, "TR-21:skill:0", null));
+                Assert.AreEqual(100, pool.MaximumMana);
+                Assert.AreEqual("nika", live.Combat.PracticeFormOf(live.ActorId));
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, true);
+                Assert.AreEqual(150, pool.MaximumMana,
+                    "H0BY form pool must revert in the transaction itself.");
+                Assert.AreEqual(100, pool.Mana,
+                    "The form transition must not fabricate an MP refill.");
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, false);
+                Assert.AreEqual(150, pool.MaximumMana);
+                Assert.AreEqual(1, live.Combat.CharacterCount);
+            }
+        }
+
+        [Test]
+        public void UtaNativeFormIsVisibleAndOwnerRemovalClearsNativeCycleStates()
+        {
+            using (var live = Create("E-09", false, -4900, 5400,
+                withSourceResources: true))
+            {
+                live.Combat.ConfigureSourceModelFusionNativeReceipts(id =>
+                    id == Original323FusionNativeFollowupLedger.UtaSongId ? 1 : 0);
+                Assert.IsTrue(live.Combat.TryStartSourceModelUtaIntro(live.ActorId));
+                var ruleField = typeof(CharacterCombatRuntime).GetField(
+                    "sourceModelRules", System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+                Assert.IsNotNull(ruleField);
+                var rules = (SourceModelBasicCombatRules)ruleField.GetValue(live.Combat);
+                rules.SetSourceForm(live.ActorId.ToString(), "h0AF");
+                Assert.AreEqual("신세계", live.Combat.PracticeFormOf(live.ActorId));
+
+                live.Combat.RemoveCharacter(live.ActorId);
+
+                var flags = System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic;
+                var introField = typeof(CharacterCombatRuntime).GetField(
+                    "sourceModelUtaIntroStarted", flags);
+                var cycleField = typeof(CharacterCombatRuntime).GetField(
+                    "sourceModelUtaCycleReadyAt", flags);
+                Assert.IsNotNull(introField);
+                Assert.IsNotNull(cycleField);
+                Assert.IsFalse(((HashSet<long>)introField.GetValue(live.Combat))
+                    .Contains(live.ActorId));
+                Assert.IsFalse(((Dictionary<long, double>)cycleField.GetValue(live.Combat))
+                    .ContainsKey(live.ActorId));
+                Assert.IsNull(rules.SourceFormRawcodeOf(live.ActorId.ToString()));
+            }
+        }
+
+        [Test]
+        public void UtaNativeHealthTransformDoesNotFireDuringPoneglyphDecoding()
+        {
+            using (var live = Create("E-09", false, -4900, 5400,
+                withSourceResources: true))
+            {
+                live.Combat.ConfigureSourceModelFusionNativeReceipts(id =>
+                    id == Original323FusionNativeFollowupLedger.UtaSongId ? 1 : 0);
+                Assert.IsTrue(live.Combat.TryStartSourceModelUtaIntro(live.ActorId));
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                pool.SetHealth(1);
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, true);
+                var events = live.Battle.Advance(.7);
+                Assert.Less(pool.Health, 100,
+                    "B61 HP150 reset must not occur while the unit decodes.");
+                Assert.IsFalse(events.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "우타 · 신세계 변신"));
+                live.Combat.SetOriginalPoneglyphChanneling(live.ActorId, false);
             }
         }
 
