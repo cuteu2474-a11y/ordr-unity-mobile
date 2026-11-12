@@ -174,22 +174,22 @@ namespace Ordr.Mobile.Tests
         [TestCase(2288f,1080f,440f)]
         [TestCase(756f,390f,460f)]
         [TestCase(1152f,700f,320f)]
-        public void FourResourceSlotsRemainInsideTheirLandscapeArea(
+        public void FiveResourceSlotsRemainInsideTheirLandscapeArea(
             float width,float height,float dpi)
         {
             var safe=new Rect(0,0,width,height);
             float scale=MobileMapSkillLayout.UiScale(safe,dpi);
             var layout=MobileMapSkillLayout.Calculate(safe,height,scale);
             Assert.AreEqual(0f, layout.HeaderHeight, "The gameplay title header must not reserve space.");
-            Assert.AreEqual(36f, layout.StatusMargin.height / scale, .01f);
+            Assert.AreEqual(52f, layout.StatusMargin.height / scale, .01f);
             Assert.Less(layout.StatusMargin.yMax, layout.Battle.yMin);
             Assert.AreEqual(safe.height - 6f * scale, layout.Story.yMax, .02f);
             var area=MobileMapSkillLayout.Scaled(layout.StatusMargin,scale);
-            area = new Rect(area.xMax - Mathf.Min(760f, area.width - 12f) - 6f, area.y,
-                Mathf.Min(760f, area.width - 12f), area.height);
-            var chips=MobileMapSkillLayout.StatusChipRects(area);
-            Assert.AreEqual(4,chips.Length);
-            for(int i=0;i<4;i++)
+            area = new Rect(area.xMax - Mathf.Min(900f, area.width - 12f) - 6f, area.y,
+                Mathf.Min(900f, area.width - 12f), area.height);
+            var chips=MobileMapSkillLayout.StatusChipRects(area, 5);
+            Assert.AreEqual(5,chips.Length);
+            for(int i=0;i<5;i++)
             {
                 Assert.Greater(chips[i].width,0f);
                 Assert.GreaterOrEqual(chips[i].xMin,area.xMin-.01f);
@@ -199,6 +199,12 @@ namespace Ordr.Mobile.Tests
             }
             Assert.LessOrEqual(layout.Battle.xMax,layout.RightDrawer.xMin);
             Assert.GreaterOrEqual(layout.SkillMargin.yMin,layout.Battle.yMax);
+            Assert.GreaterOrEqual(layout.LeftTabs.width / scale, 150f);
+            Assert.IsTrue(layout.BlocksWorldTap(layout.SkillMargin.center, false));
+            Assert.IsTrue(layout.BlocksWorldTap(layout.StatusMargin.center, false));
+            Assert.IsTrue(layout.BlocksWorldTap(layout.RightDrawer.center, false));
+            Assert.IsFalse(layout.BlocksWorldTap(layout.Battle.center, false));
+            Assert.IsFalse(layout.BlocksWorldTap(layout.Story.center, true));
         }
 
         [Test]
@@ -289,6 +295,27 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void SkillSwipeConsumesReleaseAndClampsAtBothEnds()
+        {
+            var gesture = new MobilePanelScrollGesture();
+            var viewport = new Rect(200, 300, 300, 70);
+            float x = 20f;
+            gesture.Begin(new Vector2(480, 360), viewport, x, true, false);
+            Assert.IsTrue(gesture.IsTracking, "Hidden scrollbars must not reserve an untouchable edge.");
+            Assert.IsFalse(gesture.Move(new Vector2(476, 360), 500, ref x));
+            Assert.IsTrue(gesture.Move(new Vector2(400, 360), 500, ref x));
+            Assert.AreEqual(100f, x);
+            Assert.IsTrue(gesture.Move(new Vector2(-400, 360), 500, ref x));
+            Assert.AreEqual(500f, x);
+            Assert.IsTrue(gesture.End(), "Swipe release must not cast the skill.");
+            gesture.Begin(new Vector2(300, 340), viewport, x, true, false);
+            Assert.IsTrue(gesture.Move(new Vector2(900, 340), 500, ref x));
+            Assert.AreEqual(0f, x);
+            gesture.Cancel();
+            Assert.IsFalse(gesture.End());
+        }
+
+        [Test]
         public void InvalidSlotDimensionsFailBeforeRendering()
         {
             Assert.Throws<ArgumentOutOfRangeException>(()=>
@@ -298,3 +325,4 @@ namespace Ordr.Mobile.Tests
         }
     }
 }
+

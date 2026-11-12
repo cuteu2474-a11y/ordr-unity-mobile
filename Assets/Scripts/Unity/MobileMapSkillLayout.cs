@@ -37,11 +37,11 @@ namespace Ordr.Mobile.Unity
             float usableWidth = safe.width - 2f * margin;
             // No title header. Only a thin RTS-style resource strip remains.
             float headerHeight = 0f;
-            float resourceHeight = 36f * uiScale;
+            float resourceHeight = 52f * uiScale;
             float gap = Mathf.Clamp(safe.height * 0.009f, 5f, 9f);
             // Korean labels need room after IMGUI padding and scrollbar gutter.
             // The old 116px cap wrapped navigation to one character per line.
-            float railWidth = Mathf.Clamp(usableWidth * 0.115f, 150f, 270f);
+            float railWidth = Mathf.Clamp(usableWidth * 0.115f, 150f * uiScale, 270f * uiScale);
             float mapLeft = left + railWidth + gap;
 
             // Two modest battlefields in the center, with a permanently
@@ -63,7 +63,7 @@ namespace Ordr.Mobile.Unity
             // The ribbon stays touch-sized; the smaller story area gets 24% of field space for the visible fortress.
             float playableHeight = available;
             float ribbonHeight = Mathf.Min(
-                Mathf.Max(52f * uiScale, safe.height * 0.083f), playableHeight * 0.27f);
+                Mathf.Max(84f * uiScale, safe.height * 0.083f), playableHeight * 0.30f);
             float fieldSpace = playableHeight - ribbonHeight - gap * 2f;
             float storyHeight = fieldSpace * 0.24f;
             float battleHeight = fieldSpace - storyHeight;
@@ -104,8 +104,8 @@ namespace Ordr.Mobile.Unity
         // underlying unit markers occupy the same world-space point.
         public bool BlocksWorldTap(Vector2 onGui, bool drawerOpen)
         {
-            return LeftTabs.Contains(onGui) ||
-                (drawerOpen && RightDrawer.Contains(onGui));
+            return LeftTabs.Contains(onGui) || RightDrawer.Contains(onGui) ||
+                StatusMargin.Contains(onGui) || SkillMargin.Contains(onGui);
         }
 
         // Unity camera.rect uses normalized bottom-left viewport coordinates.
@@ -252,3 +252,4 @@ namespace Ordr.Mobile.Unity
         }
     }
 }
+

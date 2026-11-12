@@ -10,13 +10,18 @@ namespace Ordr.Mobile.Unity
         public bool IsDragging { get; private set; }
         private Vector2 origin;
         private float initialScroll;
+        private bool horizontal;
 
-        public void Begin(Vector2 pointer, Rect viewport, float scrollY)
+        public void Begin(Vector2 pointer, Rect viewport, float scrollY,
+            bool horizontalAxis = false, bool reserveScrollbar = true)
         {
             Cancel();
             // Leave the native scrollbar available for direct thumb dragging.
-            if (!viewport.Contains(pointer) || pointer.x >= viewport.xMax - 22f) return;
+            if (!viewport.Contains(pointer) || (reserveScrollbar &&
+                (horizontalAxis ? pointer.y >= viewport.yMax - 22f :
+                    pointer.x >= viewport.xMax - 22f))) return;
             IsTracking = true;
+            horizontal = horizontalAxis;
             origin = pointer;
             initialScroll = scrollY;
         }
@@ -24,7 +29,7 @@ namespace Ordr.Mobile.Unity
         public bool Move(Vector2 pointer, float maximum, ref float scrollY)
         {
             if (!IsTracking) return false;
-            float distance = pointer.y - origin.y;
+            float distance = horizontal ? pointer.x - origin.x : pointer.y - origin.y;
             if (!IsDragging && Mathf.Abs(distance) < 8f) return false;
             IsDragging = true;
             scrollY = Mathf.Clamp(initialScroll - distance, 0f, Mathf.Max(0f, maximum));
@@ -104,3 +109,4 @@ namespace Ordr.Mobile.Unity
         }
     }
 }
+

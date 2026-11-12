@@ -1,5 +1,7 @@
 # 코드 구조
 
+**UI 스크롤 연결:** `MobilePanelScrollGesture.Begin`의 선택적 가로축/스크롤바 여백 설정을 `OrdrMobileTouchPanel.HandleStripScroll`에서 재사용합니다. 왼쪽 목록과 스킬 줄은 Repaint에서 각각 viewport/최대 스크롤을 기록하고 화면 크기·배율 변경 시 입력 경계를 초기화합니다. `MobileMapSkillLayout`은 자원/스킬 공간 및 모든 고정 UI의 월드 입력 차단을, `OrdrMobileUiTheme.ResourceChip`은 자원 이름·정확한 숫자의 좁은 폭 2단 표시를 담당합니다.
+
 ## 마르코 F 스킬 발동 띠 연결 (코드·미검증)
 
 - `Original323SourceDedicatedSkillPort.AvailableSkills/Execute`가 LI-03/h08O 보유 개체의 F 수동 변신을 `MobileDedicatedSkillActions`의 공통 승인·실행 경로에 등록합니다. `OrdrMobileTouchPanel.DrawDedicatedSkillMargin`은 기존 가로 스킬 띠를 유지하며 선택한 마르코의 버튼을 맨 앞에 보이고 선택 변경 시 가로 스크롤을 초기화합니다.
@@ -131,3 +133,4 @@ flowchart TD
 ## 참고 문서
 
 관련 게임 규칙·원본 근거·검사 안내는 **[문서 목차](README.md)**에서 찾아보세요. 이 파일은 수정 대상 **코드 위치와 공통 엔진 역할만** 관리합니다.
+

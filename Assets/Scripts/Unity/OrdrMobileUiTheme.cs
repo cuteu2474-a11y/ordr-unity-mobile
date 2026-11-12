@@ -167,6 +167,7 @@ namespace Ordr.Mobile.Unity
             skillButton = new GUIStyle(themedSkin.button);
             skillButton.fontSize = 17;
             skillButton.wordWrap = true;
+            skillButton.padding = new RectOffset(8,8,4,4);
             skillButton.normal.textColor = Aqua;
             explanation = new GUIStyle(themedSkin.label);
             explanation.fontSize = 19;
@@ -574,7 +575,8 @@ namespace Ordr.Mobile.Unity
 
         internal static void ResourceChip(Rect slot, string type, string amount, Color tint)
         {
-            // A single baseline: small resource marker, label and actual value.
+            // Keep the exact balance. Narrow slots put the value below its
+            // caption rather than shrinking a long number beside Korean text.
             float icon = 8f;
             Stroke(new Rect(slot.x + 4f, slot.center.y - icon * .5f, icon, icon), tint);
             var key = new GUIStyle(GUI.skin.label) { fontSize = 13,
@@ -582,13 +584,20 @@ namespace Ordr.Mobile.Unity
                 padding = new RectOffset(0, 0, 0, 0), clipping = TextClipping.Clip };
             key.normal.textColor = tint;
             float labelWidth = key.CalcSize(new GUIContent(type)).x;
-            GUI.Label(new Rect(slot.x + 16f, slot.y, labelWidth, slot.height), type, key);
             var value = new GUIStyle(key) { fontSize = 18, fontStyle = FontStyle.Bold,
                 alignment = TextAnchor.MiddleRight };
             value.normal.textColor = Color.white;
             var number = new GUIContent(amount);
+            bool stacked = labelWidth + value.CalcSize(number).x + 32f > slot.width;
+            var labelRect = stacked
+                ? new Rect(slot.x + 16f, slot.y + 2f, Mathf.Max(0f, slot.width - 20f), 18f)
+                : new Rect(slot.x + 16f, slot.y, labelWidth, slot.height);
+            GUI.Label(labelRect, type, key);
             var valueRect = new Rect(slot.x + 20f + labelWidth, slot.y,
                 Mathf.Max(0f, slot.width - 26f - labelWidth), slot.height);
+            if (stacked)
+                valueRect = new Rect(slot.x + 4f, slot.y + 21f,
+                    Mathf.Max(0f, slot.width - 10f), Mathf.Max(0f, slot.height - 23f));
             while (value.fontSize > 9 && value.CalcSize(number).x > valueRect.width) value.fontSize--;
             GUI.Label(valueRect, number, value);
         }
@@ -677,3 +686,4 @@ namespace Ordr.Mobile.Unity
         }
     }
 }
+

@@ -82,6 +82,14 @@ namespace Ordr.Mobile.Unity
         private Vector2 tabsScroll;
         private Vector2 dashboardScroll;
         private readonly MobilePanelScrollGesture panelScrollGesture = new MobilePanelScrollGesture();
+        private readonly MobilePanelScrollGesture tabsScrollGesture = new MobilePanelScrollGesture();
+        private readonly MobilePanelScrollGesture skillScrollGesture = new MobilePanelScrollGesture();
+        private Rect tabsScrollViewport;
+        private Rect skillScrollViewport;
+        private float tabsScrollMaximum;
+        private float skillScrollMaximum;
+        private Rect previousSafeArea;
+        private float previousUiScale;
         private readonly MobileLongPressGesture gamblingPressGesture = new MobileLongPressGesture();
         private readonly MobileLongPressGesture upgradePressGesture = new MobileLongPressGesture();
         private string expandedGamblingOfferId;
@@ -209,6 +217,7 @@ namespace Ordr.Mobile.Unity
             }
             if (visible) tabScrollPositions[currentTab] = scroll;
             panelScrollGesture.Cancel();
+            panelScrollViewport = new Rect();
             gamblingPressGesture.Cancel();
             expandedGamblingOfferId = null;
             currentTab = selected;
@@ -238,6 +247,7 @@ namespace Ordr.Mobile.Unity
         private void CloseDrawer()
         {
             panelScrollGesture.Cancel();
+            panelScrollViewport = new Rect();
             gamblingPressGesture.Cancel();
             expandedGamblingOfferId = null;
             tabScrollPositions[currentTab] = scroll;
@@ -270,6 +280,17 @@ namespace Ordr.Mobile.Unity
             var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
             if (safe.width / scale < 120f || safe.height / scale < 100f) return;
 
+            if (safe != previousSafeArea || scale != previousUiScale)
+            {
+                CancelScrollGestures();
+                panelScrollViewport = tabsScrollViewport = skillScrollViewport = new Rect();
+                previousSafeArea = safe;
+                previousUiScale = scale;
+            }
+            HandleStripScroll(tabsScrollGesture, tabsScrollViewport, tabsScrollMaximum,
+                ref tabsScroll, false, scale);
+            HandleStripScroll(skillScrollGesture, skillScrollViewport, skillScrollMaximum,
+                ref dedicatedScroll, true, scale);
             HandlePanelScroll(scale);
             Matrix4x4 previous = GUI.matrix;
             GUISkin previousSkin = OrdrMobileUiTheme.Activate();
@@ -342,18 +363,49 @@ namespace Ordr.Mobile.Unity
             }
         }
 
-        private void OnDisable()
+        private void HandleStripScroll(MobilePanelScrollGesture gesture, Rect viewport,
+            float maximum, ref Vector2 position, bool horizontal, float scale)
+        {
+            var e = Event.current;
+            Vector2 pointer = e.mousePosition / scale;
+            if (e.type == EventType.MouseDown && e.button == 0)
+                gesture.Begin(pointer, viewport, horizontal ? position.x : position.y,
+                    horizontal, false);
+            else if (e.type == EventType.MouseDrag && e.button == 0)
+            {
+                float value = horizontal ? position.x : position.y;
+                if (!gesture.Move(pointer, maximum, ref value)) return;
+                if (horizontal) position.x = value; else position.y = value;
+                GUIUtility.hotControl = 0;
+                e.Use();
+            }
+            else if (e.type == EventType.MouseUp && e.button == 0 && gesture.End())
+            {
+                GUIUtility.hotControl = 0;
+                e.Use();
+            }
+        }
+
+        private void CancelScrollGestures()
         {
             panelScrollGesture.Cancel();
+            tabsScrollGesture.Cancel();
+            skillScrollGesture.Cancel();
             gamblingPressGesture.Cancel();
+            upgradePressGesture.Cancel();
+        }
+
+        private void OnDisable()
+        {
+            CancelScrollGestures();
         }
         private void OnApplicationFocus(bool focused)
         {
-            if (!focused) { panelScrollGesture.Cancel(); gamblingPressGesture.Cancel(); }
+            if (!focused) CancelScrollGestures();
         }
         private void OnApplicationPause(bool paused)
         {
-            if (paused) { panelScrollGesture.Cancel(); gamblingPressGesture.Cancel(); }
+            if (paused) CancelScrollGestures();
         }
 
         private void DrawEconomyStatus(MobileMapSkillLayout layout, float scale)
@@ -388,6 +440,7 @@ namespace Ordr.Mobile.Unity
             // scrollbar stealing width from Korean navigation labels.
             tabsScroll = GUILayout.BeginScrollView(tabsScroll, false, false,
                 GUIStyle.none, GUIStyle.none, GUILayout.ExpandHeight(true));
+            GUILayout.BeginVertical();
 
             DrawLeftTab(Tab.Play, "점수판");
             DrawLeftTab(Tab.Wisp, "위습");
@@ -412,7 +465,17 @@ namespace Ordr.Mobile.Unity
                 controller.Original323HelperCow.AlchemyNavigationChosen)
                 DrawLeftTab(Tab.Alchemy, "연금술");
 
+            GUILayout.EndVertical();
+            Rect tabsContent = GUILayoutUtility.GetLastRect();
             GUILayout.EndScrollView();
+            if (Event.current.type == EventType.Repaint)
+            {
+                Rect viewport = GUILayoutUtility.GetLastRect();
+                tabsScrollViewport = new Rect(area.x + viewport.x, area.y + viewport.y,
+                    viewport.width, viewport.height);
+                tabsScrollMaximum = Mathf.Max(0f, tabsContent.height - viewport.height);
+                tabsScroll.y = Mathf.Clamp(tabsScroll.y, 0f, tabsScrollMaximum);
+            }
             // Keep essential game controls on the persistent left rail,
             // outside the three compact, read-only scoreboard pages.
             if (Combat != null && controller.IsUnitPreparation)
@@ -1100,21 +1163,24 @@ namespace Ordr.Mobile.Unity
         {
             var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
             Rect area = MobileMapSkillLayout.Scaled(layout.SkillMargin, scale);
-            // When selecting a Marco in the battlefield, reveal its F
-            // transform at the start of the existing skill ribbon instead
-            // of leaving the row scrolled to an unrelated previous action.
+            // Preserve the latest main behavior: selecting an owned Marco
+            // reveals its F action at the start of the existing skill ribbon.
             long? selected = Combat == null ? null : Combat.Roster.SelectedId;
             if (selected != dedicatedSkillLastSelectedUnit)
             {
                 dedicatedSkillLastSelectedUnit = selected;
                 dedicatedScroll = Vector2.zero;
+                skillScrollGesture.Cancel();
+                skillScrollViewport = new Rect();
             }
             GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
             GUILayout.BeginHorizontal();
             GUILayout.Label("스킬 발동",OrdrMobileUiTheme.Overline,GUILayout.Width(65f),
-                GUILayout.MinHeight(Mathf.Max(40f, area.height - 9f)));
+                GUILayout.MinHeight(48f));
 
             var actions = controller.DedicatedSkills;
+            if (Event.current.type == EventType.Repaint)
+                skillScrollViewport = new Rect();
             if (!actions.IsConnected)
                 GUILayout.Label("스킬 준비 중");
             else
@@ -1125,8 +1191,8 @@ namespace Ordr.Mobile.Unity
                 else
                 {
                     // Always a single horizontal row, swiped left/right.
-                    dedicatedScroll = GUILayout.BeginScrollView(dedicatedScroll, true, false,
-                        GUILayout.Height(Mathf.Max(45f, area.height - 5f)));
+                    dedicatedScroll = GUILayout.BeginScrollView(dedicatedScroll, false, false,
+                        GUIStyle.none, GUIStyle.none, GUILayout.ExpandHeight(true));
                     GUILayout.BeginHorizontal();
                     foreach (var skill in available)
                     {
@@ -1135,8 +1201,8 @@ namespace Ordr.Mobile.Unity
                         GUI.enabled = previous && skill.IsUnlocked && skill.CanExecute;
                         bool pressed = GUILayout.Button(
                             skill.Title + "\n" + skill.OriginalCostAndRules,
-                            OrdrMobileUiTheme.SkillButton,GUILayout.Width(140f),
-                            GUILayout.Height(Mathf.Max(34f, area.height - 27f)));
+                            OrdrMobileUiTheme.SkillButton,GUILayout.Width(220f),
+                            GUILayout.Height(Mathf.Max(48f, area.height - 30f)));
                         GUI.enabled = previous;
                         if (pressed)
                         {
@@ -1146,7 +1212,16 @@ namespace Ordr.Mobile.Unity
                         }
                     }
                     GUILayout.EndHorizontal();
+                    Rect content = GUILayoutUtility.GetLastRect();
                     GUILayout.EndScrollView();
+                    if (Event.current.type == EventType.Repaint)
+                    {
+                        Rect viewport = GUILayoutUtility.GetLastRect();
+                        skillScrollViewport = new Rect(area.x + viewport.x, area.y + viewport.y,
+                            viewport.width, viewport.height);
+                        skillScrollMaximum = Mathf.Max(0f, content.width - viewport.width);
+                        dedicatedScroll.x = Mathf.Clamp(dedicatedScroll.x, 0f, skillScrollMaximum);
+                    }
                 }
             }
             GUILayout.EndHorizontal();
@@ -3966,5 +4041,6 @@ namespace Ordr.Mobile.Unity
         }
     }
 }
+
 
 
