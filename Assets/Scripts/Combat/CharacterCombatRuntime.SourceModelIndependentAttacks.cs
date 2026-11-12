@@ -208,8 +208,11 @@ namespace Ordr.Mobile.Combat
             {
                 if (actor.Blocked || SourceIndependentTargets(actor).Count == 0) continue;
                 double? at = attackPipeline.NextAttackAt(actor.Key);
+                // A lifetime expiring exactly at the next attack time does
+                // not authorize one last free hit. The terminal time is
+                // exclusive for ALL independent effects, not only Moria.
                 if (!at.HasValue || (actor.ExpiresAt.HasValue &&
-                    !CombatScheduler.HasReached(actor.ExpiresAt.Value, at.Value))) continue;
+                    at.Value >= actor.ExpiresAt.Value)) continue;
                 if (!next.HasValue || at.Value < next.Value) next = at;
             }
             return next;
@@ -227,7 +230,9 @@ namespace Ordr.Mobile.Combat
                 if (!sourceIndependentAttackers.TryGetValue(key, out actor) || actor.Blocked)
                     continue;
                 var due = attackPipeline.NextAttackAt(key);
-                if (!due.HasValue || !CombatScheduler.HasReached(scheduler.Time, due.Value))
+                if (!due.HasValue || !CombatScheduler.HasReached(scheduler.Time, due.Value) ||
+                    (actor.ExpiresAt.HasValue &&
+                     scheduler.Time >= actor.ExpiresAt.Value))
                     continue;
                 var candidates = SourceIndependentTargets(actor);
                 if (candidates.Count == 0) continue;

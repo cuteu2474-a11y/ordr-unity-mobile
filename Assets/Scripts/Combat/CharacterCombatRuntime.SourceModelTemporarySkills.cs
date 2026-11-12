@@ -19,9 +19,10 @@ namespace Ordr.Mobile.Combat
             CharacterInstance owner, string skillName, string name,
             double lifetimeSeconds, string sourceRawcode,
             bool unresolvedLootAbility = false, double spawnX = 0, double spawnY = 0,
-            bool modeledCombat = false)
+            bool modeledCombat = false, bool virtualAttackEffect = false)
         {
-            if (!UsesSourceModelBasicAttacks || owner == null ||
+            if ((virtualAttackEffect && (!modeledCombat || sourceRawcode == null)) ||
+                !UsesSourceModelBasicAttacks || owner == null ||
                 !characters.ContainsKey(owner.Id) ||
                 double.IsNaN(lifetimeSeconds) || double.IsInfinity(lifetimeSeconds) ||
                 lifetimeSeconds <= 0 || lifetimeSeconds > 3600)
@@ -44,7 +45,7 @@ namespace Ordr.Mobile.Combat
                 owner.Id, skillName, name, effectExecutor.Time + lifetimeSeconds,
                 IsStoryDeployed(owner.Id), autonomous, sourceRawcode,
                 unresolvedLootAbility, spawnX, spawnY,
-                SourceModelLaneRevision(owner.Id));
+                SourceModelLaneRevision(owner.Id), virtualAttackEffect);
             if (autonomous && sourceRawcode != null)
                 RegisterSourceIndependentAttack(SummonAttackKey(summon.Id),
                     sourceRawcode, summon.StoryLane, spawnX, spawnY,
@@ -142,7 +143,7 @@ namespace Ordr.Mobile.Combat
         {
             var result = new List<SourceModelSummonState>();
             foreach (var summon in sourceTemporarySummons)
-                if (summon.OwnerId == ownerId &&
+                if (summon.OwnerId == ownerId && !summon.IsVirtualAttackEffect &&
                     summon.ExpiresAt > effectExecutor.Time &&
                     characters.ContainsKey(ownerId) &&
                     IsStoryDeployed(ownerId) == summon.StoryLane &&

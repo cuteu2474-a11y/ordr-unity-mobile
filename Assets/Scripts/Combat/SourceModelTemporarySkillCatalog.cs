@@ -37,6 +37,9 @@ namespace Ordr.Mobile.Combat
         public bool StoryLane { get; private set; }
         public long LaneRevision { get; private set; }
         public bool HasIndependentCombat { get; private set; }
+        // An effect-only attacker has a combat clock but is never a roster
+        // unit or a visible summon selection (Moria's on-kill Black Arrow).
+        public bool IsVirtualAttackEffect { get; private set; }
         public string SourceUnitRawcode { get; private set; }
         public bool HasUnresolvedOriginalLootAbility { get; private set; }
         public double SpawnX { get; private set; }
@@ -46,7 +49,7 @@ namespace Ordr.Mobile.Combat
             string name, double expiresAt, bool storyLane, bool hasCombat,
             string sourceRawcode = null, bool unresolvedLoot = false,
             double spawnX = 0, double spawnY = 0,
-            long laneRevision = 0)
+            long laneRevision = 0, bool virtualAttackEffect = false)
         {
             if (id <= 0 || owner <= 0 || laneRevision < 0 ||
                 double.IsNaN(expiresAt) || double.IsInfinity(expiresAt) ||
@@ -57,6 +60,7 @@ namespace Ordr.Mobile.Combat
             ExpiresAt = expiresAt; StoryLane = storyLane;
             LaneRevision = laneRevision;
             HasIndependentCombat = hasCombat;
+            IsVirtualAttackEffect = virtualAttackEffect;
             SourceUnitRawcode = sourceRawcode;
             HasUnresolvedOriginalLootAbility = unresolvedLoot;
             SpawnX = spawnX; SpawnY = spawnY;

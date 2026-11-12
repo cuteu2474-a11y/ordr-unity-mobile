@@ -86,23 +86,33 @@ namespace Ordr.Mobile.Combat
         private void SpawnSourceModelMoriaZombie(CharacterInstance actor,
             SpatialCombatEnemy defeated)
         {
-            // S-09 A087/ANba has UnitID1=h00H, DataA1=0, DataB1=1,
-            // DataC1=10, Dur1=.05. The mobile outcome approximation applies
-            // the killing blow's Black Arrow to an ordinary living enemy and
-            // makes ONE h00H zombie for the source-listed ten-second lifetime.
-            // Original on-kill/debuff timing and special target flags are not
-            // yet certified by an actual Warcraft execution trace.
-            long summoned = SpawnCharacter("U-14", defeated.X, defeated.Y);
-            string zombieId = InstanceKey(summoned);
+            // S-09 A087/ANba: UnitID1=h00H, DataC1=10 seconds. This is
+            // Moria's transient on-kill attack, NOT U-14 as a permanent
+            // inventory/fusion unit. Absalom's separately acquired U-14
+            // remains a real roster instance under its own original rules.
+            //
+            // The 10s mobile proxy uses the original h00H attack object,
+            // native dice and cadence through the shared attack pipeline.
+            // No free material, roster slot, wisp or U-14 spawn is created.
+            // Original Black Arrow debuff/attack start timing remains MODEL_ONLY.
+            if (sourceModelRules == null ||
+                sourceModelRules.SourceObjectAttack("h00H") == null)
+            {
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.EffectDeferred, InstanceKey(actor.Id),
+                    defeated.Id, "모리아 · 블랙 애로우",
+                    "MODEL_ONLY A087/ANba: h00H 공격 주사위 미확인, 무료 좀비 생성 금지", 0));
+                return;
+            }
+            var effect = SpawnSourceTemporaryActor(actor,
+                "모리아 · 블랙 애로우", "모리아 일시 좀비 공격 효과",
+                10, "h00H", spawnX: defeated.X, spawnY: defeated.Y,
+                modeledCombat: true, virtualAttackEffect: true);
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
                 defeated.Id, "모리아 · 블랙 애로우",
-                "MODEL_ONLY A087/ANba: 처치 시 h00H 좀비 1기, 10초 소환 · 원본 조건 미검증", 1));
-            effectExecutor.SchedulePracticeSourceAttack(zombieId,
-                "practice-zombie-life:" + zombieId, 10, () => {
-                    if (characters.ContainsKey(summoned))
-                        RemoveCharacter(summoned);
-                });
+                "MODEL_ONLY A087/ANba: 10초 가상 공격 효과 " + effect.Id +
+                " / U-14 영구 보유·조합 미변경 / 원본 디버프·타이밍 미검증", 0));
         }
     }
 }

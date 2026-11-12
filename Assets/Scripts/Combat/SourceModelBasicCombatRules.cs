@@ -62,7 +62,7 @@ namespace Ordr.Mobile.Combat
             foreach (var row in attacks.All) byRawcode.Add(row.Rawcode, row);
             // Only explicit source-backed form/summon identities can join the
             // practice attacker path. Unlisted map objects stay ineligible.
-            foreach (string raw in new[] { "H0B6", "h0AD", "H0AB", "H0AE", "H0AM", "h06N", "h085", "h0A9", "h0C2", "H0BY", "h04O", "h0AF" })
+            foreach (string raw in new[] { "H0B6", "h0AD", "H0AB", "H0AE", "H0AM", "h06N", "h085", "h0A9", "h0C2", "H0BY", "h04O", "h0AF", "h00H" })
             {
                 var attack = objects.FindMapObjectAttack(raw);
                 if (attack == null || !attack.BaseDamagePlus.HasValue ||
@@ -71,8 +71,15 @@ namespace Ordr.Mobile.Combat
                     !attack.AttackPointSeconds.HasValue ||
                     attack.AttackPointSeconds.Value > attack.AttackCooldownSeconds.Value)
                     throw new FormatException("원본 독립 공격 객체가 불완전합니다: " + raw);
-                var evidence = new OriginalMapCommonNativeAttackEvidence(raw, raw, attack);
-                byRawcode.Add(raw, evidence);
+                // h00H is also a registered permanent uncommon roster unit.
+                // Reuse its existing native evidence instead of registering
+                // duplicate rawcode rows just to model Moria's transient hit.
+                OriginalMapCommonNativeAttackEvidence evidence;
+                if (!byRawcode.TryGetValue(raw, out evidence))
+                {
+                    evidence = new OriginalMapCommonNativeAttackEvidence(raw, raw, attack);
+                    byRawcode.Add(raw, evidence);
+                }
                 independentAttacks.Add(raw, new BasicAttackSpec(
                     evidence.BaseDamagePlus + (long)evidence.DiceCount,
                     evidence.CooldownSeconds, DamageSchool.Physical, DamageTraits.None));

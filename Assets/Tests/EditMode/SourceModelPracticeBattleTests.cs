@@ -68,6 +68,92 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        // S-09's Black Arrow uses an effect-only attacker. The permanent
+        // U-14 from Absalom's separate original acquisition remains a roster unit.
+        private static void TriggerMoriaBlackArrowModel(
+            CharacterCombatRuntime world, long moriaId, string victimId)
+        {
+            const BindingFlags privateField = BindingFlags.Instance | BindingFlags.NonPublic;
+            var characters = (System.Collections.IDictionary)typeof(CharacterCombatRuntime)
+                .GetField("characters", privateField).GetValue(world);
+            var enemies = (System.Collections.IDictionary)typeof(CharacterCombatRuntime)
+                .GetField("enemies", privateField).GetValue(world);
+            var method = typeof(CharacterCombatRuntime).GetMethod(
+                "SpawnSourceModelMoriaZombie", privateField);
+            Assert.IsNotNull(method);
+            method.Invoke(world, new[] { characters[moriaId], enemies[victimId] });
+        }
+
+        private static System.Collections.Generic.List<SourceModelSummonState> MoriaModelEffects(
+            CharacterCombatRuntime world)
+        {
+            var field = typeof(CharacterCombatRuntime).GetField(
+                "sourceTemporarySummons", BindingFlags.Instance | BindingFlags.NonPublic);
+            return (System.Collections.Generic.List<SourceModelSummonState>)field.GetValue(world);
+        }
+
+        [Test]
+        public void MoriaKillEffectNeverCreatesARealZombieOrChangesPermanentAbsalomZombie()
+        {
+            using (var game = Create())
+            {
+                long moria = game.Combat.SpawnCharacter("S-09", 0, 0);
+                long permanent = game.Combat.SpawnCharacter("U-14", 10, 0);
+                game.Combat.SpawnEnemy("victim", 1000000000000,
+                    CharacterEnemyKind.Line, 10, 10, 0);
+                int before = game.Combat.CharacterCount;
+
+                TriggerMoriaBlackArrowModel(game.Combat, moria, "victim");
+
+                Assert.AreEqual(before, game.Combat.CharacterCount);
+                Assert.AreEqual("U-14", game.Combat.Roster.Get(permanent).UnitId);
+                Assert.AreEqual(0, game.Combat.PracticeSummonsOf(moria).Count,
+                    "The transient Black Arrow is an effect, not a selectable summon.");
+                var transient = MoriaModelEffects(game.Combat)
+                    .Single(x => x.OwnerId == moria && x.IsVirtualAttackEffect);
+                Assert.AreEqual("h00H", transient.SourceUnitRawcode);
+                Assert.AreEqual(10, transient.ExpiresAt - game.Combat.Time, 0.00001);
+                Assert.IsTrue(transient.HasIndependentCombat);
+                var attacks = game.Combat.Step(5);
+                Assert.IsTrue(attacks.Any(x => x.Type == CharacterCombatEventType.Attack &&
+                    x.ActorId.StartsWith("practice-summon:", StringComparison.Ordinal)),
+                    "The effect must deal ordinary source-backed attack damage.");
+                Assert.AreEqual(before, game.Combat.CharacterCount);
+                Assert.AreEqual("U-14", game.Combat.Roster.Get(permanent).UnitId);
+
+                game.Combat.Step(6);
+                Assert.IsFalse(MoriaModelEffects(game.Combat)
+                    .Any(x => x.OwnerId == moria && x.IsVirtualAttackEffect));
+                Assert.AreEqual(before, game.Combat.CharacterCount);
+                Assert.AreEqual("U-14", game.Combat.Roster.Get(permanent).UnitId);
+            }
+        }
+
+        [Test]
+        public void MoriaTransientAttackEndsWhenOwnerIsRemovedOrStartsDecoding()
+        {
+            using (var game = Create())
+            {
+                long moria = game.Combat.SpawnCharacter("S-09", 0, 0);
+                game.Combat.SpawnEnemy("victim", 1000000000000,
+                    CharacterEnemyKind.Line, 10, 10, 0);
+                TriggerMoriaBlackArrowModel(game.Combat, moria, "victim");
+                Assert.AreEqual(1, MoriaModelEffects(game.Combat)
+                    .Count(x => x.IsVirtualAttackEffect));
+
+                game.Combat.SetOriginalPoneglyphChanneling(moria, true);
+                Assert.IsFalse(MoriaModelEffects(game.Combat)
+                    .Any(x => x.IsVirtualAttackEffect),
+                    "A paused/decoding owner must not keep an earlier lane's effect.");
+                game.Combat.SetOriginalPoneglyphChanneling(moria, false);
+                TriggerMoriaBlackArrowModel(game.Combat, moria, "victim");
+                game.Combat.RemoveCharacter(moria);
+                Assert.IsFalse(MoriaModelEffects(game.Combat)
+                    .Any(x => x.IsVirtualAttackEffect),
+                    "Removing the actual owner must cancel the transient combat effect.");
+            }
+        }
+
         [Test]
         public void IndependentCreepsDoNotJoinWavePathOrLineLossCounter()
         {

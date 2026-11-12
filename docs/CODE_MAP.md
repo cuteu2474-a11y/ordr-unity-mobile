@@ -2,6 +2,12 @@
 
 > **새 작업의 코드 지도:** 무엇을 고쳐야 하는지 빠르게 찾는 문서입니다. 기능 구현률·APK 차이는 [현재 상태](START_HERE.md), 미완료 작업은 [개발 작업](PLAYABLE_ROADMAP.md), 실제 조작은 [화면·조작](화면-조작-시스템.md)에 있습니다. **이 문서에 날짜별 개발 일지나 기능별 확률·비용을 중복 기록하지 않습니다.**
 
+## 특별함 모리아 S-09 블랙 애로우 (코드만)
+
+- `CharacterCombatRuntime.SourceModelEffects.cs`의 실제 양성 평타 처치 판정 → `CharacterCombatRuntime.SourceModelNativeFollowups.cs`의 10초 가상 효과 생성. 기존 `SpawnCharacter(U-14)`은 사용하지 않음.
+- `SourceModelBasicCombatRules.cs`가 원본 `h00H` 공격 스탯을 독립 공격 처리기로 승인(영구 U-14의 기존 원본 매핑 증거와 중복 등록 금지), `CharacterCombatRuntime.SourceModelTemporarySkills.cs`는 가상 효과를 보유·소환 화면에서 제외하고 삭제/해독/전장 이동/시간 만료를 공통 정리. `CharacterCombatRuntime.SourceModelIndependentAttacks.cs`는 정확히 만료된 공격의 후속 1타를 막음.
+- `SourceModelPracticeBattleTests.cs`: 가상 공격과 영구 U-14 공존, 효과 만료/소유자 정리 회귀 검사 소스(미실행). 전설 모리아 그림자/장군좀비 및 다른 좀비 보상은 변경하지 않음.
+
 ## C05 삭제·해독 전환 공통 생명주기
 
 - `CharacterCombatRuntime.RemoveCharacter`가 `ForgetSourceManualSupport(true)` 및 `ForgetSourceModelEleventhActor`를 호출하여 다른 아군의 임대 버프·재생과 사라진 소유자의 폼/기술 카운터를 정리합니다.
