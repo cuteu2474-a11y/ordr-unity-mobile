@@ -1040,7 +1040,7 @@ namespace Ordr.Mobile.Unity
                     PersonalMissions?.OnRoundStarted();
                     SoloStory?.OnRoundStarted();
                     RecordSessionIssue("전투 라운드", Combat.Game.CurrentWave + "라운드 / 원본 최종 전투 미검증");
-                });
+                }, mobileMainLane: true);
             if (Combat.Game.Phase == SessionPhase.NotStarted) BeginSession();
             var originalResources = Resources.Load<TextAsset>(
                 "OrdrData/original-2323C-unit-object-stats");

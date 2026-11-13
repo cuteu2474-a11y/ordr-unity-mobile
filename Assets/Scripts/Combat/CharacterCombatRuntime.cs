@@ -183,10 +183,9 @@ namespace Ordr.Mobile.Combat
                     // transaction became irreversible. Only the standalone
                     // phone's main lane may then adopt its fixed left slots.
                     if (world.UsesSourceModelBasicAttacks &&
-                        world.sourceModelRouteCorners != null)
+                        world.sourceModelMainLane != null)
                     {
-                        var formation = new SourceModelMainLaneGeometry(
-                            world.sourceModelRouteCorners);
+                        var formation = world.sourceModelMainLane;
                         foreach (long resultId in resultInstanceIds)
                         {
                             var slot = formation.UnitPosition(resultId);
@@ -1438,7 +1437,7 @@ namespace Ordr.Mobile.Combat
                 (id, enemy) => characters.ContainsKey(id) &&
                     CanAttackInThisLane(characters[id], enemy),
                 (id, enemy) => UsesSourceModelBasicAttacks &&
-                    characters.ContainsKey(id) &&
+                    sourceModelMainLane != null && characters.ContainsKey(id) &&
                     !IsStoryDeployed(id) &&
                     SharedObjectiveTargetOf(id) == null &&
                     (enemy.Kind == CharacterEnemyKind.Line ||
@@ -1506,13 +1505,12 @@ namespace Ordr.Mobile.Combat
             }
             // Returning from a story/shared objective resumes the existing
             // left-side formation without touching the other combat lanes.
-            if (UsesSourceModelBasicAttacks && sourceModelRouteCorners != null &&
+            if (UsesSourceModelBasicAttacks && sourceModelMainLane != null &&
                 !IsStoryDeployed(instanceId) &&
                 SharedObjectiveTargetOf(instanceId) == null &&
                 !IsOriginalPoneglyphChanneling(instanceId))
             {
-                var slot = new SourceModelMainLaneGeometry(
-                    sourceModelRouteCorners).UnitPosition(instanceId);
+                var slot = sourceModelMainLane.UnitPosition(instanceId);
                 roster.Move(instanceId, slot.X, slot.Y);
             }
             RefreshEnemyAuras();
@@ -1802,7 +1800,7 @@ namespace Ordr.Mobile.Combat
             attackPipeline.ConfigureFiniteReachForAttacker(attackerId =>
             {
                 long id;
-                return UsesSourceModelBasicAttacks &&
+                return UsesSourceModelBasicAttacks && sourceModelMainLane != null &&
                     long.TryParse(attackerId, NumberStyles.None,
                         CultureInfo.InvariantCulture, out id) &&
                     characters.ContainsKey(id) && !IsStoryDeployed(id) &&
@@ -1884,11 +1882,10 @@ namespace Ordr.Mobile.Combat
                 // The source model positions only its normal main-lane roster
                 // actors. Fusion staging and verified native placement remain
                 // isolated from this mobile-only layout operation.
-                if (UsesSourceModelBasicAttacks && sourceModelRouteCorners != null &&
+                if (UsesSourceModelBasicAttacks && sourceModelMainLane != null &&
                     !stagedOriginalFusionResult && !preserveOriginalSourcePosition)
                 {
-                    var slot = new SourceModelMainLaneGeometry(
-                        sourceModelRouteCorners).UnitPosition(id);
+                    var slot = sourceModelMainLane.UnitPosition(id);
                     roster.Move(id, slot.X, slot.Y);
                     placed = true;
                 }
@@ -2105,7 +2102,7 @@ namespace Ordr.Mobile.Combat
                 if (!(rawRange is double)) return false;
                 rangeValue = (double)rawRange;
             }
-            else if (UsesSourceModelBasicAttacks ||
+            else if ((UsesSourceModelBasicAttacks && sourceModelMainLane != null) ||
                      attackPipeline.ReachMode == CombatAttackReachMode.OriginalUnitRange)
                 return false;
             object rawSchool = profile.BasicAttack["damageSchool"];
@@ -2924,7 +2921,8 @@ namespace Ordr.Mobile.Combat
         {
             // A non-damaging preview has no verified reach; do not draw a
             // misleading cross-map attack under the finite main-lane policy.
-            if (UsesSourceModelBasicAttacks && !IsStoryDeployed(unit.Id) &&
+            if (UsesSourceModelBasicAttacks && sourceModelMainLane != null &&
+                !IsStoryDeployed(unit.Id) &&
                 SharedObjectiveTargetOf(unit.Id) == null) return null;
             if (targetSelectionRules != null)
             {

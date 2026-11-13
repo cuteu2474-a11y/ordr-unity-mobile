@@ -7,6 +7,7 @@ namespace Ordr.Mobile.Combat
     public sealed partial class CharacterCombatRuntime
     {
         private IReadOnlyList<CombatPathPoint> sourceModelRouteCorners;
+        private SourceModelMainLaneGeometry sourceModelMainLane;
         private Func<int?> sourceModelAccumulatedClearCount;
 
         // The practice battle supplies its actual rectangle route. Choose the
@@ -16,26 +17,29 @@ namespace Ordr.Mobile.Combat
         {
             if (corners == null || corners.Count < 2)
                 throw new ArgumentException("연습 라인 경로가 필요합니다.", nameof(corners));
-            // Historical source skill fixtures may supply a two-point
-            // Rankyaku direction; only the playable four-corner 65R model
-            // needs the extra left-lane deployment geometry.
-            var layout = UsesSourceModelBasicAttacks
-                ? new SourceModelMainLaneGeometry(corners) : null;
             sourceModelRouteCorners = new List<CombatPathPoint>(corners).AsReadOnly();
-            // Existing pre-battle units get stable main-lane coordinates once.
-            // Story / shared-target / decoding participants retain their own lane.
-            if (UsesSourceModelBasicAttacks)
+        }
+
+        // The controller explicitly chooses the new 65R phone layout.
+        // Preparation/test fixtures with the same source data do not become
+        // silently range-constrained or have their roster positions moved.
+        public void ConfigureSourceModelMobileMainLane(SourceModelMainLaneGeometry lane)
+        {
+            if (lane == null) throw new ArgumentNullException(nameof(lane));
+            if (!UsesSourceModelBasicAttacks || sourceModelMainLane != null ||
+                sourceModelRouteCorners == null || Game.CurrentWave != 0)
+                throw new InvalidOperationException(
+                    "65R 모바일 왼쪽 전장 배치는 준비 상태에서 한 번만 활성화합니다.");
+            sourceModelMainLane = lane;
+            foreach (var actor in characters.Values)
             {
-                foreach (var actor in characters.Values)
-                {
-                    if (IsStoryDeployed(actor.Id) ||
-                        SharedObjectiveTargetOf(actor.Id) != null ||
-                        IsOriginalPoneglyphChanneling(actor.Id)) continue;
-                    var slot = layout.UnitPosition(actor.Id);
-                    roster.Move(actor.Id, slot.X, slot.Y);
-                }
-                RefreshEnemyAuras();
+                if (IsStoryDeployed(actor.Id) ||
+                    SharedObjectiveTargetOf(actor.Id) != null ||
+                    IsOriginalPoneglyphChanneling(actor.Id)) continue;
+                var slot = lane.UnitPosition(actor.Id);
+                roster.Move(actor.Id, slot.X, slot.Y);
             }
+            RefreshEnemyAuras();
         }
 
         // Profile clearCountScaling is cumulative *completed games*, not

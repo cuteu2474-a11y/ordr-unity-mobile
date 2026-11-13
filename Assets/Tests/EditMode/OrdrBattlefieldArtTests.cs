@@ -32,15 +32,21 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void ApprovedArtworkIsPackagedOfflineAndBothBattlefieldsShareOneTexture()
+        public void ApprovedArtworkAndImportedMainFloorArePackagedOffline()
         {
             var ground = Resources.Load<Texture2D>(OrdrBattlefieldArt.GroundResource);
             Assert.IsNotNull(ground, "The approved floor must be in the player Resources build.");
             Assert.IsNotNull(Resources.Load<Texture2D>(OrdrBattlefieldArt.QuantityResource));
             Assert.IsNotNull(Resources.Load<Texture2D>(OrdrBattlefieldArt.FortressResource));
             Assert.AreSame(ground, OrdrBattlefieldArt.SharedGroundTexture);
-            Assert.AreSame(ground, OrdrBattlefieldArt.BoardSprite.texture);
-            Assert.AreSame(ground, OrdrBattlefieldArt.StoryTexture);
+            var imported = Resources.Load<Texture2D>(
+                OrdrBattlefieldArt.ImportedGroundResource);
+            Assert.IsNotNull(imported, "The newly imported main floor must be packed.");
+            Assert.AreSame(imported, OrdrBattlefieldArt.MainGroundTexture);
+            Assert.AreSame(imported, OrdrBattlefieldArt.BoardSprite.texture);
+            Assert.AreSame(imported, OrdrBattlefieldArt.StoryTexture);
+            Assert.IsNotNull(Resources.Load<Texture2D>(
+                OrdrBattlefieldArt.ImportedEnemyResource));
         }
 
         [TestCase(1200f, 800f)]

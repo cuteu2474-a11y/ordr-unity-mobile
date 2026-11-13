@@ -184,7 +184,8 @@ namespace Ordr.Mobile.Combat
                 throw new FormatException("연습 자료 숫자 누락: " + key);
             return value;
         }
-        public VerifiedWavePlan BuildPracticePlan(int number, Original323MonsterWaveIdentityCatalog original)
+        public VerifiedWavePlan BuildPracticePlan(int number, Original323MonsterWaveIdentityCatalog original,
+            bool mobileBossPatrol = false)
         {
             if (number < 1 || number > LastRound) throw new ArgumentOutOfRangeException(nameof(number));
             var spawns = new List<VerifiedWaveEnemy>();
@@ -206,7 +207,8 @@ namespace Ordr.Mobile.Combat
                         "MODEL_ONLY: JASS initial A04Q + W3A Def5")
                     : new EnemyDefenseProfile(entry.Kind, model.Armor, null,
                         model.ArmorType, "MODEL_ONLY: reference-engine initial defense");
-                var point = entry.Kind == CharacterEnemyKind.Boss ? BossSpawn : Spawn;
+                var point = mobileBossPatrol && entry.Kind == CharacterEnemyKind.Boss
+                    ? BossSpawn : Spawn;
                 spawns.Add(new VerifiedWaveEnemy(entry.AtSeconds, entry.InstanceId, model.Health,
                     entry.Kind, point.X, point.Y, 0, defense, model.Rawcode));
             }
@@ -238,6 +240,8 @@ namespace Ordr.Mobile.Combat
         private readonly SourceModelBasicCombatRules damage;
         private readonly IOriginalWispRandom scriptRandom;
         private readonly Action roundStarted;
+        private readonly bool mobileMainLaneEnabled;
+        public bool MobileMainLaneEnabled => mobileMainLaneEnabled;
         private readonly List<VerifiedWavePlan> plans = new List<VerifiedWavePlan>();
         private readonly Dictionary<string, double> bornAt = new Dictionary<string, double>();
         private readonly Dictionary<string, double> distanceTravelled = new Dictionary<string, double>();
@@ -283,7 +287,7 @@ namespace Ordr.Mobile.Combat
             SharedEconomySession shared, SourceModelPracticeCatalog model,
             Original323MonsterWaveIdentityCatalog originalSpawns,
             SourceModelBasicCombatRules rules, IOriginalWispRandom sharedScriptRandom,
-            Action onRoundStarted)
+            Action onRoundStarted, bool mobileMainLane = false)
         {
             combat = world ?? throw new ArgumentNullException(nameof(world));
             waves = director ?? throw new ArgumentNullException(nameof(director));
@@ -292,10 +296,19 @@ namespace Ordr.Mobile.Combat
             damage = rules ?? throw new ArgumentNullException(nameof(rules));
             scriptRandom = sharedScriptRandom ?? throw new ArgumentNullException(nameof(sharedScriptRandom));
             roundStarted = onRoundStarted;
+            // Only the playable 65-round phone session explicitly opts into
+            // constrained coordinates and finite ranges. Legacy source-model
+            // combat fixtures remain independent of this user-facing layout.
+            if (mobileMainLane && catalog.LastRound != 65)
+                throw new ArgumentException(
+                    "모바일 전장 배치는 독립 65라운드 모드에서만 사용합니다.",
+                    nameof(mobileMainLane));
+            mobileMainLaneEnabled = mobileMainLane;
             if (!ReferenceEquals(world.Roster, shared.Units)) throw new ArgumentException("공유 세션 불일치");
             // Validate every selected source identity before mutating the session.
             for (int wave = 1; wave <= catalog.LastRound; wave++)
-                plans.Add(catalog.BuildPracticePlan(wave, originalSpawns));
+                plans.Add(catalog.BuildPracticePlan(wave, originalSpawns,
+                    mobileMainLaneEnabled));
             // Route corners are a validated part of the catalog, but may only
             // be installed after the host enables the source-model runtime.
             // Preparation constructs this object before that transition.
@@ -306,6 +319,8 @@ namespace Ordr.Mobile.Combat
                 combat.Game.CurrentWave != 0 || !combat.UsesSourceModelBasicAttacks)
                 throw new InvalidOperationException("유닛 준비 상태에서 전투를 시작하세요.");
             combat.ConfigureSourceModelRouteCorners(catalog.RouteCorners);
+            if (mobileMainLaneEnabled)
+                combat.ConfigureSourceModelMobileMainLane(catalog.MainLane);
             waves.VerifiedMonsterDefeated += RewardActualDeath;
             combat.SourceModelTimeAdvancing += MoveLivingMonsters;
             Started = true;
@@ -423,7 +438,7 @@ namespace Ordr.Mobile.Combat
                 distanceTravelled.TryGetValue(enemy.Id, out travelled);
                 travelled += active * speed;
                 distanceTravelled[enemy.Id] = travelled;
-                bool boss = enemy.Kind == CharacterEnemyKind.Boss;
+                bool boss = mobileMainLaneEnabled && enemy.Kind == CharacterEnemyKind.Boss;
                 var point = boss ? catalog.BossPosition(travelled) : catalog.Position(travelled);
                 // A completed lap or boss turnaround never changes identity,
                 // HP, death credit, the round deadline or spawn ownership.

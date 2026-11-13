@@ -12,3 +12,4 @@ fix: update MobileHudPresentationTests to reflect Missions -> shared / personal 
 request: rerun integrated Unity tests and create Android development APK if they pass
 
 2026-11-14: Build requested APK after imported battle floor/enemy art + finite-range main lane + boss patrol integration (single requested push).
+2026-11-14: Rebuild after explicitly scoping finite range / left formation / boss patrol to playable 65R and updating imported artwork test assertions.

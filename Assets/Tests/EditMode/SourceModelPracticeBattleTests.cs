@@ -25,7 +25,8 @@ namespace Ordr.Mobile.Tests
             public void Dispose() { Battle.Dispose(); }
         }
         private static string Data(string file) => File.ReadAllText(Path.Combine(Application.dataPath, "..", "data", file));
-        private static Live Create(int attackers = 0, int lastRound = 10, string attackerUnitId = "U-02")
+        private static Live Create(int attackers = 0, int lastRound = 10,
+            string attackerUnitId = "U-02", bool mobileLane = false)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -44,9 +45,57 @@ namespace Ordr.Mobile.Tests
             var battle = new SourceModelPracticeBattle(combat, new CombatWaveDirector(), shared,
                 new SourceModelPracticeCatalog(Data(lastRound == 65
                     ? "mobile-standalone-enemy-model.json" : "mobile-practice-battle-model.json"), lastRound), identity,
-                rules, new WinningGold(), null);
+                rules, new WinningGold(), null, mobileMainLane: mobileLane);
             battle.Start();
             return new Live { Combat = combat, Economy = shared, Battle = battle };
+        }
+
+        [Test]
+        public void SixtyFiveRoundMobileLayoutOptInKeepsFiniteRangeWithoutChangingFixtures()
+        {
+            using (var practice = Create(1, 65))
+            {
+                Assert.IsFalse(practice.Battle.MobileMainLaneEnabled);
+                Assert.AreEqual(-4000, practice.Combat.MobileUnitSnapshot()[0].Position.X);
+            }
+            using (var mobile = Create(1, 65, mobileLane: true))
+            {
+                Assert.IsTrue(mobile.Battle.MobileMainLaneEnabled);
+                var actor = mobile.Combat.MobileUnitSnapshot()[0];
+                Assert.Less(actor.Position.X, -4992);
+                Assert.Greater(actor.Position.Y, 3456);
+                Assert.Less(actor.Position.Y, 5632);
+                // A manually spawned line target has no wave/death rewards.
+                // The ranged check must use the original source object's
+                // positive range; distant enemies cannot be chosen.
+                mobile.Combat.SpawnEnemy("test-distant", 10000,
+                    CharacterEnemyKind.Line, 0, 0, 0);
+                var far = mobile.Combat.InspectBasicAttack(actor.InstanceId);
+                Assert.AreEqual(BasicAttackReadinessKind.UnverifiedTarget, far.Kind);
+                mobile.Combat.SpawnEnemy("test-adjacent", 10000,
+                    CharacterEnemyKind.Line, actor.Position.X + 1, actor.Position.Y, 0);
+                var near = mobile.Combat.InspectBasicAttack(actor.InstanceId);
+                Assert.AreNotEqual(BasicAttackReadinessKind.UnverifiedTarget, near.Kind);
+            }
+        }
+
+        [Test]
+        public void MobileBossPatrolIsExplicitAndDoesNotChangeLegacyPracticeWavePlans()
+        {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var identity = Original323MonsterWaveIdentityCatalog.FromJson(
+                Data("original-2323C-monster-wave-script-evidence.json"));
+            var model = new SourceModelPracticeCatalog(
+                Data("mobile-standalone-enemy-model.json"), 65);
+            var legacy = model.BuildPracticePlan(55, identity);
+            var mobile = model.BuildPracticePlan(55, identity, mobileBossPatrol: true);
+            var bossBefore = legacy.Spawns.Single(x => x.Kind == CharacterEnemyKind.Boss);
+            var bossMobile = mobile.Spawns.Single(x => x.Kind == CharacterEnemyKind.Boss);
+            Assert.AreEqual(model.Spawn.X, bossBefore.X);
+            Assert.AreEqual(model.BossSpawn.X, bossMobile.X);
+            Assert.AreEqual(model.BossSpawn.Y, bossMobile.Y);
+            Assert.AreEqual(bossBefore.EnemyId, bossMobile.EnemyId);
+            Assert.AreEqual(bossBefore.Health, bossMobile.Health);
         }
 
         [Test]
