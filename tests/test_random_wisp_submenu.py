@@ -59,14 +59,16 @@ class RandomWispSubmenuTests(unittest.TestCase):
         self.assertNotIn("DrawChoiceWispMerge();", display)
         self.assertNotIn("빈 캐릭터 우선:", display)
 
-    def test_remaining_wisp_offers_are_direct_actions_but_other_offers_confirm(self):
-        economy = self.panel.split("private void DrawEconomy(", 1)[1].split(
-            "private void RefreshCurrent(", 1)[0]
-        self.assertIn("category == ManualEconomyCategory.Wisp", economy)
-        self.assertIn("DrawActionRow(offer.Title", economy)
-        self.assertIn("RunWispDirect(offer.Title", economy)
-        self.assertIn("pendingEconomy = offer", economy)
-        self.assertIn("OrdrMobileUiTheme.AccordionBody", economy)
+    def test_remaining_wisp_offers_use_direct_actions_without_unused_shop(self):
+        offers = self.panel.split("private void DrawWispEconomyOffers()", 1)[1].split(
+            "private void DrawGamblingNavigation()", 1)[0]
+        self.assertIn("DrawActionRow(offer.Title", offers)
+        self.assertIn("RunWispDirect(offer.Title", offers)
+        self.assertIn("ManualEconomyCategory.Wisp", offers)
+        self.assertIn("OriginalRandomWispResourceExchange.OfferId", offers)
+        self.assertIn("OriginalHelperCowRules.OfferId", offers)
+        self.assertNotIn("pendingEconomy", self.panel)
+        self.assertNotIn("Tab.Shop", self.panel)
 
     def test_evolution_selection_is_in_units_not_wisp_and_counts_are_prominent(self):
         units = self.panel.split("private void DrawUnits()", 1)[1].split(

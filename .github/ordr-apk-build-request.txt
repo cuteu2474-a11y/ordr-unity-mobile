@@ -1,0 +1,7 @@
+# Explicit one-shot APK build request
+# Triggered on main when this file changes, not by ordinary code pushes.
+requested_at_kst: 2026-11-13
+scope: consolidated mobile UI and empty shop removal
+areas: battlefield, units, fusion, gambling, wisp reward toast, upgrades, missions, record instructions
+build: unity EditMode integration checks then Android development APK
+artifacts: ordr-mobile-android-development-apk

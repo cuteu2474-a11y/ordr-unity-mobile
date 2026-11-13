@@ -25,8 +25,9 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertEqual(expected, [entry for entry in entries if entry in expected])
         self.assertEqual(7, len([entry for entry in entries if entry in expected]))
         self.assertNotIn("Tab.Facilities", source)
-        for title in ("점수판", "위습", "유닛", "조합", "스토리", "상점"):
+        for title in ("점수판", "위습", "유닛", "조합", "스토리"):
             self.assertIn(f'"{title}"', left)
+        self.assertNotIn('DrawLeftTab(Tab.Shop, "상점")', left)
 
     def test_upgrade_shops_use_real_transactions_and_research_is_still_safe(self):
         panel = PANEL.read_text(encoding="utf-8")
@@ -96,8 +97,8 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
              "DrawActionRow(\"보물 탐색\"", "RequestMobileTreasureGacha()"),
             ("DrawHelperCow", "private void DrawAlchemyPanel(",
              "DrawStatusRow(\"도움소 마나\"", "ChooseOriginal323Alchemy()"),
-            ("DrawEconomy", "private void RefreshCurrent(",
-             "DrawActionRow(offer.Title", "pendingEconomy = offer"),
+            ("DrawWispEconomyOffers", "private void DrawGamblingNavigation(",
+             "DrawActionRow(offer.Title", "RunWispDirect(offer.Title"),
             ("DrawAlchemyTargetDropdown", "private void DrawOriginalJassAudit(",
              "DrawAccordionHeader(", "pendingAlchemyCastId = selected.InstanceId"),
         )
@@ -119,10 +120,11 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         # removed legacy row-title implementation.
         self.assertRegex(panel, r"CanExecuteFusionRecipe\(\s*offer\.RecipeId\)")
         self.assertIn('DrawFusionCategoryButton(FusionListCategory.Ready, "가능")', panel)
-        self.assertIn('DrawFusionCategoryButton(FusionListCategory.NearReady, "임박")', panel)
-        self.assertIn("GUILayout.Button(FusionDisplayName(offer) + grade", panel)
-        self.assertIn("DrawFusionMaterialRow(offer);", panel)
-        self.assertIn("GUI.enabled = enabled && canCraft;", panel)
+        self.assertIn('DrawFusionCategoryButton(FusionListCategory.Owned, "보유")', panel)
+        self.assertIn('DrawFusionCategoryButton(FusionListCategory.Bookmarked, "★")', panel)
+        self.assertIn("DrawFusionSelectedHeader();", panel)
+        self.assertIn("DrawFusionIngredient(ingredient);", panel)
+        self.assertIn("GUI.enabled = enabled && (canCraft || recallId > 0);", panel)
         self.assertRegex(panel, r"CraftRepeated\(\s*latest\.RecipeId, 1,")
         self.assertNotIn("fusionRepeatCount", panel)
         self.assertNotIn("fusionSearch", panel)
@@ -133,7 +135,9 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("판매 확인", panel)
         self.assertIn("분해 시작", panel)
         self.assertIn("유닛 소비 및 연금술 확정", panel)
-        self.assertIn("구매 확정", panel)
+        self.assertNotIn("pendingEconomy", panel)
+        self.assertNotIn("case Tab.Shop:", panel)
+        self.assertIn("DrawSharedMissionBoard();", panel)
 
     def test_shared_readable_status_rows_keep_inert_information_inert(self):
         panel = PANEL.read_text(encoding="utf-8")

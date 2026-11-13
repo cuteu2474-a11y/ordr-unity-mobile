@@ -1,8 +1,9 @@
-name: Unity EditMode 검증 (수동)
+name: Unity 통합 검증 및 요청형 Android APK
 
-# 일반 main 푸시에서는 테스트 및 Android APK를 자동 실행하지 않는다.
-# 사용자가 명시적으로 요청한 경우에만 Actions에서 수동 실행한다.
-# 수동 실행의 build_apk=true일 때에만 검증 통과 후 Android APK를 만든다.
+# 일반 main 코드 푸시에서는 테스트 및 APK를 자동 실행하지 않는다.
+# 요청에 따라 .github/ordr-apk-build-request.txt 마커가 변경된 커밋만
+# 단 1번 검사 후 APK를 만든다. 추후 일반 UI/게임 코드 커밋은 자동 실행 없음.
+# UI에서 수동 실행할 때는 build_apk=true 옵션으로 Android APK를 만든다.
 # 진행 중인 작업은 자동 취소하지 않는다.
 on:
   workflow_dispatch:
@@ -12,6 +13,12 @@ on:
         required: false
         type: boolean
         default: false
+  push:
+    branches:
+      - main
+    # Explicit user-request marker. No ordinary code-only push can run CI.
+    paths:
+      - '.github/ordr-apk-build-request.txt'
 
 permissions:
   contents: read
@@ -85,8 +92,8 @@ jobs:
 
   android-apk-preview:
     name: Android 개발용 APK 제작
-    # 명시적 APK 요청 시에만 빌드한다. 일반 push/수동 검사로 중복 빌드하지 않는다.
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.build_apk == true }}
+    # Explicit one-shot marker push OR manual build_apk=true. Never both.
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.build_apk == true) }}
     needs: check
     runs-on: ubuntu-latest
     permissions:

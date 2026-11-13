@@ -14,7 +14,7 @@ namespace Ordr.Mobile.Unity
     // 스토리·조합확인·상점·도박·위습 버튼은 실제 사용자 탭에서만 호출된다.
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
-        private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, LogPose, Helper, Alchemy, Missions, UpgradeOne, UpgradeTwo, Research }
+        private enum Tab { Play, Units, Story, Fusion, Gambling, Wisp, LogPose, Helper, Alchemy, Missions, UpgradeOne, UpgradeTwo, Research }
         private enum ScoreboardPage { Summary, Commons, Utility }
         private enum FusionListCategory { All, Ready, Owned, Bookmarked }
 
@@ -134,7 +134,6 @@ namespace Ordr.Mobile.Unity
             new OriginalJassFusionDependencyStep[0];
         private const int FusionPageSize = 8;
         private const int OriginalJassPageSize = 10;
-        private MobileManualOffer pendingEconomy;
         private long? pendingDecompositionId;
         private string pendingDecompositionName;
         private bool pendingMaximumOutput;
@@ -173,8 +172,7 @@ namespace Ordr.Mobile.Unity
                 if (!string.IsNullOrWhiteSpace(controller.TreasureAlarmNotice))
                     notice = controller.TreasureAlarmNotice;
             }
-            if (visible && (currentTab == Tab.Gambling ||
-                currentTab == Tab.Shop || currentTab == Tab.Wisp) &&
+            if (visible && (currentTab == Tab.Gambling || currentTab == Tab.Wisp) &&
                 Combat != null && Time.unscaledTime >= nextGamblingRefresh)
             {
                 // Pure UI refresh: replenish display stock from the existing
@@ -252,7 +250,6 @@ namespace Ordr.Mobile.Unity
                 ? remembered : Vector2.zero;
             confirmReturnToTitle = false;
             pendingFusion = null;
-            pendingEconomy = null;
             pendingMaximumOutput = false;
             pendingAlchemy = false;
             alchemyTargetsExpanded = false;
@@ -277,7 +274,6 @@ namespace Ordr.Mobile.Unity
             visible = false;
             confirmReturnToTitle = false;
             pendingFusion = null;
-            pendingEconomy = null;
             pendingMaximumOutput = false;
             pendingAlchemy = false;
             alchemyTargetsExpanded = false;
@@ -484,7 +480,6 @@ namespace Ordr.Mobile.Unity
             DrawLeftTab(Tab.Missions, "미션");
             DrawLeftTab(Tab.Research, "연구소");
             DrawLeftTab(Tab.LogPose, "기록지침");
-            DrawLeftTab(Tab.Shop, "상점");
             if (controller.Original323HelperCow != null &&
                 controller.Original323HelperCow.AlchemyNavigationChosen)
                 DrawLeftTab(Tab.Alchemy, "연금술");
@@ -617,7 +612,6 @@ namespace Ordr.Mobile.Unity
                     case Tab.Units: DrawUnits(); break;
                     case Tab.Story: DrawStory(); break;
                     case Tab.Fusion: DrawFusion(); break;
-                    case Tab.Shop: DrawEconomy(ManualEconomyCategory.Shop); break;
                     case Tab.Gambling: DrawGambling(); break;
                     case Tab.Wisp: DrawWisp(); break;
                     case Tab.LogPose: DrawTreasureGacha(); break;
@@ -715,9 +709,8 @@ namespace Ordr.Mobile.Unity
                 case Tab.Units: return "유닛";
                 case Tab.Fusion: return "조합";
                 case Tab.Story: return "스토리";
-                case Tab.Shop: return "상점";
                 case Tab.Gambling: return "도박소";
-                case Tab.Missions: return "개인 미션";
+                case Tab.Missions: return "미션";
                 case Tab.UpgradeOne: return "강화소 1";
                 case Tab.UpgradeTwo: return "강화소 2";
                 case Tab.Research: return "연구소";
@@ -2412,8 +2405,24 @@ namespace Ordr.Mobile.Unity
             if (portrait == null)
                 portrait = OrdrBattlefieldArt.UnitSprite(unitId);
             if (portrait != null)
-                GUILayout.Box(portrait.texture, GUILayout.Width(size),
-                    GUILayout.Height(size));
+                DrawSpritePortrait(portrait, size);
+        }
+
+        // Sprite.texture can be an atlas; drawing the whole texture makes the
+        // wrong character art appear. Always crop by the source sprite rect.
+        // Shared by owned units, fusion result and fusion ingredients.
+        private static void DrawSpritePortrait(Sprite portrait, float size)
+        {
+            Rect area = GUILayoutUtility.GetRect(size, size,
+                GUILayout.Width(size), GUILayout.Height(size));
+            if (portrait == null || Event.current.type != EventType.Repaint)
+                return;
+            Rect part = portrait.rect;
+            Texture texture = portrait.texture;
+            if (texture == null) return;
+            GUI.DrawTextureWithTexCoords(area, texture, new Rect(
+                part.x / texture.width, part.y / texture.height,
+                part.width / texture.width, part.height / texture.height));
         }
 
         private void DrawPager(int page, int pages, Action<int> changePage)
@@ -3168,8 +3177,7 @@ namespace Ordr.Mobile.Unity
             if (portrait == null && !string.IsNullOrEmpty(ingredient.CatalogUnitId))
                 portrait = OrdrBattlefieldArt.UnitSprite(ingredient.CatalogUnitId);
             if (portrait != null)
-                GUILayout.Box(portrait.texture, GUILayout.Width(44f),
-                    GUILayout.Height(44f));
+                DrawSpritePortrait(portrait, 44f);
             else
                 GUILayout.Box("◆", GUILayout.Width(44f), GUILayout.Height(44f));
             string name = ingredient.Name;
@@ -3276,8 +3284,7 @@ namespace Ordr.Mobile.Unity
                 if (portrait == null) portrait = OrdrBattlefieldArt.UnitSprite(unitId);
                 if (portrait != null)
                 {
-                    GUILayout.Box(portrait.texture, GUILayout.Width(size),
-                        GUILayout.Height(size));
+                    DrawSpritePortrait(portrait, size);
                     return;
                 }
             }
@@ -3304,7 +3311,6 @@ namespace Ordr.Mobile.Unity
                     routeId = null;
                     fusionSelectedMaterialScroll = Vector2.zero;
                 }
-                pendingEconomy = null;
                 notice = "";
             }
             GUILayout.Label(FusionStatus(offer),
@@ -3588,7 +3594,7 @@ namespace Ordr.Mobile.Unity
                 GUILayout.EndVertical();
             }
 
-            DrawEconomy(ManualEconomyCategory.Wisp);
+            DrawWispEconomyOffers();
             if (wispActions.Recent.Count > 0)
             {
                 if (OrdrMobileUiTheme.DrawAccordionHeader("최근 위습 사용 기록",
@@ -4141,67 +4147,24 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
         }
 
-        // Shop and Wisp retain their own transaction flow. Gambling has a
-        // dedicated compact display instead of duplicating long old rows.
-        private void DrawEconomy(ManualEconomyCategory category)
+        // The generic shop had no source-backed items in the base build.
+        // Its UI entry is removed, while the verified shop/economy backend is
+        // retained for future original transactions. The Wisp menu keeps its
+        // own distinct, direct one-transaction buttons.
+        private void DrawWispEconomyOffers()
         {
-            if (category == ManualEconomyCategory.Gambling)
-            {
-                DrawGambling();
-                return;
-            }
-            if (!controller.ManualActions.HasEconomyService &&
-                category == ManualEconomyCategory.Shop)
-                OrdrMobileUiTheme.DrawStatusRow("거래",
-                    "준비 중", OrdrMobileUiTheme.Gold);
-
-            if (category == ManualEconomyCategory.Shop && pendingEconomy != null)
-            {
-                GUILayout.BeginVertical(OrdrMobileUiTheme.ConfirmationPanel);
-                GUILayout.Label("구매 확인 · " + pendingEconomy.Title,
-                    OrdrMobileUiTheme.Subheading);
-                GUILayout.Label(pendingEconomy.OriginalPriceAndRules,
-                    OrdrMobileUiTheme.Explanation);
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("구매 확정", OrdrMobileUiTheme.PrimaryButton,
-                    GUILayout.MinHeight(66f)))
-                {
-                    ShowResult(controller.ManualActions.RequestEconomyAction(
-                        category, pendingEconomy.Id));
-                    pendingEconomy = null;
-                    RefreshCurrent();
-                }
-                if (GUILayout.Button("취소", OrdrMobileUiTheme.NavButton,
-                    GUILayout.MinHeight(66f)))
-                    pendingEconomy = null;
-                GUILayout.EndHorizontal();
-                GUILayout.EndVertical();
-            }
-            if (economyOffers.Count == 0)
-                GUILayout.Label("이용 가능한 항목 없음",
-                    OrdrMobileUiTheme.Explanation);
             foreach (var offer in economyOffers)
             {
-                if (category == ManualEconomyCategory.Wisp &&
-                    (offer.Id == OriginalRandomWispResourceExchange.OfferId ||
-                     offer.Id == OriginalHelperCowRules.OfferId))
+                if (offer.Id == OriginalRandomWispResourceExchange.OfferId ||
+                    offer.Id == OriginalHelperCowRules.OfferId)
                     continue;
-                if (category == ManualEconomyCategory.Wisp)
+                if (OrdrMobileUiTheme.DrawActionRow(offer.Title,
+                    "1회", OrdrMobileUiTheme.Gold))
                 {
-                    if (OrdrMobileUiTheme.DrawActionRow(offer.Title,
-                        "1회", OrdrMobileUiTheme.Gold))
-                    {
-                        string id = offer.Id;
-                        RunWispDirect(offer.Title, () =>
-                            controller.ManualActions.RequestEconomyAction(category, id));
-                    }
-                }
-                else if (OrdrMobileUiTheme.DrawActionRow(offer.Title,
-                    "선택", OrdrMobileUiTheme.Gold))
-                {
-                    pendingEconomy = offer;
-                    scroll = Vector2.zero;
-                    notice = "구매 확인";
+                    string offerId = offer.Id;
+                    RunWispDirect(offer.Title, () =>
+                        controller.ManualActions.RequestEconomyAction(
+                            ManualEconomyCategory.Wisp, offerId));
                 }
             }
         }
@@ -4228,7 +4191,6 @@ namespace Ordr.Mobile.Unity
                     {
                         notice = navigation.TryChoose(pendingGamblingNavigation.Value) ? "항법을 선택했습니다." : "항법 선택 조건 미충족";
                         pendingGamblingNavigation = null;
-                        pendingEconomy = null;
                         RefreshCurrent();
                     }
                 }
@@ -4522,8 +4484,10 @@ namespace Ordr.Mobile.Unity
                     originalJassPreview = controller.OriginalFusionPlanner.AssessNamedResults(
                         Combat.MobileUnitSnapshot(), null, null);
             }
-            if (currentTab == Tab.Shop || currentTab == Tab.Gambling || currentTab == Tab.Wisp)
-                economyOffers = controller.ManualActions.ListEconomyOffers(ToEconomy(currentTab));
+            if (currentTab == Tab.Gambling || currentTab == Tab.Wisp)
+                economyOffers = controller.ManualActions.ListEconomyOffers(
+                    currentTab == Tab.Gambling ? ManualEconomyCategory.Gambling :
+                        ManualEconomyCategory.Wisp);
         }
 
         private void ShowResult(ManualActionResult result)
@@ -4532,17 +4496,6 @@ namespace Ordr.Mobile.Unity
                 ownedFrameSnapshotAt = -1;
             notice = result.State == ManualActionState.Succeeded
                 ? "실행 완료: " + result.Message : "실행 안 됨: " + result.Message;
-        }
-
-        private static ManualEconomyCategory ToEconomy(Tab tab)
-        {
-            switch (tab)
-            {
-                case Tab.Shop: return ManualEconomyCategory.Shop;
-                case Tab.Gambling: return ManualEconomyCategory.Gambling;
-                case Tab.Wisp: return ManualEconomyCategory.Wisp;
-                default: throw new ArgumentOutOfRangeException(nameof(tab));
-            }
         }
 
         private static string[] ToStringArray(IReadOnlyList<string> values)
