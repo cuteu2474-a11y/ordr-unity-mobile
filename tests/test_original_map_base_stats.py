@@ -325,13 +325,18 @@ class GeneratedDataTests(unittest.TestCase):
 
     def test_skill_queue_preserves_uncertainty(self):
         s = self.skills["summary"]
-        self.assertEqual(s["tooltipProfiles"], 200)
-        self.assertEqual(s["skillEntries"], 554)
-        self.assertEqual(s["passiveEntries"], 295)
+        # A tooltip addition must update its generated outputs, not require
+        # another hand-edited snapshot count in this regression test.
+        profiles = self.profiles["profiles"]
+        skill_count = sum(len(profile.get("skills", [])) for profile in profiles)
+        passive_count = sum(len(profile.get("passives", [])) for profile in profiles)
+        self.assertEqual(s["tooltipProfiles"], len(profiles))
+        self.assertEqual(s["skillEntries"], skill_count)
+        self.assertEqual(s["passiveEntries"], passive_count)
         self.assertEqual(s["originalJassSkillsVerified"], 0)
-        self.assertEqual(len(self.skills["skills"]), 554)
-        self.assertEqual(sum(x["skillCount"] for x in self.skills["templateGroups"]), 554)
-        self.assertEqual(len(set(x["skillId"] for x in self.skills["skills"])), 554)
+        self.assertEqual(len(self.skills["skills"]), skill_count)
+        self.assertEqual(sum(x["skillCount"] for x in self.skills["templateGroups"]), skill_count)
+        self.assertEqual(len(set(x["skillId"] for x in self.skills["skills"])), skill_count)
         self.assertTrue(all(x["originalJassSkillRawcode"] is None for x in self.skills["skills"]))
 
     def test_jass_defense_links_match_original_rawcodes_and_exact_tooltip_components(self):
