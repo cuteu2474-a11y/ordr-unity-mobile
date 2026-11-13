@@ -84,16 +84,40 @@ namespace Ordr.Mobile.Unity
                     layout.Battle.width - 10f * scale, 30f * scale);
                 GUI.DrawTexture(hud, OrdrBattlefieldArt.HeaderTexture,
                     ScaleMode.StretchToFill);
+                // An always-visible timer belongs to the battlefield HUD:
+                // scoreboard/drawer selection must never hide the countdown.
+                var practice = controller == null ? null : controller.PracticeBattle;
+                string clock = practice == null ? "--:--" :
+                    TimeSpan.FromSeconds(Math.Max(0d,
+                        Math.Ceiling(practice.SecondsRemaining))).ToString(@"mm\:ss");
+                float timerWidth = Mathf.Min(136f * scale, hud.width * .40f);
+                Rect timeRect = new Rect(hud.x + 8f * scale, hud.y,
+                    Mathf.Max(70f * scale, timerWidth - 6f * scale), hud.height);
+                var timeStyle = new GUIStyle(OrdrMobileUiTheme.Overline) {
+                    alignment = TextAnchor.MiddleLeft,
+                    fontSize = Mathf.RoundToInt(19f * scale),
+                    fontStyle = FontStyle.Bold, wordWrap = false };
+                timeStyle.normal.textColor = practice != null &&
+                    practice.SecondsRemaining <= 30d ?
+                    OrdrMobileUiTheme.Gold : Color.white;
+                GUI.Label(timeRect, "남은 " + clock, timeStyle);
+
+                int count = GetComponent<OrdrUnitWorldPresenter>()?.MainOwnedUnitCount ?? 0;
+                string metrics = combat == null ? "메인 전장" :
+                    combat.Game.CurrentWave + "R · 적 " +
+                    combat.Game.AliveEnemies + " · 유닛 " + count;
+                Rect metricsRect = new Rect(hud.x + timerWidth, hud.y,
+                    Mathf.Max(1f, hud.width - timerWidth - 4f * scale),
+                    hud.height);
                 var hudStyle = new GUIStyle(OrdrMobileUiTheme.Overline) {
-                    alignment = TextAnchor.MiddleCenter,
+                    alignment = TextAnchor.MiddleRight,
                     fontSize = Mathf.RoundToInt(16f * scale),
                     fontStyle = FontStyle.Bold, wordWrap = false };
                 hudStyle.normal.textColor = Color.white;
-                int count = GetComponent<OrdrUnitWorldPresenter>()?.MainOwnedUnitCount ?? 0;
-                string metrics = combat == null ? "메인 전장" :
-                    "메인 전장   " + combat.Game.CurrentWave + "R   ·   적 " +
-                    combat.Game.AliveEnemies + "   ·   유닛 " + count;
-                GUI.Label(hud, metrics, hudStyle);
+                while (hudStyle.fontSize > 12 * scale &&
+                    hudStyle.CalcSize(new GUIContent(metrics)).x > metricsRect.width)
+                    hudStyle.fontSize--;
+                GUI.Label(metricsRect, metrics, hudStyle);
 
                 // Story remains a smaller, visually separate battlefield.
                 Color groundColor = GUI.color;

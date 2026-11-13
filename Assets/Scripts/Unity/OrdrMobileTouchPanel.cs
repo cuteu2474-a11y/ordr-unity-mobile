@@ -82,6 +82,8 @@ namespace Ordr.Mobile.Unity
         private bool showSharedMissions = true;
         private int selectedSharedMission = -1;
         private string selectedCatalogUnitId;
+        private long? lastUnitSkillSelection;
+        private bool showAllSelectedSkills;
         private Vector2 scroll;
         private Vector2 tabsScroll;
         private Vector2 dashboardScroll;
@@ -107,13 +109,16 @@ namespace Ordr.Mobile.Unity
         private long? dedicatedSkillLastSelectedUnit;
         private string dedicatedNotice;
         private string notice = "";
-        // One short-lived reward card for both unit gambling and wisp
-        // recruitment. It never awards anything or advances game state.
-        private string rewardToastTitle;
-        private string rewardToastText;
-        private string rewardToastUnitId;
-        private float rewardToastStartedAt = -100f;
-        private const float RewardToastDurationSeconds = 3.2f;
+        // A compact, transient three-line log shared by unit selections,
+        // actual gambling results and wisp awards. It never awards anything.
+        private sealed class BattleLogItem
+        {
+            internal string Text;
+            internal string UnitId;
+            internal float StartedAt;
+        }
+        private readonly List<BattleLogItem> battleLog = new List<BattleLogItem>(3);
+        private const float BattleLogLifetimeSeconds = 3.2f;
         private IReadOnlyList<MobileFusionPreview> fusionOffers =
             new List<MobileFusionPreview>().AsReadOnly();
         private IReadOnlyList<MobileManualOffer> economyOffers =
@@ -158,6 +163,26 @@ namespace Ordr.Mobile.Unity
         {
             if (visible && currentTab == Tab.Wisp) return;
             SelectTab(Tab.Wisp);
+        }
+
+        // Called only from a real battlefield-unit tap. The selected
+        // character's skills appear at the TOP of the ordinary Units drawer.
+        // Re-tapping a selected unit must not close that drawer.
+        public void OpenSelectedUnitSkills()
+        {
+            if (Combat == null || !Combat.Roster.SelectedId.HasValue) return;
+            if (!visible || currentTab != Tab.Units) SelectTab(Tab.Units);
+            lastUnitSkillSelection = null;
+            showUnitDetails = false;
+            showAllSelectedSkills = false;
+            scroll = Vector2.zero;
+            long instanceId = Combat.Roster.SelectedId.Value;
+            foreach (var actor in Combat.MobileUnitSnapshot())
+                if (actor.InstanceId == instanceId)
+                {
+                    AddBattleLog(actor.Unit.Name + " 선택", actor.Unit.Id);
+                    break;
+                }
         }
 
         private void Update()
@@ -1450,6 +1475,17 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("유닛 정보를 불러오는 중입니다.");
                 return;
             }
+            // Selection always reveals the skill summary at the TOP of the
+            // same panel, never navigates to a separate details page.
+            long? selectedInstance = Combat == null ? (long?)null :
+                Combat.Roster.SelectedId;
+            if (selectedInstance != lastUnitSkillSelection)
+            {
+                lastUnitSkillSelection = selectedInstance;
+                showUnitDetails = false;
+                showAllSelectedSkills = false;
+                scroll = Vector2.zero;
+            }
             // A real roster selection is the only source of unit detail.
             if (Combat == null || !Combat.Roster.SelectedId.HasValue)
             {
@@ -1471,16 +1507,9 @@ namespace Ordr.Mobile.Unity
                 }
             }
             var detail = definitions.Find(selectedCatalogUnitId);
-            if (showUnitDetails && detail != null)
-            {
-                if (GUILayout.Button("유닛 목록으로", GUILayout.MinHeight(60)))
-                {
-                    showUnitDetails = false;
-                    scroll = Vector2.zero;
-                }
-                DrawUnitDetails(detail);
-                return;
-            }
+            // Skill details remain inline with the unit header rather than
+            // displacing the roster or opening a different page.
+            showUnitDetails = false;
 
             // The selected character and inventory are the everyday workflow.
             // Evolution, tokens and source item shells are still available
@@ -1556,11 +1585,7 @@ namespace Ordr.Mobile.Unity
                 Combat.UsesSourceModelBasicAttacks &&
                 Combat.Roster.SelectedId.HasValue)
                 DrawSansBoneFeedingPanel(Combat.Roster.SelectedId.Value);
-            if (GUILayout.Button("스킬·공격 정보", GUILayout.MinHeight(60)))
-            {
-                showUnitDetails = true;
-                scroll = Vector2.zero;
-            }
+            DrawSelectedUnitSkillSummary(detail);
 
             if (OrdrMobileUiTheme.DrawAccordionHeader("선택 유닛 세부 상태",
                 detail.Grade, showSelectedUnitExtras, OrdrMobileUiTheme.Aqua))
@@ -1606,6 +1631,49 @@ namespace Ordr.Mobile.Unity
                             " (아군 피격 계산 연결 전)", OrdrMobileUiTheme.Overline);
                 }
                 GUILayout.EndVertical();
+            }
+            GUILayout.EndVertical();
+        }
+
+        private void DrawSelectedUnitSkillSummary(UnitImplementationDefinition detail)
+        {
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            GUILayout.Label("스킬 · 공격 정보", OrdrMobileUiTheme.Subheading);
+            if (detail.Profile == null)
+                GUILayout.Label(detail.Unit.Id == "C-01" ?
+                    "추가 스킬 없음" : "스킬 설명 준비 중",
+                    OrdrMobileUiTheme.Explanation);
+            else if (SourceModelTwentyFifthSkillCatalog.IsKnownForeignProfile(
+                detail.Profile))
+                GUILayout.Label("다른 유닛의 기술 설명은 표시하지 않습니다.",
+                    OrdrMobileUiTheme.Explanation);
+            else
+            {
+                int total = detail.Profile.Skills.Count;
+                int visible = showAllSelectedSkills ? total : Math.Min(3, total);
+                for (int i = 0; i < visible; i++)
+                {
+                    var skill = detail.Profile.Skills[i];
+                    string meta = "";
+                    if (skill.ChancePercent.HasValue)
+                        meta = "발동 " + skill.ChancePercent.Value.ToString("0.##") + "%";
+                    if (skill.CooldownSeconds.HasValue)
+                        meta += (meta.Length == 0 ? "" : " · ") +
+                            "쿨 " + skill.CooldownSeconds.Value.ToString("0.##") + "초";
+                    GUILayout.Label("• " + skill.Name +
+                        (meta.Length == 0 ? "" : "  " + meta),
+                        OrdrMobileUiTheme.Explanation);
+                }
+                if (total == 0)
+                    GUILayout.Label("추가 발동 스킬 없음",
+                        OrdrMobileUiTheme.Explanation);
+                if (total > 3 && GUILayout.Button(showAllSelectedSkills ?
+                    "스킬 접기" : "스킬 전체 " + total + "개",
+                    OrdrMobileUiTheme.NavButton, GUILayout.MinHeight(48f)))
+                    showAllSelectedSkills = !showAllSelectedSkills;
+                if (detail.PassiveCount > 0)
+                    GUILayout.Label("패시브 " + detail.PassiveCount + "개",
+                        OrdrMobileUiTheme.Explanation);
             }
             GUILayout.EndVertical();
         }
@@ -2237,7 +2305,10 @@ namespace Ordr.Mobile.Unity
                         group.Members[0].InstanceId;
                     Combat.Roster.Select(next);
                     selectedCatalogUnitId = group.UnitId;
-                    notice = group.Name + " #" + next + " 선택";
+                    showUnitDetails = false;
+                    showAllSelectedSkills = false;
+                    scroll = Vector2.zero;
+                    AddBattleLog(group.Name + " 선택", group.UnitId);
                 }
                 if (GUILayout.Button(open ? "접기" : "관리",
                     GUILayout.Width(80f), GUILayout.MinHeight(72f)))
@@ -2274,7 +2345,10 @@ namespace Ordr.Mobile.Unity
                         {
                             Combat.Roster.Select(entry.InstanceId);
                             selectedCatalogUnitId = entry.Unit.Id;
-                            notice = entry.Unit.Name + " #" + entry.InstanceId + " 선택";
+                            showUnitDetails = false;
+                            showAllSelectedSkills = false;
+                            scroll = Vector2.zero;
+                            AddBattleLog(entry.Unit.Name + " 선택", entry.Unit.Id);
                         }
                         if (GUILayout.Button(expanded ? "접기" : "관리",
                             GUILayout.Width(80f), GUILayout.MinHeight(62f)))
@@ -3986,6 +4060,26 @@ namespace Ordr.Mobile.Unity
             if (!foundMoney)
                 GUILayout.Label("이용 가능한 돈 도박 없음", OrdrMobileUiTheme.Explanation);
 
+            // Original ORDR has a paid 100-gold common/uncommon support action.
+            // An older guide confirms its purpose, NOT the 2.323[C] source
+            // cost/stock/lottery rules. Route only an actual registered source
+            // offer; never invent a paid RNG transaction or grant a free unit.
+            bool supportConnected = false;
+            foreach (var offer in economyOffers)
+                if (IsMaterialSupportOffer(offer))
+                {
+                    DrawCompactGamblingOffer(offer);
+                    supportConnected = true;
+                }
+            if (!supportConnected)
+            {
+                bool priorEnabled = GUI.enabled;
+                GUI.enabled = false;
+                OrdrMobileUiTheme.DrawActionRow("물품 지원",
+                    "100G · 연결 대기", OrdrMobileUiTheme.Gold, 62f);
+                GUI.enabled = priorEnabled;
+            }
+
             GUILayout.Space(8f);
             GUILayout.Label("유닛 도박", OrdrMobileUiTheme.Subheading);
             bool foundUnits = false;
@@ -4011,7 +4105,8 @@ namespace Ordr.Mobile.Unity
             DrawItemExcavation();
             foreach (var offer in economyOffers)
                 if (!IsMoneyGamblingOffer(offer.Id) &&
-                    !IsUnitGamblingOffer(offer.Id))
+                    !IsUnitGamblingOffer(offer.Id) &&
+                    !IsMaterialSupportOffer(offer))
                     DrawCompactGamblingOffer(offer);
 
             var moneyDesk = controller.PracticeMoneyGamblingDesk;
@@ -4026,6 +4121,13 @@ namespace Ordr.Mobile.Unity
                 foreach (string result in moneyDesk.High.RecentResults)
                     GUILayout.Label(result, OrdrMobileUiTheme.Explanation);
             }
+        }
+
+        private static bool IsMaterialSupportOffer(MobileManualOffer offer)
+        {
+            return offer != null &&
+                (offer.Title.IndexOf("물품 지원", StringComparison.Ordinal) >= 0 ||
+                 offer.Title.IndexOf("물품지원", StringComparison.Ordinal) >= 0);
         }
 
         private static bool IsMoneyGamblingOffer(string id)
@@ -4048,6 +4150,7 @@ namespace Ordr.Mobile.Unity
         private string GamblingShortName(MobileManualOffer offer)
         {
             string id = offer.Id;
+            if (IsMaterialSupportOffer(offer)) return "물품 지원";
             if (id == SourceModelRegularMoneyGambling.OfferId)
                 return "일반 " + (controller.PracticeMoneyGambling != null ?
                     controller.PracticeMoneyGambling.Stock + "/3" : "");
@@ -4088,7 +4191,7 @@ namespace Ordr.Mobile.Unity
             if (id == SourceModelOtherworldUnitGambling.OfferId)
                 return Original323OtherworldGamblingRules.GoldCost.ToString("N0") +
                     "G · 목" + Original323OtherworldGamblingRules.WoodCost;
-            return "사용";
+            return "규칙 확인";
         }
 
         private void DrawCompactGamblingOffer(MobileManualOffer offer)
@@ -4339,6 +4442,17 @@ namespace Ordr.Mobile.Unity
             RefreshCurrent();
         }
 
+        private void AddBattleLog(string text, string unitId = null)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return;
+            battleLog.Add(new BattleLogItem {
+                Text = text,
+                UnitId = unitId,
+                StartedAt = Time.unscaledTime
+            });
+            while (battleLog.Count > 3) battleLog.RemoveAt(0);
+        }
+
         private bool PublishRewardToast(ManualActionResult result,
             HashSet<long> before, bool alsoShowNonUnitResult)
         {
@@ -4351,27 +4465,24 @@ namespace Ordr.Mobile.Unity
                         newUnits.Add(row);
             if (newUnits.Count == 0 && !alsoShowNonUnitResult)
                 return false;
-
             if (newUnits.Count > 0)
             {
                 newUnits.Sort((a, b) => a.InstanceId.CompareTo(b.InstanceId));
-                rewardToastUnitId = newUnits[0].Unit.Id;
-                rewardToastTitle = "유닛 획득!";
-                rewardToastText = newUnits[0].Unit.Name;
-                if (newUnits.Count > 1)
-                    rewardToastText += " · " + newUnits[1].Unit.Name;
-                if (newUnits.Count > 2)
-                    rewardToastText += " 외 " + (newUnits.Count - 2) + "기";
+                // Group actual acquired instances by character ID, so log
+                // quantities are never inferred from a roll preview.
+                var seen = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var unit in newUnits)
+                {
+                    if (!seen.Add(unit.Unit.Id)) continue;
+                    int count = 0;
+                    foreach (var row in newUnits)
+                        if (row.Unit.Id == unit.Unit.Id) count++;
+                    AddBattleLog("획득 · " + unit.Unit.Name +
+                        (count > 1 ? " ×" + count : ""), unit.Unit.Id);
+                }
             }
             else
-            {
-                // Money/wood/token outcomes are shown from the committed
-                // transaction's real message, never from a previewed RNG.
-                rewardToastUnitId = null;
-                rewardToastTitle = "도박 결과";
-                rewardToastText = CompactRewardMessage(result.Message);
-            }
-            rewardToastStartedAt = Time.unscaledTime;
+                AddBattleLog(CompactRewardMessage(result.Message));
             return true;
         }
 
@@ -4390,81 +4501,103 @@ namespace Ordr.Mobile.Unity
                 }
             }
             int sep = message.IndexOf(" · ", StringComparison.Ordinal);
-            // Strip only the common prefix from non-unit lottery messages.
             return sep > 0 && message.Length > 60 ?
                 message.Substring(sep + 3) : message;
         }
 
         private bool RewardToastVisible
         {
-            get { return !string.IsNullOrWhiteSpace(rewardToastTitle) &&
-                Time.unscaledTime - rewardToastStartedAt < RewardToastDurationSeconds; }
+            get {
+                for (int i = 0; i < battleLog.Count; i++)
+                    if (Time.unscaledTime - battleLog[i].StartedAt <
+                        BattleLogLifetimeSeconds) return true;
+                return false;
+            }
         }
 
         private static Rect RewardToastRect(MobileMapSkillLayout layout, float scale)
         {
             Rect battlefield = MobileMapSkillLayout.Scaled(layout.Battle, scale);
-            float width = Mathf.Min(338f, Mathf.Max(65f, battlefield.width - 12f));
-            float height = Mathf.Min(Mathf.Clamp(battlefield.height * .35f,
-                72f, 112f), Mathf.Max(48f, battlefield.height - 41f));
-            // Upper-left of the main battlefield, below its round/enemy HUD.
-            return new Rect(battlefield.x + 6f, battlefield.y + 35f,
+            float width = Mathf.Min(360f, Mathf.Max(65f, battlefield.width - 12f));
+            float height = Mathf.Min(88f, Mathf.Max(24f, battlefield.height - 41f));
+            // The permanent clock occupies the battlefield's first 30px.
+            // Event log sits underneath without covering either clock/drawer.
+            return new Rect(battlefield.x + 6f, battlefield.y + 37f,
                 width, height);
+        }
+
+        private static string FitBattleLogText(GUIStyle style,
+            string value, float width)
+        {
+            if (string.IsNullOrEmpty(value) || width <= 4f) return "";
+            var label = new GUIContent(value);
+            if (style.CalcSize(label).x <= width) return value;
+            const string ellipsis = "…";
+            int length = value.Length;
+            while (length > 1 &&
+                style.CalcSize(new GUIContent(value.Substring(0, length) +
+                    ellipsis)).x > width) length--;
+            return value.Substring(0, length) + ellipsis;
         }
 
         private void DrawRewardToast(MobileMapSkillLayout layout, float scale)
         {
             if (!RewardToastVisible || Event.current.type != EventType.Repaint)
                 return;
-            float elapsed = Time.unscaledTime - rewardToastStartedAt;
-            float fade = Mathf.Clamp01(
-                (RewardToastDurationSeconds - elapsed) / .55f);
             Rect area = RewardToastRect(layout, scale);
-            Color oldColor = GUI.color;
+            int count = 0;
+            for (int i = 0; i < battleLog.Count; i++)
+                if (Time.unscaledTime - battleLog[i].StartedAt <
+                    BattleLogLifetimeSeconds) count++;
+            if (count == 0) return;
+            float lineHeight = Mathf.Min(28f, area.height / count);
+            float rowY = area.y;
             int oldDepth = GUI.depth;
+            Color oldColor = GUI.color;
             try
             {
                 GUI.depth = -900;
-                GUI.color = new Color(1f, 1f, 1f, fade);
-                GUI.Box(area, GUIContent.none, OrdrMobileUiTheme.HelpBubble);
-                float inset = 10f;
-                float textX = area.x + inset;
-                Sprite portrait = string.IsNullOrWhiteSpace(rewardToastUnitId) ?
-                    null : OrdrCharacterPortraits.Find(rewardToastUnitId);
-                if (portrait == null && !string.IsNullOrWhiteSpace(rewardToastUnitId))
-                    portrait = OrdrBattlefieldArt.UnitSprite(rewardToastUnitId);
-                if (portrait != null)
-                {
-                    float iconSize = Mathf.Min(76f, area.height - inset * 2f);
-                    Rect icon = new Rect(area.x + inset, area.y +
-                        (area.height - iconSize) * .5f, iconSize, iconSize);
-                    Rect src = portrait.rect;
-                    GUI.DrawTextureWithTexCoords(icon, portrait.texture,
-                        new Rect(src.x / portrait.texture.width,
-                            src.y / portrait.texture.height,
-                            src.width / portrait.texture.width,
-                            src.height / portrait.texture.height));
-                    textX = icon.xMax + inset;
-                }
-                float remaining = Mathf.Max(50f, area.xMax - textX - inset);
-                var heading = new GUIStyle(GUI.skin.label)
-                {
-                    fontSize = 21, fontStyle = FontStyle.Bold,
+                var style = new GUIStyle(GUI.skin.label) {
+                    fontStyle = FontStyle.Bold, fontSize = 16,
                     alignment = TextAnchor.MiddleLeft,
-                    clipping = TextClipping.Clip
+                    wordWrap = false, clipping = TextClipping.Clip,
+                    padding = new RectOffset(0, 0, 0, 0)
                 };
-                heading.normal.textColor = OrdrMobileUiTheme.Gold;
-                var detail = new GUIStyle(GUI.skin.label)
+                style.normal.textColor = Color.white;
+                for (int i = 0; i < battleLog.Count; i++)
                 {
-                    fontSize = 18, fontStyle = FontStyle.Bold,
-                    wordWrap = true, clipping = TextClipping.Clip,
-                    alignment = TextAnchor.MiddleLeft
-                };
-                detail.normal.textColor = Color.white;
-                GUI.Label(new Rect(textX, area.y + 9f, remaining, 30f),
-                    rewardToastTitle, heading);
-                GUI.Label(new Rect(textX, area.y + 37f, remaining,
-                    Mathf.Max(20f, area.height - 43f)), rewardToastText, detail);
+                    var item = battleLog[i];
+                    float age = Time.unscaledTime - item.StartedAt;
+                    if (age >= BattleLogLifetimeSeconds) continue;
+                    float fade = Mathf.Clamp01(
+                        (BattleLogLifetimeSeconds - age) / .7f);
+                    Rect line = new Rect(area.x, rowY, area.width, lineHeight - 2f);
+                    GUI.color = new Color(.035f,.065f,.10f,.82f * fade);
+                    GUI.DrawTexture(line, Texture2D.whiteTexture);
+                    GUI.color = new Color(1f, 1f, 1f, fade);
+                    float labelX = line.x + 10f;
+                    Sprite portrait = string.IsNullOrEmpty(item.UnitId) ?
+                        null : OrdrCharacterPortraits.Find(item.UnitId);
+                    if (portrait == null && !string.IsNullOrEmpty(item.UnitId))
+                        portrait = OrdrBattlefieldArt.UnitSprite(item.UnitId);
+                    if (portrait != null)
+                    {
+                        float portraitSize = Mathf.Min(line.height - 2f, 24f);
+                        Rect image = new Rect(line.x + 3f, line.y + 1f,
+                            portraitSize, portraitSize);
+                        Rect src = portrait.rect;
+                        GUI.DrawTextureWithTexCoords(image, portrait.texture,
+                            new Rect(src.x / portrait.texture.width,
+                                src.y / portrait.texture.height,
+                                src.width / portrait.texture.width,
+                                src.height / portrait.texture.height));
+                        labelX = image.xMax + 6f;
+                    }
+                    float width = Mathf.Max(0f, line.xMax - labelX - 6f);
+                    GUI.Label(new Rect(labelX, line.y, width, line.height),
+                        FitBattleLogText(style, item.Text, width), style);
+                    rowY += lineHeight;
+                }
             }
             finally
             {

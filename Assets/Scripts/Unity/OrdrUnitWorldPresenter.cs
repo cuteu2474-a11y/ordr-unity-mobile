@@ -427,6 +427,7 @@ namespace Ordr.Mobile.Unity
                     // Selecting a roster entry also reveals its nameplate page.
                     controller.Combat.Roster.Select(instanceId);
                     lastFormationSelection = null;
+                    GetComponent<OrdrMobileTouchPanel>()?.OpenSelectedUnitSkills();
                     return true;
                 }
             return false;
@@ -1323,7 +1324,11 @@ namespace Ordr.Mobile.Unity
                         foreach (var live in MobileOwnedUnitFormation.Group(combat.MobileUnitSnapshot(),
                             id => !combat.IsStoryDeployed(id)))
                             if (live.Unit.Id == group.Unit.Id)
-                            { combat.Roster.Select(live.NextSelection(combat.Roster.SelectedId)); break; }
+                            {
+                                combat.Roster.Select(live.NextSelection(combat.Roster.SelectedId));
+                                touchPanel?.OpenSelectedUnitSkills();
+                                break;
+                            }
                         nextRefresh = 0f;
                         return;
                     }
@@ -1362,7 +1367,11 @@ namespace Ordr.Mobile.Unity
             }
             if (nearestId != 0)
             {
-                try { combat.Roster.Select(nearestId); }
+                try
+                {
+                    combat.Roster.Select(nearestId);
+                    touchPanel?.OpenSelectedUnitSkills();
+                }
                 catch (KeyNotFoundException) { nextRefresh = 0f; }
             }
         }

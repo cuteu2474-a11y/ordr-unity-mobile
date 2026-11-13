@@ -533,18 +533,9 @@ namespace Ordr.Mobile.Unity
             float stageWidth = Mathf.Min(132f,
                 Mathf.Max(88f, area.width * .34f));
             float leftWidth = Mathf.Max(52f, area.width - stageWidth - 36f);
-            var nameStyle = new GUIStyle(accordionTitle)
-            {
-                fontSize = 21,
-                fontStyle = FontStyle.Bold,
-                alignment = TextAnchor.MiddleLeft,
-                clipping = TextClipping.Clip,
-                wordWrap = false
-            };
-            var name = new GUIContent(title);
-            while (nameStyle.fontSize > 17 &&
-                nameStyle.CalcSize(name).x > leftWidth)
-                nameStyle.fontSize--;
+            var nameStyle = FitRowText(accordionTitle, title,
+                leftWidth, 35f, 16, true);
+            nameStyle.fontStyle = FontStyle.Bold;
             var infoStyle = new GUIStyle(accordionMeta)
             {
                 fontSize = 16,
@@ -565,7 +556,7 @@ namespace Ordr.Mobile.Unity
             // Keep the two-line price/availability text, but make current
             // stage numerals the most legible item on every upgrade row.
             GUI.Label(new Rect(area.x + 16f, area.y + 7f, leftWidth, 34f),
-                name, nameStyle);
+                EllipsizeRowText(nameStyle, title, leftWidth, 34f), nameStyle);
             GUI.Label(new Rect(area.x + 16f, area.y + 44f, leftWidth,
                 Mathf.Max(24f, area.height - 49f)), meta, infoStyle);
             GUI.Label(new Rect(area.xMax - stageWidth - 10f, area.y + 9f,
@@ -582,22 +573,63 @@ namespace Ordr.Mobile.Unity
             float costWidth = Mathf.Min(Mathf.Max(107f, area.width * .45f),
                 Mathf.Max(75f, area.width - 109f));
             float titleWidth = Mathf.Max(55f, area.width - costWidth - 37f);
-            var label = new GUIStyle(accordionTitle)
-            {
-                fontSize = 20, alignment = TextAnchor.MiddleLeft,
-                clipping = TextClipping.Clip, wordWrap = false
-            };
-            var cost = new GUIStyle(statusValue)
-            {
-                fontSize = 18, alignment = TextAnchor.MiddleRight,
-                clipping = TextClipping.Clip, wordWrap = false
-            };
+            var label = FitRowText(accordionTitle, title,
+                titleWidth, area.height - 12f, 15, false);
+            var cost = FitRowText(statusValue, meta,
+                costWidth, area.height - 12f, 15, false);
+            cost.alignment = TextAnchor.MiddleRight;
             GUI.Label(new Rect(area.x + 15f, area.y + 6f, titleWidth,
-                area.height - 12f), title, label);
+                area.height - 12f),
+                EllipsizeRowText(label, title, titleWidth, area.height - 12f), label);
             GUI.Label(new Rect(area.xMax - costWidth - 28f, area.y + 6f,
-                costWidth, area.height - 12f), meta, cost);
+                costWidth, area.height - 12f),
+                EllipsizeRowText(cost, meta, costWidth, area.height - 12f), cost);
             GUI.Label(new Rect(area.xMax - 30f, area.y + 6f,
                 24f, area.height - 12f), "⋯", accordionArrow);
+        }
+
+        private static GUIStyle FitRowText(GUIStyle original, string content,
+            float width, float height, int minimumSize, bool twoLines)
+        {
+            var style = new GUIStyle(original) {
+                wordWrap = twoLines,
+                clipping = TextClipping.Clip,
+                alignment = TextAnchor.MiddleLeft
+            };
+            if (width <= 0f || height <= 0f) return style;
+            var label = new GUIContent(content ?? "");
+            while (style.fontSize > minimumSize &&
+                (twoLines ? style.CalcHeight(label, width) > height :
+                    style.CalcSize(label).x > width))
+                style.fontSize--;
+            return style;
+        }
+
+        // A clipped label must advertise truncation instead of silently
+        // slicing a character. For ordinary rows the full description stays
+        // in the expanded/detail area; gambling exposes it on a long hold.
+        private static string EllipsizeRowText(GUIStyle style, string text,
+            float width, float height)
+        {
+            if (string.IsNullOrEmpty(text) || width <= 0f || height <= 0f)
+                return "";
+            var content = new GUIContent(text);
+            bool fits = style.wordWrap ?
+                style.CalcHeight(content, width) <= height :
+                style.CalcSize(content).x <= width;
+            if (fits) return text;
+            int length = text.Length;
+            while (length > 0)
+            {
+                string candidate = text.Substring(0, length) + "…";
+                var trial = new GUIContent(candidate);
+                if (style.wordWrap ?
+                    style.CalcHeight(trial, width) <= height :
+                    style.CalcSize(trial).x <= width)
+                    return candidate;
+                length--;
+            }
+            return "…";
         }
 
         private static void DrawActionRowFace(Rect area, string title,
@@ -609,16 +641,26 @@ namespace Ordr.Mobile.Unity
                 "▶",accordionArrow);
             float available = Mathf.Max(100f,area.width-70f);
             float metaWidth = string.IsNullOrEmpty(meta) ? 0f :
-                countBadge ? 118f :
-                Mathf.Min(Mathf.Max(82f,available*.32f),170f);
+                countBadge ? Mathf.Min(118f,area.width*.37f) :
+                Mathf.Min(Mathf.Max(80f,available*.32f),Mathf.Min(170f,area.width*.42f));
             float titleWidth = Mathf.Max(40f,area.width-76f-metaWidth);
-            GUI.Label(new Rect(area.x+52f,area.y+9f,titleWidth,area.height-18f),
-                title,accordionTitle);
+            float textHeight = Mathf.Max(24f,area.height-18f);
+            var nameStyle = FitRowText(accordionTitle,title,
+                titleWidth,textHeight,15,true);
+            GUI.Label(new Rect(area.x+52f,area.y+9f,titleWidth,textHeight),
+                EllipsizeRowText(nameStyle, title, titleWidth, textHeight),nameStyle);
             if (metaWidth>0f)
             {
                 if (countBadge) DrawWispCountBadge(area, meta, remainingCount);
-                else GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
-                    metaWidth,area.height-18f),meta,accordionMeta);
+                else
+                {
+                    var metaStyle = FitRowText(accordionMeta,meta,
+                        metaWidth,textHeight,14,true);
+                    metaStyle.alignment = TextAnchor.MiddleRight;
+                    GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
+                        metaWidth,textHeight),
+                        EllipsizeRowText(metaStyle, meta, metaWidth, textHeight), metaStyle);
+                }
             }
         }
 
