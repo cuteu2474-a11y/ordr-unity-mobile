@@ -1017,6 +1017,39 @@ namespace Ordr.Mobile.Unity
             catch { buildings.Dispose(); throw; }
         }
 
+        // Story buildings already exist during unit preparation; their
+        // attack engine must share the SAME source model as the later 65R
+        // battle. Enabling it only at wave 1 left deployed story characters
+        // without attacks throughout preparation.
+        private void EnsureSourceCombatReadyForStoryPreparation()
+        {
+            if (Combat == null || sourceModelDamage == null ||
+                SharedEconomy == null || !SharedEconomy.HasStarted ||
+                Combat.Game.Phase != SessionPhase.Running ||
+                Combat.Game.CurrentWave != 0)
+                throw new InvalidOperationException(
+                    "스토리 공격 모델은 시작된 세션의 첫 라운드 전에만 준비합니다.");
+            if (Combat.UsesSourceModelBasicAttacks) return;
+            var originalResources = Resources.Load<TextAsset>(
+                "OrdrData/original-2323C-unit-object-stats");
+            if (originalResources == null)
+                throw new InvalidOperationException(
+                    "원본 유닛 HP/MP SLK 자료가 APK에 없습니다.");
+            var sourcePool = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                originalResources.text, MapBaseStats);
+            sourceModelDamage.Enable();
+            Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
+            if (PlayerBuildingResearch != null)
+                Combat.ConfigureSourceModelPlayerResearch(PlayerBuildingResearch);
+            Combat.ConfigureSourceModelPlayerGold(() => SharedEconomy.Wallet.Balance("gold"));
+            Combat.ConfigureSourceModelAccumulatedClearCount(() => AccumulatedClearCount);
+            Combat.ConfigureSourceModelFusionNativeReceipts(
+                id => Original323SourceItemPassiveRules.CombatReceiptBalance(
+                    SharedEconomy.Wallet, id));
+            Combat.BindExistingVerifiedAttacks();
+            Combat.ConfigureSourceModelUnitResources(sourcePool);
+        }
+
         public void BeginStandaloneBattle()
         {
             if (Combat == null) ConfigureCatalogOnlyWorld(unchecked((uint)Environment.TickCount));
@@ -1042,33 +1075,16 @@ namespace Ordr.Mobile.Unity
                     RecordSessionIssue("전투 라운드", Combat.Game.CurrentWave + "라운드 / 원본 최종 전투 미검증");
                 }, mobileMainLane: true);
             if (Combat.Game.Phase == SessionPhase.NotStarted) BeginSession();
-            var originalResources = Resources.Load<TextAsset>(
-                "OrdrData/original-2323C-unit-object-stats");
-            if (originalResources == null)
-                throw new InvalidOperationException(
-                    "원본 유닛 HP/MP SLK 자료가 APK에 없습니다.");
-            var sourcePool = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
-                originalResources.text, MapBaseStats);
-            sourceModelDamage.Enable();
-            Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
-            if (PlayerBuildingResearch != null)
-                Combat.ConfigureSourceModelPlayerResearch(PlayerBuildingResearch);
-            Combat.ConfigureSourceModelPlayerGold(() => SharedEconomy.Wallet.Balance("gold"));
-            Combat.ConfigureSourceModelAccumulatedClearCount(() => AccumulatedClearCount);
-            Combat.ConfigureSourceModelFusionNativeReceipts(
-                id => Original323SourceItemPassiveRules.CombatReceiptBalance(
-                    SharedEconomy.Wallet, id));
+            EnsureSourceCombatReadyForStoryPreparation();
             if (originalEquippedItemWitness != null || originalEquippedInventoryWitness != null)
                 Combat.ConfigureSourceModelEquippedItems(originalEquippedItemWitness,
                     originalEquippedInventoryWitness);
             if (originalBulletArmadaWitness != null)
                 Combat.ConfigureSourceModelBulletArmadaLevel(originalBulletArmadaWitness);
-            Combat.BindExistingVerifiedAttacks();
-            // Pre-battle units may already have real equipped items; their
-            // native full inventory is imported only with a trusted witness.
+            // Full equipment evidence may arrive during preparation;
+            // bind it at the explicit wave start, before any 65R combat.
             if (originalEquippedInventoryWitness != null)
                 Combat.SynchronizeExistingSourceModelEquippedInventories();
-            Combat.ConfigureSourceModelUnitResources(sourcePool);
             EnsureSoloStoryStarted(creepData.text);
             PracticeBattle = prepared;
             prepared.MoneyGamblingBossDefeated = (enemyId, rawcode) =>
@@ -1111,12 +1127,17 @@ namespace Ordr.Mobile.Unity
             SharedEconomy.HasStarted && Combat.Game.Phase == SessionPhase.Running &&
             Combat.Game.CurrentWave == 0;
 
-        // A source-backed management stage, not a fake battle. Existing start
-        // resources/roster/missions are granted once; no enemies or damage.
+        // The preparation stage has no MONSTER WAVES, but the original story
+        // buildings already spawn here and dispatched units must be able
+        // to hit them. Their combat clock shares the later 65R world.
         public void BeginUnitPreparation()
         {
             if (Combat == null) ConfigureCatalogOnlyWorld(unchecked((uint)Environment.TickCount));
             BeginSession();
+            // External verified worlds retain their own original combat
+            // authority; only the built-in standalone source model is armed.
+            if (sourceModelDamage != null)
+                EnsureSourceCombatReadyForStoryPreparation();
             EnsureSoloStoryStarted();
         }
 
@@ -3558,7 +3579,7 @@ namespace Ordr.Mobile.Unity
                     Resources.Load<TextAsset>("OrdrData/practice-native-inherited-defaults")?.text,
                     OriginalMapObjectAuras));
             ConfigureRuntime(sourceModelDamage, sourceModelDamage, random);
-            Debug.LogWarning("ORDR 유닛 준비: 전투는 명시적인 개발용 연습 시작 전까지 비활성입니다.");
+            Debug.Log("ORDR 유닛 준비: 몬스터 웨이브는 시작 전까지 비활성, 스토리 건물 전투는 준비 단계부터 실행됩니다.");
         }
 
         public void BeginSession()
@@ -3952,7 +3973,12 @@ namespace Ordr.Mobile.Unity
             // Grant callbacks may run inside source transactions or combat
             // enumeration. Redeem only after those callers have unwound.
             Wisps?.FlushAutomaticSafely();
-            if (IsUnitPreparation)
+            // Before wave 1, the story building and deployed attackers
+            // are already live. Advance their common combat clock without
+            // creating a wave or granting any invented monster rewards.
+            bool preparing = IsUnitPreparation;
+            if (preparing && (!Combat.UsesSourceModelBasicAttacks ||
+                              SoloStory == null))
             {
                 UnitDecompositions?.Advance(Time.deltaTime);
                 return;
@@ -4028,7 +4054,8 @@ namespace Ordr.Mobile.Unity
                     return;
                 }
             }
-            if (PracticeBattle != null &&
+            if ((PracticeBattle != null ||
+                 (preparing && SoloStory != null && Combat.UsesSourceModelBasicAttacks)) &&
                 Combat.Game.Phase == SessionPhase.Running &&
                 Combat.PendingSimulationSeconds == 0)
             {
@@ -4089,7 +4116,8 @@ namespace Ordr.Mobile.Unity
             // 5-second schedule: require an explicit original start witness.
             try
             {
-                if (PracticeBattle == null) TryBeginNextObservedMonsterWave();
+                if (!preparing && PracticeBattle == null)
+                    TryBeginNextObservedMonsterWave();
             }
             catch (Exception ex)
             {

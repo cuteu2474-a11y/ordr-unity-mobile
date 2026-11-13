@@ -34,6 +34,61 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void ZeffCanAttackStoryBuildingBeforeRoundOneEvenWithMobileRangePolicy()
+        {
+            var units = CharacterUnitCatalog.FromJson(Source("units.json"));
+            var skills = CharacterSkillCatalog.FromJson(Source("character-skill-profiles.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Source("original-2323C-map-base-stats.json"), units);
+            var dice = new FirstDie();
+            var rules = new SourceModelBasicCombatRules(map, dice);
+            var combat = new CharacterCombatRuntime(units, skills, rules, rules, dice);
+            combat.Start();
+            rules.Enable();
+            combat.ConfigureSourceModelBasicAttacks(rules);
+            var corners = new[] {
+                new CombatPathPoint(-4960, 5632),
+                new CombatPathPoint(-4992, 3456),
+                new CombatPathPoint(-2560, 3456),
+                new CombatPathPoint(-2560, 5632)
+            };
+            combat.ConfigureSourceModelRouteCorners(corners);
+            combat.ConfigureSourceModelMobileMainLane(
+                new SourceModelMainLaneGeometry(corners));
+
+            long zeff = combat.SpawnCharacter("R-32", -3776, 4480);
+            Assert.AreEqual("h02G", map.Find("R-32").OriginalRawcode);
+            Assert.AreEqual(525d, map.Find("R-32").Attack1.OriginalRange.Value);
+            var dispatch = new Original323StoryManualDispatch(
+                combat, new Original323SoloStoryMovement(combat, map));
+            combat.ConfigureStoryDeployment(dispatch);
+            Assert.AreEqual(ManualActionState.Succeeded, dispatch.Dispatch(zeff).State);
+            Assert.IsTrue(combat.IsStoryDeployed(zeff));
+
+            using (var buildings = new Original323StoryBuildingPracticeWorld(
+                combat, Original323StoryBuildingCatalog.FromJson(
+                    Source("original-2323C-monster-object-stats.json"))))
+            using (var story = new Original323SoloStoryScenario(
+                combat, buildings,
+                new SharedEconomySession(new EconomyWallet(), combat.Roster)))
+            {
+                story.Start();
+                Assert.AreEqual(0, combat.Game.CurrentWave,
+                    "Story assault starts before a monster wave.");
+                var target = buildings.Encounters.Single();
+                long before = combat.EnemyOf(target.EnemyId).Health;
+                var events = combat.Step(1.5);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.Attack &&
+                    e.ActorId == zeff.ToString() &&
+                    e.EnemyId == target.EnemyId && e.Amount > 0));
+                Assert.Less(combat.EnemyOf(target.EnemyId).Health, before);
+                Assert.AreEqual(0, combat.Game.CurrentWave);
+                Assert.AreEqual(0, combat.Game.LeakedEnemies);
+            }
+        }
+
+        [Test]
         public void StoryExperienceTargetsOnlyOriginalA07OHeroObjects()
         {
             var units = CharacterUnitCatalog.FromJson(Source("units.json"));
