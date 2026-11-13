@@ -227,7 +227,8 @@ namespace Ordr.Mobile.Combat
                     !byRawcode.TryGetValue("h0C2", out evidence)) return false;
                 binding = new OriginalVerifiedAttackBinding(new BasicAttackSpec(
                     evidence.BaseDamagePlus + (long)evidence.DiceCount,
-                    evidence.CooldownSeconds, DamageSchool.Physical, DamageTraits.None),
+                    evidence.CooldownSeconds, attack.OriginalRange.GetValueOrDefault(),
+                    DamageSchool.Physical, DamageTraits.None),
                     attack.AttackPointSeconds.Value, evidence.Rawcode, Evidence);
                 return true;
             }
@@ -237,6 +238,7 @@ namespace Ordr.Mobile.Combat
                 !raw.Attack1.AttackPointSeconds.HasValue) return false;
             binding = new OriginalVerifiedAttackBinding(new BasicAttackSpec(
                 source.BaseDamagePlus + (long)source.DiceCount, source.CooldownSeconds,
+                raw.Attack1.OriginalRange.GetValueOrDefault(),
                 DamageSchool.Physical, DamageTraits.None), raw.Attack1.AttackPointSeconds.Value,
                 source.Rawcode, Evidence);
             return true;

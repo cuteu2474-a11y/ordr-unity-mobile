@@ -10,3 +10,5 @@ retry_of_run: 43445200526
 failure: 2316/2317 EditMode tests passed; obsolete Missions title assertion
 fix: update MobileHudPresentationTests to reflect Missions -> shared / personal tabs
 request: rerun integrated Unity tests and create Android development APK if they pass
+
+2026-11-14: Build requested APK after imported battle floor/enemy art + finite-range main lane + boss patrol integration (single requested push).

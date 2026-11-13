@@ -5,6 +5,61 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
+    // Mobile-only positions derived from the source model's four route centers.
+    // These numbers describe the simplified phone layout, not original WC3
+    // observed placements; no gameplay range, speed or damage is fabricated.
+    public sealed class SourceModelMainLaneGeometry
+    {
+        public double LeftX { get; private set; }
+        public double BottomY { get; private set; }
+        public double TopY { get; private set; }
+        private double Height => TopY - BottomY;
+
+        public SourceModelMainLaneGeometry(IReadOnlyList<CombatPathPoint> corners)
+        {
+            if (corners == null || corners.Count != 4)
+                throw new ArgumentException("메인 전장 사각 경로 네 지점이 필요합니다.", nameof(corners));
+            double minX = double.MaxValue, minY = double.MaxValue, maxY = double.MinValue;
+            foreach (var p in corners)
+            {
+                if (p == null) throw new ArgumentException("경로 지점이 없습니다.", nameof(corners));
+                minX = Math.Min(minX, p.X);
+                minY = Math.Min(minY, p.Y);
+                maxY = Math.Max(maxY, p.Y);
+            }
+            if (maxY <= minY) throw new ArgumentException("보스 왕복 구간이 없습니다.", nameof(corners));
+            LeftX = minX; BottomY = minY; TopY = maxY;
+        }
+
+        public CombatPathPoint BossPosition(double distance)
+        {
+            if (double.IsNaN(distance) || double.IsInfinity(distance) || distance < 0)
+                throw new ArgumentOutOfRangeException(nameof(distance));
+            double offset = distance % (2d * Height);
+            // Zero-duration turns: top -> bottom -> top, repeat without leaks.
+            double y = offset <= Height ? TopY - offset : BottomY + offset - Height;
+            return new CombatPathPoint(LeftX, y);
+        }
+
+        public double BossProgress(double distance)
+        {
+            if (double.IsNaN(distance) || double.IsInfinity(distance) || distance < 0)
+                throw new ArgumentOutOfRangeException(nameof(distance));
+            return (distance % (2d * Height)) / (2d * Height);
+        }
+
+        public CombatPathPoint UnitPosition(long instanceId)
+        {
+            if (instanceId <= 0) throw new ArgumentOutOfRangeException(nameof(instanceId));
+            // Twelve rows and three short columns on the OUTER left side:
+            // no unit-follow controls, and never alter original attack reach.
+            int slot = (int)((instanceId - 1) % 36);
+            int column = slot / 12, row = slot % 12;
+            return new CombatPathPoint(LeftX - 120d - column * 90d,
+                BottomY + Height * (row + .5d) / 12d);
+        }
+    }
+
     // Explicit model input, separate from the verified-wave JSON schema.
     // Immutable original spawn identity/timing is combined with the existing
     // reference-engine Nightmare HP model. It never becomes retail evidence.
@@ -27,6 +82,7 @@ namespace Ordr.Mobile.Combat
         private readonly int? standaloneInitialMagicAbilityLevel;
         private readonly VerifiedCombatPath route;
         public IReadOnlyList<CombatPathPoint> RouteCorners { get; private set; }
+        public SourceModelMainLaneGeometry MainLane { get; private set; }
         public int LastRound { get; private set; }
         public int EnemyLimit => 70;
         public int RoundWisps => 2;
@@ -40,12 +96,15 @@ namespace Ordr.Mobile.Combat
                 round == 51 ? Original323BossRoundRules.PostRound50TransitionSeconds : 0;
         }
         public CombatPathPoint Spawn => route.AtDistance(0);
+        public CombatPathPoint BossSpawn => MainLane.BossPosition(0);
         private static string RoundKey(int number, string role) => number + ":" + role;
         public Round GetRound(int number, CharacterEnemyKind kind)
         {
             return rounds[RoundKey(number, kind == CharacterEnemyKind.Boss ? "boss" : "line")];
         }
         public CombatPathPoint Position(double travelled) => route.AtDistance(travelled % route.Length);
+        public CombatPathPoint BossPosition(double travelled) => MainLane.BossPosition(travelled);
+        public double BossProgress(double travelled) => MainLane.BossProgress(travelled);
         // TargetPriority.FurthestAlongPath consumes this 0..1 route progress.
         // A lap is never an escape; after looping, priority follows the current lap.
         public double PathProgress(double travelled)
@@ -90,6 +149,7 @@ namespace Ordr.Mobile.Combat
             }
             if (points.Count != 4) throw new FormatException("원본 라인 경로 중심 4개가 필요합니다.");
             RouteCorners = new List<CombatPathPoint>(points).AsReadOnly();
+            MainLane = new SourceModelMainLaneGeometry(RouteCorners);
             points.Add(new CombatPathPoint(points[0].X, points[0].Y));
             route = new VerifiedCombatPath(points, "MODEL_ONLY: CSR/CSU/CSX/CSa rectangle centers; native turning unverified");
             foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "rounds"), "rounds"))
@@ -128,7 +188,6 @@ namespace Ordr.Mobile.Combat
         {
             if (number < 1 || number > LastRound) throw new ArgumentOutOfRangeException(nameof(number));
             var spawns = new List<VerifiedWaveEnemy>();
-            var point = Spawn;
             foreach (var entry in original.BuildSinglePlayerSpawnTemplates(number))
             {
                 Round model;
@@ -147,6 +206,7 @@ namespace Ordr.Mobile.Combat
                         "MODEL_ONLY: JASS initial A04Q + W3A Def5")
                     : new EnemyDefenseProfile(entry.Kind, model.Armor, null,
                         model.ArmorType, "MODEL_ONLY: reference-engine initial defense");
+                var point = entry.Kind == CharacterEnemyKind.Boss ? BossSpawn : Spawn;
                 spawns.Add(new VerifiedWaveEnemy(entry.AtSeconds, entry.InstanceId, model.Health,
                     entry.Kind, point.X, point.Y, 0, defense, model.Rawcode));
             }
@@ -363,11 +423,12 @@ namespace Ordr.Mobile.Combat
                 distanceTravelled.TryGetValue(enemy.Id, out travelled);
                 travelled += active * speed;
                 distanceTravelled[enemy.Id] = travelled;
-                var point = catalog.Position(travelled);
-                // A completed lap remains a living enemy. No invented leak,
-                // kill, reward, or player-life reduction at the route end.
+                bool boss = enemy.Kind == CharacterEnemyKind.Boss;
+                var point = boss ? catalog.BossPosition(travelled) : catalog.Position(travelled);
+                // A completed lap or boss turnaround never changes identity,
+                // HP, death credit, the round deadline or spawn ownership.
                 combat.MoveSourceModelEnemy(enemy.Id, point.X, point.Y,
-                    catalog.PathProgress(travelled));
+                    boss ? catalog.BossProgress(travelled) : catalog.PathProgress(travelled));
             }
         }
         private void RewardActualDeath(int spawnWave, string id)

@@ -9,10 +9,17 @@ namespace Ordr.Mobile.Unity
     public static class OrdrBattlefieldArt
     {
         public const string GroundResource = "OrdrArt/BattlefieldGround";
+        public const string ImportedGroundResource = "ImportedArt/battle-floor";
+        public const string ImportedEnemyResource = "ImportedArt/enemy-pirate";
+        // Multi-image sheets have no validated individual cell coordinates.
+        // Register their paths but never show the whole sheet as one character.
+        public const string ImportedBuildingSheetResource = "ImportedArt/buildings-sheet";
+        public const string ImportedUnitSheetResource = "ImportedArt/units-sheet";
+        public const string ImportedPanelSheetResource = "ImportedArt/ui-panel";
         public const string QuantityResource = "OrdrArt/QuantityButton";
         public const string FortressResource = "OrdrArt/StoryFortress";
-        private static Texture2D sharedGround, quantity, fortress;
-        private static bool groundLoaded, quantityLoaded, fortressLoaded;
+        private static Texture2D sharedGround, quantity, fortress, importedGround, importedEnemy;
+        private static bool groundLoaded, quantityLoaded, fortressLoaded, importedGroundLoaded, importedEnemyLoaded;
         private static Sprite board;
         private static Sprite gradeFrame;
         private static Sprite enemy;
@@ -33,6 +40,9 @@ namespace Ordr.Mobile.Unity
         public static Color BackgroundColor => new Color(0.035f, 0.070f, 0.110f, 1f);
         public static Texture2D SharedGroundTexture =>
             LoadOnce(ref sharedGround, ref groundLoaded, GroundResource);
+        public static Texture2D MainGroundTexture =>
+            LoadOnce(ref importedGround, ref importedGroundLoaded, ImportedGroundResource) ??
+            SharedGroundTexture;
         public static Texture2D QuantityButtonTexture =>
             LoadOnce(ref quantity, ref quantityLoaded, QuantityResource);
         public static Texture2D StoryFortressTexture =>
@@ -50,7 +60,7 @@ namespace Ordr.Mobile.Unity
             {
                 if (board == null)
                 {
-                    Texture2D texture = SharedGroundTexture ?? BoardTexture();
+                    Texture2D texture = MainGroundTexture ?? BoardTexture();
                     board = MakeSprite(texture, texture.width);
                 }
                 return board;
@@ -87,7 +97,15 @@ namespace Ordr.Mobile.Unity
         public static Sprite EnemySprite(bool isBoss)
         {
             if (isBoss) return boss ?? (boss = MakeSprite(HazardTexture(true), 80));
-            return enemy ?? (enemy = MakeSprite(HazardTexture(false), 80));
+            if (enemy == null)
+            {
+                var imported = LoadOnce(ref importedEnemy, ref importedEnemyLoaded,
+                    ImportedEnemyResource);
+                enemy = imported != null
+                    ? MakeSprite(imported, Mathf.Max(imported.width, imported.height))
+                    : MakeSprite(HazardTexture(false), 80);
+            }
+            return enemy;
         }
         public static Sprite EnemyHaloSprite =>
             enemyHalo ?? (enemyHalo = MakeSprite(MakeTexture(96, 96, (x, y) =>
@@ -156,7 +174,7 @@ namespace Ordr.Mobile.Unity
                     return Color.clear;
                 }), 80));
         public static Texture2D StoryTexture =>
-            SharedGroundTexture ?? (story ?? (story = MakeTexture(256, 96, (x, y) =>
+            MainGroundTexture ?? (story ?? (story = MakeTexture(256, 96, (x, y) =>
             {
                 float g = 0.5f + 0.5f * Mathf.Sin(x * .07f);
                 float edge = (x < 3 || x > 252 || y < 3 || y > 92) ? 1f : 0f;

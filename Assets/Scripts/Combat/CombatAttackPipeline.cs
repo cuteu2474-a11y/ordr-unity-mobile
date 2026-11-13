@@ -135,6 +135,7 @@ namespace Ordr.Mobile.Combat
         private readonly CombatSkillTriggerEngine skillTriggers;
         private readonly IOriginalDamageResolver damageResolver;
         private CombatAttackReachMode reachMode = CombatAttackReachMode.OriginalUnitRange;
+        private Func<string, bool> finiteReachForAttacker;
         public CombatAttackReachMode ReachMode { get { return reachMode; } }
 
         // 기존 범위 제한 공격 API는 유지. 모바일 Runtime에서만 무제한 모드 활성화.
@@ -145,26 +146,41 @@ namespace Ordr.Mobile.Combat
             reachMode = mode;
         }
 
+        // Finite reach applies only to the model's MAIN lane, not story,
+        // creeps or shared objectives. Both target selection and hit validation
+        // use the same rule so preferred-boss selection cannot bypass range.
+        public void ConfigureFiniteReachForAttacker(Func<string, bool> policy)
+        {
+            finiteReachForAttacker = policy ?? throw new ArgumentNullException(nameof(policy));
+        }
+
+        private bool UnlimitedFor(string attackerId)
+        {
+            return reachMode == CombatAttackReachMode.UnlimitedWithinAssignedBattlefield &&
+                (finiteReachForAttacker == null || !finiteReachForAttacker(attackerId));
+        }
+
         public double ReachForRuleEvaluation(string attackerId)
         {
-            return reachMode == CombatAttackReachMode.UnlimitedWithinAssignedBattlefield
-                ? double.MaxValue : EffectiveAttack(attackerId).Range;
+            return UnlimitedFor(attackerId) ? double.MaxValue : EffectiveAttack(attackerId).Range;
         }
 
         public string SelectDefaultTarget(string attackerId,
             IEnumerable<TargetCandidate> candidates, TargetPriority priority)
         {
-            return CombatTargeting.Select(candidates, EffectiveAttack(attackerId).Range,
-                priority, reachMode == CombatAttackReachMode.UnlimitedWithinAssignedBattlefield);
+            bool unlimited = UnlimitedFor(attackerId);
+            double range = EffectiveAttack(attackerId).Range;
+            if (!unlimited && range <= 0) return null; // Unknown is NOT infinite.
+            return CombatTargeting.Select(candidates, range, priority, unlimited);
         }
 
         public bool CanReach(string attackerId, double distanceSquared)
         {
             if (double.IsNaN(distanceSquared) || distanceSquared < 0)
                 throw new ArgumentOutOfRangeException(nameof(distanceSquared));
-            return reachMode == CombatAttackReachMode.UnlimitedWithinAssignedBattlefield ||
-                distanceSquared <= EffectiveAttack(attackerId).Range *
-                                   EffectiveAttack(attackerId).Range;
+            if (UnlimitedFor(attackerId)) return true;
+            double range = EffectiveAttack(attackerId).Range;
+            return range > 0 && distanceSquared <= range * range;
         }
 
         private Action<string, string> verifiedAttackDeclared;

@@ -1,5 +1,7 @@
 **독립 소환체 공격·오라 공통 전장 게이트:** `CharacterCombatRuntime.SourceModelIndependentAttacks.cs`의 `CanSourceIndependentStayOnLane`은 소유자 실물 존재·해독·공유 목표·스토리 전장 이동을 검사합니다. 독립 공격 `CanSourceIndependentAttack`과 `CharacterCombatRuntime.SourceModelEffects.cs`의 `CanSourceIndependentShareAura`가 이 조건을 재사용하고, 버프를 받을 독립체도 유효 전장인지 검사합니다. 객체 공격 주사위는 `SourceModelBasicCombatRules.cs`에서 원본 자료가 있는 경우만 허용하며, 실제 Unity 실행 검증은 별도입니다.
 
+> **메인 전장 거리/에셋 연결(2026-11-14, 실행 미검증):** `SourceModelPracticeBattle.cs`의 `SourceModelMainLaneGeometry`→`CharacterCombatRuntime.SourceModelFifthSkills.cs`의 출전 좌표→`CombatAttackPipeline.cs`의 레인별 유한 사거리→`SourceModelBasicCombatRules.cs`의 SLK `OriginalRange`. 적 보스 동선은 `SourceModelPracticeBattle.MoveLivingMonsters`, 양수 반경 적 오라는 `CombatAuraSystem.Refresh`, 표시 에셋은 `OrdrBattlefieldArt`(ImportedArt/battle-floor 및 enemy-pirate)에서 연결합니다. UI 화면 슬롯은 전투 좌표를 변경하지 않습니다.
+
 # 코드 구조
 
 **일반 상점 메뉴 제거·APK 빌드 경로:** `OrdrMobileTouchPanel`의 `Tab.Shop`·빈 상점 구매확인 UI·미사용 `pendingEconomy` 상태를 제거했습니다. `DrawWispEconomyOffers`는 기존 위습 실물 거래 버튼으로 남고, `RefreshCurrent`에서 도박과 위습의 실제 `ManualEconomyCategory`만 갱신합니다. `IOriginalEconomyPort`·`VerifiedShopSession`·돈 도박 졸업 상점·콤푸 환전/발굴·강화 서비스는 변경하지 않았습니다. `tests/test_player_building_left_menu.py`·`tests/test_random_wisp_submenu.py`에서 이미 합의한 조합 필터·상점 메뉴/구매확인 구형 문자열 검사를 현행 화면 및 위습 동작 계약으로 갱신했습니다. Actions는 `.github/ordr-apk-build-request.txt` 변경을 포함한 **main의 명시적 요청 커밋만** 푸시 시 검사/APK 제작하고, 일반 코드 푸시는 자동 빌드하지 않습니다.

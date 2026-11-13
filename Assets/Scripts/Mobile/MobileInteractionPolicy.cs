@@ -48,8 +48,8 @@ namespace Ordr.Mobile.Mobile
     }
 
     // 보스를 선호하는 것이 원작에서도 허용되는 유닛/상황일 때만 true.
-    // 모바일 무제한 평타 모드에서는 마지막 사거리 인자가 참고값일 뿐,
-    // 실제 사거리 제한은 적용되지 않는다. 전장 구분은 Runtime에서 반드시 유지한다.
+    // 메인 전장에서는 원본 사거리 이내 후보만 허용하며,
+    // 스토리 및 공유 목표는 별도 전장 정책을 유지한다.
     public interface IOriginalBossFocusRules
     {
         bool CanPreferBoss(CatalogUnit unit, CombatEnemy boss, double distanceSquared,

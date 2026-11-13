@@ -179,6 +179,20 @@ namespace Ordr.Mobile.Combat
                     world.pendingCommandEvents.AddRange(published);
                     committed = true;
                     world.activeOriginalFusionSwap = null;
+                    // Native fusion coordinates were preserved until the
+                    // transaction became irreversible. Only the standalone
+                    // phone's main lane may then adopt its fixed left slots.
+                    if (world.UsesSourceModelBasicAttacks &&
+                        world.sourceModelRouteCorners != null)
+                    {
+                        var formation = new SourceModelMainLaneGeometry(
+                            world.sourceModelRouteCorners);
+                        foreach (long resultId in resultInstanceIds)
+                        {
+                            var slot = formation.UnitPosition(resultId);
+                            world.roster.Move(resultId, slot.X, slot.Y);
+                        }
+                    }
                     // Step() reconciles auras at the next actual combat
                     // frame. No external callback runs midway through commit.
                 }
@@ -1422,7 +1436,14 @@ namespace Ordr.Mobile.Combat
                 id => characters.ContainsKey(id)
                     ? (UnitState?)roster.Get(id) : null,
                 (id, enemy) => characters.ContainsKey(id) &&
-                    CanAttackInThisLane(characters[id], enemy));
+                    CanAttackInThisLane(characters[id], enemy),
+                (id, enemy) => UsesSourceModelBasicAttacks &&
+                    characters.ContainsKey(id) &&
+                    !IsStoryDeployed(id) &&
+                    SharedObjectiveTargetOf(id) == null &&
+                    (enemy.Kind == CharacterEnemyKind.Line ||
+                     enemy.Kind == CharacterEnemyKind.Boss ||
+                     enemy.Kind == CharacterEnemyKind.Enraged));
             RefreshOriginalSpecialAuras();
             RefreshSourceModelAuras();
             RefreshSourceModelNamiZones();
@@ -1482,6 +1503,17 @@ namespace Ordr.Mobile.Combat
                 ForgetSourceModelEleventhActor(instanceId);
                 ForgetSourceManualSupport(instanceId, false);
                 RefreshSourceTemporaryActors();
+            }
+            // Returning from a story/shared objective resumes the existing
+            // left-side formation without touching the other combat lanes.
+            if (UsesSourceModelBasicAttacks && sourceModelRouteCorners != null &&
+                !IsStoryDeployed(instanceId) &&
+                SharedObjectiveTargetOf(instanceId) == null &&
+                !IsOriginalPoneglyphChanneling(instanceId))
+            {
+                var slot = new SourceModelMainLaneGeometry(
+                    sourceModelRouteCorners).UnitPosition(instanceId);
+                roster.Move(instanceId, slot.X, slot.Y);
             }
             RefreshEnemyAuras();
         }
@@ -1763,9 +1795,20 @@ namespace Ordr.Mobile.Combat
                 verifiedBasicDamage ?? throw new ArgumentNullException(nameof(verifiedBasicDamage)));
             attackPipeline.ConfigureAttackerEffectLookup(id => unitStatuses[id].Snapshot());
             attackPipeline.ConfigureVerifiedProcPreflight(CanTriggerOriginalUncommonProc);
-            // 유닛 재배치가 어려운 모바일 플레이 기준: 같은 전장 안의 평타 사거리 무제한.
+            // Preserve legacy reach for story/other lanes, but require original
+            // per-unit finite range for the source-model main battlefield.
             attackPipeline.ConfigureReachMode(
                 CombatAttackReachMode.UnlimitedWithinAssignedBattlefield);
+            attackPipeline.ConfigureFiniteReachForAttacker(attackerId =>
+            {
+                long id;
+                return UsesSourceModelBasicAttacks &&
+                    long.TryParse(attackerId, NumberStyles.None,
+                        CultureInfo.InvariantCulture, out id) &&
+                    characters.ContainsKey(id) && !IsStoryDeployed(id) &&
+                    SharedObjectiveTargetOf(id) == null &&
+                    !IsOriginalPoneglyphChanneling(id);
+            });
             effectExecutor = new CharacterSkillEffectExecutor(resolution,
                 verifiedSkillDamage ?? throw new ArgumentNullException(nameof(verifiedSkillDamage)),
                 statuses, armorBreakStacks, events);
@@ -1838,6 +1881,17 @@ namespace Ordr.Mobile.Combat
                 placed = !stagedOriginalFusionResult &&
                     !preserveOriginalSourcePosition &&
                     MobileAutomation.TryPlace(catalogUnit, roster, id);
+                // The source model positions only its normal main-lane roster
+                // actors. Fusion staging and verified native placement remain
+                // isolated from this mobile-only layout operation.
+                if (UsesSourceModelBasicAttacks && sourceModelRouteCorners != null &&
+                    !stagedOriginalFusionResult && !preserveOriginalSourcePosition)
+                {
+                    var slot = new SourceModelMainLaneGeometry(
+                        sourceModelRouteCorners).UnitPosition(id);
+                    roster.Move(id, slot.X, slot.Y);
+                    placed = true;
+                }
                 if (verifiedAttackProvider != null)
                 {
                     OriginalVerifiedAttackBinding original;
@@ -1971,6 +2025,11 @@ namespace Ordr.Mobile.Combat
                     attackPipeline.NextAttackAt(InstanceKey(instanceId)));
             }
             double? next = attackPipeline.NextAttackAt(InstanceKey(instanceId));
+            if (attackPipeline.SelectDefaultTarget(InstanceKey(instanceId),
+                eligible, TargetPriority.Nearest) == null)
+                return new BasicAttackReadiness(instanceId, id,
+                    BasicAttackReadinessKind.UnverifiedTarget,
+                    "메인 전장 원본 사거리 밖 또는 사거리 자료 없음", next);
             return next.HasValue && !CombatScheduler.HasReached(scheduler.Time, next.Value)
                 ? new BasicAttackReadiness(instanceId, id,
                     BasicAttackReadinessKind.Cooldown, "검증된 평타 공격 시점 대기", next)
@@ -2046,7 +2105,8 @@ namespace Ordr.Mobile.Combat
                 if (!(rawRange is double)) return false;
                 rangeValue = (double)rawRange;
             }
-            else if (attackPipeline.ReachMode == CombatAttackReachMode.OriginalUnitRange)
+            else if (UsesSourceModelBasicAttacks ||
+                     attackPipeline.ReachMode == CombatAttackReachMode.OriginalUnitRange)
                 return false;
             object rawSchool = profile.BasicAttack["damageSchool"];
             double power = (double)rawPower;
@@ -2862,6 +2922,10 @@ namespace Ordr.Mobile.Combat
         private string ChoosePreviewTarget(CharacterInstance unit,
             List<TargetCandidate> candidates)
         {
+            // A non-damaging preview has no verified reach; do not draw a
+            // misleading cross-map attack under the finite main-lane policy.
+            if (UsesSourceModelBasicAttacks && !IsStoryDeployed(unit.Id) &&
+                SharedObjectiveTargetOf(unit.Id) == null) return null;
             if (targetSelectionRules != null)
             {
                 var contacts = new List<VerifiedTargetContact>();

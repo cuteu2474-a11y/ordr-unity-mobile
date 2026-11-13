@@ -16,7 +16,26 @@ namespace Ordr.Mobile.Combat
         {
             if (corners == null || corners.Count < 2)
                 throw new ArgumentException("연습 라인 경로가 필요합니다.", nameof(corners));
+            // Historical source skill fixtures may supply a two-point
+            // Rankyaku direction; only the playable four-corner 65R model
+            // needs the extra left-lane deployment geometry.
+            var layout = UsesSourceModelBasicAttacks
+                ? new SourceModelMainLaneGeometry(corners) : null;
             sourceModelRouteCorners = new List<CombatPathPoint>(corners).AsReadOnly();
+            // Existing pre-battle units get stable main-lane coordinates once.
+            // Story / shared-target / decoding participants retain their own lane.
+            if (UsesSourceModelBasicAttacks)
+            {
+                foreach (var actor in characters.Values)
+                {
+                    if (IsStoryDeployed(actor.Id) ||
+                        SharedObjectiveTargetOf(actor.Id) != null ||
+                        IsOriginalPoneglyphChanneling(actor.Id)) continue;
+                    var slot = layout.UnitPosition(actor.Id);
+                    roster.Move(actor.Id, slot.X, slot.Y);
+                }
+                RefreshEnemyAuras();
+            }
         }
 
         // Profile clearCountScaling is cumulative *completed games*, not

@@ -5,7 +5,7 @@ using Ordr.Mobile.Core;
 namespace Ordr.Mobile.Combat
 {
     // 오라 종류·원본 반경 메타데이터·대상 범위는 출처 확인 후 주입해야 한다.
-    // 모바일 모드에서 적용 거리는 무제한이며 대상 종류/전장 자격은 유지한다.
+    // 원본 반경이 있으면 메인 전장에서 실제 좌표로 적용하며 다른 전장은 기존 정책을 유지한다.
     // 중첩으로 얻는 최종 피해/이속 계산은 IOriginalEffectStackingRule 담당.
     public sealed class CombatAuraEmitter
     {
@@ -86,7 +86,8 @@ namespace Ordr.Mobile.Combat
         public void Refresh(Dictionary<string, CombatStatusEngine> statuses,
             IEnumerable<SpatialCombatEnemy> enemies,
             Func<long, UnitState?> findCasterPosition,
-            Func<long, SpatialCombatEnemy, bool> sameBattlefield = null)
+            Func<long, SpatialCombatEnemy, bool> sameBattlefield = null,
+            Func<long, SpatialCombatEnemy, bool> enforceMainRadius = null)
         {
             if (statuses == null || enemies == null || findCasterPosition == null)
                 throw new ArgumentNullException("오라 갱신에 필요한 세계 상태가 없습니다.");
@@ -104,7 +105,7 @@ namespace Ordr.Mobile.Combat
                 UnitState? position = findCasterPosition(emitter.UnitInstanceId);
                 if (position == null) continue;
                 previousKeys.Add(key);
-                // 원본 Radius는 감사용 메타데이터. 모바일 오라 적용을 거리로 막지 않는다.
+                // Unknown radius (zero) is not silently turned into a made-up value.
                 foreach (var enemy in current)
                 {
                     if (!enemy.Enemy.IsAlive) continue;
@@ -113,6 +114,13 @@ namespace Ordr.Mobile.Combat
                         if (kind == enemy.Kind) { eligible = true; break; }
                     if (!eligible || (sameBattlefield != null &&
                         !sameBattlefield(emitter.UnitInstanceId, enemy))) continue;
+                    if (emitter.Radius > 0 && enforceMainRadius != null &&
+                        enforceMainRadius(emitter.UnitInstanceId, enemy))
+                    {
+                        double dx = enemy.X - position.Value.X;
+                        double dy = enemy.Y - position.Value.Y;
+                        if (dx * dx + dy * dy > emitter.Radius * emitter.Radius) continue;
+                    }
                     CombatStatusEngine status;
                     if (!statuses.TryGetValue(enemy.Id, out status)) continue;
                     status.Apply(new CombatEffect(emitter.SourceKey, emitter.Type,
