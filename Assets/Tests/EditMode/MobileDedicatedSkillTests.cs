@@ -96,10 +96,17 @@ namespace Ordr.Mobile.Tests
             // old title header and bottom resource-card space vertically.
             Assert.Less(layout.Battle.width, safe.width * 0.60f);
             Assert.Less(layout.Story.width, safe.width * 0.60f);
-            // The fixed resource strip and small-screen gaps leave just under 84%
-            // on compact landscape phones; keep the visible fields above 83%.
-            Assert.Greater(layout.Battle.height + layout.SkillMargin.height +
-                layout.Story.height, safe.height * 0.83f);
+            // The enlarged 52px resource bar and touch-sized skill ribbon
+            // intentionally reserve more height than the old 34px status UI.
+            // Account for two safe-edge margins and all three map gaps;
+            // compact 390px landscapes still retain at least 79% of the field.
+            float mapFields = layout.Battle.height + layout.SkillMargin.height +
+                layout.Story.height;
+            float reserved = safe.height - mapFields;
+            float scale = MobileMapSkillLayout.UiScale(safe, dpi);
+            Assert.LessOrEqual(reserved, layout.StatusMargin.height +
+                12f * scale + 27f + 0.02f);
+            Assert.Greater(mapFields, safe.height * 0.79f);
             Assert.Greater(layout.RightDrawer.width, layout.Battle.width * 0.80f);
             Assert.Greater(layout.StatusMargin.height, 18f);
             Assert.Less(layout.StatusMargin.height, safe.height * 0.17f);

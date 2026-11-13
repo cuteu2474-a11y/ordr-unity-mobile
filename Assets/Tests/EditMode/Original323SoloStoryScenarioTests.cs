@@ -261,6 +261,11 @@ namespace Ordr.Mobile.Tests
             rules.Enable();
             combat.ConfigureSourceModelBasicAttacks(rules);
             long owner = combat.SpawnCharacter("C-01", 0, 0);
+            var dispatch = new Original323StoryManualDispatch(
+                combat, new Original323SoloStoryMovement(combat, map));
+            combat.ConfigureStoryDeployment(dispatch);
+            Assert.AreEqual(ManualActionState.Succeeded, dispatch.Dispatch(owner).State);
+            Assert.IsTrue(combat.IsStoryDeployed(owner));
             var register = typeof(CharacterCombatRuntime).GetMethod(
                 "RegisterSourceIndependentAttack",
                 System.Reflection.BindingFlags.Instance |

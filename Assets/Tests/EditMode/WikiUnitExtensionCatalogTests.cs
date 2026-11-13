@@ -56,9 +56,12 @@ namespace Ordr.Mobile.Tests
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
             var definitions = UnitImplementationRegistry.Combine(catalog, skills, null);
             Assert.AreEqual(288, definitions.Count);
-            Assert.AreEqual(200, definitions.DetailedProfiles);
-            Assert.AreEqual(554, definitions.CollectedSkills);
-            Assert.AreEqual(295, definitions.CollectedPassives);
+            Assert.AreEqual(skills.CharacterCount, definitions.DetailedProfiles);
+            Assert.AreEqual(skills.SkillCount, definitions.CollectedSkills);
+            int expectedPassives = 0;
+            foreach (var profile in skills.All)
+                expectedPassives += profile.Passives.Count;
+            Assert.AreEqual(expectedPassives, definitions.CollectedPassives);
             Assert.AreEqual("히든", definitions.Require("PS-01").Grade);
             Assert.AreEqual("희귀함", definitions.Require("R-44").Grade);
             Assert.AreEqual("재료", definitions.Require("SM-01").Grade);

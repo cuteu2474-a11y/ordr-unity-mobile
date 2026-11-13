@@ -342,7 +342,13 @@ namespace Ordr.Mobile.Combat
                     enemy.Kind != CharacterEnemyKind.Enraged) continue;
                 int wave;
                 double birth;
-                if (!waves.TryGetLivingMonsterSpawnWave(enemy.Id, out wave) || !bornAt.TryGetValue(enemy.Id, out birth))
+                bool inWave = waves.TryGetLivingMonsterSpawnWave(enemy.Id, out wave);
+                bool hasBirth = bornAt.TryGetValue(enemy.Id, out birth);
+                // External test/skill-spawned line enemies have no wave plan
+                // and must not be put on the 65R path or claim its rewards.
+                // A half-registered real wave spawn remains a hard failure.
+                if (!inWave && !hasBirth) continue;
+                if (!inWave || !hasBirth)
                     throw new InvalidOperationException("연습 몬스터 출현 이력이 없습니다.");
                 if (combat.IsSourceModelPullHeld(enemy.Id)) continue;
                 var status = combat.StatusOf(enemy.Id);

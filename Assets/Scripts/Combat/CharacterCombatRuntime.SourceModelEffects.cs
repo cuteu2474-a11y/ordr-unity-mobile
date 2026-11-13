@@ -296,21 +296,30 @@ namespace Ordr.Mobile.Combat
         // object rawcodes separately; no character-name special cases.
         // Our mobile rule deliberately removes the native aura radius within
         // the same lane, but preserves native role and identity restrictions.
-        // An autonomous source can support only allies in its original
-        // combat lane. Treat an independently owned recipient like a roster
-        // recipient, but require both owners to be active in that lane.
+        // Player-purchased satellites have a stable, independent lane even
+        // after creator removal; transient units remain owner-gated above.
+        // The receiver must be independently eligible for the same lane.
+        private bool CanSourceModelRosterShareAuraWithIndependent(
+            long casterId, SourceIndependentAttacker target)
+        {
+            return CanSourceIndependentStayOnLane(target) &&
+                characters.ContainsKey(casterId) &&
+                !IsSharedObjectiveDeployed(casterId) &&
+                !IsOriginalPoneglyphChanneling(casterId) &&
+                IsStoryDeployed(casterId) == target.StoryLane;
+        }
+
         private bool CanSourceIndependentShareAura(
             SourceIndependentAttacker source, long? ally,
             SourceIndependentAttacker independentTarget)
         {
             if (!CanSourceIndependentStayOnLane(source)) return false;
             if (ally.HasValue)
-                return !IsSharedObjectiveDeployed(ally.Value) &&
-                    CanShareAllyCombatLane(source.OwnerInstanceId, ally.Value);
+                return CanSourceModelRosterShareAuraWithIndependent(
+                    ally.Value, source);
             return independentTarget != null &&
                 CanSourceIndependentStayOnLane(independentTarget) &&
-                independentTarget.StoryLane == source.StoryLane &&
-                CanShareAllyCombatLane(source.OwnerInstanceId, independentTarget.OwnerInstanceId);
+                independentTarget.StoryLane == source.StoryLane;
         }
 
         private void ApplySourceModelAuraGroup(List<long> casters, long? ally,
@@ -329,10 +338,7 @@ namespace Ordr.Mobile.Combat
                 if (ally.HasValue && !CanShareAllyCombatLane(id, ally.Value))
                     continue;
                 if (independentTarget != null &&
-                    (!CanShareAllyCombatLane(id, independentTarget.OwnerInstanceId) ||
-                     IsSharedObjectiveDeployed(independentTarget.OwnerInstanceId) ||
-                     independentTarget.StoryLane !=
-                         IsStoryDeployed(independentTarget.OwnerInstanceId)))
+                    !CanSourceModelRosterShareAuraWithIndependent(id, independentTarget))
                     continue;
                 if (!recipientIsAlly && !CanAttackInThisLane(characters[id], enemy)) continue;
                 string form = sourceModelRules.SourceFormRawcodeOf(InstanceKey(id));

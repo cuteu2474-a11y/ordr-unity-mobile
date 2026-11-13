@@ -2,6 +2,8 @@
 
 # 코드 구조
 
+**구매 위성·임시 소환수 전장 게이트:** `CharacterCombatRuntime.SourceModelIndependentAttacks.cs`는 영구 베가펑크 위성(`practice-satellite:`)을 플레이어가 구매한 전장 고정 독립 객체로 판정하여 제작자가 제거돼도 공격·기술·오라가 남도록 하고, 나머지 임시 소환수·블랙 애로우는 제작자 삭제/해독/파견 시 멈춥니다. `CharacterCombatRuntime.SourceModelEffects.cs`는 대상 유닛 및 독립 객체의 실제 전장으로 오라 자격을 통합합니다. 검증: `SourceModelScriptAttackSkillTests`·`Original323SoloStoryScenarioTests`·`SourceModelPracticeBattleTests`의 종전 실패 경로(실행 미확인).
+
 **공통 UI 아트:** `OrdrMobileUiArtwork.cs` → `Resources/OrdrArt/Ui`의 WideButton/SquareButton/PopupPanel/SpeechBubble → 알파 경계·소형 캐시·색상/눌림 상태·9분할 → `OrdrMobileUiTheme.ApplySharedArtwork` → `OrdrMobileTouchPanel`의 기본 버튼·페이지·확인·설명 표시. 거래 콜백과 무테 상세 패널은 유지합니다. `OrdrBattlefieldArtTests`에 4종 검사 소스가 있으며 Unity/Android 실행은 미검증입니다.
 
 **도감 파생 데이터 재생성:** `tools/rebuild_tooltip_inventory_exports.py --write`는 `data/character-skill-profiles.json`으로부터 문서화된 기술/패시브 개수만 `data/unit-runtime-status.json`에 동기화하고 `tools/classify_character_skills.py`의 분류 규칙으로 `data/original-2323C-skill-research-queue.json`을 재생성합니다. `--verify`는 변경 없이 두 출력이 최신인지 확인합니다. 네이티브 연결 효과·검증 등급·유닛 획득 권한에는 영향 없음.

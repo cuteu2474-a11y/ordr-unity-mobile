@@ -185,13 +185,21 @@ namespace Ordr.Mobile.Combat
             unitStatuses.Remove(key);
         }
 
-        // Independent attacks and their support auras must share the same
-        // ownership/lane lifecycle gate. A detached source cannot keep
-        // buffing the main board after a dispatch, decode or owner removal.
-        private bool CanSourceIndependentStayOnLane(SourceIndependentAttacker actor)
+        // Native B4a purchased satellites are permanent PLAYER objects:
+        // their origin lane and attack/aura identity survive creator sale.
+        // Temporary summons, shadows and Black Arrow remain owner-bound and
+        // must stop on owner deletion, shared-objective sortie or decoding.
+        private static bool IsPurchasedSourceSatellite(SourceIndependentAttacker actor)
         {
             return actor != null &&
-                characters.ContainsKey(actor.OwnerInstanceId) &&
+                actor.Key.StartsWith("practice-satellite:", StringComparison.Ordinal);
+        }
+
+        private bool CanSourceIndependentStayOnLane(SourceIndependentAttacker actor)
+        {
+            if (actor == null) return false;
+            if (IsPurchasedSourceSatellite(actor)) return true;
+            return characters.ContainsKey(actor.OwnerInstanceId) &&
                 !IsSharedObjectiveDeployed(actor.OwnerInstanceId) &&
                 !IsOriginalPoneglyphChanneling(actor.OwnerInstanceId) &&
                 actor.StoryLane == IsStoryDeployed(actor.OwnerInstanceId);

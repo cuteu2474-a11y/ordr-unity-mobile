@@ -104,8 +104,9 @@ namespace Ordr.Mobile.Unity
         // underlying unit markers occupy the same world-space point.
         public bool BlocksWorldTap(Vector2 onGui, bool drawerOpen)
         {
-            return LeftTabs.Contains(onGui) || RightDrawer.Contains(onGui) ||
-                StatusMargin.Contains(onGui) || SkillMargin.Contains(onGui);
+            return LeftTabs.Contains(onGui) || StatusMargin.Contains(onGui) ||
+                SkillMargin.Contains(onGui) ||
+                (drawerOpen && RightDrawer.Contains(onGui));
         }
 
         // Unity camera.rect uses normalized bottom-left viewport coordinates.
