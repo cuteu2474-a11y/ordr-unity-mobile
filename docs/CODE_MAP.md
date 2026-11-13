@@ -4,7 +4,7 @@
 
 **구매 위성·임시 소환수 전장 게이트:** `CharacterCombatRuntime.SourceModelIndependentAttacks.cs`는 영구 베가펑크 위성(`practice-satellite:`)을 플레이어가 구매한 전장 고정 독립 객체로 판정하여 제작자가 제거돼도 공격·기술·오라가 남도록 하고, 나머지 임시 소환수·블랙 애로우는 제작자 삭제/해독/파견 시 멈춥니다. `CharacterCombatRuntime.SourceModelEffects.cs`는 대상 유닛 및 독립 객체의 실제 전장으로 오라 자격을 통합합니다. 검증: `SourceModelScriptAttackSkillTests`·`Original323SoloStoryScenarioTests`·`SourceModelPracticeBattleTests`의 종전 실패 경로(실행 미확인).
 
-**UI 테마:** `OrdrMobileUiTheme`가 기존 IMGUI 버튼·탭·확인창·도움말 스타일을 설정하고 `OrdrMobileTouchPanel`이 입력을 처리합니다. 제거된 구형 이미지의 `Resources` 로딩 의존성은 없습니다. [카툰풍 해적 UI 원본](../art/ui/cartoon-v1/)은 보관 중이며 런타임 미연결입니다. 오른쪽 상세 패널은 무테 정책을 유지합니다.
+**카툰풍 UI 테마:** `art/ui/cartoon-v1/`의 4종 원본 → `Assets/Resources/OrdrArt/CartoonUi/` 동일 PNG blob + Read/Write 임포트 → `Assets/Scripts/Unity/OrdrCartoonUiArtwork.cs` 투명 여백 정리/384·128·512px 캐시/상태 밝기/9분할 → `OrdrMobileUiTheme.InitializeAuxiliaryStyles` → `OrdrMobileTouchPanel` 기존 버튼/선택/확인창/도움말. 청록 일반 기능, 주황 주요 액션/선택, 사각 닫기·페이지, 갈색 대비 조정 양피지 안내. 오른쪽 전체 상세 패널은 무테 유지. `OrdrCartoonUiArtworkTests` 4종 리소스 및 상태 검사 추가(실행 미검증). 원본 참고 보드 2종은 게임 미포함.
 
 **도감 파생 데이터 재생성:** `tools/rebuild_tooltip_inventory_exports.py --write`는 `data/character-skill-profiles.json`으로부터 문서화된 기술/패시브 개수만 `data/unit-runtime-status.json`에 동기화하고 `tools/classify_character_skills.py`의 분류 규칙으로 `data/original-2323C-skill-research-queue.json`을 재생성합니다. `--verify`는 변경 없이 두 출력이 최신인지 확인합니다. 네이티브 연결 효과·검증 등급·유닛 획득 권한에는 영향 없음.
 

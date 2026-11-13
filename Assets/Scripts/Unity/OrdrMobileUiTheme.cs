@@ -292,6 +292,20 @@ namespace Ordr.Mobile.Unity
             confirmationPanel.padding = new RectOffset(16,16,14,14);
             helpBubble = new GUIStyle(accordionBody);
             helpBubble.padding = new RectOffset(22,18,16,32);
+            // Cartoon pirate styling uses the original shared IMGUI controls;
+            // no new hitboxes, click handlers, resource transactions or screens.
+            // Teal is the default action, orange marks selection/confirmation.
+            OrdrCartoonUiArtwork.Apply(themedSkin.button, OrdrCartoonUiArtwork.Face.TealWide, true);
+            OrdrCartoonUiArtwork.Apply(navButton, OrdrCartoonUiArtwork.Face.TealWide, true);
+            OrdrCartoonUiArtwork.Apply(selectedTab, OrdrCartoonUiArtwork.Face.OrangeWide, true);
+            OrdrCartoonUiArtwork.Apply(primaryButton, OrdrCartoonUiArtwork.Face.OrangeWide, true);
+            OrdrCartoonUiArtwork.Apply(skillButton, OrdrCartoonUiArtwork.Face.TealWide, true);
+            OrdrCartoonUiArtwork.Apply(accordionClosed, OrdrCartoonUiArtwork.Face.TealWide, true);
+            OrdrCartoonUiArtwork.Apply(accordionOpen, OrdrCartoonUiArtwork.Face.OrangeWide, true);
+            OrdrCartoonUiArtwork.Apply(closeButton, OrdrCartoonUiArtwork.Face.Square, true);
+            OrdrCartoonUiArtwork.Apply(smallButton, OrdrCartoonUiArtwork.Face.Square, true);
+            OrdrCartoonUiArtwork.Apply(confirmationPanel, OrdrCartoonUiArtwork.Face.Parchment, false);
+            OrdrCartoonUiArtwork.Apply(helpBubble, OrdrCartoonUiArtwork.Face.Parchment, false);
         }
 
         private static void Background(GUIStyle style, Texture2D normal,
