@@ -73,13 +73,43 @@ namespace Ordr.Mobile.Unity
         public int Pages { get; private set; }
         public int Start { get { return Page * Capacity; } }
 
-        // 160px versus the former 40px on a full-sized cell: four times the
-        // visible portrait width, constrained by smaller battlefield viewports.
+        // Portraits occupy the upper half, not the name/count strip.
+        // All geometry is screen-space and shared by the SpriteRenderer and
+        // IMGUI; it never changes combat coordinates or hitboxes.
         public static float PortraitDiameterPixels(Rect cell, float scale)
         {
             if (cell.width <= 0f || cell.height <= 0f || scale <= 0f)
                 throw new ArgumentOutOfRangeException(nameof(cell));
-            return Mathf.Min(160f * scale, cell.height * .85f, cell.width * .88f);
+            return Mathf.Min(94f * scale, cell.height * .52f, cell.width * .70f);
+        }
+
+        public static Rect PortraitRect(Rect cell, float scale)
+        {
+            float diameter = PortraitDiameterPixels(cell, scale);
+            return new Rect(cell.center.x - diameter * .5f,
+                cell.y + Mathf.Max(3f * scale, cell.height * .035f),
+                diameter, diameter);
+        }
+
+        public static Rect NameRect(Rect cell, float scale)
+        {
+            if (cell.width <= 0f || cell.height <= 0f || scale <= 0f)
+                throw new ArgumentOutOfRangeException(nameof(cell));
+            float inset = Mathf.Min(4f * scale, cell.width * .04f);
+            float y = cell.y + cell.height * .59f;
+            return new Rect(cell.x + inset, y,
+                cell.width - inset * 2f,
+                Mathf.Max(1f, cell.yMax - y - 2f * scale));
+        }
+
+        public static Rect QuantityRect(Rect cell, float scale)
+        {
+            if (cell.width <= 0f || cell.height <= 0f || scale <= 0f)
+                throw new ArgumentOutOfRangeException(nameof(cell));
+            float width = Mathf.Min(52f * scale, cell.width * .46f);
+            float height = Mathf.Min(30f * scale, cell.height * .28f);
+            return new Rect(cell.xMax - width - 2f * scale,
+                cell.y + 2f * scale, width, height);
         }
 
         public static MobileOwnedFormationLayout Calculate(Rect battle, float scale,
@@ -89,13 +119,13 @@ namespace Ordr.Mobile.Unity
                 float.IsNaN(scale) || float.IsInfinity(scale) || groupCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(battle));
             float inset = 6f * scale, gap = 4f * scale;
-            var content = new Rect(battle.x + inset, battle.y + 25f * scale,
-                battle.width - inset * 2f, battle.height - 71f * scale);
+            var content = new Rect(battle.x + inset, battle.y + 37f * scale,
+                battle.width - inset * 2f, battle.height - 89f * scale);
             if (content.width <= 0 || content.height <= 0)
                 throw new ArgumentOutOfRangeException(nameof(battle));
-            // Larger portrait-led cards take priority over fitting many tiny
-            // groups per page. Pagination preserves access to every unit.
-            const float preferredCellSize = 188f;
+            // Balanced slots: smaller portraits, larger names and prominent
+            // quantity badges. Paging continues to cover every owned group.
+            const float preferredCellSize = 132f;
             int columns = Mathf.Clamp(Mathf.FloorToInt(
                 (content.width + gap) / (preferredCellSize * scale + gap)), 1, 3);
             int maxRows = Mathf.Clamp(Mathf.FloorToInt(

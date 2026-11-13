@@ -81,7 +81,7 @@ namespace Ordr.Mobile.Tests
                     Assert.AreEqual(cell.width, cell.height, .01f);
                     Assert.GreaterOrEqual(cell.xMin, battle.xMin);
                     Assert.LessOrEqual(cell.xMax, battle.xMax);
-                    Assert.GreaterOrEqual(cell.yMin, battle.yMin + 25f * scale - .01f);
+                    Assert.GreaterOrEqual(cell.yMin, battle.yMin + 37f * scale - .01f);
                     Assert.LessOrEqual(cell.yMax, page.Footer.yMin);
                     Assert.IsTrue(covered.Add(page.Start + i));
                     float rowMin = cell.xMin, rowMax = cell.xMax;
@@ -101,23 +101,67 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void PortraitsAreFourTimesLargerOnRoomyBattlefieldsAndRemainInsideCells()
+        public void CompactPortraitsReserveReadableNameAndQuantityAreas()
         {
             var battle = new Rect(0f, 0f, 460f, 300f);
             var layout = MobileOwnedFormationLayout.Calculate(battle, 1f, 10, 0);
-            Assert.AreEqual(2, layout.Capacity);
-            Assert.Greater(layout.Pages, 1, "Larger cards paginate instead of overlapping.");
+            Assert.AreEqual(3, layout.Capacity);
+            Assert.Greater(layout.Pages, 1);
             foreach (var cell in layout.Cells)
             {
-                Assert.AreEqual(188f, cell.width, .01f);
+                Assert.AreEqual(132f, cell.width, .01f);
                 float portrait = MobileOwnedFormationLayout.PortraitDiameterPixels(cell, 1f);
-                Assert.AreEqual(160f, portrait, 1f);
-                Assert.LessOrEqual(portrait, cell.width);
-                Assert.LessOrEqual(portrait, cell.height);
+                Assert.LessOrEqual(portrait, 94f);
+                var art = MobileOwnedFormationLayout.PortraitRect(cell, 1f);
+                var name = MobileOwnedFormationLayout.NameRect(cell, 1f);
+                var quantity = MobileOwnedFormationLayout.QuantityRect(cell, 1f);
+                Assert.AreEqual(portrait, art.width, .01f);
+                Assert.Less(art.yMax, name.yMin);
+                Assert.Greater(name.height, 30f);
+                Assert.Greater(quantity.height, 20f);
+                Assert.GreaterOrEqual(quantity.xMin, cell.xMin);
+                Assert.LessOrEqual(quantity.xMax, cell.xMax);
+                Assert.LessOrEqual(quantity.yMax, name.yMin);
             }
             var narrow = new Rect(0f, 0f, 110f, 85f);
-            float small = MobileOwnedFormationLayout.PortraitDiameterPixels(narrow, 1f);
-            Assert.LessOrEqual(small, narrow.height);
+            var narrowArt = MobileOwnedFormationLayout.PortraitRect(narrow, 1f);
+            var narrowName = MobileOwnedFormationLayout.NameRect(narrow, 1f);
+            var narrowCount = MobileOwnedFormationLayout.QuantityRect(narrow, 1f);
+            Assert.Less(narrowArt.yMax, narrowName.yMin);
+            Assert.LessOrEqual(narrowCount.xMax, narrow.xMax);
+            Assert.Greater(narrowName.height, 25f);
+        }
+
+        [TestCase(756f, 390f, 460f)]
+        [TestCase(1152f, 700f, 320f)]
+        [TestCase(1920f, 1080f, 440f)]
+        public void TextAndQuantityStayInsideEveryCompactFormationSlot(
+            float width, float height, float dpi)
+        {
+            var safe = new Rect(18f, 0f, width - 36f, height);
+            float scale = MobileMapSkillLayout.UiScale(safe, dpi);
+            Rect battle = MobileMapSkillLayout.Calculate(safe, height, scale).Battle;
+            var layout = MobileOwnedFormationLayout.Calculate(battle, scale, 27, 0);
+            Assert.Greater(layout.Capacity, 0);
+            foreach (var cell in layout.Cells)
+            {
+                var art = MobileOwnedFormationLayout.PortraitRect(cell, scale);
+                var name = MobileOwnedFormationLayout.NameRect(cell, scale);
+                var quantity = MobileOwnedFormationLayout.QuantityRect(cell, scale);
+                Assert.LessOrEqual(art.width, 94f * scale + .01f);
+                Assert.LessOrEqual(art.yMax, name.yMin,
+                    "Name must never cover the character portrait");
+                Assert.Greater(name.height, 30f,
+                    "At least one full readable line must remain");
+                Assert.GreaterOrEqual(name.xMin, cell.xMin);
+                Assert.LessOrEqual(name.xMax, cell.xMax);
+                Assert.LessOrEqual(name.yMax, cell.yMax);
+                Assert.Greater(quantity.height, 0f);
+                Assert.GreaterOrEqual(quantity.yMin, cell.yMin);
+                Assert.LessOrEqual(quantity.yMax, cell.yMax);
+                Assert.GreaterOrEqual(quantity.xMin, cell.xMin);
+                Assert.LessOrEqual(quantity.xMax, cell.xMax);
+            }
         }
 
         [Test]

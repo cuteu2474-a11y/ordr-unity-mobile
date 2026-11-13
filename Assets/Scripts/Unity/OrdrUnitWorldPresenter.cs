@@ -1154,16 +1154,15 @@ namespace Ordr.Mobile.Unity
             {
                 var group = formationGroups[formationLayout.Start + i];
                 Rect cell = formationLayout.Cells[i];
-                // Character art lives above the caption inside the square tile.
-                Vector2 icon = new Vector2(cell.center.x,
-                    cell.y + cell.height * .425f);
+                // Shared screen-space geometry keeps the sprite clear of
+                // its readable nameplate even on narrow landscape devices.
+                Rect portraitRect = MobileOwnedFormationLayout.PortraitRect(cell, scale);
+                Vector2 icon = portraitRect.center;
                 Vector3 position = worldCamera.ScreenToWorldPoint(new Vector3(icon.x,
                     Screen.height - icon.y, worldCamera.WorldToScreenPoint(Vector3.zero).z));
                 position.z = 0f;
-                // Four times the former 40px portrait on full-sized cells.
-                // The formation layout keeps the caption unobstructed.
-                float portraitPixels = MobileOwnedFormationLayout.PortraitDiameterPixels(
-                    cell, scale);
+                // Size is tied to the compact card's upper portrait band.
+                float portraitPixels = portraitRect.width;
                 float size = portraitPixels * worldCamera.orthographicSize * 2f /
                     Mathf.Max(1f, worldCamera.pixelHeight);
                 long representative = group.Contains(selected) ? selected.Value : group.InstanceIds[0];
@@ -1199,49 +1198,64 @@ namespace Ordr.Mobile.Unity
             try
             {
                 float scale = MobileMapSkillLayout.UiScale(Screen.safeArea, Screen.dpi);
-                var nameStyle = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(13f * scale),
-                    fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft,
-                    wordWrap = true, richText = false, clipping = TextClipping.Clip,
-                    padding = new RectOffset(0, 0, 0, 0) };
-                var metaStyle = new GUIStyle(nameStyle) { fontSize = Mathf.RoundToInt(10f * scale),
-                    wordWrap = false, fontStyle = FontStyle.Normal };
+                var nameStyle = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = Mathf.Clamp(Mathf.RoundToInt(18f * scale), 16, 30),
+                    fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleCenter,
+                    wordWrap = true,
+                    richText = false,
+                    clipping = TextClipping.Clip,
+                    padding = new RectOffset(1, 1, 0, 0)
+                };
+                nameStyle.normal.textColor = Color.white;
+                var quantityStyle = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = Mathf.Clamp(Mathf.RoundToInt(21f * scale), 18, 34),
+                    fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleCenter,
+                    wordWrap = false,
+                    clipping = TextClipping.Clip,
+                    padding = new RectOffset(0, 0, 0, 0)
+                };
+                quantityStyle.normal.textColor = new Color(1f, .89f, .42f, 1f);
                 long? selected = controller.Combat.Roster.SelectedId;
                 for (int i = 0; i < formationLayout.Cells.Length; i++)
                 {
                     var group = formationGroups[formationLayout.Start + i];
                     Rect cell = formationLayout.Cells[i];
                     bool chosen = group.Contains(selected);
-                    // The marker/attack pulse occupies the top of the square;
-                    // draw the label only in its lower part so IMGUI does not
-                    // cover the in-world character image.
-                    var label = new Rect(cell.x, cell.y + cell.height * .85f,
-                        cell.width, cell.height * .15f);
-                    GUI.Box(label, GUIContent.none, chosen ? OrdrMobileUiTheme.SelectedTab : GUI.skin.box);
-                    var text = new Rect(label.x + 3f * scale, label.y + 1f * scale,
-                        label.width - 6f * scale, label.height - 13f * scale);
-                    nameStyle.fontSize = Mathf.RoundToInt(12f * scale);
-                    nameStyle.alignment = TextAnchor.MiddleCenter;
-                    int smallest = Mathf.RoundToInt(10f * scale);
-                    while (nameStyle.fontSize > smallest &&
-                        nameStyle.CalcHeight(new GUIContent(group.Unit.Name), text.width) > text.height)
+                    Rect label = MobileOwnedFormationLayout.NameRect(cell, scale);
+                    Rect count = MobileOwnedFormationLayout.QuantityRect(cell, scale);
+                    Color before = GUI.color;
+                    GUI.color = chosen ? new Color(.25f, .22f, .09f, .97f) :
+                        new Color(.045f, .085f, .13f, .96f);
+                    GUI.DrawTexture(label, Texture2D.whiteTexture);
+                    GUI.color = new Color(.055f, .09f, .14f, .97f);
+                    GUI.DrawTexture(count, Texture2D.whiteTexture);
+                    GUI.color = before;
+
+                    // Show the actual unit name at legible size; do not spend
+                    // any of the narrow bottom strip on tiny grade/ID captions.
+                    int preferredFont = Mathf.Clamp(Mathf.RoundToInt(18f * scale), 16, 30);
+                    int minimumFont = Mathf.Clamp(Mathf.RoundToInt(14f * scale), 14, 24);
+                    nameStyle.fontSize = preferredFont;
+                    Rect textRect = new Rect(label.x + 2f * scale, label.y,
+                        Mathf.Max(1f, label.width - 4f * scale), label.height);
+                    GUIContent title = new GUIContent(group.Unit.Name);
+                    while (nameStyle.fontSize > minimumFont &&
+                        nameStyle.CalcHeight(title, textRect.width) > textRect.height)
                         nameStyle.fontSize--;
-                    GUI.Label(text, group.Unit.Name, nameStyle);
-                    metaStyle.normal.textColor = ColorForGrade(group.Unit.Grade);
-                    metaStyle.alignment = TextAnchor.MiddleCenter;
-                    GUI.Label(new Rect(text.x, label.yMax - 14f * scale, text.width, 12f * scale),
-                        group.Unit.Grade + " ×" + group.InstanceIds.Count, metaStyle);
+                    GUI.Label(textRect, title, nameStyle);
+                    GUI.Label(count, "×" + group.InstanceIds.Count, quantityStyle);
                 }
                 Rect footer = formationLayout.Footer;
-                metaStyle.alignment = TextAnchor.MiddleCenter;
-                metaStyle.normal.textColor = Color.white;
-                if (formationLayout.Pages == 1 && selected.HasValue)
-                    foreach (var group in formationGroups)
-                        if (group.Contains(selected))
-                            GUI.Label(footer, group.Unit.Name + " · #" + selected.Value + " · 선택됨", metaStyle);
                 if (formationLayout.Pages > 1)
                 {
                     float buttonWidth = Mathf.Min(68f * scale, footer.width * .27f);
-                    var button = new GUIStyle(GUI.skin.button) { fontSize = Mathf.RoundToInt(12f * scale),
+                    var button = new GUIStyle(GUI.skin.button) {
+                        fontSize = Mathf.Clamp(Mathf.RoundToInt(18f * scale), 16, 30),
+                        fontStyle = FontStyle.Bold,
                         padding = new RectOffset(2, 2, 2, 2) };
                     bool enabled = GUI.enabled;
                     GUI.enabled = enabled && formationPage > 0;
@@ -1251,11 +1265,16 @@ namespace Ordr.Mobile.Unity
                     if (GUI.Button(new Rect(footer.xMax - buttonWidth, footer.y, buttonWidth, footer.height), "다음", button))
                         formationPage++;
                     GUI.enabled = enabled;
-                    metaStyle.alignment = TextAnchor.MiddleCenter;
-                    metaStyle.normal.textColor = Color.white;
+                    GUIStyle pageStyle = new GUIStyle(GUI.skin.label)
+                    {
+                        alignment = TextAnchor.MiddleCenter,
+                        fontSize = Mathf.Clamp(Mathf.RoundToInt(19f * scale), 18, 32),
+                        fontStyle = FontStyle.Bold
+                    };
+                    pageStyle.normal.textColor = Color.white;
                     GUI.Label(new Rect(footer.x + buttonWidth, footer.y,
                         footer.width - buttonWidth * 2, footer.height),
-                        (formationPage + 1) + "/" + formationLayout.Pages + " · " + formationGroups.Count + "종", metaStyle);
+                        (formationPage + 1) + "/" + formationLayout.Pages, pageStyle);
                 }
             }
             finally { GUI.skin = old; }
