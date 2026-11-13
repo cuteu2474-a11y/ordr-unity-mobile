@@ -1,5 +1,7 @@
 # 코드 구조
 
+**공통 UI 아트:** `OrdrMobileUiArtwork.cs` → `Resources/OrdrArt/Ui`의 WideButton/SquareButton/PopupPanel/SpeechBubble → 알파 경계·소형 캐시·색상/눌림 상태·9분할 → `OrdrMobileUiTheme.ApplySharedArtwork` → `OrdrMobileTouchPanel`의 기본 버튼·페이지·확인·설명 표시. 거래 콜백과 무테 상세 패널은 유지합니다. `OrdrBattlefieldArtTests`에 4종 검사 소스가 있으며 Unity/Android 실행은 미검증입니다.
+
 **도감 파생 데이터 재생성:** `tools/rebuild_tooltip_inventory_exports.py --write`는 `data/character-skill-profiles.json`으로부터 문서화된 기술/패시브 개수만 `data/unit-runtime-status.json`에 동기화하고 `tools/classify_character_skills.py`의 분류 규칙으로 `data/original-2323C-skill-research-queue.json`을 재생성합니다. `--verify`는 변경 없이 두 출력이 최신인지 확인합니다. 네이티브 연결 효과·검증 등급·유닛 획득 권한에는 영향 없음.
 
 ## C07 마르코 형태별 전투 경로(스킬 설명 기반, 실행 미검증)

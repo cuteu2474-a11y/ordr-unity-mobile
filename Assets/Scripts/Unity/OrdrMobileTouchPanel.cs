@@ -615,8 +615,8 @@ namespace Ordr.Mobile.Unity
                     showFullNotice = false;
                     noticeScroll = Vector2.zero;
                 }
-                GUILayout.BeginVertical(GUI.skin.box);
-                float noticeWidth = Mathf.Max(60f, area.width - 48f);
+                GUILayout.BeginVertical(OrdrMobileUiTheme.HelpBubble);
+                float noticeWidth = Mathf.Max(60f, area.width - 72f);
                 bool longNotice = GUI.skin.label.CalcHeight(new GUIContent(notice), noticeWidth) > 48f;
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(notice, GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true),
@@ -763,7 +763,7 @@ namespace Ordr.Mobile.Unity
                         else expandedResearchCodes.Add(key);
                     }
                     if (!expandedResearchCodes.Contains(key)) continue;
-                    GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                    GUILayout.BeginVertical(OrdrMobileUiTheme.HelpBubble);
                     GUILayout.Label(research.EffectSummary);
                     if (quote?.Cost != null)
                         GUILayout.Label("연구 시작 비용: " + UpgradePriceText(quote.Cost));
@@ -819,7 +819,7 @@ namespace Ordr.Mobile.Unity
                 }
                 // A tap buys one level; hold reveals effects and prerequisites.
                 if (!expandedResearchCodes.Contains(key)) continue;
-                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                GUILayout.BeginVertical(OrdrMobileUiTheme.HelpBubble);
                 if (quote == null || quote.NextCost == null)
                     GUILayout.Label("다음 단계의 원본 비용·효과 자료 없음");
                 else
@@ -1858,7 +1858,7 @@ namespace Ordr.Mobile.Unity
         private void DrawBatchSaleConfirm()
         {
             if (pendingBatchSales.Count == 0) return;
-            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.BeginVertical(OrdrMobileUiTheme.ConfirmationPanel);
             GUILayout.Label("선택 판매 " + pendingBatchSales.Count +
                 "기 · 각 유닛은 원본 판매 규칙으로 순차 처리됩니다.");
             if (!confirmBatchSale)
@@ -2150,6 +2150,7 @@ namespace Ordr.Mobile.Unity
         {
             if (pendingCommonSaleId == instanceId)
             {
+                GUILayout.BeginVertical(OrdrMobileUiTheme.ConfirmationPanel);
                 GUILayout.Label((pendingCommonSaleName ?? "흔함 유닛") + " #" +
                     pendingCommonSaleId.Value + " 판매 확정?");
                 GUILayout.BeginHorizontal();
@@ -2165,9 +2166,11 @@ namespace Ordr.Mobile.Unity
                     pendingCommonSaleName = null;
                 }
                 GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
             }
             if (pendingDecompositionId == instanceId)
             {
+                GUILayout.BeginVertical(OrdrMobileUiTheme.ConfirmationPanel);
                 GUILayout.Label(pendingDecompositionName + " 분해를 시작할까요? 완료하면 원래 유닛이 사라집니다.");
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("분해 시작", GUILayout.MinHeight(64)))
@@ -2180,6 +2183,7 @@ namespace Ordr.Mobile.Unity
                 }
                 if (GUILayout.Button("취소", GUILayout.MinHeight(64))) pendingDecompositionId = null;
                 GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
             }
         }
 
@@ -2199,12 +2203,14 @@ namespace Ordr.Mobile.Unity
             bool previous = GUI.enabled;
             GUILayout.BeginHorizontal();
             GUI.enabled = previous && page > 0;
-            if (GUILayout.Button("이전", GUILayout.MinHeight(56)))
+            if (GUILayout.Button("이전", OrdrMobileUiTheme.SmallButton,
+                GUILayout.Width(68f), GUILayout.MinHeight(56)))
             { changePage(page - 1); scroll = Vector2.zero; }
             GUI.enabled = previous;
             GUILayout.Label((page + 1) + " / " + pages, GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
             GUI.enabled = previous && page + 1 < pages;
-            if (GUILayout.Button("다음", GUILayout.MinHeight(56)))
+            if (GUILayout.Button("다음", OrdrMobileUiTheme.SmallButton,
+                GUILayout.Width(68f), GUILayout.MinHeight(56)))
             { changePage(page + 1); scroll = Vector2.zero; }
             GUI.enabled = previous;
             GUILayout.EndHorizontal();
@@ -2460,11 +2466,11 @@ namespace Ordr.Mobile.Unity
                         if (pages > 1)
                         {
                             GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("이전", GUILayout.MinHeight(52)) &&
+                            if (GUILayout.Button("이전", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(52)) &&
                                 storyGreenBloodPage > 0) storyGreenBloodPage--;
                             GUILayout.Label((storyGreenBloodPage + 1) + " / " + pages,
                                 OrdrMobileUiTheme.Explanation);
-                            if (GUILayout.Button("다음", GUILayout.MinHeight(52)) &&
+                            if (GUILayout.Button("다음", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(52)) &&
                                 storyGreenBloodPage + 1 < pages) storyGreenBloodPage++;
                             GUILayout.EndHorizontal();
                         }
@@ -3015,7 +3021,7 @@ namespace Ordr.Mobile.Unity
                 RefreshCurrent();
             }
             GUI.enabled = enabled;
-            if (GUILayout.Button("×", GUILayout.Width(42f),
+            if (GUILayout.Button("×", OrdrMobileUiTheme.CloseButton, GUILayout.Width(42f),
                 GUILayout.MinHeight(62f))) pendingFusion = null;
             GUILayout.EndHorizontal();
         }
@@ -3212,11 +3218,11 @@ namespace Ordr.Mobile.Unity
                 if (pages > 1)
                 {
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("이전", GUILayout.MinHeight(50)))
+                    if (GUILayout.Button("이전", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(50)))
                         poneglyphUnitPage = Math.Max(0, poneglyphUnitPage - 1);
                     GUILayout.Label((poneglyphUnitPage + 1) + "/" + pages,
                         OrdrMobileUiTheme.Overline);
-                    if (GUILayout.Button("다음", GUILayout.MinHeight(50)))
+                    if (GUILayout.Button("다음", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(50)))
                         poneglyphUnitPage = Math.Min(pages - 1, poneglyphUnitPage + 1);
                     GUILayout.EndHorizontal();
                 }
@@ -3735,7 +3741,7 @@ namespace Ordr.Mobile.Unity
             // Shop purchases retain explicit confirmation; gambling is one tap.
             if (category == ManualEconomyCategory.Shop && pendingEconomy != null)
             {
-                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                GUILayout.BeginVertical(OrdrMobileUiTheme.ConfirmationPanel);
                 GUILayout.Label("구매 확인 · " + pendingEconomy.Title,
                     OrdrMobileUiTheme.Subheading);
                 GUILayout.Label(pendingEconomy.OriginalPriceAndRules);
@@ -3792,7 +3798,7 @@ namespace Ordr.Mobile.Unity
                             null : offer.Id;
                     if (expandedGamblingOfferId == offer.Id)
                     {
-                        GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                        GUILayout.BeginVertical(OrdrMobileUiTheme.HelpBubble);
                         GUILayout.Label(offer.OriginalPriceAndRules);
                         GUILayout.EndVertical();
                     }
@@ -4041,6 +4047,7 @@ namespace Ordr.Mobile.Unity
         }
     }
 }
+
 
 
 

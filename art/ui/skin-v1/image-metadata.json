@@ -1,7 +1,7 @@
 {
   "generator": "built-in image_gen",
   "generatedAt": "2026-11-06",
-  "runtimeIntegrated": false,
+  "runtimeIntegrated": true,
   "files": {
     "speech-bubble-v1.png": {
       "width": 1983,
@@ -62,6 +62,16 @@
         "right": 1205,
         "bottom": 1183
       }
+    }
+  },
+  "integration": {
+    "date": "2026-11-13",
+    "status": "code-connected; Unity and Android rendering not yet verified",
+    "loader": "Assets/Scripts/Unity/OrdrMobileUiArtwork.cs",
+    "resources": {
+      "speech-bubble-v1.png": "OrdrArt/Ui/SpeechBubble",
+      "button-square-v1.png": "OrdrArt/Ui/SquareButton",
+      "popup-panel-v1.png": "OrdrArt/Ui/PopupPanel"
     }
   }
 }

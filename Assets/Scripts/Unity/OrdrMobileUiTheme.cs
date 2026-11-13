@@ -42,6 +42,10 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle fusionMissingChip;
         private static GUIStyle fusionNeutralChip;
         private static GUIStyle fusionSelectedCard;
+        private static GUIStyle smallButton;
+        private static GUIStyle confirmationPanel;
+        private static GUIStyle helpBubble;
+        private static GUIStyle statusCard;
 
         internal static GUIStyle SelectedTab { get { return selectedTab; } }
         internal static GUIStyle PrimaryButton { get { return primaryButton; } }
@@ -60,6 +64,9 @@ namespace Ordr.Mobile.Unity
         internal static GUIStyle FusionMissingChip { get { return fusionMissingChip; } }
         internal static GUIStyle FusionNeutralChip { get { return fusionNeutralChip; } }
         internal static GUIStyle FusionSelectedCard { get { return fusionSelectedCard; } }
+        internal static GUIStyle SmallButton { get { return smallButton; } }
+        internal static GUIStyle ConfirmationPanel { get { return confirmationPanel; } }
+        internal static GUIStyle HelpBubble { get { return helpBubble; } }
         internal const float ComfortableTapHeight = 56f;
         internal const float PrimaryTapHeight = 64f;
         internal static readonly Color Aqua = new Color(0.31f, 0.87f, 0.78f, 1f);
@@ -271,6 +278,33 @@ namespace Ordr.Mobile.Unity
             themedSkin.verticalScrollbarThumb.stretchHeight = true;
             themedSkin.scrollView = new GUIStyle(source.scrollView);
             themedSkin.scrollView.normal.background = null;
+            ApplySharedArtwork();
+        }
+
+        private static void ApplySharedArtwork()
+        {
+            // Read-only metrics retain their plain card. The permanent right
+            // drawer remains borderless; only explicit confirmations get a frame.
+            statusCard = new GUIStyle(accordionClosed);
+            smallButton = new GUIStyle(themedSkin.button);
+            smallButton.padding = new RectOffset(4,4,6,6);
+            smallButton.wordWrap = false;
+            confirmationPanel = new GUIStyle(accordionBody);
+            confirmationPanel.padding = new RectOffset(16,16,14,14);
+            helpBubble = new GUIStyle(accordionBody);
+            helpBubble.padding = new RectOffset(22,18,16,32);
+            var ordinary = new Color(.75f,.87f,1f);
+            OrdrMobileUiArtwork.Apply(themedSkin.button, OrdrMobileUiArtwork.Face.WideButton, ordinary, true);
+            OrdrMobileUiArtwork.Apply(navButton, OrdrMobileUiArtwork.Face.WideButton, ordinary, true);
+            OrdrMobileUiArtwork.Apply(selectedTab, OrdrMobileUiArtwork.Face.WideButton, Gold, true);
+            OrdrMobileUiArtwork.Apply(primaryButton, OrdrMobileUiArtwork.Face.WideButton, Aqua, true);
+            OrdrMobileUiArtwork.Apply(skillButton, OrdrMobileUiArtwork.Face.WideButton, Aqua, true);
+            OrdrMobileUiArtwork.Apply(accordionClosed, OrdrMobileUiArtwork.Face.WideButton, ordinary, true);
+            OrdrMobileUiArtwork.Apply(accordionOpen, OrdrMobileUiArtwork.Face.WideButton, Gold, true);
+            OrdrMobileUiArtwork.Apply(closeButton, OrdrMobileUiArtwork.Face.SquareButton, Color.white, true);
+            OrdrMobileUiArtwork.Apply(smallButton, OrdrMobileUiArtwork.Face.SquareButton, ordinary, true);
+            OrdrMobileUiArtwork.Apply(confirmationPanel, OrdrMobileUiArtwork.Face.Popup, Color.white, false);
+            OrdrMobileUiArtwork.Apply(helpBubble, OrdrMobileUiArtwork.Face.Speech, Color.white, false);
         }
 
         private static void Background(GUIStyle style, Texture2D normal,
@@ -341,7 +375,7 @@ namespace Ordr.Mobile.Unity
         {
             Rect area = GUILayoutUtility.GetRect(0f, height,
                 GUILayout.ExpandWidth(true));
-            GUI.Box(area, GUIContent.none, accordionClosed);
+            GUI.Box(area, GUIContent.none, statusCard);
             if (Event.current.type != EventType.Repaint) return;
             Stroke(new Rect(area.x + 8f, area.y + 6f,
                 Mathf.Max(0f, area.width - 16f), 3f), tint);
@@ -369,7 +403,7 @@ namespace Ordr.Mobile.Unity
         {
             Rect area = GUILayoutUtility.GetRect(0f, height,
                 GUILayout.ExpandWidth(true));
-            GUI.Box(area, GUIContent.none, accordionClosed);
+            GUI.Box(area, GUIContent.none, statusCard);
             if (Event.current.type != EventType.Repaint) return;
             Stroke(new Rect(area.x+5f,area.y+12f,4f,
                 Mathf.Max(0f,area.height-24f)),tint);
@@ -686,4 +720,5 @@ namespace Ordr.Mobile.Unity
         }
     }
 }
+
 
