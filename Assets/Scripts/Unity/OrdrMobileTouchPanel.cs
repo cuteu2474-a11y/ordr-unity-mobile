@@ -789,18 +789,29 @@ namespace Ordr.Mobile.Unity
             var service = controller != null ? controller.PlayerBuildingUpgrades : null;
             var tint = buildingRawcode == Original323PlayerBuildingResearchCatalog.FirstUpgradeBuilding
                 ? new Color(1f, .68f, .36f) : new Color(1f, .81f, .47f);
-            foreach (var upgrade in original)
+            // Presentation order only. Source catalog, rawcodes, prices and
+            // purchase conditions remain in their original data order.
+            var displayOrder = new List<Original323PlayerBuildingResearch>(original);
+            if (buildingRawcode == Original323PlayerBuildingResearchCatalog.FirstUpgradeBuilding)
+                displayOrder.Sort((a, b) => UpgradeDisplayRank(a.Rawcode).CompareTo(
+                    UpgradeDisplayRank(b.Rawcode)));
+            else
+                displayOrder.Sort((a, b) => string.Compare(
+                    a.Name, b.Name, StringComparison.Ordinal));
+            foreach (var upgrade in displayOrder)
             {
                 var quote = service != null ? service.Quote(upgrade.Rawcode) : null;
-                string level = quote == null ? "0" : quote.Level.ToString();
-                string title = upgrade.Name.Replace(" 업그레이드", "") + "  " + level + "/" + upgrade.MaximumLevel;
+                int currentLevel = quote == null ? 0 : quote.Level;
+                string title = upgrade.Name.Replace(" 업그레이드", "");
+                string stage = currentLevel + " / " + upgrade.MaximumLevel;
                 string caption = UpgradeStatusText(quote);
                 if (quote?.NextCost != null) caption = UpgradePriceText(quote.NextCost) + "\n" + caption;
                 if (quote?.Status == Original323UpgradePurchaseStatus.InsufficientResources)
                     caption = UpgradePriceText(quote.NextCost) + "\n" + UpgradeShortageText(quote.NextCost);
                 string key = "upgrade:" + upgrade.Rawcode;
                 MobileLongPressResult press = OrdrMobileUiTheme.DrawHoldActionRow(
-                    key, title, caption, tint, upgradePressGesture, 88f);
+                    key, title, caption, tint, upgradePressGesture, 88f,
+                    levelText: stage);
                 if (press == MobileLongPressResult.Tap)
                 {
                     if (service == null)
@@ -842,6 +853,25 @@ namespace Ordr.Mobile.Unity
                             Math.Ceiling(quote.CooldownRemaining).ToString("0") + "초");
                 }
                 GUILayout.EndVertical();
+            }
+        }
+
+        // Only the onscreen order is normalized: base ranks ascend through
+        // tiers, and unique eternal upgrades are easy to find by character.
+        // No upgrade cost, cap, rawcode, purchase order or effect is changed.
+        private static int UpgradeDisplayRank(string rawcode)
+        {
+            switch (rawcode)
+            {
+                case "R00F": return 0; // 흔함류
+                case "R00E": return 1; // 특별
+                case "R008": return 2; // 희귀
+                case "R000": return 3; // 전설
+                case "R003": return 4; // 초월
+                case "R002": return 5; // 불멸
+                case "R004": return 6; // 제한
+                case "R019": return 7; // 랜덤전용
+                default: return int.MaxValue;
             }
         }
 

@@ -492,7 +492,7 @@ namespace Ordr.Mobile.Unity
 
         internal static MobileLongPressResult DrawHoldActionRow(string key,
             string title, string meta, Color tint, MobileLongPressGesture gesture,
-            float height = 72f, bool compact = false)
+            float height = 72f, bool compact = false, string levelText = null)
         {
             Rect area = GUILayoutUtility.GetRect(0f, height,
                 GUILayout.ExpandWidth(true));
@@ -512,12 +512,64 @@ namespace Ordr.Mobile.Unity
                 gesture.Cancel();
             if (Event.current.type == EventType.Repaint)
             {
-                if (compact)
+                if (!string.IsNullOrEmpty(levelText))
+                    DrawUpgradeLevelRowFace(area, title, meta, levelText, tint);
+                else if (compact)
                     DrawCompactGamblingRowFace(area, title, meta, tint);
                 else
                     DrawActionRowFace(area, title, meta, tint, false);
             }
             return result;
+        }
+
+        // Upgrade-only typography. The old hold/tap target and stock cartoon
+        // face stay untouched; the CURRENT level now has its own large number.
+        // This is deliberately not used for research, shop, or gambling.
+        private static void DrawUpgradeLevelRowFace(Rect area, string title,
+            string meta, string stage, Color tint)
+        {
+            Stroke(new Rect(area.x + 5f, area.y + 12f, 4f,
+                Mathf.Max(0f, area.height - 24f)), tint);
+            float stageWidth = Mathf.Min(132f,
+                Mathf.Max(88f, area.width * .34f));
+            float leftWidth = Mathf.Max(52f, area.width - stageWidth - 36f);
+            var nameStyle = new GUIStyle(accordionTitle)
+            {
+                fontSize = 21,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleLeft,
+                clipping = TextClipping.Clip,
+                wordWrap = false
+            };
+            var name = new GUIContent(title);
+            while (nameStyle.fontSize > 17 &&
+                nameStyle.CalcSize(name).x > leftWidth)
+                nameStyle.fontSize--;
+            var infoStyle = new GUIStyle(accordionMeta)
+            {
+                fontSize = 16,
+                alignment = TextAnchor.MiddleLeft,
+                clipping = TextClipping.Clip,
+                wordWrap = false
+            };
+            infoStyle.normal.textColor = Color.white;
+            var levelStyle = new GUIStyle(statusValue)
+            {
+                fontSize = 27,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                clipping = TextClipping.Clip,
+                wordWrap = false
+            };
+            levelStyle.normal.textColor = Gold;
+            // Keep the two-line price/availability text, but make current
+            // stage numerals the most legible item on every upgrade row.
+            GUI.Label(new Rect(area.x + 16f, area.y + 7f, leftWidth, 34f),
+                name, nameStyle);
+            GUI.Label(new Rect(area.x + 16f, area.y + 44f, leftWidth,
+                Mathf.Max(24f, area.height - 49f)), meta, infoStyle);
+            GUI.Label(new Rect(area.xMax - stageWidth - 10f, area.y + 9f,
+                stageWidth, area.height - 18f), stage, levelStyle);
         }
 
         // One large touch target: short tap executes once, long press reveals
