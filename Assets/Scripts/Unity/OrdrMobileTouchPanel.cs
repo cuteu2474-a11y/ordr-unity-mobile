@@ -79,6 +79,8 @@ namespace Ordr.Mobile.Unity
         private long? pendingCommonSaleId;
         private string pendingCommonSaleName;
         private int pendingMissionReroll = -1;
+        private bool showSharedMissions = true;
+        private int selectedSharedMission = -1;
         private string selectedCatalogUnitId;
         private Vector2 scroll;
         private Vector2 tabsScroll;
@@ -621,7 +623,7 @@ namespace Ordr.Mobile.Unity
                     case Tab.LogPose: DrawTreasureGacha(); break;
                     case Tab.Helper: DrawHelperCow(); break;
                     case Tab.Alchemy: DrawAlchemyPanel(); break;
-                    case Tab.Missions: DrawPersonalMissions(); break;
+                    case Tab.Missions: DrawMissions(); break;
                     case Tab.UpgradeOne: DrawPlayerBuildingResearch(
                         Original323PlayerBuildingResearchCatalog.FirstUpgradeBuilding); break;
                     case Tab.UpgradeTwo: DrawPlayerBuildingResearch(
@@ -1081,6 +1083,183 @@ namespace Ordr.Mobile.Unity
             DrawOriginalChatScoreboard();
         }
 
+        private void DrawMissions()
+        {
+            // Separate the three personal assignments from the eight verified
+            // shared goals. Switching views never modifies mission state.
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("공유 미션", showSharedMissions ?
+                OrdrMobileUiTheme.SelectedTab : OrdrMobileUiTheme.NavButton,
+                GUILayout.MinHeight(58f), GUILayout.ExpandWidth(true)))
+            {
+                if (!showSharedMissions) { showSharedMissions = true; scroll = Vector2.zero; }
+            }
+            if (GUILayout.Button("개인 미션", !showSharedMissions ?
+                OrdrMobileUiTheme.SelectedTab : OrdrMobileUiTheme.NavButton,
+                GUILayout.MinHeight(58f), GUILayout.ExpandWidth(true)))
+            {
+                if (showSharedMissions) { showSharedMissions = false; scroll = Vector2.zero; }
+            }
+            GUILayout.EndHorizontal();
+
+            if (showSharedMissions) DrawSharedMissionBoard();
+            else DrawPersonalMissions();
+        }
+
+        // A mission row can be selected now. Manual "perform" eligibility
+        // stays unconnected until the original per-character list is provided.
+        // Only already-observed combat targets keep their existing dispatch
+        // action; UI selection can never create a target or award a mission.
+        private void DrawSharedMissionBoard()
+        {
+            var session = controller.Poneglyph;
+            if (session == null)
+            {
+                GUILayout.Label("공유 미션 준비 중",
+                    OrdrMobileUiTheme.Subheading);
+                return;
+            }
+            OrdrMobileUiTheme.DrawStatusRow("공유 미션",
+                session.SharedCompletedCount + "/" +
+                    Original323PoneglyphSession.SharedMissionNames.Length,
+                OrdrMobileUiTheme.Gold);
+            for (int i = 0; i < Original323PoneglyphSession.SharedMissionNames.Length; i++)
+            {
+                var kind = (Original323SharedMissionKind)i;
+                bool completed = session.IsSharedMissionCompleted(kind);
+                bool selected = selectedSharedMission == i;
+                string title = (completed ? "✓ " : "") +
+                    Original323PoneglyphSession.SharedMissionNames[i];
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button(title, selected ?
+                    OrdrMobileUiTheme.SelectedTab : OrdrMobileUiTheme.NavButton,
+                    GUILayout.MinHeight(60f), GUILayout.MinWidth(0f),
+                    GUILayout.ExpandWidth(true)))
+                    selectedSharedMission = selected ? -1 : i;
+                if (completed)
+                    GUILayout.Label("완료", OrdrMobileUiTheme.FusionReadyChip,
+                        GUILayout.Width(62f), GUILayout.MinHeight(60f));
+                GUILayout.EndHorizontal();
+                if (selected)
+                    DrawSharedMissionSelectedDetail(kind, completed);
+            }
+        }
+
+        private void DrawSharedMissionSelectedDetail(
+            Original323SharedMissionKind kind, bool completed)
+        {
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            GUILayout.Label(SharedMissionObjectiveText(kind),
+                OrdrMobileUiTheme.Subheading);
+            if (completed)
+            {
+                GUILayout.Label("완료", OrdrMobileUiTheme.FusionReadyChip);
+                GUILayout.EndVertical();
+                return;
+            }
+            int round = Combat == null ? 0 : Combat.Game.CurrentWave;
+            if ((kind == Original323SharedMissionKind.FastAlabasta && round >= 9) ||
+                (kind == Original323SharedMissionKind.DestructionKing && round >= 30))
+            {
+                GUILayout.Label("기한 종료", OrdrMobileUiTheme.FusionMissingChip);
+                GUILayout.EndVertical();
+                return;
+            }
+
+            bool observed = false;
+            if (controller.SharedObjectives != null && Combat != null)
+                foreach (var encounter in controller.SharedObjectives.Encounters)
+                {
+                    if (encounter.Plan.Mission != kind) continue;
+                    observed = true;
+                    DrawSharedMissionObservedEncounter(encounter);
+                }
+
+            // No guessed eligibility: future character matching uses the
+            // verified original mission + concrete owned instance mapping.
+            // Story/treasure objectives remain source-event-driven and must
+            // not be faked by a tap on this card.
+            if (!observed)
+            {
+                string action = Original323SharedObjectiveSpawnPlan
+                    .RequiresCombatDefeat(kind) ? "수행 준비 중" :
+                    kind == Original323SharedMissionKind.TreasureHunter ?
+                        "보물 탐색에서 진행" : "스토리에서 진행";
+                bool prior = GUI.enabled;
+                GUI.enabled = false;
+                GUILayout.Button(action, OrdrMobileUiTheme.NavButton,
+                    GUILayout.MinHeight(56f), GUILayout.ExpandWidth(true));
+                GUI.enabled = prior;
+            }
+            GUILayout.EndVertical();
+        }
+
+        private static string SharedMissionObjectiveText(
+            Original323SharedMissionKind kind)
+        {
+            switch (kind)
+            {
+                case Original323SharedMissionKind.RumbarSouls:
+                    return "1시 지역의 룸바 해적단 영혼 해방";
+                case Original323SharedMissionKind.JusticeGate:
+                    return "3시 지역의 정의의 문 파괴";
+                case Original323SharedMissionKind.ShandoraBell:
+                    return "7시 지역의 샨도라 황금 종 파괴";
+                case Original323SharedMissionKind.SeaKing:
+                    return "9시 지역의 해왕류 격파";
+                case Original323SharedMissionKind.FastAlabasta:
+                    return "9라운드 시작 전 알라바스타 파괴";
+                case Original323SharedMissionKind.DestructionKing:
+                    return "30라운드 시작 전 드레스로자 파괴";
+                case Original323SharedMissionKind.MarineAdmiral:
+                    return "정의의 문 파괴 후 등장한 해군대장 격파";
+                case Original323SharedMissionKind.TreasureHunter:
+                    return "보물 탐색으로 목표 수량 달성";
+                default: throw new ArgumentOutOfRangeException(nameof(kind));
+            }
+        }
+
+        private void DrawSharedMissionObservedEncounter(
+            Original323SharedObjectiveEncounter encounter)
+        {
+            bool alive = encounter.State == Original323SharedObjectiveState.Alive;
+            string state = alive ? "전투 중" :
+                encounter.State == Original323SharedObjectiveState.Completed ?
+                    "완료" :
+                encounter.State == Original323SharedObjectiveState.DefeatedUnverified ?
+                    "격파 · 정산 대기" : "소멸";
+            long health = 0, maxHealth = 0;
+            if (alive && Combat != null)
+                foreach (var enemy in Combat.MobileEnemySnapshot())
+                    if (enemy.Id == encounter.EnemyId)
+                    {
+                        health = enemy.Health;
+                        maxHealth = enemy.MaxHealth;
+                        break;
+                    }
+            GUILayout.Label(state + (alive && maxHealth > 0 ?
+                " · HP " + health + "/" + maxHealth : ""),
+                OrdrMobileUiTheme.Subheading);
+
+            if (Combat == null) return;
+            long? selected = Combat.Roster.SelectedId;
+            bool deployed = selected.HasValue &&
+                Combat.SharedObjectiveTargetOf(selected.Value) == encounter.EnemyId;
+            bool previous = GUI.enabled;
+            GUI.enabled = previous && selected.HasValue &&
+                (alive || deployed) && !controller.IsUnitPreparation;
+            // Existing verified encounter dispatch/recall is preserved, not
+            // replaced with an invented generic mission-start command.
+            if (GUILayout.Button(deployed ? "복귀" : "출전",
+                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(56f)) &&
+                selected.HasValue)
+                notice = deployed
+                    ? controller.RequestSharedObjectiveRecall(selected.Value)
+                    : controller.RequestSharedObjectiveDispatch(
+                        selected.Value, encounter.EnemyId);
+            GUI.enabled = previous;
+        }
+
         private void DrawPersonalMissions()
         {
             var gameplay = controller.PersonalMissions;
@@ -1124,7 +1303,9 @@ namespace Ordr.Mobile.Unity
                     GUILayout.Label("하급 " + missions.EventCount(OriginalMissionSignal.LowGambleAttempted) +
                         "  /  중급 " + missions.EventCount(OriginalMissionSignal.MidGambleAttempted) +
                         "  /  고급 " + missions.EventCount(OriginalMissionSignal.HighGambleAttempted));
-                GUILayout.Label("보상: " + MissionRewardText(rule.Rewards));
+                string visibleRewards = MissionRewardText(rule.Rewards);
+                if (!string.IsNullOrEmpty(visibleRewards))
+                    GUILayout.Label("보상: " + visibleRewards);
                 if (rule.CheckAtRoundEnd && !slot.Completed && !slot.RewardPending &&
                     missions.ProgressAt(slot.Index) >= rule.RequiredCount)
                     GUILayout.Label("목표 달성 · 라운드 종료 시 지급");
@@ -1151,12 +1332,9 @@ namespace Ordr.Mobile.Unity
                 }
                 GUILayout.EndVertical();
             }
-            OrdrMobileUiTheme.DrawStatusRow("특성포인트",
-                controller.SharedEconomy.Wallet.Balance(
-                    OriginalMissionWalletRewards.TraitPointsId).ToString(),
-                OrdrMobileUiTheme.Gold);
             if (missions.AllThreeCompleted)
-                GUILayout.Label("개인 미션 3개 완료 · 승리 시 추가 베리 1개 대상");
+                GUILayout.Label("개인 미션 3개 완료",
+                    OrdrMobileUiTheme.Subheading);
             if (hasPendingReward)
             {
                 if (GUILayout.Button("미지급 보상 다시 처리", GUILayout.MinHeight(56f)))
@@ -1173,7 +1351,10 @@ namespace Ordr.Mobile.Unity
                 switch (reward.Kind)
                 {
                     case OriginalMissionRewardKind.Lumber: name = "목재"; break;
-                    case OriginalMissionRewardKind.TraitPoint: name = "특성포인트"; break;
+                    case OriginalMissionRewardKind.TraitPoint:
+                        // Mission panel intentionally omits trait-point UI.
+                        // The original mission reward transaction still pays it.
+                        continue;
                     case OriginalMissionRewardKind.AddAbilityLevel:
                         labels.Add("기록지침 와일드카드 +" + reward.Count + "단계"); continue;
                     case OriginalMissionRewardKind.SetAbilityLevel:
@@ -3266,70 +3447,14 @@ namespace Ordr.Mobile.Unity
         private void DrawPoneglyphPanel()
         {
             GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-            GUILayout.Label("공유 도전과제 · 포네그리프", OrdrMobileUiTheme.Subheading);
+            GUILayout.Label("포네그리프 해독", OrdrMobileUiTheme.Subheading);
             var session = controller.Poneglyph;
             if (session == null)
             {
-                GUILayout.Label("게임을 시작하면 공유 도전과제 기록이 활성화됩니다.",
+                GUILayout.Label("게임 시작 후 해독 가능",
                     OrdrMobileUiTheme.Explanation);
                 GUILayout.EndVertical();
                 return;
-            }
-
-            OrdrMobileUiTheme.DrawStatusRow("공유 미션",
-                session.SharedCompletedCount + "/8", OrdrMobileUiTheme.Gold);
-            for (int i = 0; i < Original323PoneglyphSession.SharedMissionNames.Length; i++)
-            {
-                var kind = (Original323SharedMissionKind)i;
-                GUILayout.Label((session.IsSharedMissionCompleted(kind) ? "✓ " : "□ ") +
-                    Original323PoneglyphSession.SharedMissionNames[i],
-                    OrdrMobileUiTheme.Overline);
-            }
-            if (controller.SharedObjectives != null && Combat != null)
-            {
-                GUILayout.Label("실제 출현한 공유 목표", OrdrMobileUiTheme.Subheading);
-                var observedTargets = controller.SharedObjectives.Encounters;
-                foreach (var encounter in observedTargets)
-                {
-                    var name = Original323PoneglyphSession.SharedMissionNames[
-                        (int)encounter.Plan.Mission];
-                    bool alive = encounter.State ==
-                        Original323SharedObjectiveState.Alive;
-                    string state = alive ? "전투 중" :
-                        encounter.State == Original323SharedObjectiveState.Completed ?
-                            "완료" :
-                        encounter.State == Original323SharedObjectiveState.DefeatedUnverified ?
-                            "격파 · 원본 정산 확인 대기" : "소멸";
-                    long health = 0, maxHealth = 0;
-                    foreach (var enemy in Combat.MobileEnemySnapshot())
-                        if (enemy.Id == encounter.EnemyId)
-                        {
-                            health = enemy.Health;
-                            maxHealth = enemy.MaxHealth;
-                            break;
-                        }
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label(name + " · " + state +
-                        (alive ? " · HP " + health + "/" + maxHealth : ""),
-                        OrdrMobileUiTheme.Overline,
-                        GUILayout.MinWidth(0), GUILayout.ExpandWidth(true));
-                    var selected = Combat.Roster.SelectedId;
-                    bool deployed = selected.HasValue &&
-                        Combat.SharedObjectiveTargetOf(selected.Value) ==
-                            encounter.EnemyId;
-                    bool previousEnabled = GUI.enabled;
-                    GUI.enabled = previousEnabled && selected.HasValue &&
-                        (alive || deployed) && !controller.IsUnitPreparation;
-                    if (GUILayout.Button(deployed ? "복귀" : "출전",
-                        GUILayout.Width(88), GUILayout.MinHeight(50)) &&
-                        selected.HasValue)
-                        notice = deployed
-                            ? controller.RequestSharedObjectiveRecall(selected.Value)
-                            : controller.RequestSharedObjectiveDispatch(
-                                selected.Value, encounter.EnemyId);
-                    GUI.enabled = previousEnabled;
-                    GUILayout.EndHorizontal();
-                }
             }
 
             OrdrMobileUiTheme.DrawStatusRow("포네그리프",

@@ -2,6 +2,8 @@
 
 # 코드 구조
 
+**미션 UI 분리:** `OrdrMobileTouchPanel.DrawMissions`에서 공유/개인 버튼을 전환합니다. `DrawSharedMissionBoard`는 `Original323PoneglyphSession`의 검증된 공유 8종 상태를 각 카드로 표시하고, `DrawSharedMissionSelectedDetail`에서 원본 목표 설명과 (이미 실제 출현한 경우에만) 기존 `RequestSharedObjectiveDispatch/Recall`을 연결합니다. 신규 미션-클릭 수행은 적격 캐릭터 명세 미확정으로 **비활성 UI만 제공**하고 원본 사건·보상/해금 계산은 변경하지 않습니다. 기록지침의 `DrawPoneglyphPanel`은 해독/보물만 담당하며, 미션 탭의 특성포인트 잔액·보상 문구는 표시하지 않되 기존 지급 거래는 바꾸지 않습니다. 코드 반영만 완료, 컴파일·Android 실제 동작 확인은 남아 있습니다.
+
 **도박소·위습 공통 알림 UI:** `OrdrMobileTouchPanel.DrawGambling`은 원본 `MobileManualOffer.Id`로 돈 도박과 유닛(하급·중급·고급·이세계) 도박을 분류하여 한 줄씩 표시합니다. `OrdrMobileUiTheme.DrawHoldActionRow(..., compact:true)`와 `MobileLongPressGesture`로 단일 탭 거래/길게 누름 상세를 분리합니다. `RunGamblingRewardAction`과 `RunWispDirect`는 전후 `Combat.MobileUnitSnapshot()`의 새 인스턴스 ID로 유닛 획득 여부를 확인하고 `PublishRewardToast`→`DrawRewardToast`에서 사진·이름 또는 확정 메시지를 왼쪽 상단에 3.2초 표시합니다. `BlocksWorldTap`으로 팝업 클릭 관통을 방지합니다. 콤푸 환전·아이템 발굴도 이 알림을 재사용하며 기존 항법 실행·원본 경제·난수·롤백 규칙은 유지합니다. 테스트/기기 실행은 요청 전 보류.
 
 **메인 전장 유닛 표시:** `MobileOwnedUnitFormation`이 132px 선호 카드·94px 상한 초상화와 `PortraitRect`/`NameRect`/`QuantityRect`를 같은 배치 모델로 제공하고, `OrdrUnitWorldPresenter`가 SpriteRenderer(상단 사진)와 IMGUI(하단 큰 이름판·우상단 `×N` 배지)에 공통 좌표를 사용합니다. 상단 `OrdrMainSceneShell` 30px HUD와 기존 하단 페이지 공간은 보존하고 원본 전투/유닛 좌표·선택은 변경하지 않음. 테스트 코드는 갱신됐으나 실행하지 않음.
