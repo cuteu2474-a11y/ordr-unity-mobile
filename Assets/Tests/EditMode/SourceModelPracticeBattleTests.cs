@@ -99,8 +99,13 @@ namespace Ordr.Mobile.Tests
             {
                 long moria = game.Combat.SpawnCharacter("S-09", 0, 0);
                 long permanent = game.Combat.SpawnCharacter("U-14", 10, 0);
-                game.Combat.SpawnEnemy("victim", 1000000000000,
-                    CharacterEnemyKind.Line, 10, 10, 0);
+                // This is a controlled test target, not a verified wave spawn.
+                // Basic attacks must reject unknown armor rather than invent
+                // zero armor; provide an explicit TEST_ONLY defense fixture.
+                game.Combat.SpawnEnemyWithDefenses("victim", 1000000000000,
+                    CharacterEnemyKind.Line, 10, 10, 0,
+                    new EnemyDefenseProfile(CharacterEnemyKind.Line, 0, 0,
+                        "medium", "TEST_ONLY_MORIA_BLACK_ARROW_DEFENSE"));
                 int before = game.Combat.CharacterCount;
 
                 TriggerMoriaBlackArrowModel(game.Combat, moria, "victim");

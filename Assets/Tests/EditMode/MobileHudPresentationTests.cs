@@ -202,7 +202,10 @@ namespace Ordr.Mobile.Tests
             Assert.GreaterOrEqual(layout.LeftTabs.width / scale, 150f);
             Assert.IsTrue(layout.BlocksWorldTap(layout.SkillMargin.center, false));
             Assert.IsTrue(layout.BlocksWorldTap(layout.StatusMargin.center, false));
-            Assert.IsTrue(layout.BlocksWorldTap(layout.RightDrawer.center, false));
+            // The closed detail drawer must not catch taps; opening it
+            // blocks its own region without changing either battlefield.
+            Assert.IsFalse(layout.BlocksWorldTap(layout.RightDrawer.center, false));
+            Assert.IsTrue(layout.BlocksWorldTap(layout.RightDrawer.center, true));
             Assert.IsFalse(layout.BlocksWorldTap(layout.Battle.center, false));
             Assert.IsFalse(layout.BlocksWorldTap(layout.Story.center, true));
         }
