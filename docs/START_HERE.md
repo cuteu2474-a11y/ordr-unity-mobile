@@ -1,5 +1,7 @@
 # 현재 상태
 
+**C07 EditMode 테스트 어셈블리 접근성 수정(2026-11-13, 새 실행 결과 미확인):** Actions `43345403680`에서 Python 회귀 검사와 게임 런타임 C# 컴파일은 통과했지만, `SourceModelScriptAttackSkillTests.cs:3214,3231`에서 `SourceModelBasicCombatRules.SetSourceForm` 및 `SourceFormRawcodeOf` 내부 멤버를 별도 테스트 어셈블리가 접근하지 못해 CS1061 두 건으로 중단되어 Android APK 작업이 건너뛰어졌습니다. `Ordr.Mobile.Runtime`에 테스트 어셈블리명 `Ordr.Mobile.EditModeTests`에 한정한 `InternalsVisibleTo`를 추가해 프로덕션 공개 API 변경 없이 테스트 코드가 변신 상태를 검증할 수 있도록 했습니다. 미사용 지역변수 경고(CS0168)도 함께 정리했습니다. 기존 게임 UI·전투·워크플로 및 APK 서명 조건은 변경하지 않았습니다. 재시도 커밋에 `[apk-preview]`를 포함하며, 새 Unity/EditMode/APK 실제 결과는 아직 검증 전입니다.
+
 **C07 Unity EditMode 테스트 문법 수정(2026-11-13, 새 실행 미확인):** `43344006577`은 Python 사전검사·Unity 런타임 컴파일은 통과했지만 `Assets/Tests/EditMode/CharacterCombatLifecycleCleanupTests.cs:133`의 CS1513(`}` expected)으로 EditMode 테스트 어셈블리 컴파일이 중단됐고 APK 제작이 건너뛰어졌습니다. 기존 테스트 파일의 클래스 종결 뒤 빠진 namespace 닫는 괄호를 복원했습니다. 동일 파일의 괄호 짝과 예약 타격 API·리플렉션 상태 필드·해독/삭제 정리 호출 경로를 정적으로 대조했으나 Unity/NUnit/APK 실행은 새 Actions에서 확인해야 합니다. 기존 마르코·공통 UI 코드와 Android 빌드 조건은 변경하지 않았습니다.
 
 **공통 UI 이미지 적용(2026-11-13, 코드 연결·실행 미검증):** 보관 중이던 가로 버튼·사각 버튼·팝업·말풍선 원본 4종을 Resources에 포함하고 메뉴/행동/스킬·닫기/페이지·구매/판매/분해 확인·안내/길게 누르기 설명에 연결했습니다. 공통 로더가 투명 여백·9분할·색상/눌림 상태·캐시를 처리합니다. 오른쪽 상세 패널 외곽은 무테를 유지합니다. 리소스·스타일·콜백 변경 범위는 정적으로 검토했고 EditMode 검사 소스를 추가했지만 Unity/Android 실행과 APK 제작은 하지 않았습니다. 남음: Q03 실제 해상도별 글자 대비·테두리/꼬리·입력 확인.

@@ -56,7 +56,6 @@ namespace Ordr.Mobile.Tests
             scheduler.Register("test-attacker", 0);
             var combat = new CombatResolution(session, scheduler);
             combat.Spawn(new CombatEnemy("test-enemy", 20));
-            long dealt;
             Assert.Throws<ArgumentOutOfRangeException>(() => {
                 long ignored;
                 combat.TryAttack("test-attacker", "test-enemy", 1, -1, out ignored);
