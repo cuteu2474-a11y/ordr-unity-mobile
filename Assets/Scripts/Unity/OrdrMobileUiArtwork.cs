@@ -124,8 +124,14 @@ namespace Ordr.Mobile.Unity
 
         private static void Set(GUIStyleState state, Texture2D texture)
         {
+            // Runtime IMGUI uses the background texture on all platforms.
             state.background = texture;
-            state.scaledBackgrounds = new Texture2D[0];
+#if UNITY_EDITOR
+            // scaledBackgrounds is an Editor-only GUIStyleState property.
+            // Clear inherited DPI variants in the Editor without referencing
+            // that API from the Android player assembly.
+            state.scaledBackgrounds = Array.Empty<Texture2D>();
+#endif
         }
 
         internal static void Apply(GUIStyle style, Face face, Color tint, bool interactive)
