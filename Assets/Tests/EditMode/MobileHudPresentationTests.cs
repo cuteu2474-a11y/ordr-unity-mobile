@@ -36,11 +36,22 @@ namespace Ordr.Mobile.Tests
             var names = new Dictionary<string, string> {
                 { "Gambling", "도박소" }, { "UpgradeOne", "강화소 1" },
                 { "UpgradeTwo", "강화소 2" }, { "Helper", "도움소" },
-                { "Missions", "개인 미션" }, { "Research", "연구소" },
+                { "Missions", "미션" }, { "Research", "연구소" },
                 { "LogPose", "기록지침" },
             };
             Assert.IsFalse(Enum.IsDefined(tabType, "Facilities"),
                 "Player buildings must not be hidden in another facility tab.");
+            Assert.IsFalse(Enum.IsDefined(tabType, "Shop"),
+                "An unconnected generic shop must not regain a menu tab.");
+            Assert.IsNotNull(panel.GetMethod("DrawMissions",
+                BindingFlags.Instance | BindingFlags.NonPublic),
+                "Missions must provide one entry for both shared and personal goals.");
+            Assert.IsNotNull(panel.GetMethod("DrawSharedMissionBoard",
+                BindingFlags.Instance | BindingFlags.NonPublic),
+                "Shared missions must be selectable from the Missions page.");
+            Assert.IsNotNull(panel.GetMethod("DrawPersonalMissions",
+                BindingFlags.Instance | BindingFlags.NonPublic),
+                "The personal-mission page must remain available.");
             foreach (var entry in names)
             {
                 var tab = Enum.Parse(tabType, entry.Key);

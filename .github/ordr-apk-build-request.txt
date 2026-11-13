@@ -1,7 +1,12 @@
 # Explicit one-shot APK build request
 # Triggered on main when this file changes, not by ordinary code pushes.
-requested_at_kst: 2026-11-13
+requested_at_kst: 2026-11-14
 scope: consolidated mobile UI and empty shop removal
 areas: battlefield, units, fusion, gambling, wisp reward toast, upgrades, missions, record instructions
 build: unity EditMode integration checks then Android development APK
 artifacts: ordr-mobile-android-development-apk
+
+retry_of_run: 43445200526
+failure: 2316/2317 EditMode tests passed; obsolete Missions title assertion
+fix: update MobileHudPresentationTests to reflect Missions -> shared / personal tabs
+request: rerun integrated Unity tests and create Android development APK if they pass
