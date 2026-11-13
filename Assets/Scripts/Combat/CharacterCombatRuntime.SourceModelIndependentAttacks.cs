@@ -185,17 +185,22 @@ namespace Ordr.Mobile.Combat
             unitStatuses.Remove(key);
         }
 
+        // Independent attacks and their support auras must share the same
+        // ownership/lane lifecycle gate. A detached source cannot keep
+        // buffing the main board after a dispatch, decode or owner removal.
+        private bool CanSourceIndependentStayOnLane(SourceIndependentAttacker actor)
+        {
+            return actor != null &&
+                characters.ContainsKey(actor.OwnerInstanceId) &&
+                !IsSharedObjectiveDeployed(actor.OwnerInstanceId) &&
+                !IsOriginalPoneglyphChanneling(actor.OwnerInstanceId) &&
+                actor.StoryLane == IsStoryDeployed(actor.OwnerInstanceId);
+        }
+
         private bool CanSourceIndependentAttack(SourceIndependentAttacker actor,
             SpatialCombatEnemy enemy)
         {
-            // The independent actor is fixed to its origin lane. Its owner
-            // cannot drag its attacks into ordinary combat while fighting
-            // a side objective or decoding the Poneglyph.
-            if (!enemy.Enemy.IsAlive ||
-                !characters.ContainsKey(actor.OwnerInstanceId) ||
-                IsSharedObjectiveDeployed(actor.OwnerInstanceId) ||
-                IsOriginalPoneglyphChanneling(actor.OwnerInstanceId) ||
-                actor.StoryLane != IsStoryDeployed(actor.OwnerInstanceId))
+            if (!enemy.Enemy.IsAlive || !CanSourceIndependentStayOnLane(actor))
                 return false;
             return actor.StoryLane ? enemy.Kind == CharacterEnemyKind.Story :
                 enemy.Kind == CharacterEnemyKind.Line ||

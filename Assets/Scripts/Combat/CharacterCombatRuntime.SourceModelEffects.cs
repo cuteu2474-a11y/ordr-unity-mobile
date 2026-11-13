@@ -296,10 +296,30 @@ namespace Ordr.Mobile.Combat
         // object rawcodes separately; no character-name special cases.
         // Our mobile rule deliberately removes the native aura radius within
         // the same lane, but preserves native role and identity restrictions.
+        // An autonomous source can support only allies in its original
+        // combat lane. Treat an independently owned recipient like a roster
+        // recipient, but require both owners to be active in that lane.
+        private bool CanSourceIndependentShareAura(
+            SourceIndependentAttacker source, long? ally,
+            SourceIndependentAttacker independentTarget)
+        {
+            if (!CanSourceIndependentStayOnLane(source)) return false;
+            if (ally.HasValue)
+                return !IsSharedObjectiveDeployed(ally.Value) &&
+                    CanShareAllyCombatLane(source.OwnerInstanceId, ally.Value);
+            return independentTarget != null &&
+                CanSourceIndependentStayOnLane(independentTarget) &&
+                independentTarget.StoryLane == source.StoryLane &&
+                CanShareAllyCombatLane(source.OwnerInstanceId, independentTarget.OwnerInstanceId);
+        }
+
         private void ApplySourceModelAuraGroup(List<long> casters, long? ally,
             SpatialCombatEnemy enemy, CombatEffectType type,
             SourceIndependentAttacker independentTarget = null)
         {
+            if (independentTarget != null &&
+                !CanSourceIndependentStayOnLane(independentTarget))
+                return;
             var contributions = new List<Original323AuraContribution>();
             Original323SpecialAura first = null;
             bool recipientIsAlly = ally.HasValue || independentTarget != null;
@@ -353,8 +373,11 @@ namespace Ordr.Mobile.Combat
             }
             foreach (var independent in sourceIndependentAttackers.Values)
             {
-                if (recipientIsAlly && independent.StoryLane != recipientStoryLane) continue;
-                if (!recipientIsAlly && !CanSourceIndependentAttack(independent, enemy)) continue;
+                if (recipientIsAlly &&
+                    !CanSourceIndependentShareAura(independent, ally, independentTarget))
+                    continue;
+                if (!recipientIsAlly && !CanSourceIndependentAttack(independent, enemy))
+                    continue;
                 foreach (var aura in sourceModelUnitEffects.AurasForObject(independent.Rawcode))
                 {
                     if (aura.Type != type || !sourceModelUnitEffects.IsSupportedAura(aura)) continue;

@@ -1,3 +1,5 @@
+**독립 소환체 공격·오라 공통 전장 게이트:** `CharacterCombatRuntime.SourceModelIndependentAttacks.cs`의 `CanSourceIndependentStayOnLane`은 소유자 실물 존재·해독·공유 목표·스토리 전장 이동을 검사합니다. 독립 공격 `CanSourceIndependentAttack`과 `CharacterCombatRuntime.SourceModelEffects.cs`의 `CanSourceIndependentShareAura`가 이 조건을 재사용하고, 버프를 받을 독립체도 유효 전장인지 검사합니다. 객체 공격 주사위는 `SourceModelBasicCombatRules.cs`에서 원본 자료가 있는 경우만 허용하며, 실제 Unity 실행 검증은 별도입니다.
+
 # 코드 구조
 
 **공통 UI 아트:** `OrdrMobileUiArtwork.cs` → `Resources/OrdrArt/Ui`의 WideButton/SquareButton/PopupPanel/SpeechBubble → 알파 경계·소형 캐시·색상/눌림 상태·9분할 → `OrdrMobileUiTheme.ApplySharedArtwork` → `OrdrMobileTouchPanel`의 기본 버튼·페이지·확인·설명 표시. 거래 콜백과 무테 상세 패널은 유지합니다. `OrdrBattlefieldArtTests`에 4종 검사 소스가 있으며 Unity/Android 실행은 미검증입니다.

@@ -90,25 +90,27 @@ namespace Ordr.Mobile.Combat
             // becomes a guessed owner-stat or generic copied attack.
             foreach (string raw in new[] { "h05D", "h02N" })
             {
-                var source = objects.FindMapObjectAttack(raw);
-                if (source == null || !source.BaseDamagePlus.HasValue ||
-                    !source.DiceCount.HasValue || !source.DiceSides.HasValue ||
-                    !source.AttackCooldownSeconds.HasValue ||
-                    !source.AttackPointSeconds.HasValue ||
-                    source.DiceCount.Value <= 0 || source.DiceSides.Value <= 0 ||
-                    source.AttackCooldownSeconds.Value <= 0 ||
-                    source.AttackPointSeconds.Value >
-                        source.AttackCooldownSeconds.Value ||
-                    (source.OriginalAttackType != "normal" &&
-                     source.OriginalAttackType != "pierce" &&
-                     source.OriginalAttackType != "siege" &&
-                     source.OriginalAttackType != "hero"))
+                // Constructor parameter 'source' is the map catalog. Keep
+                // each optional shadow/zombie attack object unambiguous.
+                var objectAttack = objects.FindMapObjectAttack(raw);
+                if (objectAttack == null || !objectAttack.BaseDamagePlus.HasValue ||
+                    !objectAttack.DiceCount.HasValue || !objectAttack.DiceSides.HasValue ||
+                    !objectAttack.AttackCooldownSeconds.HasValue ||
+                    !objectAttack.AttackPointSeconds.HasValue ||
+                    objectAttack.DiceCount.Value <= 0 || objectAttack.DiceSides.Value <= 0 ||
+                    objectAttack.AttackCooldownSeconds.Value <= 0 ||
+                    objectAttack.AttackPointSeconds.Value >
+                        objectAttack.AttackCooldownSeconds.Value ||
+                    (objectAttack.OriginalAttackType != "normal" &&
+                     objectAttack.OriginalAttackType != "pierce" &&
+                     objectAttack.OriginalAttackType != "siege" &&
+                     objectAttack.OriginalAttackType != "hero"))
                     continue;
                 OriginalMapCommonNativeAttackEvidence evidence;
                 if (!byRawcode.TryGetValue(raw, out evidence))
                 {
                     evidence = new OriginalMapCommonNativeAttackEvidence(
-                        raw, raw, source);
+                        raw, raw, objectAttack);
                     byRawcode.Add(raw, evidence);
                 }
                 independentAttacks.Add(raw, new BasicAttackSpec(
