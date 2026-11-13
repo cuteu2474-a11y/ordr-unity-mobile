@@ -492,7 +492,7 @@ namespace Ordr.Mobile.Unity
 
         internal static MobileLongPressResult DrawHoldActionRow(string key,
             string title, string meta, Color tint, MobileLongPressGesture gesture,
-            float height = 72f)
+            float height = 72f, bool compact = false)
         {
             Rect area = GUILayoutUtility.GetRect(0f, height,
                 GUILayout.ExpandWidth(true));
@@ -511,8 +511,41 @@ namespace Ordr.Mobile.Unity
             else if (inputType == EventType.MouseUp && gesture.IsTracking(key))
                 gesture.Cancel();
             if (Event.current.type == EventType.Repaint)
-                DrawActionRowFace(area, title, meta, tint, false);
+            {
+                if (compact)
+                    DrawCompactGamblingRowFace(area, title, meta, tint);
+                else
+                    DrawActionRowFace(area, title, meta, tint, false);
+            }
             return result;
+        }
+
+        // One large touch target: short tap executes once, long press reveals
+        // details. The cost is always visible; no second hidden action button.
+        private static void DrawCompactGamblingRowFace(Rect area,
+            string title, string meta, Color tint)
+        {
+            Stroke(new Rect(area.x + 5f, area.y + 10f, 4f,
+                Mathf.Max(0f, area.height - 20f)), tint);
+            float costWidth = Mathf.Min(Mathf.Max(107f, area.width * .45f),
+                Mathf.Max(75f, area.width - 109f));
+            float titleWidth = Mathf.Max(55f, area.width - costWidth - 37f);
+            var label = new GUIStyle(accordionTitle)
+            {
+                fontSize = 20, alignment = TextAnchor.MiddleLeft,
+                clipping = TextClipping.Clip, wordWrap = false
+            };
+            var cost = new GUIStyle(statusValue)
+            {
+                fontSize = 18, alignment = TextAnchor.MiddleRight,
+                clipping = TextClipping.Clip, wordWrap = false
+            };
+            GUI.Label(new Rect(area.x + 15f, area.y + 6f, titleWidth,
+                area.height - 12f), title, label);
+            GUI.Label(new Rect(area.xMax - costWidth - 28f, area.y + 6f,
+                costWidth, area.height - 12f), meta, cost);
+            GUI.Label(new Rect(area.xMax - 30f, area.y + 6f,
+                24f, area.height - 12f), "⋯", accordionArrow);
         }
 
         private static void DrawActionRowFace(Rect area, string title,

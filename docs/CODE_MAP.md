@@ -2,6 +2,8 @@
 
 # 코드 구조
 
+**도박소·위습 공통 알림 UI:** `OrdrMobileTouchPanel.DrawGambling`은 원본 `MobileManualOffer.Id`로 돈 도박과 유닛(하급·중급·고급·이세계) 도박을 분류하여 한 줄씩 표시합니다. `OrdrMobileUiTheme.DrawHoldActionRow(..., compact:true)`와 `MobileLongPressGesture`로 단일 탭 거래/길게 누름 상세를 분리합니다. `RunGamblingRewardAction`과 `RunWispDirect`는 전후 `Combat.MobileUnitSnapshot()`의 새 인스턴스 ID로 유닛 획득 여부를 확인하고 `PublishRewardToast`→`DrawRewardToast`에서 사진·이름 또는 확정 메시지를 왼쪽 상단에 3.2초 표시합니다. `BlocksWorldTap`으로 팝업 클릭 관통을 방지합니다. 콤푸 환전·아이템 발굴도 이 알림을 재사용하며 기존 항법 실행·원본 경제·난수·롤백 규칙은 유지합니다. 테스트/기기 실행은 요청 전 보류.
+
 **메인 전장 유닛 표시:** `MobileOwnedUnitFormation`이 132px 선호 카드·94px 상한 초상화와 `PortraitRect`/`NameRect`/`QuantityRect`를 같은 배치 모델로 제공하고, `OrdrUnitWorldPresenter`가 SpriteRenderer(상단 사진)와 IMGUI(하단 큰 이름판·우상단 `×N` 배지)에 공통 좌표를 사용합니다. 상단 `OrdrMainSceneShell` 30px HUD와 기존 하단 페이지 공간은 보존하고 원본 전투/유닛 좌표·선택은 변경하지 않음. 테스트 코드는 갱신됐으나 실행하지 않음.
 
 **조합 UI 공통 표시 모델:** `MobileFusionPreview.Ingredients`/`MobileFusionIngredient`에서 원본 재료명·필요량·실제 총 보유량·초상화 카탈로그 ID·골드/목재 조건을 구조화하며 `OriginalJassFusionPlanner`·`Original323CommonFusionPort`·읽기 전용 포트·보조 조합으로 합칩니다. `OrdrMobileTouchPanel`은 상단 선택 결과/재료 사진, 버튼식 필터, 간결한 결과 목록, 하단 1건 실행/명시적 복귀만 제어하고 원본의 승인·잠금·소비 조건을 수정하지 않습니다. 코드만 수정했으며 Unity·Android 검증은 요청 전 보류입니다.

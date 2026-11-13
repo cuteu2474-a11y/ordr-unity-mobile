@@ -68,6 +68,8 @@ namespace Ordr.Mobile.Unity
         private readonly MobileWispActionJournal wispActions = new MobileWispActionJournal();
         private bool showWispHistory;
         private bool showMoneyGamblingHistory;
+        private bool showGamblingExtras;
+        private float nextGamblingRefresh;
         private Original323GamblingNavigation? pendingGamblingNavigation;
         private long? pendingUnitReroll;
         private MobileTreasureGachaResult lastTreasureResult;
@@ -103,6 +105,13 @@ namespace Ordr.Mobile.Unity
         private long? dedicatedSkillLastSelectedUnit;
         private string dedicatedNotice;
         private string notice = "";
+        // One short-lived reward card for both unit gambling and wisp
+        // recruitment. It never awards anything or advances game state.
+        private string rewardToastTitle;
+        private string rewardToastText;
+        private string rewardToastUnitId;
+        private float rewardToastStartedAt = -100f;
+        private const float RewardToastDurationSeconds = 3.2f;
         private IReadOnlyList<MobileFusionPreview> fusionOffers =
             new List<MobileFusionPreview>().AsReadOnly();
         private IReadOnlyList<MobileManualOffer> economyOffers =
@@ -162,6 +171,15 @@ namespace Ordr.Mobile.Unity
                 if (!string.IsNullOrWhiteSpace(controller.TreasureAlarmNotice))
                     notice = controller.TreasureAlarmNotice;
             }
+            if (visible && (currentTab == Tab.Gambling ||
+                currentTab == Tab.Shop || currentTab == Tab.Wisp) &&
+                Combat != null && Time.unscaledTime >= nextGamblingRefresh)
+            {
+                // Pure UI refresh: replenish display stock from the existing
+                // service; never perform a gamble on a timed update.
+                nextGamblingRefresh = Time.unscaledTime + .5f;
+                RefreshCurrent();
+            }
             if (Combat == null ||
                 !((visible && (currentTab == Tab.Play || currentTab == Tab.Fusion)) ||
                   fusionGoal.HasGoal) ||
@@ -196,7 +214,12 @@ namespace Ordr.Mobile.Unity
             if (safe.width <= safe.height) return false;
             var layout = MobileMapSkillLayout.Calculate(safe, Screen.height,
                 MobileMapSkillLayout.UiScale(safe, Screen.dpi));
-            return layout.BlocksWorldTap(onGui, visible);
+            float scale = MobileMapSkillLayout.UiScale(safe, Screen.dpi);
+            // World taps are physical pixels; the toast is laid out in
+            // GUI.matrix-scaled logical pixels.
+            return layout.BlocksWorldTap(onGui, visible) ||
+                (RewardToastVisible && RewardToastRect(layout, scale)
+                    .Contains(onGui / scale));
         }
 
         private Ordr.Mobile.Combat.CharacterCombatRuntime Combat
@@ -304,6 +327,7 @@ namespace Ordr.Mobile.Unity
                 // Leave the central map render and world taps untouched.
                 DrawDedicatedSkillMargin(safe, scale);
                 DrawEconomyStatus(layout, scale);
+                DrawRewardToast(layout, scale);
             }
             finally
             {
@@ -592,7 +616,7 @@ namespace Ordr.Mobile.Unity
                     case Tab.Story: DrawStory(); break;
                     case Tab.Fusion: DrawFusion(); break;
                     case Tab.Shop: DrawEconomy(ManualEconomyCategory.Shop); break;
-                    case Tab.Gambling: DrawEconomy(ManualEconomyCategory.Gambling); break;
+                    case Tab.Gambling: DrawGambling(); break;
                     case Tab.Wisp: DrawWisp(); break;
                     case Tab.LogPose: DrawTreasureGacha(); break;
                     case Tab.Helper: DrawHelperCow(); break;
@@ -3375,7 +3399,7 @@ namespace Ordr.Mobile.Unity
                 controller.CanProcessAutomaticWisps;
             if (OrdrMobileUiTheme.DrawActionRow(name,
                 balance + "개", OrdrMobileUiTheme.Aqua, 76f, true, balance))
-                notice = controller.RequestAutomaticWispRetry().Message;
+                RunWispDirect(name, () => controller.RequestAutomaticWispRetry());
             GUI.enabled = wasEnabled;
             // A failed automatic grant is never rerolled; keep its reason visible.
             if (!string.IsNullOrEmpty(failure))
@@ -3424,8 +3448,16 @@ namespace Ordr.Mobile.Unity
 
         private void RunWispDirect(string label, Func<ManualActionResult> action)
         {
-            // Directly invoked by an explicit on-screen user button.
-            try { ShowResult(wispActions.ExecuteDirect(label, action)); }
+            // The same actual roster-delta announcement is used by every
+            // wisp recruitment path, including selectable/transcend rewards.
+            var before = CaptureRewardRosterIds();
+            try
+            {
+                ManualActionResult result = wispActions.ExecuteDirect(label, action);
+                ShowResult(result);
+                if (PublishRewardToast(result, before, false))
+                    notice = "";
+            }
             catch (Exception error)
             {
                 // A committed transaction might have thrown during callbacks:
@@ -3772,76 +3804,209 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
         }
 
+        // Compact arcade desk. Gambling and gambling-for-unit (including
+        // Otherworld) are one-tap rows, with only on-demand hold details.
+        private void DrawGambling()
+        {
+            GUILayout.Label("돈 도박", OrdrMobileUiTheme.Subheading);
+            bool foundMoney = false;
+            foreach (var offer in economyOffers)
+                if (IsMoneyGamblingOffer(offer.Id))
+                {
+                    DrawCompactGamblingOffer(offer);
+                    foundMoney = true;
+                }
+            if (controller.PracticeMoneyGamblingDesk != null &&
+                controller.PracticeMoneyGamblingDesk.Graduated)
+            {
+                DrawGraduationHoldRow();
+                foundMoney = true;
+            }
+            if (!foundMoney)
+                GUILayout.Label("이용 가능한 돈 도박 없음", OrdrMobileUiTheme.Explanation);
+
+            GUILayout.Space(8f);
+            GUILayout.Label("유닛 도박", OrdrMobileUiTheme.Subheading);
+            bool foundUnits = false;
+            foreach (var offer in economyOffers)
+                if (IsUnitGamblingOffer(offer.Id))
+                {
+                    DrawCompactGamblingOffer(offer);
+                    foundUnits = true;
+                }
+            if (!foundUnits)
+                GUILayout.Label("이용 가능한 유닛 도박 없음", OrdrMobileUiTheme.Explanation);
+
+            GUILayout.Space(8f);
+            if (GUILayout.Button(showGamblingExtras ? "기타 ▲" : "기타 ▼",
+                OrdrMobileUiTheme.NavButton, GUILayout.MinHeight(56f)))
+                showGamblingExtras = !showGamblingExtras;
+            if (!showGamblingExtras) return;
+
+            // Navigation selection is deliberately kept in its existing
+            // implementation until the user defines that screen separately.
+            DrawGamblingNavigation();
+            DrawCompuExchange();
+            DrawItemExcavation();
+            foreach (var offer in economyOffers)
+                if (!IsMoneyGamblingOffer(offer.Id) &&
+                    !IsUnitGamblingOffer(offer.Id))
+                    DrawCompactGamblingOffer(offer);
+
+            var moneyDesk = controller.PracticeMoneyGamblingDesk;
+            if (moneyDesk != null && GUILayout.Button(
+                showMoneyGamblingHistory ? "기록 접기" : "최근 결과",
+                OrdrMobileUiTheme.NavButton, GUILayout.MinHeight(52f)))
+                showMoneyGamblingHistory = !showMoneyGamblingHistory;
+            if (showMoneyGamblingHistory && moneyDesk != null)
+            {
+                foreach (string result in moneyDesk.Regular.RecentResults)
+                    GUILayout.Label(result, OrdrMobileUiTheme.Explanation);
+                foreach (string result in moneyDesk.High.RecentResults)
+                    GUILayout.Label(result, OrdrMobileUiTheme.Explanation);
+            }
+        }
+
+        private static bool IsMoneyGamblingOffer(string id)
+        {
+            return id == SourceModelRegularMoneyGambling.OfferId ||
+                id == SourceModelMoneyGamblingDesk.HighOfferId ||
+                id == SourceModelMoneyGamblingDesk.WoodOfferId ||
+                id == SourceModelMoneyGamblingDesk.TraitOfferId ||
+                id == SourceModelMoneyGamblingDesk.RareOfferId;
+        }
+
+        private static bool IsUnitGamblingOffer(string id)
+        {
+            return id == Original323UnitGamblingRules.OfferId(OriginalGambleTier.Low) ||
+                id == Original323UnitGamblingRules.OfferId(OriginalGambleTier.Middle) ||
+                id == Original323UnitGamblingRules.OfferId(OriginalGambleTier.High) ||
+                id == SourceModelOtherworldUnitGambling.OfferId;
+        }
+
+        private string GamblingShortName(MobileManualOffer offer)
+        {
+            string id = offer.Id;
+            if (id == SourceModelRegularMoneyGambling.OfferId)
+                return "일반 " + (controller.PracticeMoneyGambling != null ?
+                    controller.PracticeMoneyGambling.Stock + "/3" : "");
+            if (id == SourceModelMoneyGamblingDesk.HighOfferId)
+            {
+                var desk = controller.PracticeMoneyGamblingDesk;
+                return desk == null ? "고급" :
+                    "고급 " + desk.High.Stock + "/" + desk.High.Capacity;
+            }
+            if (id == SourceModelMoneyGamblingDesk.WoodOfferId) return "목재 구매";
+            if (id == SourceModelMoneyGamblingDesk.TraitOfferId) return "특성포인트";
+            if (id == SourceModelMoneyGamblingDesk.RareOfferId) return "졸업 유닛";
+            if (id == Original323UnitGamblingRules.OfferId(OriginalGambleTier.Low)) return "하급";
+            if (id == Original323UnitGamblingRules.OfferId(OriginalGambleTier.Middle)) return "중급";
+            if (id == Original323UnitGamblingRules.OfferId(OriginalGambleTier.High)) return "고급";
+            if (id == SourceModelOtherworldUnitGambling.OfferId)
+                return "이세계 " + (controller.PracticeUnitGambling == null ? "" :
+                    controller.PracticeUnitGambling.Charges + "회");
+            return offer.Title;
+        }
+
+        private string GamblingShortCost(string id)
+        {
+            if (id == SourceModelRegularMoneyGambling.OfferId)
+                return SourceModelRegularMoneyGambling.GoldCost + "G";
+            if (id == SourceModelMoneyGamblingDesk.HighOfferId)
+                return (controller.PracticeMoneyGamblingDesk == null ? 500 :
+                    controller.PracticeMoneyGamblingDesk.High.Price) + "G";
+            if (id == SourceModelMoneyGamblingDesk.WoodOfferId) return "10,000G";
+            if (id == SourceModelMoneyGamblingDesk.TraitOfferId)
+                return SourceModelMoneyGamblingDesk.TraitGoldCost.ToString("N0") + "G";
+            if (id == SourceModelMoneyGamblingDesk.RareOfferId)
+                return SourceModelMoneyGamblingDesk.RareGoldCost.ToString("N0") + "G";
+            foreach (OriginalGambleTier tier in Enum.GetValues(typeof(OriginalGambleTier)))
+                if (id == Original323UnitGamblingRules.OfferId(tier))
+                    return Original323UnitGamblingRules.GoldCost(tier).ToString("N0") +
+                        "G · 목" + Original323UnitGamblingRules.WoodCost(tier);
+            if (id == SourceModelOtherworldUnitGambling.OfferId)
+                return Original323OtherworldGamblingRules.GoldCost.ToString("N0") +
+                    "G · 목" + Original323OtherworldGamblingRules.WoodCost;
+            return "사용";
+        }
+
+        private void DrawCompactGamblingOffer(MobileManualOffer offer)
+        {
+            MobileLongPressResult action = OrdrMobileUiTheme.DrawHoldActionRow(
+                "gamble:" + offer.Id, GamblingShortName(offer),
+                GamblingShortCost(offer.Id), OrdrMobileUiTheme.Gold,
+                gamblingPressGesture, 62f, true);
+            if (action == MobileLongPressResult.Tap)
+                RunGamblingOffer(offer);
+            else if (action == MobileLongPressResult.Hold)
+                expandedGamblingOfferId = expandedGamblingOfferId == offer.Id ?
+                    null : offer.Id;
+            if (expandedGamblingOfferId == offer.Id)
+                DrawExpandedGamblingOffer(offer);
+        }
+
+        private void DrawExpandedGamblingOffer(MobileManualOffer offer)
+        {
+            GUILayout.BeginVertical(OrdrMobileUiTheme.HelpBubble);
+            // Preserve the authoritative source price, lottery odds and
+            // restrictions. They are hidden only when the row is collapsed.
+            GUILayout.Label(offer.OriginalPriceAndRules,
+                OrdrMobileUiTheme.Explanation);
+            var desk = controller.PracticeMoneyGamblingDesk;
+            if (desk != null && offer.Id == SourceModelMoneyGamblingDesk.HighOfferId)
+                GUILayout.Label("졸업 " + desk.High.GoldReturned.ToString("N0") +
+                    " / " + SourceModelMoneyGamblingDesk.GraduationGold.ToString("N0") +
+                    " 골드", OrdrMobileUiTheme.Subheading);
+            if (desk != null && offer.Id == SourceModelMoneyGamblingDesk.WoodOfferId)
+                GUILayout.Label("남은 구매 " + desk.WoodRights + "회",
+                    OrdrMobileUiTheme.Explanation);
+            var world = controller.PracticeUnitGambling;
+            if (world != null && offer.Id == SourceModelOtherworldUnitGambling.OfferId)
+                GUILayout.Label("충전 " + world.Charges + "회 · 당첨 " +
+                    world.SuccessPercent + "%", OrdrMobileUiTheme.Subheading);
+            GUILayout.EndVertical();
+        }
+
+        private void DrawGraduationHoldRow()
+        {
+            const string id = "gamble:graduation-status";
+            MobileLongPressResult result = OrdrMobileUiTheme.DrawHoldActionRow(
+                id, "고급 졸업", "완료", OrdrMobileUiTheme.Gold,
+                gamblingPressGesture, 62f, true);
+            if (result == MobileLongPressResult.Hold)
+                expandedGamblingOfferId = expandedGamblingOfferId == id ? null : id;
+            if (expandedGamblingOfferId != id) return;
+            var desk = controller.PracticeMoneyGamblingDesk;
+            GUILayout.BeginVertical(OrdrMobileUiTheme.HelpBubble);
+            GUILayout.Label("고급 누적 반환 " + desk.High.GoldReturned.ToString("N0") +
+                " / " + SourceModelMoneyGamblingDesk.GraduationGold.ToString("N0") +
+                "골드", OrdrMobileUiTheme.Explanation);
+            GUILayout.Label("목재 구매 기회 " + desk.WoodRights + "회",
+                OrdrMobileUiTheme.Explanation);
+            GUILayout.EndVertical();
+        }
+
+        // Shop and Wisp retain their own transaction flow. Gambling has a
+        // dedicated compact display instead of duplicating long old rows.
         private void DrawEconomy(ManualEconomyCategory category)
         {
+            if (category == ManualEconomyCategory.Gambling)
+            {
+                DrawGambling();
+                return;
+            }
             if (!controller.ManualActions.HasEconomyService &&
-                category != ManualEconomyCategory.Wisp)
+                category == ManualEconomyCategory.Shop)
                 OrdrMobileUiTheme.DrawStatusRow("거래",
                     "준비 중", OrdrMobileUiTheme.Gold);
 
-            if (category == ManualEconomyCategory.Gambling &&
-                controller.PracticeMoneyGambling != null)
-            {
-                var shop = controller.PracticeMoneyGambling;
-                OrdrMobileUiTheme.DrawStatusRow("일반 돈 도박",
-                    shop.Graduated ? "졸업" : shop.Stock + "/3회", OrdrMobileUiTheme.Gold);
-                if (!shop.Graduated && shop.Stock < SourceModelRegularMoneyGambling.MaximumStock)
-                    GUILayout.Label("다음 충전 " +
-                        Math.Ceiling(shop.SecondsUntilRestock) + "초");
-                var desk = controller.PracticeMoneyGamblingDesk;
-                if (desk != null)
-                {
-                    var high = desk.High;
-                    OrdrMobileUiTheme.DrawStatusRow("고급 돈 도박",
-                        desk.Graduated ? "졸업" : !high.IsUnlocked ? "아론 처치 후 해금" :
-                            high.Stock + "/" + high.Capacity + "회",
-                        OrdrMobileUiTheme.Gold);
-                    if (!desk.Graduated && high.IsUnlocked && high.Stock < high.Capacity)
-                        GUILayout.Label("고급 다음 충전 " + Math.Ceiling(high.SecondsUntilRestock) + "초");
-                    OrdrMobileUiTheme.DrawStatusRow("고급 누적 반환",
-                        high.GoldReturned + "/35000골드", OrdrMobileUiTheme.Gold);
-                    if (desk.Graduated)
-                        GUILayout.Label("돈 도박 종료 · 졸업 상점 목재 구매 기회 " + desk.WoodRights + "회");
-                    if (OrdrMobileUiTheme.DrawAccordionHeader("돈 도박 결과 기록",
-                        "일반·고급 각각 최근 6회", showMoneyGamblingHistory, OrdrMobileUiTheme.Gold))
-                        showMoneyGamblingHistory = !showMoneyGamblingHistory;
-                    if (showMoneyGamblingHistory)
-                    {
-                        foreach (string result in shop.RecentResults) GUILayout.Label(result);
-                        foreach (string result in high.RecentResults) GUILayout.Label(result);
-                        if (shop.RecentResults.Count + high.RecentResults.Count == 0)
-                            GUILayout.Label("아직 실행한 돈 도박이 없습니다.");
-                    }
-                }
-            }
-
-            if (category == ManualEconomyCategory.Gambling)
-            {
-                DrawGamblingNavigation();
-                DrawCompuExchange();
-                DrawItemExcavation();
-            }
-
-            if (category == ManualEconomyCategory.Gambling && controller.PracticeUnitGambling != null)
-            {
-                var units = controller.PracticeUnitGambling;
-                OrdrMobileUiTheme.DrawStatusRow("이세계 유닛 도박",
-                    "남은 충전 " + units.Charges + "회 · 성공 " + units.SuccessPercent + "%",
-                    OrdrMobileUiTheme.Aqua);
-                if (units.Navigation == Original323GamblingNavigation.RiskHedge)
-                    GUILayout.Label("실패 누적 확률 +" + units.RiskBonus + "%p · 당첨 시 초기화");
-                OrdrMobileUiTheme.DrawStatusRow("이세계 도박 기록",
-                    units.Attempts + "회 시도 · " + units.Wins + "회 당첨",
-                    OrdrMobileUiTheme.Aqua);
-            }
-
-            // Shop purchases retain explicit confirmation; gambling is one tap.
             if (category == ManualEconomyCategory.Shop && pendingEconomy != null)
             {
                 GUILayout.BeginVertical(OrdrMobileUiTheme.ConfirmationPanel);
                 GUILayout.Label("구매 확인 · " + pendingEconomy.Title,
                     OrdrMobileUiTheme.Subheading);
-                GUILayout.Label(pendingEconomy.OriginalPriceAndRules);
+                GUILayout.Label(pendingEconomy.OriginalPriceAndRules,
+                    OrdrMobileUiTheme.Explanation);
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("구매 확정", OrdrMobileUiTheme.PrimaryButton,
                     GUILayout.MinHeight(66f)))
@@ -3851,16 +4016,15 @@ namespace Ordr.Mobile.Unity
                     pendingEconomy = null;
                     RefreshCurrent();
                 }
-                if (GUILayout.Button("취소", GUILayout.MinHeight(66f)))
+                if (GUILayout.Button("취소", OrdrMobileUiTheme.NavButton,
+                    GUILayout.MinHeight(66f)))
                     pendingEconomy = null;
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
-
-            if (GUILayout.Button("새로고침", GUILayout.MinHeight(56f)))
-                RefreshCurrent();
             if (economyOffers.Count == 0)
-                GUILayout.Label("이용 가능한 항목 없음");
+                GUILayout.Label("이용 가능한 항목 없음",
+                    OrdrMobileUiTheme.Explanation);
             foreach (var offer in economyOffers)
             {
                 if (category == ManualEconomyCategory.Wisp &&
@@ -3875,29 +4039,6 @@ namespace Ordr.Mobile.Unity
                         string id = offer.Id;
                         RunWispDirect(offer.Title, () =>
                             controller.ManualActions.RequestEconomyAction(category, id));
-                    }
-                }
-                else if (category == ManualEconomyCategory.Gambling)
-                {
-                    // Release a short tap to spend once. A long press only
-                    // reveals the existing offer's costs and source rules.
-                    MobileLongPressResult press = OrdrMobileUiTheme.DrawHoldActionRow(
-                        offer.Id, offer.Title, "실행", OrdrMobileUiTheme.Gold,
-                        gamblingPressGesture);
-                    if (press == MobileLongPressResult.Tap)
-                    {
-                        ShowResult(controller.ManualActions.RequestEconomyAction(
-                            category, offer.Id));
-                        RefreshCurrent();
-                    }
-                    else if (press == MobileLongPressResult.Hold)
-                        expandedGamblingOfferId = expandedGamblingOfferId == offer.Id ?
-                            null : offer.Id;
-                    if (expandedGamblingOfferId == offer.Id)
-                    {
-                        GUILayout.BeginVertical(OrdrMobileUiTheme.HelpBubble);
-                        GUILayout.Label(offer.OriginalPriceAndRules);
-                        GUILayout.EndVertical();
                     }
                 }
                 else if (OrdrMobileUiTheme.DrawActionRow(offer.Title,
@@ -3994,104 +4135,225 @@ namespace Ordr.Mobile.Unity
                     Original323GamblingNavigation.ExchangeHouse)
                 return;
 
-            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-            GUILayout.Label("원본 환전소 · 콤푸 교환", OrdrMobileUiTheme.Subheading);
-            OrdrMobileUiTheme.DrawStatusRow("콤푸(I009) 잔량",
+            GUILayout.Label("콤푸 환전", OrdrMobileUiTheme.Subheading);
+            OrdrMobileUiTheme.DrawStatusRow("보유 콤푸",
                 exchange.Compu + "개", OrdrMobileUiTheme.Aqua);
-            GUILayout.Label("원본 최초 충전 0 · 환전소 항법 중급 유닛 도박 1회당 콤푸 +1 (실패 포함).",
-                OrdrMobileUiTheme.Overline);
             string[] recipes = { "CKD", "CKE", "CKF", "CKG", "CKH", "CKI", "CKJ" };
-            string[] titles = {
-                "골드/위습 추첨", "목재 1~2개", "흔함선택위습 1~2",
-                "해적선 1기", "일반 아이템 발굴", "유니크 아이템 발굴",
-                "랜덤전용 유닛 + 행운의 토큰"
+            string[] names = {
+                "골드·위습", "목재", "흔함선택위습",
+                "해적선", "일반 발굴권", "유니크 발굴권",
+                "랜덤유닛·토큰"
             };
             for (int i = 0; i < recipes.Length; i++)
             {
+                string recipe = recipes[i];
                 bool enabled = GUI.enabled;
-                GUI.enabled = enabled && exchange.CanExchange(recipes[i]);
+                GUI.enabled = enabled && exchange.CanExchange(recipe);
                 if (OrdrMobileUiTheme.DrawActionRow(
-                    titles[i] + " · " + SourceModelCompuExchange.Cost(recipes[i]) + "콤푸",
-                    "교환", OrdrMobileUiTheme.Gold, 80f))
-                {
-                    var result = controller.RequestCompuExchange(recipes[i]);
-                    notice = result.Message;
-                    RefreshCurrent();
-                }
+                    names[i] + " · " + SourceModelCompuExchange.Cost(recipe) +
+                        "콤푸", "교환", OrdrMobileUiTheme.Gold, 66f))
+                    RunGamblingRewardAction(() =>
+                        controller.RequestCompuExchange(recipe));
                 GUI.enabled = enabled;
             }
-            GUILayout.Label("아이템 발굴 2종은 스택을 충전합니다. 아래 발굴 버튼에서 소모합니다.",
-                OrdrMobileUiTheme.Overline);
-            GUILayout.EndVertical();
         }
 
         private void DrawItemExcavation()
         {
             var excavation = controller.PracticeItemExcavation;
             if (excavation == null) return;
-            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-            GUILayout.Label("원본 아이템 발굴", OrdrMobileUiTheme.Subheading);
-            OrdrMobileUiTheme.DrawStatusRow("일반 발굴",
-                excavation.OrdinaryStock + "스택 · 미획득 " +
-                excavation.OrdinaryRemaining + "종", OrdrMobileUiTheme.Aqua);
-            OrdrMobileUiTheme.DrawStatusRow("유니크 발굴",
-                excavation.UniqueStock + "스택 · 미획득 " +
-                excavation.UniqueRemaining + "종", OrdrMobileUiTheme.Gold);
-            if (controller.SharedEconomy != null)
-            {
-                var passiveWallet = controller.SharedEconomy.Wallet;
-                double cowBonus = Original323SourceItemPassiveRules
-                    .HelperCowExtraManaPerSecond(passiveWallet);
-                OrdrMobileUiTheme.DrawStatusRow("도움소 재생 추가",
-                    "+" + cowBonus.ToString("0.0") + "/초 · AI15/AI18",
-                    OrdrMobileUiTheme.Aqua);
-                OrdrMobileUiTheme.DrawStatusRow("라인 폭발형 추가",
-                    Original323SourceItemPassiveRules.HasLineExplosionBonus(
-                        passiveWallet) ? "+5% · AI20 획득" : "AI20 미획득",
-                    OrdrMobileUiTheme.Gold);
-                int woodExtra = Original323SourceItemPassiveRules
-                    .ExtraGraduatedWoodStock(passiveWallet);
-                long woodSpent = passiveWallet.Balance(
-                    SourceModelMoneyGamblingDesk.Ai13WoodStockSpentResource);
-                OrdrMobileUiTheme.DrawStatusRow("목재 추가 구매권",
-                    Math.Max(0L, woodExtra - woodSpent) +
-                    "/" + woodExtra + " · AI13",
-                    OrdrMobileUiTheme.Aqua);
-                OrdrMobileUiTheme.DrawStatusRow("탐색 알람 기준",
-                    Original323SourceItemPassiveRules.TreasureAlarmSeconds(
-                        passiveWallet, true) +
-                    "초 · AI10 (원본 시전자 확인 시 예약)",
-                    OrdrMobileUiTheme.Gold);
-                OrdrMobileUiTheme.DrawStatusRow("라인 골드/마방",
-                    (Original323SourceItemPassiveRules.SourceLineGoldFactorIncrease(
-                        passiveWallet) > 0 ? "골드 +100% " : "") +
-                    (Original323SourceItemPassiveRules.SourceLineMagicDefenseLevelIncrease(
-                        passiveWallet) > 0 ? "마방 -5% " : "") +
-                    "· 원본 전투 관측 필요",
-                    OrdrMobileUiTheme.Gold);
-            }
+            GUILayout.Label("아이템 발굴", OrdrMobileUiTheme.Subheading);
+            OrdrMobileUiTheme.DrawStatusRow("일반",
+                "스택 " + excavation.OrdinaryStock,
+                OrdrMobileUiTheme.Aqua);
+            OrdrMobileUiTheme.DrawStatusRow("유니크",
+                "스택 " + excavation.UniqueStock,
+                OrdrMobileUiTheme.Gold);
+
             bool enabled = GUI.enabled;
             GUI.enabled = enabled && excavation.CanDraw(false);
             if (OrdrMobileUiTheme.DrawActionRow(
-                "일반 발굴 · 90% 일반/10% 유니크 · 스택 1 소모",
-                "발굴", OrdrMobileUiTheme.Gold, 80f))
-            {
-                notice = controller.RequestItemExcavation(false).Message;
-                RefreshCurrent();
-            }
+                "일반 발굴", "90% / 10%",
+                OrdrMobileUiTheme.Gold, 66f))
+                RunGamblingRewardAction(() =>
+                    controller.RequestItemExcavation(false));
             GUI.enabled = enabled && excavation.CanDraw(true);
             if (OrdrMobileUiTheme.DrawActionRow(
-                "유니크 확정 발굴 · 스택 1 소모",
-                "발굴", OrdrMobileUiTheme.Gold, 80f))
-            {
-                notice = controller.RequestItemExcavation(true).Message;
-                RefreshCurrent();
-            }
+                "유니크 확정 발굴", "1스택",
+                OrdrMobileUiTheme.Gold, 66f))
+                RunGamblingRewardAction(() =>
+                    controller.RequestItemExcavation(true));
             GUI.enabled = enabled;
-            GUILayout.Label("원본 중복 없는 12종 일반·10종 유니크 획득 장부 연결. " +
-                "일부 아이템의 고유 효과·외형은 후속 구현 대상입니다.",
-                OrdrMobileUiTheme.Overline);
-            GUILayout.EndVertical();
+        }
+
+        private HashSet<long> CaptureRewardRosterIds()
+        {
+            var ids = new HashSet<long>();
+            if (Combat == null) return ids;
+            foreach (var entry in Combat.MobileUnitSnapshot())
+                if (entry != null) ids.Add(entry.InstanceId);
+            return ids;
+        }
+
+        private void RunGamblingOffer(MobileManualOffer offer)
+        {
+            RunGamblingRewardAction(() =>
+                controller.ManualActions.RequestEconomyAction(
+                    ManualEconomyCategory.Gambling, offer.Id));
+        }
+
+        private void RunGamblingRewardAction(Func<ManualActionResult> action)
+        {
+            var before = CaptureRewardRosterIds();
+            try
+            {
+                // One explicit tap sends one authoritative transaction.
+                ManualActionResult result = action();
+                ShowResult(result);
+                if (PublishRewardToast(result, before, true))
+                    notice = "";
+            }
+            catch (Exception error)
+            {
+                // Never retry a draw after an uncertain post-commit failure.
+                Debug.LogException(error);
+                notice = "거래 상태 확인 필요 · 자동 재시도 안 함: " + error.Message;
+            }
+            RefreshCurrent();
+        }
+
+        private bool PublishRewardToast(ManualActionResult result,
+            HashSet<long> before, bool alsoShowNonUnitResult)
+        {
+            if (result == null || result.State != ManualActionState.Succeeded)
+                return false;
+            var newUnits = new List<MobileUnitSnapshot>();
+            if (Combat != null)
+                foreach (var row in Combat.MobileUnitSnapshot())
+                    if (row != null && !before.Contains(row.InstanceId))
+                        newUnits.Add(row);
+            if (newUnits.Count == 0 && !alsoShowNonUnitResult)
+                return false;
+
+            if (newUnits.Count > 0)
+            {
+                newUnits.Sort((a, b) => a.InstanceId.CompareTo(b.InstanceId));
+                rewardToastUnitId = newUnits[0].Unit.Id;
+                rewardToastTitle = "유닛 획득!";
+                rewardToastText = newUnits[0].Unit.Name;
+                if (newUnits.Count > 1)
+                    rewardToastText += " · " + newUnits[1].Unit.Name;
+                if (newUnits.Count > 2)
+                    rewardToastText += " 외 " + (newUnits.Count - 2) + "기";
+            }
+            else
+            {
+                // Money/wood/token outcomes are shown from the committed
+                // transaction's real message, never from a previewed RNG.
+                rewardToastUnitId = null;
+                rewardToastTitle = "도박 결과";
+                rewardToastText = CompactRewardMessage(result.Message);
+            }
+            rewardToastStartedAt = Time.unscaledTime;
+            return true;
+        }
+
+        private static string CompactRewardMessage(string message)
+        {
+            if (string.IsNullOrWhiteSpace(message)) return "결과 확인";
+            int returned = message.IndexOf("골드 반환", StringComparison.Ordinal);
+            if (returned >= 0)
+            {
+                int slash = message.LastIndexOf('/', returned);
+                if (slash >= 0)
+                {
+                    string payout = message.Substring(slash + 1,
+                        returned - slash + "골드 반환".Length - 1).Trim();
+                    return payout + (message.Contains("졸업!") ? " · 졸업!" : "");
+                }
+            }
+            int sep = message.IndexOf(" · ", StringComparison.Ordinal);
+            // Strip only the common prefix from non-unit lottery messages.
+            return sep > 0 && message.Length > 60 ?
+                message.Substring(sep + 3) : message;
+        }
+
+        private bool RewardToastVisible
+        {
+            get { return !string.IsNullOrWhiteSpace(rewardToastTitle) &&
+                Time.unscaledTime - rewardToastStartedAt < RewardToastDurationSeconds; }
+        }
+
+        private static Rect RewardToastRect(MobileMapSkillLayout layout, float scale)
+        {
+            Rect battlefield = MobileMapSkillLayout.Scaled(layout.Battle, scale);
+            float width = Mathf.Min(338f, Mathf.Max(65f, battlefield.width - 12f));
+            float height = Mathf.Min(Mathf.Clamp(battlefield.height * .35f,
+                72f, 112f), Mathf.Max(48f, battlefield.height - 41f));
+            // Upper-left of the main battlefield, below its round/enemy HUD.
+            return new Rect(battlefield.x + 6f, battlefield.y + 35f,
+                width, height);
+        }
+
+        private void DrawRewardToast(MobileMapSkillLayout layout, float scale)
+        {
+            if (!RewardToastVisible || Event.current.type != EventType.Repaint)
+                return;
+            float elapsed = Time.unscaledTime - rewardToastStartedAt;
+            float fade = Mathf.Clamp01(
+                (RewardToastDurationSeconds - elapsed) / .55f);
+            Rect area = RewardToastRect(layout, scale);
+            Color oldColor = GUI.color;
+            int oldDepth = GUI.depth;
+            try
+            {
+                GUI.depth = -900;
+                GUI.color = new Color(1f, 1f, 1f, fade);
+                GUI.Box(area, GUIContent.none, OrdrMobileUiTheme.HelpBubble);
+                float inset = 10f;
+                float textX = area.x + inset;
+                Sprite portrait = string.IsNullOrWhiteSpace(rewardToastUnitId) ?
+                    null : OrdrCharacterPortraits.Find(rewardToastUnitId);
+                if (portrait == null && !string.IsNullOrWhiteSpace(rewardToastUnitId))
+                    portrait = OrdrBattlefieldArt.UnitSprite(rewardToastUnitId);
+                if (portrait != null)
+                {
+                    float iconSize = Mathf.Min(76f, area.height - inset * 2f);
+                    Rect icon = new Rect(area.x + inset, area.y +
+                        (area.height - iconSize) * .5f, iconSize, iconSize);
+                    Rect src = portrait.rect;
+                    GUI.DrawTextureWithTexCoords(icon, portrait.texture,
+                        new Rect(src.x / portrait.texture.width,
+                            src.y / portrait.texture.height,
+                            src.width / portrait.texture.width,
+                            src.height / portrait.texture.height));
+                    textX = icon.xMax + inset;
+                }
+                float remaining = Mathf.Max(50f, area.xMax - textX - inset);
+                var heading = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = 21, fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleLeft,
+                    clipping = TextClipping.Clip
+                };
+                heading.normal.textColor = OrdrMobileUiTheme.Gold;
+                var detail = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = 18, fontStyle = FontStyle.Bold,
+                    wordWrap = true, clipping = TextClipping.Clip,
+                    alignment = TextAnchor.MiddleLeft
+                };
+                detail.normal.textColor = Color.white;
+                GUI.Label(new Rect(textX, area.y + 9f, remaining, 30f),
+                    rewardToastTitle, heading);
+                GUI.Label(new Rect(textX, area.y + 37f, remaining,
+                    Mathf.Max(20f, area.height - 43f)), rewardToastText, detail);
+            }
+            finally
+            {
+                GUI.color = oldColor;
+                GUI.depth = oldDepth;
+            }
         }
 
         private void RefreshCurrent()
