@@ -70,6 +70,61 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void StoryDeployedOwnedMaterialAppearsInFusionAndRequiresExplicitRecall()
+        {
+            var game = Create();
+            const string ability = "A006";
+            Assert.IsTrue(game.Fusion.CanCommitRecipe(ability));
+            var story = new Original323StoryManualDispatch(game.Combat,
+                new Original323SoloStoryMovement(game.Combat, game.Map));
+            game.Combat.ConfigureStoryDeployment(story);
+            var ids = new List<long>();
+            var needed = game.Registry.FindByAbility(ability).RequiredUnitRawcodes();
+            foreach (var entry in needed)
+            {
+                string catalogId;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(entry.Key, out catalogId));
+                for (int i = 0; i < entry.Value; i++)
+                    ids.Add(game.Combat.SpawnCharacter(catalogId, 100, 200));
+            }
+            long dispatchedId = 0;
+            foreach (long id in ids)
+                if (story.CanDispatch(id))
+                {
+                    dispatchedId = id;
+                    break;
+                }
+            Assert.Greater(dispatchedId, 0, "원본 일반 재료는 스토리 파견 가능해야 합니다.");
+            Assert.AreEqual(ManualActionState.Succeeded,
+                story.Dispatch(dispatchedId).State);
+
+            var current = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == ability);
+            Assert.IsTrue(current.HasAllUnitMaterials,
+                "스토리 파견 중인 소유 유닛도 조합 재료 보유에 포함합니다.");
+            Assert.IsFalse(current.IsReady, "복귀 전 재료 자동 소비를 허용하면 안 됩니다.");
+            CollectionAssert.Contains(current.StoryMaterialInstances, dispatchedId);
+            Assert.IsNull(current.MissingCommonUnits,
+                "파견 재료를 임박 목록의 부족한 흔함 유닛으로 잘못 분류하면 안 됩니다.");
+            Assert.IsTrue(current.MissingMaterials.Any(
+                reason => reason.Contains("복귀")));
+            var rejected = game.Fusion.ConfirmFusion(ability,
+                current.SuggestedMaterialInstances);
+            Assert.AreEqual(ManualActionState.Rejected, rejected.State);
+            Assert.IsTrue(story.IsDeployed(dispatchedId),
+                "실패한 조합이 스토리 파견 상태를 변경하면 안 됩니다.");
+
+            Assert.AreEqual(ManualActionState.Succeeded,
+                story.Recall(dispatchedId).State);
+            var restored = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == ability);
+            Assert.IsTrue(restored.HasAllUnitMaterials);
+            Assert.IsTrue(restored.IsReady,
+                string.Join(";", restored.MissingMaterials));
+            Assert.AreEqual(0, restored.StoryMaterialInstances.Count);
+        }
+
+        [Test]
         public void NearReadyCountsOnlyMissingCommonsAndNeverGrantsCraftPermission()
         {
             var game = Create();

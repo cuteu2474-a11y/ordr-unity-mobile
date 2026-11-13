@@ -967,14 +967,18 @@ namespace Ordr.Mobile.Mobile
                 foreach (var material in ready.Materials)
                 {
                     if (material.MissingCount <= 0) continue;
-                    allUnitsOwned = false;
+                    if (material.MissingAfterRecallCount > 0) allUnitsOwned = false;
+                    // Story actors are owned but require explicit recall. Do
+                    // not offer them as ordinary "missing common" candidates.
+                    if (material.StoryDeployedCount > 0)
+                        deficitsAreOnlyCommons = false;
                     deficitMaterialKinds++;
                     var unit = string.IsNullOrWhiteSpace(material.CatalogUnitId) ?
                         null : unitCatalog.Find(material.CatalogUnitId);
                     if (unit == null || unit.Grade != "흔함")
                         deficitsAreOnlyCommons = false;
                     else
-                        missingCommonUnits += material.MissingCount;
+                        missingCommonUnits += material.MissingAfterRecallCount;
                 }
                 if (!economy.HasStarted || combat.Game.Phase != SessionPhase.Running)
                     missing.Add("먼저 유닛 준비 또는 게임을 시작해 주세요.");
@@ -989,7 +993,9 @@ namespace Ordr.Mobile.Mobile
                 var parts = new List<string>();
                 foreach (var material in ready.Materials)
                     parts.Add(material.Name + " ×" + material.RequiredCount +
-                        " (보유 " + material.OwnedCount + ")");
+                        " (보유 " + material.OwnedCount + ")" +
+                        (material.StoryDeployedCount > 0
+                            ? " · 스토리 " + material.StoryDeployedCount + "기" : ""));
                 var costs = new List<string>();
                 if (ready.GoldCost > 0)
                     costs.Add("골드 " + ready.GoldCost + " (보유 " + economy.Wallet.Balance("gold") + ")");
@@ -1022,7 +1028,8 @@ namespace Ordr.Mobile.Mobile
                     (Original323FusionCountLedger.IsCounterFusion(offer.RecipeId)
                         ? " · 횟수 한도는 모바일 모델" : ""),
                     ready.SuggestedMaterialIds, missing, allUnitsOwned,
-                    resultGrades[offer.RecipeId], nearReadyCommonCount));
+                    resultGrades[offer.RecipeId], nearReadyCommonCount,
+                    ready.StoryMaterialIds));
             }
             return result.AsReadOnly();
         }

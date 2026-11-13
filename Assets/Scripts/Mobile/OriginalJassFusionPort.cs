@@ -121,13 +121,14 @@ namespace Ordr.Mobile.Mobile
                 var missing = new List<string>(assessment.BlockingReasons);
                 bool allUnitsOwned = true;
                 foreach (var material in assessment.Materials)
-                    if (material.MissingCount > 0) allUnitsOwned = false;
+                    if (material.MissingAfterRecallCount > 0) allUnitsOwned = false;
                 if (!CanCommitRecipe(assessment.AbilityRawcode))
                     missing.Add("이 원본 조합의 안전한 제작 거래는 아직 미연결입니다.");
                 previews.Add(new MobileFusionPreview(assessment.AbilityRawcode,
                     assessment.ResultName + " (원본 JASS)",
                     BuildMaterialSummary(assessment),
-                    assessment.SuggestedMaterialIds, missing, allUnitsOwned));
+                    assessment.SuggestedMaterialIds, missing, allUnitsOwned,
+                    null, null, assessment.StoryMaterialIds));
             }
             return previews.AsReadOnly();
         }
@@ -225,7 +226,9 @@ namespace Ordr.Mobile.Mobile
         {
             var parts = new List<string>();
             foreach (var material in preview.Materials)
-                parts.Add(material.Name + " x" + material.RequiredCount);
+                parts.Add(material.Name + " x" + material.RequiredCount +
+                    (material.StoryDeployedCount > 0 ?
+                        " (스토리 " + material.StoryDeployedCount + "기 · 복귀 필요)" : ""));
             return string.Join(" + ", parts.ToArray()) + " | 골드 " +
                 preview.GoldCost + " / 목재 " + preview.LumberCost +
                 " | 원본 추가조건 별도 검증";

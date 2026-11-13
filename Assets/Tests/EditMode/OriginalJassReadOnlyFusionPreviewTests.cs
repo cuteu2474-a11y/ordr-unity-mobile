@@ -107,7 +107,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void StoryDispatchAndUnknownOriginalObjectBlockMaterialReadiness()
+        public void StoryDispatchRemainsOwnedButRequiresRecallBeforeCrafting()
         {
             var units = Units();
             var registrations = Registrations();
@@ -117,10 +117,18 @@ namespace Ordr.Mobile.Tests
             var offer = Find(port, new[] {
                 Unit(units, 30, "C-01"), Unit(units, 31, "C-08")
             }, "A00D");
-            Assert.IsFalse(offer.IsReady);
-            Assert.IsFalse(offer.HasAllUnitMaterials,
-                "스토리 파견 재료는 조합에서 보유로 세지 않습니다.");
-            Assert.IsTrue(offer.MissingMaterials.Count > 0);
+            Assert.IsFalse(offer.IsReady, "파견 재료를 자동 소비하지 않습니다.");
+            Assert.IsTrue(offer.HasAllUnitMaterials,
+                "스토리 파견 유닛도 현재 소유한 재료로 표시합니다.");
+            CollectionAssert.AreEquivalent(new long[] { 31 },
+                offer.SuggestedMaterialInstances);
+            CollectionAssert.AreEquivalent(new long[] { 30 },
+                offer.StoryMaterialInstances);
+            bool recallExplained = false;
+            foreach (var reason in offer.MissingMaterials)
+                if (reason.Contains("복귀 필요")) recallExplained = true;
+            Assert.IsTrue(recallExplained,
+                "조합 조건의 실제 원인은 부족이 아니라 파견 상태여야 합니다.");
             Assert.AreEqual("KM-01", names.Find("h04S").CatalogUnitId,
                 "쿠마 객체 매핑과 실제 획득 경로의 구현은 별개입니다.");
             var unknown = names.Find("h05Y");

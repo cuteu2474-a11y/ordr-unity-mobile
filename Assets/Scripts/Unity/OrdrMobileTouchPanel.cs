@@ -2873,7 +2873,8 @@ namespace Ordr.Mobile.Unity
                 notice = "";
             }
             GUILayout.Label(canCraft ? "● 가능" :
-                !executable ? "● 잠김" : "● 부족",
+                !executable ? "● 잠김" :
+                offer.StoryMaterialInstances.Count > 0 ? "● 복귀" : "● 부족",
                 OrdrMobileUiTheme.Overline, GUILayout.Width(58f),
                 GUILayout.Height(54f));
             if (GUILayout.Button(fusionBookmarks.Contains(offer.RecipeId) ?
@@ -3007,18 +3008,43 @@ namespace Ordr.Mobile.Unity
                 OrdrMobileUiTheme.Subheading, GUILayout.MinWidth(0f),
                 GUILayout.ExpandWidth(true), GUILayout.MinHeight(62f));
             bool enabled = GUI.enabled;
-            GUI.enabled = enabled && canCraft;
-            if (GUILayout.Button("조합 확정", OrdrMobileUiTheme.PrimaryButton,
-                GUILayout.Width(118f), GUILayout.MinHeight(62f)))
+            long recallId = 0;
+            if (!canCraft && latest.StoryMaterialInstances.Count > 0 &&
+                controller.ManualActions.HasStoryService &&
+                controller.ManualActions.CanExecuteFusionRecipe(latest.RecipeId))
+                foreach (long id in latest.StoryMaterialInstances)
+                    if (controller.ManualActions.CanRecallStory(id))
+                    {
+                        recallId = id;
+                        break;
+                    }
+            // Explicit one-actor recall from the fusion drawer. Never recall
+            // implicitly when previewing or attempting a paid transaction.
+            if (recallId > 0)
             {
-                ShowResult(MobileFusionProductionAssistant.CraftRepeated(
-                    latest.RecipeId, 1,
-                    controller.ManualActions.CanExecuteFusionRecipe,
-                    () => controller.ManualActions.PreviewFusion(
-                        Combat.MobileUnitSnapshot()),
-                    controller.ManualActions.ConfirmFusion));
-                pendingFusion = null;
-                RefreshCurrent();
+                GUI.enabled = enabled;
+                if (GUILayout.Button("스토리 복귀", OrdrMobileUiTheme.PrimaryButton,
+                    GUILayout.Width(118f), GUILayout.MinHeight(62f)))
+                {
+                    ShowResult(controller.ManualActions.RequestStoryRecall(recallId));
+                    RefreshCurrent();
+                }
+            }
+            else
+            {
+                GUI.enabled = enabled && canCraft;
+                if (GUILayout.Button("조합 확정", OrdrMobileUiTheme.PrimaryButton,
+                    GUILayout.Width(118f), GUILayout.MinHeight(62f)))
+                {
+                    ShowResult(MobileFusionProductionAssistant.CraftRepeated(
+                        latest.RecipeId, 1,
+                        controller.ManualActions.CanExecuteFusionRecipe,
+                        () => controller.ManualActions.PreviewFusion(
+                            Combat.MobileUnitSnapshot()),
+                        controller.ManualActions.ConfirmFusion));
+                    pendingFusion = null;
+                    RefreshCurrent();
+                }
             }
             GUI.enabled = enabled;
             if (GUILayout.Button("×", OrdrMobileUiTheme.CloseButton, GUILayout.Width(42f),

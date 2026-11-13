@@ -11,10 +11,13 @@ namespace Ordr.Mobile.Mobile
         public string Name { get; private set; }
         public int RequiredCount { get; private set; }
         public int OwnedCount { get; private set; }
+        // Exact owned actors currently stationed in the story lane.
+        public int StoryDeployedCount { get; private set; }
+        public int MissingAfterRecallCount { get { return Math.Max(0, RequiredCount - OwnedCount - StoryDeployedCount); } }
         public int MissingCount { get { return Math.Max(0, RequiredCount - OwnedCount); } }
 
         internal JassFusionMaterial(string rawcode, string catalogUnitId,
-            string unitName, int required, int owned)
+            string unitName, int required, int owned, int storyDeployed = 0)
         {
             Rawcode = rawcode;
             CatalogUnitId = catalogUnitId;
@@ -22,6 +25,7 @@ namespace Ordr.Mobile.Mobile
                 "미매핑 원본 ID " + rawcode : unitName;
             RequiredCount = required;
             OwnedCount = owned;
+            StoryDeployedCount = storyDeployed;
         }
     }
 
@@ -51,6 +55,7 @@ namespace Ordr.Mobile.Mobile
         internal OriginalJassFusionRegistration SourceRegistration { get; private set; }
         public IReadOnlyList<string> BlockingReasons { get; private set; }
         public IReadOnlyList<long> SuggestedMaterialIds { get; private set; }
+        public IReadOnlyList<long> StoryMaterialIds { get; private set; }
         public int GoldCost { get; private set; }
         public int LumberCost { get; private set; }
         public bool IsReadyForUserConfirmation { get { return BlockingReasons.Count == 0; } }
@@ -58,7 +63,7 @@ namespace Ordr.Mobile.Mobile
         internal JassFusionReadiness(OriginalJassFusionRegistration registration,
             string resultRawcode, string resultUnitId, string resultName,
             List<JassFusionMaterial> materials, List<JassFusionMaterialBinding> bindings,
-            List<string> reasons, List<long> selected, int gold, int lumber)
+            List<string> reasons, List<long> selected, List<long> storySelected, int gold, int lumber)
         {
             AbilityRawcode = registration.AbilityRawcode;
             ResultRawcode = resultRawcode;
@@ -70,6 +75,7 @@ namespace Ordr.Mobile.Mobile
             MaterialBindings = bindings.AsReadOnly();
             BlockingReasons = reasons.AsReadOnly();
             SuggestedMaterialIds = selected.AsReadOnly();
+            StoryMaterialIds = storySelected.AsReadOnly();
             GoldCost = gold;
             LumberCost = lumber;
         }
@@ -146,23 +152,28 @@ namespace Ordr.Mobile.Mobile
             var materials = new List<JassFusionMaterial>();
             var bindings = new List<JassFusionMaterialBinding>();
             var selected = new List<long>();
+            var storySelected = new List<long>();
             var selectedOnce = new HashSet<long>();
+            var storySelectedOnce = new HashSet<long>();
             var allUnits = new Dictionary<string, List<long>>(StringComparer.Ordinal);
+            var storyUnits = new Dictionary<string, List<long>>(StringComparer.Ordinal);
             var uniqueIds = new HashSet<long>();
             foreach (var unit in ownedUnits)
             {
                 if (unit == null || unit.InstanceId <= 0 || !uniqueIds.Add(unit.InstanceId))
                     throw new FormatException("보유 인스턴스 ID가 잘못됐거나 중복됐습니다.");
-                if (deployed(unit.InstanceId)) continue;
+                bool onStory = deployed(unit.InstanceId);
+                var inventory = onStory ? storyUnits : allUnits;
                 List<long> ids;
-                if (!allUnits.TryGetValue(unit.Unit.Id, out ids))
+                if (!inventory.TryGetValue(unit.Unit.Id, out ids))
                 {
                     ids = new List<long>();
-                    allUnits.Add(unit.Unit.Id, ids);
+                    inventory.Add(unit.Unit.Id, ids);
                 }
                 ids.Add(unit.InstanceId);
             }
             foreach (var ids in allUnits.Values) ids.Sort();
+            foreach (var ids in storyUnits.Values) ids.Sort();
 
             string resultCode = recipe.Results[0].Rawcode;
             string resultId, resultName, resultReason;
@@ -270,11 +281,45 @@ namespace Ordr.Mobile.Mobile
                     }
                     owned = boundIds.Count;
                 }
+                // Keep story actors visible as OWNED, never as immediately
+                // spendable. A user-initiated recall is required before fusion.
+                var waiting = new List<long>();
+                if (mapped && owned < required)
+                {
+                    var storyCandidates = new List<long>();
+                    if (group != null)
+                    {
+                        foreach (string member in group)
+                        {
+                            List<long> ids;
+                            if (storyUnits.TryGetValue(member, out ids))
+                                storyCandidates.AddRange(ids);
+                        }
+                    }
+                    else
+                    {
+                        List<long> ids;
+                        if (storyUnits.TryGetValue(ingredientId, out ids))
+                            storyCandidates.AddRange(ids);
+                    }
+                    storyCandidates.Sort();
+                    foreach (long id in storyCandidates)
+                    {
+                        if (waiting.Count >= required - owned) break;
+                        if (!storySelectedOnce.Add(id)) continue;
+                        waiting.Add(id);
+                        storySelected.Add(id);
+                    }
+                }
                 bindings.Add(new JassFusionMaterialBinding(rawcode, boundIds));
                 materials.Add(new JassFusionMaterial(rawcode, ingredientId,
-                    ingredientName, required, owned));
-                if (owned < required)
-                    reasons.Add("재료 부족: " + rawcode + " " + (required - owned) + "기");
+                    ingredientName, required, owned, waiting.Count));
+                if (waiting.Count > 0)
+                    reasons.Add("스토리 파견 재료: " + rawcode + " " +
+                        waiting.Count + "기 (복귀 후 조합 가능)");
+                if (owned + waiting.Count < required)
+                    reasons.Add("재료 부족: " + rawcode + " " +
+                        (required - owned - waiting.Count) + "기");
             }
 
             // PICK is listed BEFORE the fixed UNIT inputs in source CWR, but
@@ -322,7 +367,8 @@ namespace Ordr.Mobile.Mobile
             // The commit service is a separate authorization gate; even a fully
             // resolved plan must never mutate the game world without that service.
             return new JassFusionReadiness(recipe, resultCode, resultId,
-                resultName, materials, bindings, reasons, selected, gold, lumber);
+                resultName, materials, bindings, reasons, selected,
+                storySelected, gold, lumber);
         }
 
         // Original JASS labels are useful for display, not for spending.

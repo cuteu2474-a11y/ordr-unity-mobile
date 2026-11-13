@@ -56,6 +56,8 @@ namespace Ordr.Mobile.Mobile
         public int? MissingCommonUnits { get; private set; }
         public string OriginalMaterialsAndCost { get; private set; }
         public IReadOnlyList<long> SuggestedMaterialInstances { get; private set; }
+        // Owned in the story lane, but never silently spendable before recall.
+        public IReadOnlyList<long> StoryMaterialInstances { get; private set; }
         public IReadOnlyList<string> MissingMaterials { get; private set; }
         public bool IsReady { get { return MissingMaterials.Count == 0; } }
         // Unit ownership is separate from execution authorisation, cost and
@@ -70,7 +72,8 @@ namespace Ordr.Mobile.Mobile
         public MobileFusionPreview(string recipeId, string title,
             string originalMaterialsAndCost, IEnumerable<long> materialIds,
             IEnumerable<string> missingMaterials, bool? allUnitMaterialsOwned = null,
-            string resultGrade = null, int? missingCommonUnits = null)
+            string resultGrade = null, int? missingCommonUnits = null,
+            IEnumerable<long> storyMaterialInstances = null)
         {
             if (string.IsNullOrWhiteSpace(recipeId) || string.IsNullOrWhiteSpace(title) ||
                 string.IsNullOrWhiteSpace(originalMaterialsAndCost))
@@ -102,6 +105,15 @@ namespace Ordr.Mobile.Mobile
             OriginalMaterialsAndCost = originalMaterialsAndCost;
             SuggestedMaterialInstances = materials.AsReadOnly();
             MissingMaterials = missing.AsReadOnly();
+            var waitingForRecall = new List<long>();
+            if (storyMaterialInstances != null)
+                foreach (long id in storyMaterialInstances)
+                {
+                    if (id <= 0 || !distinct.Add(id))
+                        throw new ArgumentException("스토리 재료 인스턴스 ID가 중복되거나 유효하지 않습니다.");
+                    waitingForRecall.Add(id);
+                }
+            StoryMaterialInstances = waitingForRecall.AsReadOnly();
             HasAllUnitMaterials = allUnitMaterialsOwned ?? (missing.Count == 0);
         }
     }

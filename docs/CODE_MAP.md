@@ -2,6 +2,8 @@
 
 # 코드 구조
 
+**스토리 파견 재료의 조합 표시:** `OriginalJassFusionPlanner`는 메인 전장 재료와 스토리 소유 재료를 별도 집계해 수량·정확한 인스턴스 ID를 제공하며 `Original323CommonFusionPort`는 복귀 전 제작 금지/임박 오분류를 유지합니다. `OriginalJassReadOnlyFusionPort`·`AssistedFusionService`도 소유량 표시와 복귀 대기 상태를 구분합니다. `MobileFusionPreview.StoryMaterialInstances` → `OrdrMobileTouchPanel.DrawFusionConfirmation`의 명시적 `RequestStoryRecall`(1회=1기) → 원본 조합 확정 재검증. 실제 교체 거래의 `IsLockedFromRosterTransactions` 보호는 유지합니다.
+
 **구매 위성·임시 소환수 전장 게이트:** `CharacterCombatRuntime.SourceModelIndependentAttacks.cs`는 영구 베가펑크 위성(`practice-satellite:`)을 플레이어가 구매한 전장 고정 독립 객체로 판정하여 제작자가 제거돼도 공격·기술·오라가 남도록 하고, 나머지 임시 소환수·블랙 애로우는 제작자 삭제/해독/파견 시 멈춥니다. `CharacterCombatRuntime.SourceModelEffects.cs`는 대상 유닛 및 독립 객체의 실제 전장으로 오라 자격을 통합합니다. 검증: `SourceModelScriptAttackSkillTests`·`Original323SoloStoryScenarioTests`·`SourceModelPracticeBattleTests`의 종전 실패 경로(실행 미확인).
 
 **카툰풍 UI 테마:** `art/ui/cartoon-v1/`의 4종 원본 → `Assets/Resources/OrdrArt/CartoonUi/` 동일 PNG blob + Read/Write 임포트 → `Assets/Scripts/Unity/OrdrCartoonUiArtwork.cs` 투명 여백 정리/384·128·512px 캐시/상태 밝기/9분할 → `OrdrMobileUiTheme.InitializeAuxiliaryStyles` → `OrdrMobileTouchPanel` 기존 버튼/선택/확인창/도움말. 청록 일반 기능, 주황 주요 액션/선택, 사각 닫기·페이지, 갈색 대비 조정 양피지 안내. 오른쪽 전체 상세 패널은 무테 유지. `OrdrCartoonUiArtworkTests` 4종 리소스 및 상태 검사 추가(실행 미검증). 원본 참고 보드 2종은 게임 미포함.

@@ -122,28 +122,32 @@ namespace Ordr.Mobile.Mobile
         {
             if (owned == null) throw new ArgumentNullException(nameof(owned));
             var byUnit = new Dictionary<string, List<long>>(StringComparer.Ordinal);
+            var byStory = new Dictionary<string, List<long>>(StringComparer.Ordinal);
             var seenInventory = new HashSet<long>();
             foreach (var unit in owned)
             {
                 if (unit == null || unit.InstanceId <= 0 ||
                     !seenInventory.Add(unit.InstanceId))
                     throw new ArgumentException("보유 유닛 정보가 중복되거나 유효하지 않습니다.");
-                if (storyDeployed(unit.InstanceId)) continue;
+                var inventory = storyDeployed(unit.InstanceId) ? byStory : byUnit;
                 List<long> ids;
-                if (!byUnit.TryGetValue(unit.Unit.Id, out ids))
+                if (!inventory.TryGetValue(unit.Unit.Id, out ids))
                 {
                     ids = new List<long>();
-                    byUnit.Add(unit.Unit.Id, ids);
+                    inventory.Add(unit.Unit.Id, ids);
                 }
                 ids.Add(unit.InstanceId);
             }
             foreach (var ids in byUnit.Values) ids.Sort();
+            foreach (var ids in byStory.Values) ids.Sort();
 
             var result = new List<MobileFusionPreview>();
             foreach (var recipe in original.All)
             {
                 var chosen = new List<long>();
+                var storyChosen = new List<long>();
                 var used = new HashSet<long>();
+                var usedStory = new HashSet<long>();
                 var missing = new List<string>();
                 var descriptions = new List<string>();
                 var requirements = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -188,6 +192,7 @@ namespace Ordr.Mobile.Mobile
                     string liveId = null;
                     IReadOnlyList<string> group = null;
                     var available = new List<long>();
+                    var waiting = new List<long>();
                     bool mapped = false;
                     if (liveGroups != null && liveGroups.TryGetMaterialGroup(rawcode, out group))
                     {
@@ -197,6 +202,7 @@ namespace Ordr.Mobile.Mobile
                             groupNames.Add(liveUnits.Require(member).Name);
                             List<long> ids;
                             if (byUnit.TryGetValue(member, out ids)) available.AddRange(ids);
+                            if (byStory.TryGetValue(member, out ids)) waiting.AddRange(ids);
                         }
                         title = string.Join(" 또는 ", groupNames);
                         mapped = true;
@@ -211,6 +217,7 @@ namespace Ordr.Mobile.Mobile
                             if (liveUnits != null) title = liveUnits.Require(liveId).Name + " · " + liveUnits.Require(liveId).Grade;
                             List<long> ids;
                             if (byUnit.TryGetValue(liveId, out ids)) available.AddRange(ids);
+                            if (byStory.TryGetValue(liveId, out ids)) waiting.AddRange(ids);
                         }
                     }
                     descriptions.Add(title + " x" + required);
@@ -232,10 +239,24 @@ namespace Ordr.Mobile.Mobile
                             chosen.Add(id);
                             assigned++;
                         }
-                    if (assigned < required)
+                    // On-story members belong to the player even though an
+                    // authoritative fusion must not spend them before recall.
+                    waiting.Sort();
+                    int storyCount = 0;
+                    foreach (long id in waiting)
+                    {
+                        if (assigned + storyCount >= required) break;
+                        if (!usedStory.Add(id)) continue;
+                        storyChosen.Add(id);
+                        storyCount++;
+                    }
+                    if (storyCount > 0)
+                        missing.Add(title + " 스토리 파견 " + storyCount + "기 · 복귀 필요");
+                    if (assigned + storyCount < required)
                     {
                         allUnitsOwned = false;
-                        missing.Add(title + " " + (required - assigned) + "기 부족");
+                        missing.Add(title + " " +
+                            (required - assigned - storyCount) + "기 부족");
                     }
                 }
 
@@ -301,7 +322,8 @@ namespace Ordr.Mobile.Mobile
                 result.Add(new MobileFusionPreview(recipe.AbilityRawcode,
                     titleResult + (sourceRoute == null
                         ? " (원본 등록식 · 미승인)" : " (원본 획득 분기 · 조합 아님)"),
-                    summary, chosen, missing, allUnitsOwned));
+                    summary, chosen, missing, allUnitsOwned,
+                    null, null, storyChosen));
             }
             result.Sort((a, b) =>
                 string.CompareOrdinal(a.Title, b.Title));

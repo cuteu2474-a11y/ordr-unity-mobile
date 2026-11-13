@@ -48,11 +48,14 @@ namespace Ordr.Mobile.Mobile
             foreach (var recipe in recipes.All)
             {
                 List<long> selected;
+                List<long> storyMaterials;
                 List<string> missing;
-                FindMaterialsAndDeficits(recipe, owned, out selected, out missing);
+                bool allOwned;
+                FindMaterialsAndDeficits(recipe, owned, out selected,
+                    out storyMaterials, out missing, out allOwned);
                 result.Add(new MobileFusionPreview(recipe.Id, recipe.Name,
                     BuildMaterialSummary(recipe), selected, missing,
-                    null, recipe.ResultGrade));
+                    allOwned, recipe.ResultGrade, null, storyMaterials));
             }
             result.Sort((a, b) => string.CompareOrdinal(a.RecipeId, b.RecipeId));
             return result.AsReadOnly();
@@ -129,32 +132,48 @@ namespace Ordr.Mobile.Mobile
 
         private void FindMaterialsAndDeficits(VerifiedFusionRecipe recipe,
             IReadOnlyList<MobileUnitSnapshot> owned, out List<long> selected,
-            out List<string> missing)
+            out List<long> storyMaterials, out List<string> missing,
+            out bool allOwned)
         {
             selected = new List<long>();
+            storyMaterials = new List<long>();
             missing = new List<string>();
+            allOwned = true;
             var byType = new Dictionary<string, List<long>>(StringComparer.Ordinal);
+            var byStory = new Dictionary<string, List<long>>(StringComparer.Ordinal);
             foreach (var unit in owned)
             {
-                if (unit == null || unit.InstanceId <= 0 || storyDeployed(unit.InstanceId)) continue;
+                if (unit == null || unit.InstanceId <= 0 || unit.Unit == null) continue;
+                var inventory = storyDeployed(unit.InstanceId) ? byStory : byType;
                 List<long> slots;
-                if (!byType.TryGetValue(unit.Unit.Id, out slots))
+                if (!inventory.TryGetValue(unit.Unit.Id, out slots))
                 {
                     slots = new List<long>();
-                    byType.Add(unit.Unit.Id, slots);
+                    inventory.Add(unit.Unit.Id, slots);
                 }
                 slots.Add(unit.InstanceId);
             }
             foreach (var values in byType.Values) values.Sort();
+            foreach (var values in byStory.Values) values.Sort();
             foreach (var need in recipe.Ingredients)
             {
-                List<long> slots;
-                byType.TryGetValue(need.UnitId, out slots);
-                int available = slots == null ? 0 : Math.Min(slots.Count, need.Count);
-                for (int i = 0; i < available; i++) selected.Add(slots[i]);
-                if (available < need.Count)
+                List<long> active, parked;
+                byType.TryGetValue(need.UnitId, out active);
+                byStory.TryGetValue(need.UnitId, out parked);
+                int available = active == null ? 0 : Math.Min(active.Count, need.Count);
+                for (int i = 0; i < available; i++) selected.Add(active[i]);
+                int parkedNeeded = Math.Max(0, need.Count - available);
+                int inStory = parked == null ? 0 : Math.Min(parked.Count, parkedNeeded);
+                for (int i = 0; i < inStory; i++) storyMaterials.Add(parked[i]);
+                if (inStory > 0)
+                    missing.Add(need.DisplayName + " (" + need.UnitId +
+                        ") 스토리 파견 " + inStory + "기 · 복귀 필요");
+                if (available + inStory < need.Count)
+                {
+                    allOwned = false;
                     missing.Add(need.DisplayName + " (" + need.UnitId + ") " +
-                        (need.Count - available) + "개 부족");
+                        (need.Count - available - inStory) + "개 부족");
+                }
             }
         }
 
