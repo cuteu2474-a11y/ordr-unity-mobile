@@ -42,6 +42,8 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle fusionMissingChip;
         private static GUIStyle fusionNeutralChip;
         private static GUIStyle fusionSelectedCard;
+        private static GUIStyle fusionIngredientName;
+        private static GUIStyle fusionListName;
         private static GUIStyle smallButton;
         private static GUIStyle confirmationPanel;
         private static GUIStyle helpBubble;
@@ -64,6 +66,8 @@ namespace Ordr.Mobile.Unity
         internal static GUIStyle FusionMissingChip { get { return fusionMissingChip; } }
         internal static GUIStyle FusionNeutralChip { get { return fusionNeutralChip; } }
         internal static GUIStyle FusionSelectedCard { get { return fusionSelectedCard; } }
+        internal static GUIStyle FusionIngredientName { get { return fusionIngredientName; } }
+        internal static GUIStyle FusionListName { get { return fusionListName; } }
         internal static GUIStyle SmallButton { get { return smallButton; } }
         internal static GUIStyle ConfirmationPanel { get { return confirmationPanel; } }
         internal static GUIStyle HelpBubble { get { return helpBubble; } }
@@ -242,7 +246,19 @@ namespace Ordr.Mobile.Unity
             fusionSelectedCard = new GUIStyle(themedSkin.box);
             Background(fusionSelectedCard, fusionSelectedPlate, fusionSelectedPlate, Text);
             fusionSelectedCard.border = new RectOffset(9,9,9,9);
-            fusionSelectedCard.padding = new RectOffset(12,12,10,10);
+            fusionSelectedCard.padding = new RectOffset(9,9,7,7);
+            fusionIngredientName = new GUIStyle(themedSkin.label);
+            fusionIngredientName.fontSize = 17;
+            fusionIngredientName.fontStyle = FontStyle.Bold;
+            fusionIngredientName.wordWrap = true;
+            fusionIngredientName.alignment = TextAnchor.MiddleCenter;
+            fusionIngredientName.normal.textColor = Color.white;
+            fusionListName = new GUIStyle(navButton);
+            fusionListName.fontSize = 20;
+            fusionListName.fontStyle = FontStyle.Bold;
+            fusionListName.alignment = TextAnchor.MiddleLeft;
+            fusionListName.padding = new RectOffset(12,8,4,4);
+            fusionListName.clipping = TextClipping.Clip;
             wispCountCaption = new GUIStyle(accordionMeta);
             wispCountCaption.fontSize = 13;
             wispCountCaption.fontStyle = FontStyle.Bold;
@@ -297,6 +313,7 @@ namespace Ordr.Mobile.Unity
             // Teal is the default action, orange marks selection/confirmation.
             OrdrCartoonUiArtwork.Apply(themedSkin.button, OrdrCartoonUiArtwork.Face.TealWide, true);
             OrdrCartoonUiArtwork.Apply(navButton, OrdrCartoonUiArtwork.Face.TealWide, true);
+            OrdrCartoonUiArtwork.Apply(fusionListName, OrdrCartoonUiArtwork.Face.TealWide, true);
             OrdrCartoonUiArtwork.Apply(selectedTab, OrdrCartoonUiArtwork.Face.OrangeWide, true);
             OrdrCartoonUiArtwork.Apply(primaryButton, OrdrCartoonUiArtwork.Face.OrangeWide, true);
             OrdrCartoonUiArtwork.Apply(skillButton, OrdrCartoonUiArtwork.Face.TealWide, true);
@@ -664,7 +681,7 @@ namespace Ordr.Mobile.Unity
             chip.border = new RectOffset(9,9,9,9);
             chip.padding = new RectOffset(9,9,6,6);
             chip.margin = new RectOffset(2,2,1,1);
-            chip.fontSize = 14;
+            chip.fontSize = 18;
             chip.fontStyle = FontStyle.Bold;
             chip.alignment = TextAnchor.MiddleCenter;
             chip.wordWrap = false;

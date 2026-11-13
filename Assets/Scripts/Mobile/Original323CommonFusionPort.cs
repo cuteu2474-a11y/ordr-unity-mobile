@@ -991,11 +991,15 @@ namespace Ordr.Mobile.Mobile
                     missing.Count == ready.BlockingReasons.Count ?
                     (int?)missingCommonUnits : null;
                 var parts = new List<string>();
+                var ingredientRows = new List<MobileFusionIngredient>();
                 foreach (var material in ready.Materials)
+                {
+                    int totalOwned = material.TotalOwnedCount;
                     parts.Add(material.Name + " ×" + material.RequiredCount +
-                        " (보유 " + material.OwnedCount + ")" +
-                        (material.StoryDeployedCount > 0
-                            ? " · 스토리 " + material.StoryDeployedCount + "기" : ""));
+                        " (보유 " + totalOwned + ")");
+                    ingredientRows.Add(new MobileFusionIngredient(material.Name,
+                        material.CatalogUnitId, material.RequiredCount, totalOwned));
+                }
                 var costs = new List<string>();
                 if (ready.GoldCost > 0)
                     costs.Add("골드 " + ready.GoldCost + " (보유 " + economy.Wallet.Balance("gold") + ")");
@@ -1029,7 +1033,8 @@ namespace Ordr.Mobile.Mobile
                         ? " · 횟수 한도는 모바일 모델" : ""),
                     ready.SuggestedMaterialIds, missing, allUnitsOwned,
                     resultGrades[offer.RecipeId], nearReadyCommonCount,
-                    ready.StoryMaterialIds));
+                    ready.StoryMaterialIds, ingredientRows,
+                    ready.GoldCost, ready.LumberCost));
             }
             return result.AsReadOnly();
         }

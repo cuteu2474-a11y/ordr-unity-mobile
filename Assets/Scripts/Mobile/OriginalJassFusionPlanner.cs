@@ -11,13 +11,15 @@ namespace Ordr.Mobile.Mobile
         public string Name { get; private set; }
         public int RequiredCount { get; private set; }
         public int OwnedCount { get; private set; }
+        public int TotalOwnedCount { get; private set; }
         // Exact owned actors currently stationed in the story lane.
         public int StoryDeployedCount { get; private set; }
         public int MissingAfterRecallCount { get { return Math.Max(0, RequiredCount - OwnedCount - StoryDeployedCount); } }
         public int MissingCount { get { return Math.Max(0, RequiredCount - OwnedCount); } }
 
         internal JassFusionMaterial(string rawcode, string catalogUnitId,
-            string unitName, int required, int owned, int storyDeployed = 0)
+            string unitName, int required, int owned, int storyDeployed = 0,
+            int totalOwned = -1)
         {
             Rawcode = rawcode;
             CatalogUnitId = catalogUnitId;
@@ -26,6 +28,7 @@ namespace Ordr.Mobile.Mobile
             RequiredCount = required;
             OwnedCount = owned;
             StoryDeployedCount = storyDeployed;
+            TotalOwnedCount = totalOwned >= 0 ? totalOwned : owned + storyDeployed;
         }
     }
 
@@ -281,12 +284,11 @@ namespace Ordr.Mobile.Mobile
                     }
                     owned = boundIds.Count;
                 }
-                // Keep story actors visible as OWNED, never as immediately
-                // spendable. A user-initiated recall is required before fusion.
-                var waiting = new List<long>();
-                if (mapped && owned < required)
+                // Inventory shows owned instances regardless of battlefield.
+                // Selection still reserves only immediately spendable actors.
+                var storyCandidates = new List<long>();
+                if (mapped)
                 {
-                    var storyCandidates = new List<long>();
                     if (group != null)
                     {
                         foreach (string member in group)
@@ -302,7 +304,12 @@ namespace Ordr.Mobile.Mobile
                         if (storyUnits.TryGetValue(ingredientId, out ids))
                             storyCandidates.AddRange(ids);
                     }
-                    storyCandidates.Sort();
+                }
+                storyCandidates.Sort();
+                int totalOwned = (list == null ? 0 : list.Count) +
+                    storyCandidates.Count;
+                var waiting = new List<long>();
+                if (mapped && owned < required)
                     foreach (long id in storyCandidates)
                     {
                         if (waiting.Count >= required - owned) break;
@@ -310,10 +317,9 @@ namespace Ordr.Mobile.Mobile
                         waiting.Add(id);
                         storySelected.Add(id);
                     }
-                }
                 bindings.Add(new JassFusionMaterialBinding(rawcode, boundIds));
                 materials.Add(new JassFusionMaterial(rawcode, ingredientId,
-                    ingredientName, required, owned, waiting.Count));
+                    ingredientName, required, owned, waiting.Count, totalOwned));
                 if (waiting.Count > 0)
                     reasons.Add("스토리 파견 재료: " + rawcode + " " +
                         waiting.Count + "기 (복귀 후 조합 가능)");

@@ -150,6 +150,7 @@ namespace Ordr.Mobile.Mobile
                 var usedStory = new HashSet<long>();
                 var missing = new List<string>();
                 var descriptions = new List<string>();
+                var ingredientRows = new List<MobileFusionIngredient>();
                 var requirements = new Dictionary<string, int>(StringComparer.Ordinal);
                 var order = new List<string>();
                 int gold = 0, wood = 0, specials = 0;
@@ -227,6 +228,8 @@ namespace Ordr.Mobile.Mobile
                         missing.Add(title + " [" + rawcode +
                             "] (원본 객체는 확인됐지만 획득·보유 구현 미검증) x" +
                             required);
+                        ingredientRows.Add(new MobileFusionIngredient(
+                            title, null, required, 0));
                         continue;
                     }
                     available.Sort();
@@ -250,6 +253,8 @@ namespace Ordr.Mobile.Mobile
                         storyChosen.Add(id);
                         storyCount++;
                     }
+                    ingredientRows.Add(new MobileFusionIngredient(title,
+                        liveId, required, available.Count + waiting.Count));
                     if (storyCount > 0)
                         missing.Add(title + " 스토리 파견 " + storyCount + "기 · 복귀 필요");
                     if (assigned + storyCount < required)
@@ -274,6 +279,8 @@ namespace Ordr.Mobile.Mobile
                     {
                         allUnitsOwned = false;
                         missing.Add("PICK:A800 별도 랜덤 재료의 실물 보유를 확인할 수 없습니다.");
+                        ingredientRows.Add(new MobileFusionIngredient("랜덤 재료",
+                            null, instruction.Count, 0));
                         continue;
                     }
                     descriptions.Add(pickTitle + " x" + instruction.Count +
@@ -285,6 +292,8 @@ namespace Ordr.Mobile.Mobile
                         chosen.Add(id);
                         assigned++;
                     }
+                    ingredientRows.Add(new MobileFusionIngredient(
+                        pickTitle, null, instruction.Count, assigned));
                     if (assigned < instruction.Count)
                     {
                         allUnitsOwned = false;
@@ -323,7 +332,7 @@ namespace Ordr.Mobile.Mobile
                     titleResult + (sourceRoute == null
                         ? " (원본 등록식 · 미승인)" : " (원본 획득 분기 · 조합 아님)"),
                     summary, chosen, missing, allUnitsOwned,
-                    null, null, storyChosen));
+                    null, null, storyChosen, ingredientRows, gold, wood));
             }
             result.Sort((a, b) =>
                 string.CompareOrdinal(a.Title, b.Title));

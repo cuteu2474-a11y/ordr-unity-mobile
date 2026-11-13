@@ -50,12 +50,15 @@ namespace Ordr.Mobile.Mobile
                 List<long> selected;
                 List<long> storyMaterials;
                 List<string> missing;
+                List<MobileFusionIngredient> ingredientRows;
                 bool allOwned;
                 FindMaterialsAndDeficits(recipe, owned, out selected,
-                    out storyMaterials, out missing, out allOwned);
+                    out storyMaterials, out missing, out allOwned,
+                    out ingredientRows);
                 result.Add(new MobileFusionPreview(recipe.Id, recipe.Name,
                     BuildMaterialSummary(recipe), selected, missing,
-                    allOwned, recipe.ResultGrade, null, storyMaterials));
+                    allOwned, recipe.ResultGrade, null, storyMaterials,
+                    ingredientRows, recipe.Gold, recipe.Lumber));
             }
             result.Sort((a, b) => string.CompareOrdinal(a.RecipeId, b.RecipeId));
             return result.AsReadOnly();
@@ -133,11 +136,12 @@ namespace Ordr.Mobile.Mobile
         private void FindMaterialsAndDeficits(VerifiedFusionRecipe recipe,
             IReadOnlyList<MobileUnitSnapshot> owned, out List<long> selected,
             out List<long> storyMaterials, out List<string> missing,
-            out bool allOwned)
+            out bool allOwned, out List<MobileFusionIngredient> ingredientRows)
         {
             selected = new List<long>();
             storyMaterials = new List<long>();
             missing = new List<string>();
+            ingredientRows = new List<MobileFusionIngredient>();
             allOwned = true;
             var byType = new Dictionary<string, List<long>>(StringComparer.Ordinal);
             var byStory = new Dictionary<string, List<long>>(StringComparer.Ordinal);
@@ -160,6 +164,10 @@ namespace Ordr.Mobile.Mobile
                 List<long> active, parked;
                 byType.TryGetValue(need.UnitId, out active);
                 byStory.TryGetValue(need.UnitId, out parked);
+                ingredientRows.Add(new MobileFusionIngredient(
+                    need.DisplayName, need.UnitId, need.Count,
+                    (active == null ? 0 : active.Count) +
+                    (parked == null ? 0 : parked.Count)));
                 int available = active == null ? 0 : Math.Min(active.Count, need.Count);
                 for (int i = 0; i < available; i++) selected.Add(active[i]);
                 int parkedNeeded = Math.Max(0, need.Count - available);

@@ -2,6 +2,8 @@
 
 # 코드 구조
 
+**조합 UI 공통 표시 모델:** `MobileFusionPreview.Ingredients`/`MobileFusionIngredient`에서 원본 재료명·필요량·실제 총 보유량·초상화 카탈로그 ID·골드/목재 조건을 구조화하며 `OriginalJassFusionPlanner`·`Original323CommonFusionPort`·읽기 전용 포트·보조 조합으로 합칩니다. `OrdrMobileTouchPanel`은 상단 선택 결과/재료 사진, 버튼식 필터, 간결한 결과 목록, 하단 1건 실행/명시적 복귀만 제어하고 원본의 승인·잠금·소비 조건을 수정하지 않습니다. 코드만 수정했으며 Unity·Android 검증은 요청 전 보류입니다.
+
 **스토리 파견 재료의 조합 표시:** `OriginalJassFusionPlanner`는 메인 전장 재료와 스토리 소유 재료를 별도 집계해 수량·정확한 인스턴스 ID를 제공하며 `Original323CommonFusionPort`는 복귀 전 제작 금지/임박 오분류를 유지합니다. `OriginalJassReadOnlyFusionPort`·`AssistedFusionService`도 소유량 표시와 복귀 대기 상태를 구분합니다. `MobileFusionPreview.StoryMaterialInstances` → `OrdrMobileTouchPanel.DrawFusionConfirmation`의 명시적 `RequestStoryRecall`(1회=1기) → 원본 조합 확정 재검증. 실제 교체 거래의 `IsLockedFromRosterTransactions` 보호는 유지합니다.
 
 **구매 위성·임시 소환수 전장 게이트:** `CharacterCombatRuntime.SourceModelIndependentAttacks.cs`는 영구 베가펑크 위성(`practice-satellite:`)을 플레이어가 구매한 전장 고정 독립 객체로 판정하여 제작자가 제거돼도 공격·기술·오라가 남도록 하고, 나머지 임시 소환수·블랙 애로우는 제작자 삭제/해독/파견 시 멈춥니다. `CharacterCombatRuntime.SourceModelEffects.cs`는 대상 유닛 및 독립 객체의 실제 전장으로 오라 자격을 통합합니다. 검증: `SourceModelScriptAttackSkillTests`·`Original323SoloStoryScenarioTests`·`SourceModelPracticeBattleTests`의 종전 실패 경로(실행 미확인).

@@ -45,6 +45,28 @@ namespace Ordr.Mobile.Mobile
         }
     }
 
+    // Display-only ownership model. Story, shared objectives and decoding are
+    // counted as owned; only the authoritative transaction decides spendability.
+    public sealed class MobileFusionIngredient
+    {
+        public string Name { get; private set; }
+        public string CatalogUnitId { get; private set; }
+        public int RequiredCount { get; private set; }
+        public int OwnedCount { get; private set; }
+
+        public MobileFusionIngredient(string name, string catalogUnitId,
+            int requiredCount, int ownedCount)
+        {
+            if (string.IsNullOrWhiteSpace(name) || requiredCount < 1 ||
+                ownedCount < 0)
+                throw new ArgumentException("조합 재료 표시 정보가 올바르지 않습니다.");
+            Name = name;
+            CatalogUnitId = catalogUnitId;
+            RequiredCount = requiredCount;
+            OwnedCount = ownedCount;
+        }
+    }
+
     public sealed class MobileFusionPreview
     {
         public string RecipeId { get; private set; }
@@ -58,6 +80,9 @@ namespace Ordr.Mobile.Mobile
         public IReadOnlyList<long> SuggestedMaterialInstances { get; private set; }
         // Owned in the story lane, but never silently spendable before recall.
         public IReadOnlyList<long> StoryMaterialInstances { get; private set; }
+        public IReadOnlyList<MobileFusionIngredient> Ingredients { get; private set; }
+        public int GoldCost { get; private set; }
+        public int WoodCost { get; private set; }
         public IReadOnlyList<string> MissingMaterials { get; private set; }
         public bool IsReady { get { return MissingMaterials.Count == 0; } }
         // Unit ownership is separate from execution authorisation, cost and
@@ -73,7 +98,9 @@ namespace Ordr.Mobile.Mobile
             string originalMaterialsAndCost, IEnumerable<long> materialIds,
             IEnumerable<string> missingMaterials, bool? allUnitMaterialsOwned = null,
             string resultGrade = null, int? missingCommonUnits = null,
-            IEnumerable<long> storyMaterialInstances = null)
+            IEnumerable<long> storyMaterialInstances = null,
+            IEnumerable<MobileFusionIngredient> ingredients = null,
+            int goldCost = 0, int woodCost = 0)
         {
             if (string.IsNullOrWhiteSpace(recipeId) || string.IsNullOrWhiteSpace(title) ||
                 string.IsNullOrWhiteSpace(originalMaterialsAndCost))
@@ -114,6 +141,19 @@ namespace Ordr.Mobile.Mobile
                     waitingForRecall.Add(id);
                 }
             StoryMaterialInstances = waitingForRecall.AsReadOnly();
+            if (goldCost < 0 || woodCost < 0)
+                throw new ArgumentOutOfRangeException(nameof(goldCost));
+            GoldCost = goldCost;
+            WoodCost = woodCost;
+            var materialDisplay = new List<MobileFusionIngredient>();
+            if (ingredients != null)
+                foreach (var ingredient in ingredients)
+                {
+                    if (ingredient == null)
+                        throw new ArgumentException("조합 재료 표시 항목이 비어 있습니다.");
+                    materialDisplay.Add(ingredient);
+                }
+            Ingredients = materialDisplay.AsReadOnly();
             HasAllUnitMaterials = allUnitMaterialsOwned ?? (missing.Count == 0);
         }
     }
