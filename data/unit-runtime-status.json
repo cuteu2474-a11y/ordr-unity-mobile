@@ -8,7 +8,7 @@
     "modelEffectOwners": 194,
     "connectedModelEffectDefinitions": 277,
     "documentedSkillEntries": 554,
-    "documentedPassiveEntries": 295,
+    "documentedPassiveEntries": 300,
     "fullyVerifiedUnits": 0,
     "connectedManualUnitFunctions": 2
   },
@@ -3098,7 +3098,7 @@
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 2,
-      "documentedPassives": 4,
+      "documentedPassives": 9,
       "fullUnitImplementationVerified": false,
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",

@@ -51,6 +51,8 @@
 
 `data/`가 원본 근거와 생성 입력입니다. `Assets/Resources/OrdrData/`는 Editor 캐시이므로 직접 수정·커밋하지 않습니다. 원본 W3X·개인용 도감 이미지·계정 정보·서명 키도 커밋하지 않습니다.
 
+도감 프로필의 기술/패시브를 변경하면 **같은 커밋에서** `python3 tools/rebuild_tooltip_inventory_exports.py --write`로 `unit-runtime-status.json`의 문서화된 수치와 `original-2323C-skill-research-queue.json`을 동시 재생성하고, `--verify`로 일치 여부를 확인합니다. 이 도구는 실제 연결 모델 효과·원작 검증 상태를 변경하지 않습니다.
+
 카탈로그/실행 범위 입력을 바꾸면 `python3 tools/build_character_runtime_coverage.py --verify`로 저장된 집계와 대조합니다. 불일치 시 생성 후 ID·원본 객체·승인 범위의 변경을 검토합니다. 이 명령은 현재 JSON 입력 간 일치 검사이며 C# 실행 지원을 새로 내보내거나 게임 플레이를 검증하지 않습니다. 실제 명령 실행은 아래 허가 규칙을 따릅니다.
 
 캐릭터 스킬에는 **554개 기술 ID별·효과별 감사표**를 사용합니다. `data/character-skill-execution-witnesses.json`은 실제 핸들러와 호출부, 일치하는 기술·효과 인덱스를 확인한 건만 기록합니다. `python3 tools/audit_character_skill_coverage.py --write`는 [감사 JSON·CSV·문서](docs/스킬-구현-현황.md)를 재생성하고 `--verify`는 일치 여부만 검사합니다. **코드 근거/일부 근거/문자열 발견/미확정은 어느 것도 Unity 동작·APK 실기·원작 결과 검증이 아니며, 미확정을 곧 미구현이라고 선언해서는 안 됩니다.** 새 기술 착수 전 실행 호출 경로와 중복 콜백 여부를 조사하고, 구현 후 증거와 전수표를 같은 커밋에서 갱신합니다.

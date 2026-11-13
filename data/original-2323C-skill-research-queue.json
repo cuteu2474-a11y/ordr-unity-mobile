@@ -9,7 +9,7 @@
     "unitsWithoutTooltipProfile": 77,
     "unitsWithConnectedModelEffects": 194,
     "skillEntries": 554,
-    "passiveEntries": 295,
+    "passiveEntries": 300,
     "skillEntriesOnMappedUnits": 548,
     "skillFamilies": {
       "active-or-automatic-mobile": 146,
@@ -130,7 +130,7 @@
       "magicDamageAmplification": 14,
       "magicDamageMultiplier": 1,
       "magicResistanceReduction": 9,
-      "magical": 348,
+      "magical": 350,
       "magicalDamageOverTime": 4,
       "magicalDoT": 6,
       "magnetObjectGain": 1,
@@ -178,7 +178,7 @@
       "triggerSkill": 1,
       "upgradeSkill": 1
     },
-    "reusableTemplateGroups": 271,
+    "reusableTemplateGroups": 272,
     "originalJassSkillsVerified": 0
   },
   "templateGroups": [
@@ -706,22 +706,6 @@
       "implementationStatus": "not-original-verified"
     },
     {
-      "family": "attack-triggered",
-      "documentedTrigger": "onAttack",
-      "documentedEffectTypes": [
-        "fixed",
-        "physical"
-      ],
-      "skillCount": 4,
-      "skills": [
-        "TR-19-S02",
-        "LI-03-S01",
-        "MY-10-S04",
-        "MY-11-S04"
-      ],
-      "implementationStatus": "not-original-verified"
-    },
-    {
       "family": "active-or-automatic-mobile",
       "documentedTrigger": "activeMana",
       "documentedEffectTypes": [
@@ -778,6 +762,21 @@
         "H-10-S02",
         "TR-22-S03",
         "LI-10-S03"
+      ],
+      "implementationStatus": "not-original-verified"
+    },
+    {
+      "family": "attack-triggered",
+      "documentedTrigger": "onAttack",
+      "documentedEffectTypes": [
+        "fixed",
+        "physical"
+      ],
+      "skillCount": 3,
+      "skills": [
+        "TR-19-S02",
+        "MY-10-S04",
+        "MY-11-S04"
       ],
       "implementationStatus": "not-original-verified"
     },
@@ -2874,6 +2873,20 @@
       "skillCount": 1,
       "skills": [
         "TR-08-S02"
+      ],
+      "implementationStatus": "not-original-verified"
+    },
+    {
+      "family": "attack-triggered",
+      "documentedTrigger": "onAttack",
+      "documentedEffectTypes": [
+        "fixed",
+        "magical",
+        "physical"
+      ],
+      "skillCount": 1,
+      "skills": [
+        "LI-03-S01"
       ],
       "implementationStatus": "not-original-verified"
     },
@@ -11908,6 +11921,7 @@
       "implementationFamily": "attack-triggered",
       "documentedEffectTypes": [
         "fixed",
+        "magical",
         "physical"
       ],
       "mapUnitRawcode": "h08O",
@@ -18764,7 +18778,7 @@
       ],
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
-      "documentedPassiveCount": 4,
+      "documentedPassiveCount": 9,
       "connectedModelEffects": [
         "마르코 · 크리티컬 · 객체 확률 15%",
         "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"

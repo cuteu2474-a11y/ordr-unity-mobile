@@ -1,5 +1,7 @@
 # 코드 구조
 
+**도감 파생 데이터 재생성:** `tools/rebuild_tooltip_inventory_exports.py --write`는 `data/character-skill-profiles.json`으로부터 문서화된 기술/패시브 개수만 `data/unit-runtime-status.json`에 동기화하고 `tools/classify_character_skills.py`의 분류 규칙으로 `data/original-2323C-skill-research-queue.json`을 재생성합니다. `--verify`는 변경 없이 두 출력이 최신인지 확인합니다. 네이티브 연결 효과·검증 등급·유닛 획득 권한에는 영향 없음.
+
 ## C07 마르코 형태별 전투 경로(스킬 설명 기반, 실행 미검증)
 
 - `data/character-skill-profiles.json`의 LI-03에 인간형 10% 현재체력20% 폭발/특수몹20만, 불사조 8인 75만 마법, 인간375범위100%마법 및 불사조400범위80%물리 평타, 불사조 공격시 HP+1, 형태별 치명타 도감 데이터를 보강. 원본 출처: https://ordsearch.net/characters/326
