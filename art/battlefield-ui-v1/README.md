@@ -9,7 +9,7 @@
 | [quantity-button-v1.png](quantity-button-v1.png) | 남은 수량 버튼의 빈 바탕 | ‘남은 수량’과 5개/0개 등은 별도로 표시. 같은 PNG를 금색·회색으로 틴트해 상태 구분 |
 | [battlefield-ground-v1.png](battlefield-ground-v1.png) | 메인·스토리 공통 석재 바닥 | 메인은 차가운 톤으로 전체 표시, 스토리는 가로로 잘라 약간 따뜻한 톤으로 표시 |
 
-스토리 건물은 [기존 요새](../story-building-v1/README.md)를 재사용합니다. 가로 행동 버튼도 [기존 공통 버튼](../ui/button-v1/README.md)을 유지합니다. 이전 [팝업 패널 이미지](../ui/skin-v1/README.md)를 오른쪽 시설 메뉴 전체의 테두리로 사용하는 시안은 채택하지 않습니다. 다른 팝업에 쓸 수 있는 원본은 보존합니다.
+스토리 건물은 [기존 요새](../story-building-v1/README.md)를 재사용합니다. 행동 버튼의 터치와 수량 처리는 기존 `OrdrMobileUiTheme`/게임 로직을 유지합니다. 카툰풍 UI 원본은 별도 보관되며 런타임 연결 전입니다.
 
 ## 적용 원칙
 

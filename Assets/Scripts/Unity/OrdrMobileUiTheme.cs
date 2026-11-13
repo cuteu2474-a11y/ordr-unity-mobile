@@ -278,13 +278,12 @@ namespace Ordr.Mobile.Unity
             themedSkin.verticalScrollbarThumb.stretchHeight = true;
             themedSkin.scrollView = new GUIStyle(source.scrollView);
             themedSkin.scrollView.normal.background = null;
-            ApplySharedArtwork();
+            InitializeAuxiliaryStyles();
         }
 
-        private static void ApplySharedArtwork()
+        private static void InitializeAuxiliaryStyles()
         {
-            // Read-only metrics retain their plain card. The permanent right
-            // drawer remains borderless; only explicit confirmations get a frame.
+            // Keep controls usable without legacy image dependencies.
             statusCard = new GUIStyle(accordionClosed);
             smallButton = new GUIStyle(themedSkin.button);
             smallButton.padding = new RectOffset(4,4,6,6);
@@ -293,18 +292,6 @@ namespace Ordr.Mobile.Unity
             confirmationPanel.padding = new RectOffset(16,16,14,14);
             helpBubble = new GUIStyle(accordionBody);
             helpBubble.padding = new RectOffset(22,18,16,32);
-            var ordinary = new Color(.75f,.87f,1f);
-            OrdrMobileUiArtwork.Apply(themedSkin.button, OrdrMobileUiArtwork.Face.WideButton, ordinary, true);
-            OrdrMobileUiArtwork.Apply(navButton, OrdrMobileUiArtwork.Face.WideButton, ordinary, true);
-            OrdrMobileUiArtwork.Apply(selectedTab, OrdrMobileUiArtwork.Face.WideButton, Gold, true);
-            OrdrMobileUiArtwork.Apply(primaryButton, OrdrMobileUiArtwork.Face.WideButton, Aqua, true);
-            OrdrMobileUiArtwork.Apply(skillButton, OrdrMobileUiArtwork.Face.WideButton, Aqua, true);
-            OrdrMobileUiArtwork.Apply(accordionClosed, OrdrMobileUiArtwork.Face.WideButton, ordinary, true);
-            OrdrMobileUiArtwork.Apply(accordionOpen, OrdrMobileUiArtwork.Face.WideButton, Gold, true);
-            OrdrMobileUiArtwork.Apply(closeButton, OrdrMobileUiArtwork.Face.SquareButton, Color.white, true);
-            OrdrMobileUiArtwork.Apply(smallButton, OrdrMobileUiArtwork.Face.SquareButton, ordinary, true);
-            OrdrMobileUiArtwork.Apply(confirmationPanel, OrdrMobileUiArtwork.Face.Popup, Color.white, false);
-            OrdrMobileUiArtwork.Apply(helpBubble, OrdrMobileUiArtwork.Face.Speech, Color.white, false);
         }
 
         private static void Background(GUIStyle style, Texture2D normal,

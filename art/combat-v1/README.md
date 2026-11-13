@@ -71,4 +71,4 @@
 - 원본 무결성: [checksums.json](checksums.json)의 SHA-256과 Git blob SHA로 식별합니다.
 - 이번 작업은 파일 보관·사용법 작성과 업로드 내용 일치 확인입니다. Unity·Python·NUnit·APK 실행이나 Actions 조회는 수행하지 않았습니다.
 
-다른 chat에서는 **“`art/combat-v1/README.md`를 읽고 이 폴더의 적·이펙트 원본을 사용해줘”**라고 전달하시면 됩니다. 공통 버튼은 [버튼 v1](../ui/button-v1/README.md)을 사용합니다.
+다른 chat에서는 **“`art/combat-v1/README.md`를 읽고 이 폴더의 적·이펙트 원본을 사용해줘”**라고 전달하시면 됩니다.

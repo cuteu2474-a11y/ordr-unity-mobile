@@ -6,53 +6,6 @@ namespace Ordr.Mobile.Tests
 {
     public sealed class OrdrBattlefieldArtTests
     {
-        [TestCase("WideButton", "OrdrArt/Ui/WideButton", true)]
-        [TestCase("SquareButton", "OrdrArt/Ui/SquareButton", true)]
-        [TestCase("Popup", "OrdrArt/Ui/PopupPanel", false)]
-        [TestCase("Speech", "OrdrArt/Ui/SpeechBubble", false)]
-        public void SharedUiArtworkImportsAndBuildsCachedSlicedFaces(
-            string faceName, string resource, bool interactive)
-        {
-            var raw = Resources.Load<Texture2D>(resource);
-            Assert.IsNotNull(raw, "The original image must be in the player Resources build.");
-            Assert.IsTrue(raw.isReadable, "One-time alpha trimming requires the checked-in import settings.");
-            bool transparent = false, visible = false;
-            foreach (var pixel in raw.GetPixels32())
-            {
-                transparent |= pixel.a == 0;
-                visible |= pixel.a >= 32;
-            }
-            Assert.IsTrue(transparent, "Do not flatten the original transparent background.");
-            Assert.IsTrue(visible, "A fully transparent import must not pass as applied artwork.");
-            var type = typeof(OrdrMobileTouchPanel).Assembly.GetType("Ordr.Mobile.Unity.OrdrMobileUiArtwork");
-            const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.NonPublic |
-                System.Reflection.BindingFlags.Static;
-            Assert.IsNotNull(type);
-            var faceType = type.GetNestedType("Face", System.Reflection.BindingFlags.NonPublic);
-            var apply = type.GetMethod("Apply", flags);
-            Assert.IsNotNull(faceType);
-            Assert.IsNotNull(apply);
-            var face = System.Enum.Parse(faceType, faceName);
-            var first = new GUIStyle();
-            var second = new GUIStyle();
-            apply.Invoke(null, new object[] { first, face, Color.white, interactive });
-            apply.Invoke(null, new object[] { second, face, Color.white, interactive });
-            Assert.IsNotNull(first.normal.background, "Fallback without an imported face is a failure here.");
-            Assert.AreSame(first.normal.background, second.normal.background);
-            Assert.IsFalse(first.normal.background.isReadable, "Tinted GPU faces should release CPU copies.");
-            Assert.LessOrEqual(Mathf.Max(first.normal.background.width, first.normal.background.height),
-                faceName == "SquareButton" ? 96 : 384);
-            Assert.Greater(first.border.left, 0);
-            Assert.Less(first.border.left + first.border.right, first.normal.background.width);
-            Assert.Less(first.border.top + first.border.bottom, first.normal.background.height);
-            if (interactive)
-            {
-                Assert.AreNotSame(first.normal.background, first.active.background);
-                Assert.AreNotSame(first.normal.background, first.hover.background);
-            }
-            else Assert.AreSame(first.normal.background, first.active.background);
-        }
-
         [Test]
         public void AuthoredAssetsAreCachedAndDontNeedNetworkOrPrivatePhotos()
         {
