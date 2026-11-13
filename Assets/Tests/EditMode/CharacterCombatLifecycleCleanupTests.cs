@@ -131,3 +131,4 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0, fired);
         }
     }
+}
