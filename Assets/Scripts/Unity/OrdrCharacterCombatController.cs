@@ -911,6 +911,7 @@ namespace Ordr.Mobile.Unity
             return PracticeCompuExchange.Exchange(recipe);
         }
         public SourceModelUnitGambling PracticeTierUnitGambling { get; private set; }
+        public SourceModelMaterialSupport PracticeMaterialSupport { get; private set; }
         public SourceModelUnitReroll PracticeUnitReroll { get; private set; }
         public ManualActionResult RequestUnitReroll(long actor)
         {
@@ -3556,6 +3557,12 @@ namespace Ordr.Mobile.Unity
                                 () => runGate.CanAdvance);
                             var gamblingRoster = new Original323UnitGamblingWorld(Combat, Units, MapBaseStats,
                                 map, gamblingRoutes, deferredWispAbilities);
+                            PracticeMaterialSupport = new SourceModelMaterialSupport(
+                                SharedEconomy.Wallet, Combat.Game, sessionScriptRandom,
+                                new MobileUniformWispRandom(), gamblingRoster,
+                                () => runGate.CanAdvance);
+                            PracticeMaterialSupport.PostCommitObserverFailed += Debug.LogException;
+                            PracticeMoneyGamblingDesk.ConfigureMaterialSupport(PracticeMaterialSupport);
                             PracticeTierUnitGambling = new SourceModelUnitGambling(SharedEconomy.Wallet, Combat.Game,
                                 sessionScriptRandom, new MobileUniformWispRandom(), gamblingRoster, () => runGate.CanAdvance,
                                 () => PracticeGamblingNavigation.Navigation,

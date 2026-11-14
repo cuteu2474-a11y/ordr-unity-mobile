@@ -4069,10 +4069,8 @@ namespace Ordr.Mobile.Unity
             if (!foundMoney)
                 GUILayout.Label("이용 가능한 돈 도박 없음", OrdrMobileUiTheme.Explanation);
 
-            // Original ORDR has a paid 100-gold common/uncommon support action.
-            // An older guide confirms its purpose, NOT the 2.323[C] source
-            // cost/stock/lottery rules. Route only an actual registered source
-            // offer; never invent a paid RNG transaction or grant a free unit.
+            // Draw the registered transactional support offer when the live
+            // roster/economy service is available, otherwise keep it disabled.
             bool supportConnected = false;
             foreach (var offer in economyOffers)
                 if (IsMaterialSupportOffer(offer))
@@ -4159,7 +4157,9 @@ namespace Ordr.Mobile.Unity
         private string GamblingShortName(MobileManualOffer offer)
         {
             string id = offer.Id;
-            if (IsMaterialSupportOffer(offer)) return "물품 지원";
+            if (IsMaterialSupportOffer(offer))
+                return "물품 지원 " + (controller.PracticeMaterialSupport == null ? "" :
+                    controller.PracticeMaterialSupport.RemainingPurchases + "/2");
             if (id == SourceModelRegularMoneyGambling.OfferId)
                 return "일반 " + (controller.PracticeMoneyGambling != null ?
                     controller.PracticeMoneyGambling.Stock + "/3" : "");
@@ -4183,6 +4183,8 @@ namespace Ordr.Mobile.Unity
 
         private string GamblingShortCost(string id)
         {
+            if (id == SourceModelMaterialSupport.OfferId)
+                return SourceModelMaterialSupport.GoldCost + "G";
             if (id == SourceModelRegularMoneyGambling.OfferId)
                 return SourceModelRegularMoneyGambling.GoldCost + "G";
             if (id == SourceModelMoneyGamblingDesk.HighOfferId)

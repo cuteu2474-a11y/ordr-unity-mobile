@@ -53,6 +53,12 @@ namespace Ordr.Mobile.Mobile
         public SourceModelRegularMoneyGambling High { get; }
         public SourceModelOtherworldUnitGambling Otherworld { get; private set; }
         public SourceModelUnitGambling UnitTiers { get; private set; }
+        public SourceModelMaterialSupport MaterialSupport { get; private set; }
+        public void ConfigureMaterialSupport(SourceModelMaterialSupport service)
+        {
+            if (MaterialSupport != null) throw new InvalidOperationException("물품 지원 중복 연결");
+            MaterialSupport = service ?? throw new ArgumentNullException(nameof(service));
+        }
         public void ConfigureUnitTiers(SourceModelUnitGambling service)
         {
             if (UnitTiers != null) throw new InvalidOperationException("유닛 도박 중복 연결");
@@ -169,6 +175,7 @@ namespace Ordr.Mobile.Mobile
                             rareWorld == null ? " · 소환 월드 미연결" :
                             " · 재고 " + rareStock + "/1"))
                 };
+                if (MaterialSupport != null) graduatedOffers.AddRange(MaterialSupport.AvailableOffers(category));
                 if (Otherworld != null) graduatedOffers.AddRange(Otherworld.AvailableOffers(category));
                 if (UnitTiers != null) graduatedOffers.AddRange(UnitTiers.AvailableOffers(category));
                 return graduatedOffers.AsReadOnly();
@@ -176,6 +183,7 @@ namespace Ordr.Mobile.Mobile
             var offers = new List<MobileManualOffer>();
             offers.AddRange(Regular.AvailableOffers(category));
             offers.AddRange(High.AvailableOffers(category));
+            if (MaterialSupport != null) offers.AddRange(MaterialSupport.AvailableOffers(category));
             if (Otherworld != null) offers.AddRange(Otherworld.AvailableOffers(category));
             if (UnitTiers != null) offers.AddRange(UnitTiers.AvailableOffers(category));
             return offers.AsReadOnly();
@@ -193,6 +201,8 @@ namespace Ordr.Mobile.Mobile
                 if (offerId == SourceModelRegularMoneyGambling.OfferId)
                     return Regular.Confirm(category, offerId);
                 if (offerId == HighOfferId) return High.Confirm(category, offerId);
+                if (MaterialSupport != null && offerId == SourceModelMaterialSupport.OfferId)
+                    return MaterialSupport.Confirm(category, offerId);
                 if (offerId == SourceModelOtherworldUnitGambling.OfferId && Otherworld != null)
                     return Otherworld.Confirm(category, offerId);
                 if (UnitTiers != null && (offerId == Original323UnitGamblingRules.OfferId(OriginalGambleTier.Low) ||
