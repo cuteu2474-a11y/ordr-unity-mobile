@@ -155,7 +155,13 @@ namespace Ordr.Mobile.Mobile
             if (processing || sequence != 0 ||
                 MaterialSupport == null != (state.MaterialSupport == null))
                 throw new InvalidOperationException("새 도박소 서비스 구성이 저장본과 다릅니다.");
-            // All child snapshots are validated before any local changes.
+            // All child snapshots and their shared-wallet consistency are
+            // checked before the first child mutates its local timer/draw.
+            if (state.High.Purchases != High.PurchaseCount ||
+                state.High.Returned != High.GoldReturned ||
+                (state.MaterialSupport != null &&
+                 state.MaterialSupport.PurchasedCount != MaterialSupport.PurchasedCount))
+                throw new FormatException("졸업/물품 지원 장부와 공유 지갑이 다릅니다.");
             Regular.RestoreState(state.Regular);
             High.RestoreState(state.High);
             MaterialSupport?.RestoreState(state.MaterialSupport);

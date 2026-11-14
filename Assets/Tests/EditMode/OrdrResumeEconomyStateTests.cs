@@ -64,6 +64,21 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void InconsistentMaterialSupportWalletCannotBeRebuilt()
+        {
+            var wallet = Wallet(200);
+            var game = new GameSession(); game.Start();
+            var old = new SourceModelMoneyGamblingDesk(wallet, game,
+                new MobileRollbackWispRandom(222), () => 1, () => true);
+            var state = old.CaptureState();
+            state.MaterialSupport = new SourceModelMaterialSupportState { PurchasedCount = 1 };
+            var restored = new SourceModelMoneyGamblingDesk(wallet, game,
+                new MobileRollbackWispRandom(222), () => 1, () => true);
+            // No registered support port and no corresponding purchase receipt.
+            Assert.Throws<InvalidOperationException>(() => restored.RestoreState(state));
+        }
+
+        [Test]
         public void PendingMaterialSupportRejectsForgedRawcodeAndInvalidGrades()
         {
             var valid = new SourceModelMaterialSupportState {

@@ -125,7 +125,7 @@ namespace Ordr.Mobile.Core
         // running game, and never paying start/mission rewards on recovery.
         public static void Validate(OrdrCoreCheckpointState state)
         {
-            RestoreCoreOnly(state);
+            var restored = RestoreCoreOnly(state);
             ValidateCombatDraft(state);
             if (state.ScriptRandom != null)
                 MobileRollbackWispRandom.Restore(state.ScriptRandom);
@@ -134,13 +134,38 @@ namespace Ordr.Mobile.Core
             if (state.OtherworldGambling != null)
                 SourceModelOtherworldUnitGambling.ValidateState(state.OtherworldGambling);
             if (state.UnitReroll != null)
+            {
                 SourceModelUnitReroll.ValidateState(state.UnitReroll);
+                if (state.UnitReroll.PendingActor > 0)
+                {
+                    bool exists = false;
+                    foreach (var unit in state.Roster.Units)
+                        if (unit.InstanceId == state.UnitReroll.PendingActor)
+                            exists = true;
+                    if (!exists)
+                        throw new FormatException("보류된 리롤의 실물 유닛 ID가 없습니다.");
+                }
+            }
+            if (state.OtherworldGambling?.Pending != null &&
+                state.OtherworldGambling.Pending.RiskBonus !=
+                    restored.Economy.Wallet.Balance(
+                        Original323OtherworldGamblingRules.RiskBonusResource))
+                throw new FormatException("이세계 도박 위험 보너스와 공유 지갑이 다릅니다.");
             if ((state.UnitGambling != null || state.OtherworldGambling != null ||
                 state.UnitReroll != null) && state.ScriptRandom == null)
                 throw new FormatException("유닛 도박 보류 결과의 공통 난수열이 누락됐습니다.");
             if (state.MoneyDesk != null)
             {
                 SourceModelMoneyGamblingDesk.ValidateState(state.MoneyDesk);
+                var wallet = restored.Economy.Wallet;
+                if (state.MoneyDesk.High.Purchases != wallet.Balance(
+                        SourceModelMoneyGamblingDesk.HighCountResource) ||
+                    state.MoneyDesk.High.Returned != wallet.Balance(
+                        SourceModelMoneyGamblingDesk.HighReturnResource) ||
+                    (state.MoneyDesk.MaterialSupport != null &&
+                     state.MoneyDesk.MaterialSupport.PurchasedCount != wallet.Balance(
+                        SourceModelMaterialSupport.PurchaseCountResource)))
+                    throw new FormatException("도박소 구매 장부와 공통 지갑이 다릅니다.");
                 if (state.ScriptRandom == null)
                     throw new FormatException("도박소 상태를 복원할 공통 난수 기록이 없습니다.");
                 if (state.MoneyDesk.LastClock > state.LogicalTime ||
