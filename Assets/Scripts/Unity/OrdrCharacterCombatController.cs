@@ -979,7 +979,8 @@ namespace Ordr.Mobile.Unity
                     ConfigureVerifiedStoryBuildingDispatch(
                         new Original323SoloStoryMovement(Combat, MapBaseStats));
                 var scenario = new Original323SoloStoryScenario(
-                    Combat, buildings, SharedEconomy);
+                    Combat, buildings, SharedEconomy,
+                    (minimum, maximum) => sessionScriptRandom.NextInclusive(minimum, maximum));
                 var progression = new Original323StoryMobileProgression(
                     SharedEconomy.Wallet);
                 try

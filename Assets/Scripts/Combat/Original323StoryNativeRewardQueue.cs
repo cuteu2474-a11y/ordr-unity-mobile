@@ -42,7 +42,7 @@ namespace Ordr.Mobile.Combat
     // JASS 2.323[C] story victory functions CNz..CRG.
     // A queued entitlement is NOT the same as an executed native effect:
     // no false "hero XP" or ancient ship actors without real target mapping.
-    public sealed class Original323StoryNativeRewardQueue
+    public sealed partial class Original323StoryNativeRewardQueue
     {
         private readonly List<Original323StoryNativeReward> awards =
             new List<Original323StoryNativeReward>();

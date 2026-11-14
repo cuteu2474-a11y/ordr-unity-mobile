@@ -177,6 +177,25 @@ namespace Ordr.Mobile.Combat
             if (rounds.Count != expected)
                 throw new FormatException("원본의 일반·보스 라운드 모델 자료 누락");
         }
+        // A saved wave's evidence includes native first/transition lead-in.
+        // Reusing the base plan alone would reject valid mid-round saves.
+        public VerifiedWavePlan BuildRecoverablePracticePlan(int number,
+            Original323MonsterWaveIdentityCatalog original,
+            bool mobileBossPatrol = false)
+        {
+            var basePlan = BuildPracticePlan(number, original, mobileBossPatrol);
+            double lead = ModelLeadInSeconds(number);
+            if (lead <= 0) return basePlan;
+            var shifted = new List<VerifiedWaveEnemy>();
+            foreach (var spawn in basePlan.Spawns)
+                shifted.Add(new VerifiedWaveEnemy(
+                    spawn.AtSeconds + lead, spawn.EnemyId, spawn.Health,
+                    spawn.Kind, spawn.X, spawn.Y, spawn.PathProgress, spawn.Defenses,
+                    spawn.OriginalRawcode, spawn.NativePassiveTargetProfile));
+            return new VerifiedWavePlan(number, shifted,
+                basePlan.Evidence + "; MODEL_ONLY: original first/transition lead-in");
+        }
+
         private static double Number(Dictionary<string, object> row, string key)
         {
             double value;

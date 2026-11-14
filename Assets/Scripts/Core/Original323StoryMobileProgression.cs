@@ -7,7 +7,7 @@ namespace Ordr.Mobile.Core
     // Real local campaign flags for source-confirmed story research and base
     // otherworld-gambling charges. Other native effects are never marked as applied
     // until their actual actor/hero subsystem acknowledges the action.
-    public sealed class Original323StoryMobileProgression :
+    public sealed partial class Original323StoryMobileProgression :
         IOriginal323StoryNativeRewardPort
     {
         public const string GreenBloodUseResourceId = "story:green-blood:A13A";
