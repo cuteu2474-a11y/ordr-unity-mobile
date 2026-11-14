@@ -33,7 +33,17 @@ namespace Ordr.Mobile.Mobile
             BruleeCopyPrefix + source + ":" + template;
         public static string HibariBento(long source, long ally) =>
             HibariBentoPrefix + source + ":" + ally;
-        public static string HibariReceipt(long id) => HibariBentoPrefix + "spent:" + id;
+        // Original JASS Bux/Buy/Buz: A0HL spawns one h0CN,
+        // A0HN consumes it on a valid ally, A0HM sells it for 1 choice Wisp.
+        public const string HibariItemPrefix = "source-native:hibari:item:h0CN:";
+        public const string HibariCreatePrefix = "source-native:hibari:create:";
+        public const string HibariSellPrefix = "source-native:hibari:sell:";
+        public static string HibariItem(long id) => HibariItemPrefix + id;
+        public static string HibariCreate(long id) => HibariCreatePrefix + id;
+        public static string HibariSell(long id) => HibariSellPrefix + id;
+        public static string HibariCreateReceipt(long id) => HibariCreatePrefix + "A0HL:" + id;
+        public static string HibariSellReceipt(long id) => HibariSellPrefix + "A0HM:" + id;
+        public static string HibariReceipt(long id) => HibariBentoPrefix + "A0HN:spent:" + id;
         public static string MariaCycle(long id) => MariaCyclePrefix + id;
         public static string MarcoTransformAction(long id) => MarcoTransformActionPrefix + id;
         public static string UnlockResource(long id) => RogerUnlockResourcePrefix + id;
@@ -107,21 +117,36 @@ namespace Ordr.Mobile.Mobile
                 }
                 if (unit.Unit.Id == "L-39")
                 {
-                    bool canBuff = false;
-                    foreach (var candidate in owned)
-                        if (combat.CanUseSourceModelHibariBento(
-                            unit.InstanceId, candidate.InstanceId, wallet))
-                        { canBuff = true; break; }
-                    actions.Add(new MobileDedicatedSkillOffer(
-                        Original323SourceNativeActionKeys.HibariBento(unit.InstanceId, 0),
-                        "히바리 · 사랑의 도시락",
-                        "전장 유닛 터치로 대상 지정 · 1회 · 공속 영구 +12%(코비 초월 +20%)",
-                        true, canBuff, unit.InstanceId, requiresAllyTarget: true,
-                        liveStatus: wallet.HasCompletedTransaction(
-                            Original323SourceNativeActionKeys.HibariReceipt(unit.InstanceId))
-                                ? "도시락 1회 사용 완료" :
-                                canBuff ? "도시락 1회 남음 · 대상 지정 가능" :
-                                    "대상 조건 미충족 · 중복 버프 확인"));
+                    long stock = wallet.Balance(
+                        Original323SourceNativeActionKeys.HibariItem(unit.InstanceId));
+                    if (!wallet.HasCompletedTransaction(
+                        Original323SourceNativeActionKeys.HibariCreateReceipt(unit.InstanceId)))
+                        actions.Add(new MobileDedicatedSkillOffer(
+                            Original323SourceNativeActionKeys.HibariCreate(unit.InstanceId),
+                            "히바리 · 사랑의 도시락 제작",
+                            "A0HL · h0CN 도시락 생성 · 시전자당 1회",
+                            true, combat.CanCreateSourceModelHibariBento(
+                                unit.InstanceId, wallet), unit.InstanceId));
+                    if (stock > 0)
+                    {
+                        bool eligible = false;
+                        foreach (var ally in owned)
+                            if (combat.CanUseSourceModelHibariBento(
+                                unit.InstanceId, ally.InstanceId, wallet))
+                            { eligible = true; break; }
+                        actions.Add(new MobileDedicatedSkillOffer(
+                            Original323SourceNativeActionKeys.HibariBento(unit.InstanceId, 0),
+                            "사랑의 도시락 사용",
+                            "h0CN/A0HN · 전설 이상 대상 터치 · 공속 12%, 코비 초월 20%",
+                            true, eligible, unit.InstanceId, requiresAllyTarget: true,
+                            liveStatus: "도시락 " + stock + "개 보유"));
+                        actions.Add(new MobileDedicatedSkillOffer(
+                            Original323SourceNativeActionKeys.HibariSell(unit.InstanceId),
+                            "사랑의 도시락 판매",
+                            "h0CN/A0HM · 도시락 1개 → 선택위습 1개",
+                            true, true, unit.InstanceId,
+                            liveStatus: "도시락 " + stock + "개 보유"));
+                    }
                 }
                 if (unit.Unit.Id == "D-01")
                 {
@@ -132,7 +157,7 @@ namespace Ordr.Mobile.Mobile
                         "블랙마리아 · " +
                             combat.SourceModelMariaCurrentModeName(unit.InstanceId) +
                             " → " + combat.SourceModelMariaNextModeName(unit.InstanceId),
-                        "마리아네트 전환 / 30초 재사용" +
+                        "마리아네트 모드 전환 / 30초 재사용 · 5초 주기 지속" +
                         (remain > 0 ? " · 대기 " +
                             Math.Ceiling(remain * 10) / 10.0 + "초" : ""),
                         true, combat.CanCycleSourceModelMaria(unit.InstanceId),
@@ -409,6 +434,35 @@ namespace Ordr.Mobile.Mobile
             }
             // Every tap re-validates the live unit, selected target,
             // shared wallet and current source-tooltip ownership.
+            if (skillId.StartsWith(Original323SourceNativeActionKeys.HibariCreatePrefix,
+                    StringComparison.Ordinal) ||
+                skillId.StartsWith(Original323SourceNativeActionKeys.HibariSellPrefix,
+                    StringComparison.Ordinal))
+            {
+                foreach (var unit in combat.MobileUnitSnapshot())
+                {
+                    if (unit.Unit.Id != "L-39") continue;
+                    long id = unit.InstanceId;
+                    if (skillId == Original323SourceNativeActionKeys.HibariCreate(id))
+                    {
+                        bool created = combat.TryCreateSourceModelHibariBento(id, wallet);
+                        return new ManualActionResult(
+                            created ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                            created ? "도시락 h0CN 생성 · 사용하거나 선택위습으로 판매 가능" :
+                                "도시락을 이미 생성했거나 히바리 스킬 조건 불일치");
+                    }
+                    if (skillId == Original323SourceNativeActionKeys.HibariSell(id))
+                    {
+                        bool sold = combat.TrySellSourceModelHibariBento(id, wallet);
+                        return new ManualActionResult(
+                            sold ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                            sold ? "도시락 판매 · 선택위습 1개 획득" :
+                                "미사용 도시락 보유 여부를 확인하세요.");
+                    }
+                }
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "원본 도시락을 생성한 히바리를 찾을 수 없습니다.");
+            }
             if (skillId.StartsWith(Original323SourceNativeActionKeys.ViviUpgradePrefix,
                     StringComparison.Ordinal) ||
                 skillId.StartsWith(Original323SourceNativeActionKeys.BruleeCopyPrefix,

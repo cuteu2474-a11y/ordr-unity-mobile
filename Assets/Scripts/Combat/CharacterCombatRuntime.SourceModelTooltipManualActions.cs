@@ -27,8 +27,6 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, double>();
         // Separate active-effect clock from the 30-second reuse cooldown.
         // Displaying only last chosen mode implied a permanent effect.
-        private readonly Dictionary<long, double> manualMariaActiveUntil =
-            new Dictionary<long, double>();
         private readonly Dictionary<long, long> manualMariaToken =
             new Dictionary<long, long>();
         private long manualMariaNextToken;
@@ -221,25 +219,64 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        public bool CanCreateSourceModelHibariBento(long id, EconomyWallet wallet) =>
+            wallet != null &&
+            (otamaRewardWallet == null ||
+             Object.ReferenceEquals(otamaRewardWallet, wallet)) &&
+            HasExactManualOwner(id, "L-39", "h0CM", "사랑의도시락(B)") &&
+            !wallet.HasCompletedTransaction(
+                Original323SourceNativeActionKeys.HibariCreateReceipt(id));
+
+        public bool TryCreateSourceModelHibariBento(long id, EconomyWallet wallet)
+        {
+            if (!CanCreateSourceModelHibariBento(id, wallet)) return false;
+            string receipt = Original323SourceNativeActionKeys.HibariCreateReceipt(id);
+            try
+            {
+                return wallet.TryGrantOnce(receipt, new ResourceBundle().Add(
+                    Original323SourceNativeActionKeys.HibariItem(id), 1));
+            }
+            catch { return wallet.HasCompletedTransaction(receipt); }
+        }
+
+        private bool IsSourceHibariBentoTarget(long targetId)
+        {
+            CharacterInstance target;
+            if (!characters.TryGetValue(targetId, out target) ||
+                target.Mapping == null || !target.AttackReady ||
+                target.Mapping.AttackSpec.UnitRawCode == "h0CM" ||
+                IsLockedFromRosterTransactions(targetId))
+                return false;
+            // Source Buy: GetUnitPointValue(target)>=101 and not h0CM.
+            // Grade is a conservative mobile proxy until the original
+            // per-rawcode point-value table is available.
+            switch (target.Catalog.Grade)
+            {
+                case "전설": case "히든": case "변화": case "제한됨":
+                case "왜곡됨": case "초월함": case "영원한": case "불멸의":
+                case "신비함": case "세라핌": return true;
+                default: return false;
+            }
+        }
+
         public bool CanUseSourceModelHibariBento(long id, long recipientId,
             EconomyWallet wallet)
         {
-            CharacterInstance recipient;
-            if (wallet == null ||
+            if (id <= 0 || wallet == null ||
                 (otamaRewardWallet != null &&
                  !Object.ReferenceEquals(otamaRewardWallet, wallet)) ||
-                !HasExactManualOwner(id, "L-39", "h0CM", "사랑의도시락(B)") ||
-                !characters.TryGetValue(recipientId, out recipient) ||
-                !CanShareAllyCombatLane(id, recipientId) ||
-                IsLockedFromRosterTransactions(recipientId) ||
+                wallet.Balance(Original323SourceNativeActionKeys.HibariItem(id)) != 1 ||
                 wallet.HasCompletedTransaction(
-                    Original323SourceNativeActionKeys.HibariReceipt(id)))
-                return false;
-            foreach (var old in unitStatuses[InstanceKey(recipientId)].Snapshot())
-                if (old.Type == CombatEffectType.AttackSpeedBuff &&
-                    (old.SourceId.StartsWith("practice-tooltip:hibari-bento:",
+                    Original323SourceNativeActionKeys.HibariReceipt(id)) ||
+                !IsSourceHibariBentoTarget(recipientId)) return false;
+            CharacterInstance owner;
+            if (characters.TryGetValue(id, out owner) &&
+                !CanShareAllyCombatLane(id, recipientId)) return false;
+            foreach (var effect in unitStatuses[InstanceKey(recipientId)].Snapshot())
+                if (effect.Type == CombatEffectType.AttackSpeedBuff &&
+                    (effect.SourceId.StartsWith("practice-tooltip:hibari-bento:",
                         StringComparison.Ordinal) ||
-                     old.SourceId.IndexOf("포만감", StringComparison.Ordinal) >= 0))
+                     effect.SourceId.Contains("포만감")))
                     return false;
             return true;
         }
@@ -248,34 +285,63 @@ namespace Ordr.Mobile.Combat
             EconomyWallet wallet)
         {
             if (!CanUseSourceModelHibariBento(id, recipientId, wallet)) return false;
-            var before = wallet.CaptureState();
             string receipt = Original323SourceNativeActionKeys.HibariReceipt(id);
             string source = "practice-tooltip:hibari-bento:" + id + ":" + recipientId;
+            var status = unitStatuses[InstanceKey(recipientId)];
+            double percent = characters[recipientId].Catalog.Id == "TR-24" ? 20 : 12;
             try
             {
-                if (!wallet.TryExchangeOnce(receipt,
-                        new ResourceBundle(), new ResourceBundle())) return false;
-                double bonus = characters[recipientId].Catalog.Id == "TR-24" ? 20 : 12;
-                unitStatuses[InstanceKey(recipientId)].Apply(new CombatEffect(
-                    source,
+                // First stage a removable buff. Item and 1-use receipt
+                // commit atomically; a post-commit event exception is NOT
+                // allowed to refund an already consumed physical Bento.
+                status.Apply(new CombatEffect(source,
                     CombatEffectType.AttackSpeedBuff,
-                    CombatEffectOrigin.Aura, bonus, 0));
+                    CombatEffectOrigin.Aura, percent, 0));
+                bool committed;
+                try
+                {
+                    committed = wallet.TryExchangeOnce(receipt,
+                        new ResourceBundle().Add(
+                            Original323SourceNativeActionKeys.HibariItem(id), 1),
+                        new ResourceBundle());
+                }
+                catch { committed = wallet.HasCompletedTransaction(receipt); }
+                if (!committed)
+                {
+                    status.RemoveSource(source);
+                    return false;
+                }
                 pendingCommandEvents.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.StatusApplied,
-                    InstanceKey(id), InstanceKey(recipientId), "사랑의도시락(B)",
-                    "TOOLTIP_MODEL_ONLY 1회 공속 +" + bonus + "%", 0));
+                    InstanceKey(id), InstanceKey(recipientId),
+                    "사랑의도시락(B)", "JASS A0HN/h0CN 소비→A0HO Lv." +
+                    (percent == 20 ? "2" : "1") + " 공속 +" + percent + "%", 0));
                 return true;
             }
             catch
             {
-                // If the status event fails after the one-use receipt, unwind
-                // both the receipt and its effect instead of burning a Bento.
-                CombatStatusEngine status;
-                if (unitStatuses.TryGetValue(InstanceKey(recipientId), out status))
-                    status.RemoveSource(source);
-                wallet.RestoreState(before);
+                if (wallet.HasCompletedTransaction(receipt)) return true;
+                status.RemoveSource(source);
                 return false;
             }
+        }
+
+        public bool TrySellSourceModelHibariBento(long id, EconomyWallet wallet)
+        {
+            if (id <= 0 || wallet == null ||
+                (otamaRewardWallet != null &&
+                 !Object.ReferenceEquals(otamaRewardWallet, wallet)) ||
+                wallet.Balance(Original323SourceNativeActionKeys.HibariItem(id)) != 1)
+                return false;
+            string receipt = Original323SourceNativeActionKeys.HibariSellReceipt(id);
+            try
+            {
+                return wallet.TryExchangeOnce(receipt,
+                    new ResourceBundle().Add(
+                        Original323SourceNativeActionKeys.HibariItem(id), 1),
+                    new ResourceBundle().Add(WispResourceIds.Choice, 1));
+            }
+            catch { return wallet.HasCompletedTransaction(receipt); }
         }
 
         public double SourceModelMariaCooldownRemaining(long id)
@@ -286,21 +352,16 @@ namespace Ordr.Mobile.Combat
         }
         public string SourceModelMariaCurrentModeName(long id)
         {
-            int mode;
-            double activeUntil;
-            if (!manualMariaMode.TryGetValue(id, out mode))
-                return "미발동";
-            return manualMariaToken.ContainsKey(id) &&
-                manualMariaActiveUntil.TryGetValue(id, out activeUntil) &&
-                Time < activeUntil ? MariaModeName(mode) : "효과 종료";
+            int stage;
+            return manualMariaMode.TryGetValue(id, out stage) &&
+                manualMariaToken.ContainsKey(id) ?
+                MariaModeName(stage) : "미발동";
         }
-
         public double SourceModelMariaEffectRemaining(long id)
         {
-            double until;
-            return manualMariaToken.ContainsKey(id) &&
-                manualMariaActiveUntil.TryGetValue(id, out until)
-                    ? Math.Max(0, until - Time) : 0;
+            // The CDh JASS periodic loop has no six-tick duration.
+            // Reuse cooldown is separate from the indefinitely active aura.
+            return 0;
         }
         public string SourceModelMariaNextModeName(long id)
         {
@@ -315,8 +376,30 @@ namespace Ordr.Mobile.Combat
         public bool CanCycleSourceModelMaria(long id) =>
             HasExactManualOwner(id, "D-01", "h04U", "마리아네트 전환") &&
             SourceModelMariaCooldownRemaining(id) == 0 &&
-            SourceModelMariaEffectRemaining(id) == 0 &&
             !IsOriginalUnitCasting(id) && !SourceFormIsCasting(id);
+
+        // Original CDh 42569-42613: .03+.03 startup, then a 5-second
+        // recurring pulse (4.97+.03 phases) for the lifetime of its owner.
+        // A0T5 changes the current mode; it never resets the CDh clock.
+        private void ScheduleSourceMariaPulse(CharacterInstance actor,
+            long token, bool storyLane, long laneRevision, double delay, int tick)
+        {
+            effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
+                "practice-maria:" + actor.Id + ":" + token + ":" + tick,
+                delay, () => {
+                    long active;
+                    int stage;
+                    if (!manualMariaToken.TryGetValue(actor.Id, out active) ||
+                        active != token ||
+                        !manualMariaMode.TryGetValue(actor.Id, out stage) ||
+                        !CanFinishSourceModelDelayedAttack(actor.Id,
+                            storyLane, laneRevision))
+                        return;
+                    TickSourceMaria(actor, stage, tick);
+                    ScheduleSourceMariaPulse(actor, token, storyLane,
+                        laneRevision, 5, tick + 1);
+                });
+        }
 
         public bool TryCycleSourceModelMaria(long id)
         {
@@ -325,41 +408,28 @@ namespace Ordr.Mobile.Combat
             int previous;
             int stage = manualMariaMode.TryGetValue(id, out previous)
                 ? (previous + 1) % 3 : 0;
-            if (manualMariaNextToken == long.MaxValue)
-                throw new OverflowException("마리아네트 기술 순번 초과");
-            long token = ++manualMariaNextToken;
             manualMariaMode[id] = stage;
-            manualMariaToken[id] = token;
-            // The slow is refreshed by the last tick at t=25 and lasts 6s.
-            // Do not change to another mode while it is still active.
-            manualMariaReady[id] = Time + (stage == 1 ? 31.01 : 30);
-            // Last periodic tick at +25.01. Its effect expires after a
-            // 3.5s stun / 6s slow; fire packets are instant.
-            manualMariaActiveUntil[id] = Time +
-                (stage == 0 ? 28.51 : stage == 1 ? 31.01 : 25.01);
-            bool lane = IsStoryDeployed(id);
-            long revision = SourceModelLaneRevision(id);
-            for (int tick = 0; tick < 6; tick++)
+            if (!manualMariaToken.ContainsKey(id))
             {
-                int number = tick;
-                effectExecutor.SchedulePracticeSourceAttack(InstanceKey(id),
-                    "practice-maria:" + id + ":" + token + ":" + tick,
-                    .01 + tick * 5, () => {
-                        long live;
-                        if (!manualMariaToken.TryGetValue(id, out live) ||
-                            live != token ||
-                            !CanFinishSourceModelDelayedAttack(id, lane, revision))
-                            return;
-                        TickSourceMaria(actor, stage, number);
-                    });
+                if (manualMariaNextToken == long.MaxValue)
+                    throw new OverflowException("마리아네트 효과 순번 초과");
+                long token = ++manualMariaNextToken;
+                manualMariaToken[id] = token;
+                ScheduleSourceMariaPulse(actor, token, IsStoryDeployed(id),
+                    SourceModelLaneRevision(id), .06, 0);
             }
+            // The 30s reuse rule is in the imported skill profile, NOT
+            // explicitly in JASS CDs; do not conflate it with the CDh loop.
+            manualMariaReady[id] = Time + 30;
             pendingCommandEvents.Add(new CharacterCombatEvent(
-                CharacterCombatEventType.SkillActivated,
-                InstanceKey(id), null, MariaModeName(stage),
-                "TOOLTIP_MODEL_ONLY 30초/5초 모델, WC3 실제 시전 프레임 미검증", 0));
+                CharacterCombatEventType.SkillActivated, InstanceKey(id), null,
+                MariaModeName(stage),
+                "JASS CDh 0.06초 기동/5초 반복 · A0T5 별도 모드 교체", 0));
             return true;
         }
 
+        // Original CDg at 42562-42568 uses CHAOS/DAMAGE_TYPE_NORMAL
+        // for the 5% missing-HP physical follow-up.
         private void TickSourceMaria(CharacterInstance actor, int stage, int tick)
         {
             var position = roster.Get(actor.Id);
@@ -400,7 +470,7 @@ namespace Ordr.Mobile.Combat
                         ApplySourceModelTooltipDamage(actor, target,
                             "타오르란 마리아", "잃은 체력 5% 물리",
                             (target.Enemy.MaxHealth - target.Enemy.Health) * .05,
-                            false, Ordr323AttackType.Melee);
+                            false, Ordr323AttackType.Chaos);
                 }
             }
             if (stage != 2 && targets.Count > 0)
@@ -420,7 +490,6 @@ namespace Ordr.Mobile.Combat
                 target != null && target.StartsWith(
                     "practice-maria:" + id + ":", StringComparison.Ordinal));
             manualMariaToken.Remove(id);
-            manualMariaActiveUntil.Remove(id);
             if (deleted)
             {
                 manualMariaMode.Remove(id);

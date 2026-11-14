@@ -2,6 +2,14 @@
 
 > 코드의 **현재 진입점**과 공통 엔진 경로만 기록합니다. 날짜별 개발 일지와 반복된 스킬 설명은 삭제했습니다. [현재 상태](START_HERE.md) / [개발 작업](PLAYABLE_ROADMAP.md)을 함께 확인하세요.
 
+## 원본 확인 스킬 진입점
+
+- `CharacterCombatRuntime.SourceModelTooltipVolleys.cs`: 비비 B5s/핸콕 B5F 20·25타 시점 예약, 살아 있는 적 재선정, 핸콕 물리 Chaos 적용.
+- `CharacterCombatRuntime.SourceModelTooltipManualActions.cs`: 히바리 h0CN 물품 제작/사용/판매 거래 및 마리아 CDh 5초 영속 주기.
+- `Original323SourceDedicatedSkillPort.cs`: 히바리 도시락 제작/사용/판매 버튼.
+- `CharacterCombatRuntime.SaveState.cs`: 복원 불가능한 비비/핸콕/마리아 익명 예약 타격 저장 차단 유지.
+- 근거는 [스킬 구현 체크](스킬-구현-체크.md). 이전의 범용 `physical=Melee` 정책은 원본과 불일치하므로 제거됨. NUnit·Unity·Android 검증 전.
+
 ## 저장·이어하기 진입점
 
 | 역할 | 현재 코드 |
@@ -14,7 +22,7 @@
 | **미공개 도박·상점 그래프** | OrdrUnpublishedCommerceRestoreGraph.cs — 같은 지갑과 4개의 난수 기록, 보류 추첨·100G 지원 |
 | 실제 이어하기 UI 미구현 | OrdrMainSceneShell.cs / OrdrCharacterCombatController.cs — 전체 월드 안전 게시 전에는 차단 |
 
-**스킬 결함 수정 경로:** `CharacterCombatRuntime.SourceModelTooltipVolleys.cs`와 `CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs`는 `physical` 피해를 `Melee` 공격표에 전달합니다. `CharacterCombatRuntime.SourceModelTooltipManualActions.cs`의 비비 강화는 결제별 고유 영수증·결제 후 알림 예외 구분·보류 결과를 사용하며 `CharacterCombatRuntime.SaveState.cs`는 미결제 결과 캡처를 거절합니다. `CharacterCombatRuntime.SourceModelOriginalSpecials.cs`의 쿠마 공격 분기는 `ApplySourceModelNextThirtySkill` 공통 기절/피해 실행기를 재사용합니다. 코드·NUnit 회귀 파일 작성만 했고 Unity/Android 결과는 미검증입니다.
+**기존 SK-05/06 공통 경로:** `CharacterCombatRuntime.SourceModelTooltipManualActions.cs`의 비비 강화는 결제별 고유 영수증·보류 결과를 재사용하고, `CharacterCombatRuntime.SaveState.cs`는 보류 추첨 저장을 거부합니다. `CharacterCombatRuntime.SourceModelOriginalSpecials.cs`의 쿠마 10% 공격은 `ApplySourceModelNextThirtySkill` 피해·기절 처리기를 재사용합니다. 상세 원본 수치·미완료는 [스킬 구현 체크](스킬-구현-체크.md)에만 정리합니다. Unity/Android 실행 미검증.
 
 **임시 소환/분신/자폭은 투사체·비보유 이펙트가 원칙**입니다. 내부 전투 ID가 있다는 이유로 실제 보유 유닛을 새로 만들지 않습니다.
 

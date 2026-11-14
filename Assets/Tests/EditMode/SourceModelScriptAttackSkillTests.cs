@@ -2320,6 +2320,61 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OriginalHibariBentoRequiresCreationThenConsumesOrSellsTheSameItem()
+        {
+            using (var live = Create("L-39", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                long ally = live.Combat.SpawnCharacter("L-01", -4900, 5400);
+                Assert.IsFalse(live.Combat.CanUseSourceModelHibariBento(
+                    live.ActorId, ally, wallet));
+                Assert.IsTrue(live.Combat.TryCreateSourceModelHibariBento(
+                    live.ActorId, wallet));
+                Assert.IsFalse(live.Combat.TryCreateSourceModelHibariBento(
+                    live.ActorId, wallet));
+                string key = Original323SourceNativeActionKeys.HibariItem(live.ActorId);
+                Assert.AreEqual(1, wallet.Balance(key));
+                Assert.IsTrue(live.Combat.TryUseSourceModelHibariBento(
+                    live.ActorId, ally, wallet));
+                Assert.AreEqual(0, wallet.Balance(key));
+                Assert.IsFalse(live.Combat.TrySellSourceModelHibariBento(
+                    live.ActorId, wallet));
+                Assert.IsTrue(live.Combat.UnitStatusOf(ally).Snapshot().Any(
+                    effect => effect.Type == CombatEffectType.AttackSpeedBuff &&
+                        effect.SourceId.StartsWith("practice-tooltip:hibari-bento:")));
+            }
+            using (var live = Create("L-39", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                Assert.IsTrue(live.Combat.TryCreateSourceModelHibariBento(
+                    live.ActorId, wallet));
+                Assert.IsTrue(live.Combat.TrySellSourceModelHibariBento(
+                    live.ActorId, wallet));
+                Assert.AreEqual(1, wallet.Balance(WispResourceIds.Choice));
+                Assert.IsFalse(live.Combat.TrySellSourceModelHibariBento(
+                    live.ActorId, wallet));
+            }
+        }
+
+        [Test]
+        public void MariaFiveSecondPeriodicEffectIsNotSilentlyCutOffAtSixTicks()
+        {
+            using (var live = Create("D-01", false, -4900, 5400))
+            {
+                Assert.IsTrue(live.Combat.TryCycleSourceModelMaria(live.ActorId));
+                live.Battle.Advance(36);
+                Assert.AreEqual("꼼짝말란 마리아",
+                    live.Combat.SourceModelMariaCurrentModeName(live.ActorId));
+                Assert.AreEqual(0,
+                    live.Combat.SourceModelMariaEffectRemaining(live.ActorId));
+                Assert.IsFalse(live.Combat.CanCycleSourceModelMaria(live.ActorId) &&
+                    live.Combat.SourceModelMariaCooldownRemaining(live.ActorId) > 0);
+            }
+        }
+
+        [Test]
         public void KumaJassManaUsesAttackDeclaredNotFreeAutoCast()
         {
             using (var live = Create("L-32", false, -4900, 5400))

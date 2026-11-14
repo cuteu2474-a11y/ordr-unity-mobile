@@ -329,10 +329,11 @@ namespace Ordr.Mobile.Combat
                 if (form.Form != "awakening" && form.Form != "forest")
                     throw new NotSupportedException(
                         "미확인 원본 네이티브 변신은 안전하게 복원할 수 없습니다.");
-            foreach (var pair in manualMariaActiveUntil)
-                if (manualMariaToken.ContainsKey(pair.Key) && pair.Value > Time)
-                    throw new NotSupportedException(
-                        "현재 진행 중인 마리아 주기 스킬은 예약 콜백 복원 전까지 저장할 수 없습니다.");
+            // CDh now has an unbounded 5-second Action loop. Until it has
+            // a restorable event descriptor, refuse partial save/resume.
+            if (manualMariaToken.Count != 0)
+                throw new NotSupportedException(
+                    "원본 마리아 지속 주기는 예약 복원 구현 전 저장할 수 없습니다.");
         }
 
         private void RestoreSourceSidecars(SourceCombatRuntimeCheckpoint state)

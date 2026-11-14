@@ -131,90 +131,136 @@ namespace Ordr.Mobile.Combat
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated,
                 InstanceKey(actor.Id), primary.Id, accepted.Name,
-                "TOOLTIP_MODEL_ONLY 다단타 타격 횟수 적용 / 원본 타수 간격 미확정", 0));
+                "원본 JASS 검증된 20/25타 지연 타이밍 사용 · 네이티브 이펙트/면역 미검증", 0));
 
-            if (accepted.Id == "E-06:skill:0")
+            // JASS B5s: .10 morph + .02 prep, 20 shots every .055s.
+            // JASS B5F: .19 slam + .04 prep, 25 shots every .05s.
+            // These must NOT run as 20/25 instantaneous for-loop attacks.
+            bool storyLane = IsStoryDeployed(actor.Id);
+            long revision = SourceModelLaneRevision(actor.Id);
+            string owner = InstanceKey(actor.Id);
+            int count = accepted.Id == "E-06:skill:0" ? 20 : 25;
+            double startAt = count == 20 ? .12 : .23;
+            double interval = count == 20 ? .055 : .05;
+            string originalPrimaryId = primary.Id;
+            for (int hit = 0; hit < count; hit++)
             {
-                // The tooltip says two RANDOM distinct enemies per hit,
-                // not a 700-radius circle or the same initial pair forever.
-                // Draw from the session's shared script RNG, no new Random().
-                for (int hit = 0; hit < 20; hit++)
-                {
-                    var available = new List<SpatialCombatEnemy>();
-                    foreach (var target in targets)
-                        if (target.Enemy.IsAlive && CanAttackInThisLane(actor, target))
-                            available.Add(target);
-                    for (int chosen = 0; chosen < 2 && available.Count > 0; chosen++)
-                    {
-                        int index = sourceModelRules.NextScriptRoll(available.Count);
-                        var victim = available[index];
-                        available.RemoveAt(index);
-                        ApplySourceModelTooltipDamage(actor, victim, accepted.Name,
-                            "난사 고정 타격 " + (hit + 1) + "/20",
-                            300000 + victim.Enemy.MaxHealth * .10, true);
-                        // Alabasta Gun Lv.1 exists before any upgrades.
-                        // The tooltip's extra maximum-HP 0.5% is PER hit
-                        // and PER level, not one grant for the entire barrage.
-                        int level = 1 + (int)Math.Min(9,
-                            otamaRewardWallet == null ? 0 :
-                            otamaRewardWallet.Balance(
-                                Original323SourceNativeActionKeys.ViviLevel(actor.Id)));
-                        ApplySourceModelTooltipDamage(actor, victim, accepted.Name,
-                            "알라바스타 건 Lv." + level,
-                            victim.Enemy.MaxHealth * .005 * level, true);
-                        if (victim.Kind == CharacterEnemyKind.Boss)
-                            ApplySourceModelTooltipDamage(actor, victim, accepted.Name,
-                                "보스 추가 마법", 500000, false);
-                    }
-                }
+                int hitIndex = hit;
+                effectExecutor.SchedulePracticeSourceAttack(owner,
+                    "practice-volley:" + actor.Id + ":" + accepted.Id +
+                        ":" + Time + ":" + hitIndex,
+                    startAt + hitIndex * interval, () => {
+                        if (!CanFinishSourceModelDelayedAttack(actor.Id,
+                                storyLane, revision))
+                            return;
+                        if (accepted.Id == "E-06:skill:0")
+                            ApplySourceOriginalViviSalvoPulse(actor, accepted, hitIndex);
+                        else
+                            ApplySourceOriginalHancockPulse(
+                                actor, accepted, originalPrimaryId, hitIndex);
+                        RemoveDefeatedEnemies();
+                    });
             }
-            else
-            {
-                // Hancock's 750 range is CASTER-centered. The extra 16% is
-                // explicitly SINGLE-target; do not grant it to every enemy.
-                SpatialCombatEnemy single = targets[0];
-                foreach (var target in targets)
-                    if (Object.ReferenceEquals(primary, target)) single = primary;
-                for (int hit = 0; hit < 25; hit++)
-                {
-                    if (hit == 0 || hit == 24)
-                    {
-                        foreach (var target in targets)
-                        {
-                            if (!target.Enemy.IsAlive ||
-                                !CanAttackInThisLane(actor, target)) continue;
-                            string source = "practice-tooltip-stun:" +
-                                InstanceKey(actor.Id) + ":" + accepted.Id;
-                            target.Enemy.Status.RemoveSource(source);
-                            target.Enemy.Status.Apply(new CombatEffect(source,
-                                CombatEffectType.Stun,
-                                CombatEffectOrigin.TriggeredSkill, 1, 2.5));
-                            events.Add(new CharacterCombatEvent(
-                                CharacterCombatEventType.StatusApplied,
-                                InstanceKey(actor.Id), target.Id,
-                                accepted.Name, "TOOLTIP_MODEL_ONLY 첫/마지막 타격 2.5초 기절(저항무시)", 0));
-                        }
-                    }
-                    foreach (var target in targets)
-                    {
-                        // Physical damage uses the source map's MELEE row,
-                        // not its Spells/ATTACK_TYPE_NORMAL armor multipliers.
-                        ApplySourceModelTooltipDamage(actor, target, accepted.Name,
-                            "25회 물리", 360000, false, Ordr323AttackType.Melee);
-                        ApplySourceModelTooltipDamage(actor, target, accepted.Name,
-                            "25회 마법", 50000, false);
-                    }
-                    if (single.Enemy.IsAlive)
-                        ApplySourceModelTooltipDamage(actor, single, accepted.Name,
-                            "단일 대상 25회 추가 마법",
-                            single.Kind == CharacterEnemyKind.Boss ||
-                            single.Kind == CharacterEnemyKind.Story
-                                ? 300000 : single.Enemy.MaxHealth * .16,
-                            false);
-                }
-            }
+            // Anonymous callbacks are intentionally rejected by the current
+            // draft-save guard until an effect-kind replay descriptor exists.
             RemoveDefeatedEnemies();
             return true;
+        }
+
+        // Original war3map.j B5s 33765-33859. Big() samples a random
+        // enemy from the live 925 range separately for BOTH draws; the same
+        // enemy may be selected twice. Warcraft-native random displacement
+        // of the caster itself is intentionally not recreated in the fixed
+        // left-side mobile formation.
+        private void ApplySourceOriginalViviSalvoPulse(
+            CharacterInstance actor, ImportedCombatSkill skill, int hit)
+        {
+            var pos = roster.Get(actor.Id);
+            var eligible = new List<SpatialCombatEnemy>();
+            foreach (var enemy in enemies.Values)
+            {
+                if (!enemy.Enemy.IsAlive || !CanAttackInThisLane(actor, enemy))
+                    continue;
+                double dx = enemy.X - pos.X, dy = enemy.Y - pos.Y;
+                if (dx * dx + dy * dy <= 925 * 925) eligible.Add(enemy);
+            }
+            eligible.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
+            int level = 1 + (int)Math.Min(9,
+                otamaRewardWallet == null ? 0 :
+                otamaRewardWallet.Balance(
+                    Original323SourceNativeActionKeys.ViviLevel(actor.Id)));
+            for (int pick = 0; pick < 2 && eligible.Count != 0; pick++)
+            {
+                var target = eligible[sourceModelRules.NextScriptRoll(eligible.Count)];
+                if (!target.Enemy.IsAlive) continue;
+                if (target.Kind == CharacterEnemyKind.Line)
+                {
+                    // B5s source: (300000 + maxHP*0.08) * (1+I4*0.05),
+                    // ATTACK_TYPE_CHAOS / DAMAGE_TYPE_UNIVERSAL.
+                    // This replaces the older unverified 10%+0.5% additive
+                    // formula, rather than paying the HP component twice.
+                    double raw = (300000 + target.Enemy.MaxHealth * .08) *
+                        (1 + level * .05);
+                    ApplySourceModelTooltipDamage(actor, target, skill.Name,
+                        "JASS B5s 난사 " + (hit + 1) + "/20",
+                        raw, true, Ordr323AttackType.Chaos);
+                }
+                else
+                    ApplySourceModelTooltipDamage(actor, target, skill.Name,
+                        "JASS B5s 특수 적 마법 " + (hit + 1) + "/20",
+                        500000, false, Ordr323AttackType.Spells);
+            }
+        }
+
+        // B5F 32971-33071: the caster-centered 750-radius packets occur
+        // 25 times, first at .23s and every .05s thereafter. Its 360k
+        // physical AoE uses ATTACK_TYPE_CHAOS/DAMAGE_TYPE_NORMAL, whereas
+        // 50k and the single-target bonus use ATTACK_TYPE_NORMAL/UNIVERSAL.
+        private void ApplySourceOriginalHancockPulse(CharacterInstance actor,
+            ImportedCombatSkill skill, string primaryId, int hit)
+        {
+            var pos = roster.Get(actor.Id);
+            var targets = new List<SpatialCombatEnemy>();
+            foreach (var enemy in enemies.Values)
+            {
+                if (!enemy.Enemy.IsAlive || !CanAttackInThisLane(actor, enemy))
+                    continue;
+                double dx = enemy.X - pos.X, dy = enemy.Y - pos.Y;
+                if (dx * dx + dy * dy <= 750 * 750) targets.Add(enemy);
+            }
+            targets.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
+            SpatialCombatEnemy primary;
+            if (!enemies.TryGetValue(primaryId, out primary) ||
+                !primary.Enemy.IsAlive || !targets.Contains(primary))
+                primary = targets.Count > 0 ? targets[0] : null;
+            if (hit == 0 || hit == 24)
+                foreach (var target in targets)
+                {
+                    string source = "practice-tooltip-stun:" +
+                        InstanceKey(actor.Id) + ":" + skill.Id;
+                    target.Enemy.Status.RemoveSource(source);
+                    target.Enemy.Status.Apply(new CombatEffect(source,
+                        CombatEffectType.Stun,
+                        CombatEffectOrigin.TriggeredSkill, 1, 2.5));
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.StatusApplied,
+                        InstanceKey(actor.Id), target.Id, skill.Name,
+                        "도감 첫/마지막 타격 2.5초 기절(원본 네이티브 면역 미검증)", 0));
+                }
+            foreach (var target in targets)
+            {
+                ApplySourceModelTooltipDamage(actor, target, skill.Name,
+                    "JASS B5F 물리 25타", 360000, false,
+                    Ordr323AttackType.Chaos);
+                ApplySourceModelTooltipDamage(actor, target, skill.Name,
+                    "JASS B5F 마법 25타", 50000, false,
+                    Ordr323AttackType.Spells);
+            }
+            if (primary != null && primary.Enemy.IsAlive)
+                ApplySourceModelTooltipDamage(actor, primary, skill.Name,
+                    "JASS B5F 단일 후속", primary.Kind == CharacterEnemyKind.Line
+                        ? primary.Enemy.MaxHealth * .16 : 300000,
+                    false, Ordr323AttackType.Spells);
         }
 
         // Bso already owns Marco's 25-HP threshold, consumes the source

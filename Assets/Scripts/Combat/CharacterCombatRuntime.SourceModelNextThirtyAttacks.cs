@@ -781,9 +781,7 @@ namespace Ordr.Mobile.Combat
                         // This distinction is not yet native Warcraft parity.
                         double modeled = component.Type == "fixed" ? hitRaw :
                             Ordr323MapDamageMath.ApplyVerifiedFactors(
-                                hitRaw,
-                                component.Type == "physical" ?
-                                    Ordr323AttackType.Melee : Ordr323AttackType.Spells,
+                                hitRaw, Ordr323AttackType.Spells,
                                 armor, true, true,
                                 target.Enemy.Defenses.BaseArmor.Value -
                                 SourceModelUnitEffects.ResolvePracticeArmorReduction(
