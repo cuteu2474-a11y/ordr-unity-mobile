@@ -425,6 +425,9 @@ namespace Ordr.Mobile.Unity
                 {
                     formationPage = formationLayout == null ? 0 : i / formationLayout.Capacity;
                     // Selecting a roster entry also reveals its nameplate page.
+                    // Navigation/search is NOT an actual map tap. It may
+                    // select a unit but cannot accidentally cast a pending
+                    // targeted skill or spend its resource.
                     controller.Combat.Roster.Select(instanceId);
                     lastFormationSelection = null;
                     GetComponent<OrdrMobileTouchPanel>()?.OpenSelectedUnitSkills();
@@ -1325,8 +1328,13 @@ namespace Ordr.Mobile.Unity
                             id => !combat.IsStoryDeployed(id)))
                             if (live.Unit.Id == group.Unit.Id)
                             {
-                                combat.Roster.Select(live.NextSelection(combat.Roster.SelectedId));
-                                touchPanel?.OpenSelectedUnitSkills();
+                                long picked = live.NextSelection(combat.Roster.SelectedId);
+                                if (touchPanel == null ||
+                                    !touchPanel.TryCompleteDedicatedSkillTarget(picked))
+                                {
+                                    combat.Roster.Select(picked);
+                                    touchPanel?.OpenSelectedUnitSkills();
+                                }
                                 break;
                             }
                         nextRefresh = 0f;
@@ -1369,8 +1377,12 @@ namespace Ordr.Mobile.Unity
             {
                 try
                 {
-                    combat.Roster.Select(nearestId);
-                    touchPanel?.OpenSelectedUnitSkills();
+                    if (touchPanel == null ||
+                        !touchPanel.TryCompleteDedicatedSkillTarget(nearestId))
+                    {
+                        combat.Roster.Select(nearestId);
+                        touchPanel?.OpenSelectedUnitSkills();
+                    }
                 }
                 catch (KeyNotFoundException) { nextRefresh = 0f; }
             }

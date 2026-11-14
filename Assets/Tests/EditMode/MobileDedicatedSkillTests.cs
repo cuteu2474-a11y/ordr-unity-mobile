@@ -28,6 +28,60 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        private sealed class TargetedWorld : IOriginalDedicatedSkillPort,
+            IOriginalTargetedDedicatedSkillPort
+        {
+            public int TargetCalls;
+            public int UntargetedCalls;
+            public long TargetId;
+            public IReadOnlyList<MobileDedicatedSkillOffer> AvailableSkills()
+            {
+                return new[] {
+                    new MobileDedicatedSkillOffer("copy:31", "복사", "대상 지정",
+                        true, true, 31, requiresAllyTarget: true),
+                    new MobileDedicatedSkillOffer("copy:32", "다른 소유자", "대상 지정",
+                        true, true, 32, requiresAllyTarget: true),
+                    new MobileDedicatedSkillOffer("upgrade:31", "강화", "자원 소비",
+                        true, true, 31, requiresConfirmation: true)
+                };
+            }
+            public ManualActionResult Execute(string id)
+            {
+                UntargetedCalls++;
+                return new ManualActionResult(ManualActionState.Succeeded, "직접 시전");
+            }
+            public ManualActionResult ExecuteForAlly(string offeredSkillId,
+                long ownerInstanceId, long targetInstanceId)
+            {
+                TargetCalls++;
+                TargetId = targetInstanceId;
+                return new ManualActionResult(ManualActionState.Succeeded, "대상 시전");
+            }
+        }
+
+        [Test]
+        public void SelectedOwnerAndTargetAreBoundIndependently()
+        {
+            var actions = new MobileDedicatedSkillActions();
+            var world = new TargetedWorld();
+            actions.Configure(world);
+            Assert.AreEqual(2, actions.AvailableFor(31).Count);
+            Assert.AreEqual(1, actions.AvailableFor(32).Count);
+            Assert.AreEqual(0, actions.AvailableFor(0).Count);
+            Assert.AreEqual(ManualActionState.Rejected,
+                actions.Request("copy:31").State);
+            Assert.AreEqual(0, world.UntargetedCalls);
+            Assert.AreEqual(ManualActionState.Rejected,
+                actions.RequestTargeted("copy:31", 32, 81).State);
+            Assert.AreEqual(ManualActionState.Rejected,
+                actions.RequestTargeted("upgrade:31", 31, 81).State);
+            Assert.AreEqual(0, world.TargetCalls);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                actions.RequestTargeted("copy:31", 31, 81).State);
+            Assert.AreEqual(81, world.TargetId);
+            Assert.AreEqual(1, world.TargetCalls);
+        }
+
         [Test]
         public void ExistingOtamaOneTimeReceiptCanBeUsedAsDedicatedActionId()
         {

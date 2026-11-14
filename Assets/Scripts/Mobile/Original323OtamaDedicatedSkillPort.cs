@@ -30,7 +30,8 @@ namespace Ordr.Mobile.Mobile
                 bool unused = !wallet.HasCompletedTransaction(actionId);
                 result.Add(new MobileDedicatedSkillOffer(actionId,
                     "오타마 경단", "목재 +16 · 유닛당 1회",
-                    true, unused && combat.Game.Phase == SessionPhase.Running));
+                    true, unused && combat.Game.Phase == SessionPhase.Running,
+                    owned.InstanceId));
             }
             return result.AsReadOnly();
         }

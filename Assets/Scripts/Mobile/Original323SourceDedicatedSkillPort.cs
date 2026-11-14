@@ -43,7 +43,8 @@ namespace Ordr.Mobile.Mobile
         public static string UtaUnlockAction(long id) => UtaUnlockActionPrefix + id;
     }
 
-    public sealed class Original323SourceDedicatedSkillPort : IOriginalDedicatedSkillPort
+    public sealed class Original323SourceDedicatedSkillPort :
+        IOriginalDedicatedSkillPort, IOriginalTargetedDedicatedSkillPort
     {
         private readonly CharacterCombatRuntime combat;
         private readonly EconomyWallet wallet;
@@ -61,14 +62,9 @@ namespace Ordr.Mobile.Mobile
         {
             var actions = new List<MobileDedicatedSkillOffer>(otama.AvailableSkills());
             if (!combat.UsesSourceModelBasicAttacks) return actions.AsReadOnly();
-            bool ownsVegapunk = false;
-            bool ownsOtama = false;
+            long firstVegapunkId = 0;
+            long firstOtamaId = 0;
             var owned = combat.MobileUnitSnapshot();
-            MobileUnitSnapshot selectedAlly = null;
-            if (combat.Roster.SelectedId.HasValue)
-                foreach (var unit in owned)
-                    if (unit.InstanceId == combat.Roster.SelectedId.Value)
-                    { selectedAlly = unit; break; }
             foreach (var unit in owned)
             {
                 if (unit.Unit.Id == "E-06")
@@ -85,36 +81,35 @@ namespace Ordr.Mobile.Mobile
                             true, combat.CanRollSourceModelViviUpgrade(
                                 unit.InstanceId, chance) &&
                             wallet.Balance("wood") >= 2 &&
-                            wallet.Balance(WispResourceIds.Random) >= 3));
+                            wallet.Balance(WispResourceIds.Random) >= 3,
+                            unit.InstanceId, requiresConfirmation: true));
                 }
                 if (unit.Unit.Id == "L-14")
                 {
-                    long target = selectedAlly == null ? 0 : selectedAlly.InstanceId;
-                    bool canCopy = selectedAlly != null &&
-                        combat.CanSourceModelBruleeCopy(unit.InstanceId, target) &&
-                        wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId)
-                            >= 1;
+                    bool canCopy = false;
+                    if (wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) >= 1)
+                        foreach (var candidate in owned)
+                            if (combat.CanSourceModelBruleeCopy(
+                                unit.InstanceId, candidate.InstanceId))
+                            { canCopy = true; break; }
                     actions.Add(new MobileDedicatedSkillOffer(
-                        Original323SourceNativeActionKeys.BruleeCopy(
-                            unit.InstanceId, target),
-                        "브륄레 · 미러미러열매" +
-                        (canCopy ? " → " + selectedAlly.Unit.Name : ""),
-                        "복사할 보유 전설 유닛을 선택하세요 · 특성포인트 1 · 브륄레 자신 변환",
-                        true, canCopy));
+                        Original323SourceNativeActionKeys.BruleeCopy(unit.InstanceId, 0),
+                        "브륄레 · 미러미러열매",
+                        "전장 유닛 터치로 복사 대상 지정 · 특성포인트 1 · 공속 -5%",
+                        true, canCopy, unit.InstanceId, requiresAllyTarget: true));
                 }
                 if (unit.Unit.Id == "L-39")
                 {
-                    long target = selectedAlly == null ? 0 : selectedAlly.InstanceId;
-                    bool canBuff = selectedAlly != null &&
-                        combat.CanUseSourceModelHibariBento(unit.InstanceId,
-                            target, wallet);
+                    bool canBuff = false;
+                    foreach (var candidate in owned)
+                        if (combat.CanUseSourceModelHibariBento(
+                            unit.InstanceId, candidate.InstanceId, wallet))
+                        { canBuff = true; break; }
                     actions.Add(new MobileDedicatedSkillOffer(
-                        Original323SourceNativeActionKeys.HibariBento(
-                            unit.InstanceId, target),
-                        "히바리 · 사랑의 도시락" +
-                        (canBuff ? " → " + selectedAlly.Unit.Name : ""),
-                        "대상 아군 선택 · 1회 사용 · 영구 공속 +12%(초월 코비 +20%)",
-                        true, canBuff));
+                        Original323SourceNativeActionKeys.HibariBento(unit.InstanceId, 0),
+                        "히바리 · 사랑의 도시락",
+                        "전장 유닛 터치로 대상 지정 · 1회 · 공속 영구 +12%(코비 초월 +20%)",
+                        true, canBuff, unit.InstanceId, requiresAllyTarget: true));
                 }
                 if (unit.Unit.Id == "D-01")
                 {
@@ -122,12 +117,14 @@ namespace Ordr.Mobile.Mobile
                         unit.InstanceId);
                     actions.Add(new MobileDedicatedSkillOffer(
                         Original323SourceNativeActionKeys.MariaCycle(unit.InstanceId),
-                        "블랙마리아 · " + combat.SourceModelMariaNextModeName(
-                            unit.InstanceId),
+                        "블랙마리아 · " +
+                            combat.SourceModelMariaCurrentModeName(unit.InstanceId) +
+                            " → " + combat.SourceModelMariaNextModeName(unit.InstanceId),
                         "마리아네트 전환 / 30초 재사용" +
                         (remain > 0 ? " · 대기 " +
                             Math.Ceiling(remain * 10) / 10.0 + "초" : ""),
-                        true, combat.CanCycleSourceModelMaria(unit.InstanceId)));
+                        true, combat.CanCycleSourceModelMaria(unit.InstanceId),
+                        unit.InstanceId));
                 }
                 if (unit.Unit.Id == "LI-03")
                 {
@@ -144,7 +141,7 @@ namespace Ordr.Mobile.Mobile
                         Original323SourceNativeActionKeys.MarcoTransformAction(id),
                         "마르코 F · " + direction,
                         "수동 변신 / 10.75초 쿨타임" + timing,
-                        true, combat.CanToggleSourceModelMarcoForm(id));
+                        true, combat.CanToggleSourceModelMarcoForm(id), id);
                     // When the player selects a Marco, keep F in the visible
                     // leftmost slot of the existing battle/story skill ribbon.
                     if (combat.Roster.SelectedId.HasValue &&
@@ -153,10 +150,12 @@ namespace Ordr.Mobile.Mobile
                     else
                         actions.Add(offer);
                 }
-                if (unit.Unit.Id == SourceModelNativeCharacterRules.Vegapunk)
-                    ownsVegapunk = true;
-                if (unit.Unit.Id == SpecialGradeMobilePolicy.Otama)
-                    ownsOtama = true;
+                if (unit.Unit.Id == SourceModelNativeCharacterRules.Vegapunk &&
+                    firstVegapunkId == 0)
+                    firstVegapunkId = unit.InstanceId;
+                if (unit.Unit.Id == SpecialGradeMobilePolicy.Otama &&
+                    firstOtamaId == 0)
+                    firstOtamaId = unit.InstanceId;
                 if (unit.Unit.Id == "I-04" &&
                     wallet.Balance(Original323FusionNativeFollowupLedger.RogerHelperId) > 0)
                 {
@@ -167,14 +166,16 @@ namespace Ordr.Mobile.Mobile
                             Original323SourceNativeActionKeys.CastAction(unit.InstanceId),
                             "로저 · 인페르노 시전",
                             "A202 / 보스·스토리 대상 / 재사용 대기 150초 · 범위 800",
-                            true, combat.CanCastSourceModelRogerInferno(unit.InstanceId)));
+                            true, combat.CanCastSourceModelRogerInferno(unit.InstanceId),
+                            unit.InstanceId));
                     else
                         actions.Add(new MobileDedicatedSkillOffer(
                             Original323SourceNativeActionKeys.UnlockAction(unit.InstanceId),
                             "로저 · 인페르노 해금",
                             "원본 B8Z / 특성포인트 4점 영구 소모 · 유닛당 1회",
                             true, combat.Game.Phase == SessionPhase.Running &&
-                            wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) >= 4));
+                            wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) >= 4,
+                            unit.InstanceId));
                 }
                 if (unit.Unit.Id == "E-09" &&
                     wallet.Balance(Original323FusionNativeFollowupLedger.UtaSongId) > 0 &&
@@ -186,17 +187,19 @@ namespace Ordr.Mobile.Mobile
                         "우타 · 신세계 변신 해금",
                         "원본 B6n/A0D2 · 특성포인트 4점 영구 소모 · 유닛당 1회",
                         true, combat.Game.Phase == SessionPhase.Running &&
-                        wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) >= 4));
+                        wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) >= 4,
+                        unit.InstanceId));
                 }
             }
-            if (ownsOtama &&
+            if (firstOtamaId != 0 &&
                 wallet.Balance(Original323SourceNativeActionKeys.ResearchResource) == 0)
                 actions.Add(new MobileDedicatedSkillOffer(
                     Original323SourceNativeActionKeys.ResearchAction,
                     "오타마 · 연구 등록",
                     "원본 CH8 / 오타마 지역 진입을 수동으로 대체 / 소모 없음 · 1회",
-                    true, combat.Game.Phase == SessionPhase.Running));
-            if (!ownsVegapunk) return actions.AsReadOnly();
+                    true, combat.Game.Phase == SessionPhase.Running,
+                    firstOtamaId));
+            if (firstVegapunkId == 0) return actions.AsReadOnly();
             foreach (var rawcode in new[] { "H0AB", "H0AE", "H0AM" })
             {
                 if (combat.HasPracticeSatellite(rawcode)) continue;
@@ -213,9 +216,48 @@ namespace Ordr.Mobile.Mobile
                     "베가펑크 · " + SourceModelNativeCharacterRules.SatelliteName(rawcode),
                     "원본 특성포인트 " + points + " / 목재 " + wood +
                     " (스토리·미션 보상 획득 후 구매 가능)",
-                    true, combat.Game.Phase == SessionPhase.Running && affordable));
+                    true, combat.Game.Phase == SessionPhase.Running && affordable,
+                    firstVegapunkId));
             }
             return actions.AsReadOnly();
+        }
+
+        public ManualActionResult ExecuteForAlly(string offeredSkillId,
+            long ownerInstanceId, long targetInstanceId)
+        {
+            if (ownerInstanceId <= 0 || targetInstanceId <= 0)
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "유효한 시전자와 대상이 필요합니다.");
+            foreach (var source in combat.MobileUnitSnapshot())
+            {
+                if (source.InstanceId != ownerInstanceId) continue;
+                if (source.Unit.Id == "L-14" &&
+                    offeredSkillId == Original323SourceNativeActionKeys.BruleeCopy(
+                        ownerInstanceId, 0))
+                {
+                    long produced;
+                    bool ok = combat.TrySourceModelBruleeCopy(ownerInstanceId,
+                        targetInstanceId, wallet, out produced);
+                    return new ManualActionResult(
+                        ok ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                        ok ? "브륄레 복사 완료 · 새 전설 유닛 #" + produced +
+                            " · 특성포인트 1 소모 · 공격속도 -5%" :
+                            "보유 전설 대상·재화·전장 상태를 다시 확인해 주세요.");
+                }
+                if (source.Unit.Id == "L-39" &&
+                    offeredSkillId == Original323SourceNativeActionKeys.HibariBento(
+                        ownerInstanceId, 0))
+                {
+                    bool ok = combat.TryUseSourceModelHibariBento(ownerInstanceId,
+                        targetInstanceId, wallet);
+                    return new ManualActionResult(
+                        ok ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                        ok ? "사랑의 도시락 사용 · 아군 공격속도 영구 강화" :
+                            "대상 아군·중복 상태·도시락 사용 이력을 확인해 주세요.");
+                }
+            }
+            return new ManualActionResult(ManualActionState.Rejected,
+                "스킬을 선택한 원래 캐릭터를 더 이상 보유하지 않습니다.");
         }
 
         public ManualActionResult Execute(string skillId)
@@ -388,29 +430,9 @@ namespace Ordr.Mobile.Mobile
                                 combat.SourceModelMariaCurrentModeName(id) :
                                 "재사용 대기 또는 전환 조건이 충족되지 않았습니다.");
                     }
-                    long chosen = combat.Roster.SelectedId.GetValueOrDefault();
-                    if (unit.Unit.Id == "L-14" &&
-                        skillId == Original323SourceNativeActionKeys.BruleeCopy(id, chosen))
-                    {
-                        long copyId;
-                        bool success = combat.TrySourceModelBruleeCopy(
-                            id, chosen, wallet, out copyId);
-                        return new ManualActionResult(
-                            success ? ManualActionState.Succeeded : ManualActionState.Rejected,
-                            success ? "브륄레 복사 완료 · 전설 유닛 #" + copyId +
-                                " 생성 · 특성포인트 1 소모 · 공속 -5%" :
-                                "선택 전설·브륄레·특성포인트/전장 조건을 확인해 주세요.");
-                    }
-                    if (unit.Unit.Id == "L-39" &&
-                        skillId == Original323SourceNativeActionKeys.HibariBento(id, chosen))
-                    {
-                        bool success = combat.TryUseSourceModelHibariBento(
-                            id, chosen, wallet);
-                        return new ManualActionResult(
-                            success ? ManualActionState.Succeeded : ManualActionState.Rejected,
-                            success ? "사랑의 도시락 1회 사용 · 대상 공속 영구 강화" :
-                                "아군·중복 강화·1회 사용 조건을 확인해 주세요.");
-                    }
+                    // Brulee and Hibari now use ExecuteForAlly exclusively.
+                    // The old direct path read Roster.SelectedId as target,
+                    // which could accidentally consume the caster selection.
                 }
                 return new ManualActionResult(ManualActionState.Rejected,
                     "해당 유닛 또는 선택한 대상을 찾지 못했습니다.");

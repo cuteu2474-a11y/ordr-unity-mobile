@@ -108,6 +108,15 @@ namespace Ordr.Mobile.Unity
         private Vector2 dedicatedScroll;
         private long? dedicatedSkillLastSelectedUnit;
         private string dedicatedNotice;
+        // A dedicated cast only has one of these modes active. Both are
+        // presentation state, never a pre-debit or pending economy operation.
+        private string pendingDedicatedTargetSkillId;
+        private long pendingDedicatedTargetSourceId;
+        private string pendingDedicatedTargetName;
+        private string pendingDedicatedConfirmationId;
+        private long pendingDedicatedConfirmationSourceId;
+        private string pendingDedicatedConfirmationTitle;
+        private string pendingDedicatedConfirmationCosts;
         private string notice = "";
         // A compact, transient three-line log shared by unit selections,
         // actual gambling results and wisp awards. It never awards anything.
@@ -185,6 +194,43 @@ namespace Ordr.Mobile.Unity
                 }
         }
 
+        // The battlefield presenter calls this BEFORE modifying roster
+        // selection. This is the only route that consumes a pending ally tap:
+        // the original source remains selected while the port revalidates
+        // both instance identities, battle lane and wallet on execution.
+        public bool TryCompleteDedicatedSkillTarget(long tappedUnitId)
+        {
+            if (string.IsNullOrEmpty(pendingDedicatedTargetSkillId))
+                return false;
+            long sourceId = pendingDedicatedTargetSourceId;
+            if (Combat == null || Combat.Roster.SelectedId != sourceId ||
+                controller == null || controller.DedicatedSkills == null)
+            {
+                ClearPendingDedicatedSkill();
+                return true;
+            }
+            ManualActionResult result = controller.DedicatedSkills.RequestTargeted(
+                pendingDedicatedTargetSkillId, sourceId, tappedUnitId);
+            dedicatedNotice = result.Message;
+            ShowResult(result);
+            if (result.State == ManualActionState.Succeeded)
+                ClearPendingDedicatedSkill();
+            // On rejection keep targeting armed, so another ally can be
+            // chosen without repeatedly pressing the original skill button.
+            return true;
+        }
+
+        private void ClearPendingDedicatedSkill()
+        {
+            pendingDedicatedTargetSkillId = null;
+            pendingDedicatedTargetSourceId = 0;
+            pendingDedicatedTargetName = null;
+            pendingDedicatedConfirmationId = null;
+            pendingDedicatedConfirmationSourceId = 0;
+            pendingDedicatedConfirmationTitle = null;
+            pendingDedicatedConfirmationCosts = null;
+        }
+
         private void Update()
         {
             // BJH alert is shown in the normal action notice across all
@@ -256,6 +302,9 @@ namespace Ordr.Mobile.Unity
         // closes its details; another tab replaces the right-hand content.
         private void SelectTab(Tab selected, bool restoreScroll = false)
         {
+            // Changing game menus cancels any uncommitted cast. It must
+            // never turn a later ordinary map tap into an accidental spend.
+            ClearPendingDedicatedSkill();
             if (visible && currentTab == selected)
             {
                 CloseDrawer();
@@ -291,6 +340,7 @@ namespace Ordr.Mobile.Unity
 
         private void CloseDrawer()
         {
+            ClearPendingDedicatedSkill();
             panelScrollGesture.Cancel();
             panelScrollViewport = new Rect();
             gamblingPressGesture.Cancel();
@@ -1447,63 +1497,143 @@ namespace Ordr.Mobile.Unity
             long? selected = Combat == null ? null : Combat.Roster.SelectedId;
             if (selected != dedicatedSkillLastSelectedUnit)
             {
+                ClearPendingDedicatedSkill();
                 dedicatedSkillLastSelectedUnit = selected;
                 dedicatedScroll = Vector2.zero;
                 skillScrollGesture.Cancel();
                 skillScrollViewport = new Rect();
             }
             GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("스킬 발동",OrdrMobileUiTheme.Overline,GUILayout.Width(65f),
-                GUILayout.MinHeight(48f));
-
-            var actions = controller.DedicatedSkills;
-            if (Event.current.type == EventType.Repaint)
+            if (!string.IsNullOrEmpty(pendingDedicatedTargetSkillId) ||
+                !string.IsNullOrEmpty(pendingDedicatedConfirmationId))
+            {
+                // The old horizontal ribbon is hidden by the prompt. It
+                // must not keep a stale gesture/hitbox during targeting.
+                skillScrollGesture.Cancel();
                 skillScrollViewport = new Rect();
-            if (!actions.IsConnected)
-                GUILayout.Label("스킬 준비 중");
+                skillScrollMaximum = 0f;
+            }
+            var actions = controller.DedicatedSkills;
+            long selectedId = selected.GetValueOrDefault();
+            // A confirmation or target prompt occupies the same existing
+            // ribbon. Never open a new overlay over the battle or story map.
+            if (!string.IsNullOrEmpty(pendingDedicatedTargetSkillId))
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("대상 지정 · " + pendingDedicatedTargetName +
+                    "\n전장 또는 유닛 배치 칸에서 아군 터치",
+                    OrdrMobileUiTheme.Overline, GUILayout.ExpandWidth(true),
+                    GUILayout.MinHeight(52f));
+                if (GUILayout.Button("취소", OrdrMobileUiTheme.NavButton,
+                    GUILayout.Width(74f), GUILayout.MinHeight(48f)))
+                    ClearPendingDedicatedSkill();
+                GUILayout.EndHorizontal();
+            }
+            else if (!string.IsNullOrEmpty(pendingDedicatedConfirmationId))
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("강화 확인 · " + pendingDedicatedConfirmationTitle +
+                    "\n" + pendingDedicatedConfirmationCosts,
+                    OrdrMobileUiTheme.Overline, GUILayout.ExpandWidth(true),
+                    GUILayout.MinHeight(52f));
+                bool validOwner = selectedId == pendingDedicatedConfirmationSourceId;
+                bool before = GUI.enabled;
+                GUI.enabled = before && validOwner;
+                if (GUILayout.Button("강화 실행", OrdrMobileUiTheme.SkillButton,
+                    GUILayout.Width(95f), GUILayout.MinHeight(48f)))
+                {
+                    ManualActionResult result = actions.Request(pendingDedicatedConfirmationId);
+                    dedicatedNotice = result.Message;
+                    ShowResult(result);
+                    ClearPendingDedicatedSkill();
+                }
+                GUI.enabled = before;
+                if (GUILayout.Button("취소", OrdrMobileUiTheme.NavButton,
+                    GUILayout.Width(64f), GUILayout.MinHeight(48f)))
+                    ClearPendingDedicatedSkill();
+                GUILayout.EndHorizontal();
+            }
             else
             {
-                var available = actions.Available();
-                if (available.Count == 0)
-                    GUILayout.Label("현재 전용 스킬 없음");
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("선택 유닛\n수동 스킬",
+                    OrdrMobileUiTheme.Overline, GUILayout.Width(67f),
+                    GUILayout.MinHeight(48f));
+                if (Event.current.type == EventType.Repaint)
+                    skillScrollViewport = new Rect();
+                if (!selected.HasValue)
+                    GUILayout.Label("전장의 유닛을 터치해 스킬을 선택하세요",
+                        OrdrMobileUiTheme.Explanation);
+                else if (!actions.IsConnected)
+                    GUILayout.Label("스킬 연결 준비 중", OrdrMobileUiTheme.Explanation);
                 else
                 {
-                    // Always a single horizontal row, swiped left/right.
-                    dedicatedScroll = GUILayout.BeginScrollView(dedicatedScroll, false, false,
-                        GUIStyle.none, GUIStyle.none, GUILayout.ExpandHeight(true));
-                    GUILayout.BeginHorizontal();
-                    foreach (var skill in available)
+                    // Only this character's offers, including original
+                    // Otama/Marco/Roger/Vegapunk special actions. Other
+                    // owners cannot accidentally occupy the skill bar.
+                    var available = actions.AvailableFor(selectedId);
+                    if (available.Count == 0)
+                        GUILayout.Label("수동 스킬 없음 · 전투 스킬은 자동 발동",
+                            OrdrMobileUiTheme.Explanation);
+                    else
                     {
-                        if (skill == null) continue;
-                        bool previous = GUI.enabled;
-                        GUI.enabled = previous && skill.IsUnlocked && skill.CanExecute;
-                        bool pressed = GUILayout.Button(
-                            skill.Title + "\n" + skill.OriginalCostAndRules,
-                            OrdrMobileUiTheme.SkillButton,GUILayout.Width(220f),
-                            GUILayout.Height(Mathf.Max(48f, area.height - 30f)));
-                        GUI.enabled = previous;
-                        if (pressed)
+                        dedicatedScroll = GUILayout.BeginScrollView(
+                            dedicatedScroll, false, false,
+                            GUIStyle.none, GUIStyle.none,
+                            GUILayout.ExpandHeight(true));
+                        GUILayout.BeginHorizontal();
+                        foreach (var skill in available)
                         {
-                            ManualActionResult result = actions.Request(skill.Id);
-                            dedicatedNotice = result.Message;
-                            ShowResult(result);
+                            if (skill == null) continue;
+                            bool before = GUI.enabled;
+                            GUI.enabled = before && skill.IsUnlocked && skill.CanExecute;
+                            bool pressed = GUILayout.Button(
+                                skill.Title + "\n" + skill.OriginalCostAndRules,
+                                OrdrMobileUiTheme.SkillButton, GUILayout.Width(220f),
+                                GUILayout.Height(Mathf.Max(48f, area.height - 30f)));
+                            GUI.enabled = before;
+                            if (!pressed) continue;
+                            if (skill.RequiresAllyTarget)
+                            {
+                                pendingDedicatedTargetSkillId = skill.Id;
+                                pendingDedicatedTargetSourceId = skill.OwnerInstanceId;
+                                pendingDedicatedTargetName = skill.Title;
+                                dedicatedNotice = "전장의 대상 아군 유닛을 터치하세요.";
+                            }
+                            else if (skill.RequiresConfirmation)
+                            {
+                                pendingDedicatedConfirmationId = skill.Id;
+                                pendingDedicatedConfirmationSourceId =
+                                    skill.OwnerInstanceId;
+                                pendingDedicatedConfirmationTitle = skill.Title;
+                                pendingDedicatedConfirmationCosts =
+                                    skill.OriginalCostAndRules;
+                            }
+                            else
+                            {
+                                ManualActionResult result = actions.Request(skill.Id);
+                                dedicatedNotice = result.Message;
+                                ShowResult(result);
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                        Rect content = GUILayoutUtility.GetLastRect();
+                        GUILayout.EndScrollView();
+                        if (Event.current.type == EventType.Repaint)
+                        {
+                            Rect viewport = GUILayoutUtility.GetLastRect();
+                            skillScrollViewport = new Rect(
+                                area.x + viewport.x, area.y + viewport.y,
+                                viewport.width, viewport.height);
+                            skillScrollMaximum = Mathf.Max(
+                                0f, content.width - viewport.width);
+                            dedicatedScroll.x = Mathf.Clamp(
+                                dedicatedScroll.x, 0f, skillScrollMaximum);
                         }
                     }
-                    GUILayout.EndHorizontal();
-                    Rect content = GUILayoutUtility.GetLastRect();
-                    GUILayout.EndScrollView();
-                    if (Event.current.type == EventType.Repaint)
-                    {
-                        Rect viewport = GUILayoutUtility.GetLastRect();
-                        skillScrollViewport = new Rect(area.x + viewport.x, area.y + viewport.y,
-                            viewport.width, viewport.height);
-                        skillScrollMaximum = Mathf.Max(0f, content.width - viewport.width);
-                        dedicatedScroll.x = Mathf.Clamp(dedicatedScroll.x, 0f, skillScrollMaximum);
-                    }
                 }
+                GUILayout.EndHorizontal();
             }
-            GUILayout.EndHorizontal();
             GUILayout.EndArea();
         }
 
@@ -1627,6 +1757,17 @@ namespace Ordr.Mobile.Unity
                 Combat.Roster.SelectedId.HasValue)
                 DrawSansBoneFeedingPanel(Combat.Roster.SelectedId.Value);
             DrawSelectedUnitSkillSummary(detail);
+            if (detail.Unit.Id == "D-01" && Combat != null &&
+                Combat.Roster.SelectedId.HasValue)
+            {
+                long mariaId = Combat.Roster.SelectedId.Value;
+                GUILayout.Label("마리아네트: " +
+                    Combat.SourceModelMariaCurrentModeName(mariaId) +
+                    " → " + Combat.SourceModelMariaNextModeName(mariaId) +
+                    " · 남은 대기 " +
+                    Combat.SourceModelMariaCooldownRemaining(mariaId).ToString("0.#") +
+                    "초", OrdrMobileUiTheme.Overline);
+            }
 
             if (OrdrMobileUiTheme.DrawAccordionHeader("선택 유닛 세부 상태",
                 detail.Grade, showSelectedUnitExtras, OrdrMobileUiTheme.Aqua))
