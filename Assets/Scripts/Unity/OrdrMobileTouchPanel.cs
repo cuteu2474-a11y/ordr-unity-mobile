@@ -1587,10 +1587,17 @@ namespace Ordr.Mobile.Unity
                             if (skill == null) continue;
                             bool before = GUI.enabled;
                             GUI.enabled = before && skill.IsUnlocked && skill.CanExecute;
-                            bool pressed = GUILayout.Button(
-                                skill.Title + "\n" + skill.OriginalCostAndRules,
+                            // Each card consumes live owner-bound values,
+                            // never an independent UI timer. Full conditions
+                            // remain available in the selected-unit drawer.
+                            string stateText = skill.CooldownRemainingSeconds > 0 ?
+                                "재사용 " + skill.CooldownRemainingSeconds.ToString("0.#") +
+                                "초" : skill.CanExecute ? "사용 가능" :
+                                    skill.IsUnlocked ? "조건 부족" : "해금 전";
+                            string compactText = skill.Title + "\n" + stateText;
+                            bool pressed = GUILayout.Button(compactText,
                                 OrdrMobileUiTheme.SkillButton, GUILayout.Width(220f),
-                                GUILayout.Height(Mathf.Max(48f, area.height - 30f)));
+                                GUILayout.Height(Mathf.Max(48f, area.height - 24f)));
                             GUI.enabled = before;
                             if (!pressed) continue;
                             if (skill.RequiresAllyTarget)
@@ -1757,17 +1764,9 @@ namespace Ordr.Mobile.Unity
                 Combat.Roster.SelectedId.HasValue)
                 DrawSansBoneFeedingPanel(Combat.Roster.SelectedId.Value);
             DrawSelectedUnitSkillSummary(detail);
-            if (detail.Unit.Id == "D-01" && Combat != null &&
-                Combat.Roster.SelectedId.HasValue)
-            {
-                long mariaId = Combat.Roster.SelectedId.Value;
-                GUILayout.Label("마리아네트: " +
-                    Combat.SourceModelMariaCurrentModeName(mariaId) +
-                    " → " + Combat.SourceModelMariaNextModeName(mariaId) +
-                    " · 남은 대기 " +
-                    Combat.SourceModelMariaCooldownRemaining(mariaId).ToString("0.#") +
-                    "초", OrdrMobileUiTheme.Overline);
-            }
+            if (Combat != null && Combat.Roster.SelectedId.HasValue)
+                DrawSelectedUnitLiveSkillStatus(detail,
+                    Combat.Roster.SelectedId.Value);
 
             if (OrdrMobileUiTheme.DrawAccordionHeader("선택 유닛 세부 상태",
                 detail.Grade, showSelectedUnitExtras, OrdrMobileUiTheme.Aqua))
@@ -1817,6 +1816,123 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
         }
 
+        // All text below is calculated from the actual wallet / skill port /
+        // status lifecycle. Unsupported native timings are not fabricated.
+        private void DrawSelectedUnitLiveSkillStatus(
+            UnitImplementationDefinition detail, long instanceId)
+        {
+            var actions = controller.DedicatedSkills;
+            if (actions != null && actions.IsConnected)
+            {
+                var active = actions.AvailableFor(instanceId);
+                if (active.Count > 0)
+                {
+                    GUILayout.Label("수동 스킬 상태", OrdrMobileUiTheme.Subheading);
+                    foreach (var skill in active)
+                    {
+                        string state = skill.CooldownRemainingSeconds > 0 ?
+                            "대기 " + skill.CooldownRemainingSeconds.ToString("0.#") + "초" :
+                            skill.CanExecute ? "사용 가능" : "조건 미충족";
+                        GUILayout.Label(skill.Title + " · " + state,
+                            OrdrMobileUiTheme.Overline);
+                        if (!string.IsNullOrWhiteSpace(skill.LiveStatus))
+                            GUILayout.Label(skill.LiveStatus, OrdrMobileUiTheme.Explanation);
+                        GUILayout.Label(skill.OriginalCostAndRules,
+                            OrdrMobileUiTheme.Explanation);
+                    }
+                }
+            }
+            var effects = Combat.SourceModelActiveUnitEffectsOf(instanceId);
+            if (effects.Count > 0)
+            {
+                GUILayout.Label("실제 적용 중인 강화", OrdrMobileUiTheme.Subheading);
+                foreach (var effect in effects)
+                    GUILayout.Label("• " + effect, OrdrMobileUiTheme.Explanation);
+            }
+            if (detail.Unit.Id == "D-01")
+                GUILayout.Label("마리아네트 효과: " +
+                    Combat.SourceModelMariaCurrentModeName(instanceId) +
+                    " · 효과 남음 " +
+                    Combat.SourceModelMariaEffectRemaining(instanceId).ToString("0.#") +
+                    "초", OrdrMobileUiTheme.Overline);
+            else if (detail.Unit.Id == "LI-03")
+            {
+                string form = Combat.PracticeFormOf(instanceId);
+                GUILayout.Label("현재 형태: " +
+                    (form == "phoenix" ? "불사조" :
+                     form == "human" ? "인간형" : "원본 형태 확인 필요") +
+                    " · 전환 대기 " +
+                    Combat.SourceModelMarcoTransformCooldownRemaining(
+                        instanceId).ToString("0.#") + "초",
+                    OrdrMobileUiTheme.Overline);
+            }
+            if (detail.Unit.Id == "E-09")
+                GUILayout.Label("우타 음표 병사 · 현재 추적 " +
+                    Combat.SourceModelActiveUtaSoldiersOf(instanceId) + "기",
+                    OrdrMobileUiTheme.Explanation);
+            if (detail.Unit.Id == "TR-30")
+                GUILayout.Label("베가펑크 위성 · 보유 " +
+                    Combat.PracticeSatellites().Count + "/3",
+                    OrdrMobileUiTheme.Explanation);
+            double maxRemaining;
+            int temporary = Combat.SourceModelActiveTemporaryObjectCountOf(
+                instanceId, out maxRemaining);
+            if (temporary > 0)
+                GUILayout.Label("임시 생성 객체 " + temporary +
+                    "개 · 최장 남은 시간 " +
+                    maxRemaining.ToString("0.#") + "초",
+                    OrdrMobileUiTheme.Explanation);
+        }
+
+        private static string SkillTooltipNumbers(ImportedCombatSkill skill)
+        {
+            if (skill == null) return "";
+            var items = new List<string>();
+            var mp = skill.Number("manaCost");
+            var hp = skill.Number("healthCost");
+            var wood = skill.Number("lumberCost");
+            if (mp.HasValue && mp.Value > 0)
+                items.Add("마나 " + mp.Value.ToString("0.#"));
+            if (hp.HasValue && hp.Value > 0)
+                items.Add("체력 " + hp.Value.ToString("0.#"));
+            if (wood.HasValue && wood.Value > 0)
+                items.Add("목재 " + wood.Value.ToString("0.#"));
+            if (skill.Radius.HasValue && skill.Radius.Value > 0)
+                items.Add("범위 " + skill.Radius.Value.ToString("0.#"));
+            // Only fields literally documented in the imported skill data.
+            // Never present an unknown native damage school as confirmed.
+            int count = 0;
+            foreach (var component in skill.Components)
+            {
+                if (count >= 3) break;
+                string type = component.Type == "stun" ? "기절" :
+                    component.Type == "fixed" ? "고정 피해" :
+                    component.Type == "physical" ? "물리 피해" :
+                    component.Type == "magical" ? "마법 피해" :
+                    component.Type == "attackSpeedDebuff" ? "공속 감소" :
+                    component.Type == "permanentAllyAttackSpeedBuff" ?
+                        "영구 공속 증가" : null;
+                if (type == null) continue;
+                double? amount = component.Number("amount") ??
+                    component.Number("amountPerHit");
+                double? percent = component.Number("percent");
+                double? seconds = component.Number("durationSeconds");
+                double? hits = component.Number("hits");
+                string part = type;
+                if (amount.HasValue)
+                    part += " " + amount.Value.ToString("#,0.##");
+                if (percent.HasValue)
+                    part += " " + percent.Value.ToString("0.##") + "%";
+                if (hits.HasValue && hits.Value > 1)
+                    part += " ×" + hits.Value.ToString("0");
+                if (seconds.HasValue && seconds.Value > 0)
+                    part += " " + seconds.Value.ToString("0.#") + "초";
+                items.Add(part);
+                count++;
+            }
+            return string.Join(" · ", items.ToArray());
+        }
+
         private void DrawSelectedUnitSkillSummary(UnitImplementationDefinition detail)
         {
             GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
@@ -1845,6 +1961,28 @@ namespace Ordr.Mobile.Unity
                     GUILayout.Label("• " + skill.Name +
                         (meta.Length == 0 ? "" : "  " + meta),
                         OrdrMobileUiTheme.Explanation);
+                    if (showAllSelectedSkills)
+                    {
+                        string tooltip = SkillTooltipNumbers(skill);
+                        if (!string.IsNullOrEmpty(tooltip))
+                            GUILayout.Label("   " + tooltip,
+                                OrdrMobileUiTheme.Explanation);
+                        // Automatically cast Q/W/R remain automatic: show
+                        // documented resource threshold without a fake tap.
+                        var pool = Combat != null &&
+                            Combat.Roster.SelectedId.HasValue ?
+                            Combat.ResourcesOf(Combat.Roster.SelectedId.Value) : null;
+                        double? manaCost = skill.Number("manaCost");
+                        double? healthCost = skill.Number("healthCost");
+                        if (pool != null && ((manaCost.HasValue && manaCost.Value > 0) ||
+                                             (healthCost.HasValue && healthCost.Value > 0)))
+                            GUILayout.Label("   현재 자원 " +
+                                "HP " + pool.Health.ToString("0.#") +
+                                " / MP " + pool.Mana.ToString("0.#") +
+                                (pool.CanSpend(healthCost ?? 0, manaCost ?? 0) ?
+                                    " · 비용 충족" : " · 비용 부족"),
+                                OrdrMobileUiTheme.Overline);
+                    }
                 }
                 if (total == 0)
                     GUILayout.Label("추가 발동 스킬 없음",

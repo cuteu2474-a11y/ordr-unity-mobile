@@ -60,6 +60,23 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void LiveManualSkillStatusRemainsReadOnlyAndValidated()
+        {
+            var skill = new MobileDedicatedSkillOffer("cast:7", "변신", "10초 재사용",
+                true, false, 7, liveStatus: "현재 불사조형",
+                cooldownRemainingSeconds: 5.25);
+            Assert.AreEqual("현재 불사조형", skill.LiveStatus);
+            Assert.AreEqual(5.25, skill.CooldownRemainingSeconds);
+            Assert.IsFalse(skill.CanExecute);
+            Assert.Throws<ArgumentException>(() =>
+                new MobileDedicatedSkillOffer("cast:7", "변신", "재사용",
+                    true, false, 7, cooldownRemainingSeconds: double.NaN));
+            Assert.Throws<ArgumentException>(() =>
+                new MobileDedicatedSkillOffer("cast:7", "변신", "재사용",
+                    true, false, 7, cooldownRemainingSeconds: -1));
+        }
+
+        [Test]
         public void SelectedOwnerAndTargetAreBoundIndependently()
         {
             var actions = new MobileDedicatedSkillActions();

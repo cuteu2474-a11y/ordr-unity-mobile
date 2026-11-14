@@ -82,7 +82,11 @@ namespace Ordr.Mobile.Mobile
                                 unit.InstanceId, chance) &&
                             wallet.Balance("wood") >= 2 &&
                             wallet.Balance(WispResourceIds.Random) >= 3,
-                            unit.InstanceId, requiresConfirmation: true));
+                            unit.InstanceId, requiresConfirmation: true,
+                            liveStatus: "Lv." + level + "/10 · 성공 " + chance +
+                                "% · 목재 " + wallet.Balance("wood") +
+                                "/2 · 위습 " + wallet.Balance(WispResourceIds.Random) +
+                                "/3 · 타격당 최대 HP +" + (level * .5).ToString("0.#") + "%"));
                 }
                 if (unit.Unit.Id == "L-14")
                 {
@@ -96,7 +100,10 @@ namespace Ordr.Mobile.Mobile
                         Original323SourceNativeActionKeys.BruleeCopy(unit.InstanceId, 0),
                         "브륄레 · 미러미러열매",
                         "전장 유닛 터치로 복사 대상 지정 · 특성포인트 1 · 공속 -5%",
-                        true, canCopy, unit.InstanceId, requiresAllyTarget: true));
+                        true, canCopy, unit.InstanceId, requiresAllyTarget: true,
+                        liveStatus: "특성포인트 " + wallet.Balance(
+                            SourceModelNativeCharacterRules.TraitPointsResourceId) +
+                            "/1 · " + (canCopy ? "대상 선택 가능" : "전설 대상·자원 확인")));
                 }
                 if (unit.Unit.Id == "L-39")
                 {
@@ -109,7 +116,12 @@ namespace Ordr.Mobile.Mobile
                         Original323SourceNativeActionKeys.HibariBento(unit.InstanceId, 0),
                         "히바리 · 사랑의 도시락",
                         "전장 유닛 터치로 대상 지정 · 1회 · 공속 영구 +12%(코비 초월 +20%)",
-                        true, canBuff, unit.InstanceId, requiresAllyTarget: true));
+                        true, canBuff, unit.InstanceId, requiresAllyTarget: true,
+                        liveStatus: wallet.HasCompletedTransaction(
+                            Original323SourceNativeActionKeys.HibariReceipt(unit.InstanceId))
+                                ? "도시락 1회 사용 완료" :
+                                canBuff ? "도시락 1회 남음 · 대상 지정 가능" :
+                                    "대상 조건 미충족 · 중복 버프 확인"));
                 }
                 if (unit.Unit.Id == "D-01")
                 {
@@ -124,7 +136,11 @@ namespace Ordr.Mobile.Mobile
                         (remain > 0 ? " · 대기 " +
                             Math.Ceiling(remain * 10) / 10.0 + "초" : ""),
                         true, combat.CanCycleSourceModelMaria(unit.InstanceId),
-                        unit.InstanceId));
+                        unit.InstanceId,
+                        liveStatus: remain > 0 ?
+                            "현재 " + combat.SourceModelMariaCurrentModeName(unit.InstanceId) +
+                            " · 대기 중" : "다음 형태 사용 가능",
+                        cooldownRemainingSeconds: remain));
                 }
                 if (unit.Unit.Id == "LI-03")
                 {
@@ -141,7 +157,10 @@ namespace Ordr.Mobile.Mobile
                         Original323SourceNativeActionKeys.MarcoTransformAction(id),
                         "마르코 F · " + direction,
                         "수동 변신 / 10.75초 쿨타임" + timing,
-                        true, combat.CanToggleSourceModelMarcoForm(id), id);
+                        true, combat.CanToggleSourceModelMarcoForm(id), id,
+                        liveStatus: "현재 " + (phoenix ? "불사조형" : "인간형") +
+                            (remaining > 0 ? " · 전환 대기" : " · 전환 가능"),
+                        cooldownRemainingSeconds: remaining);
                     // When the player selects a Marco, keep F in the visible
                     // leftmost slot of the existing battle/story skill ribbon.
                     if (combat.Roster.SelectedId.HasValue &&
@@ -167,7 +186,10 @@ namespace Ordr.Mobile.Mobile
                             "로저 · 인페르노 시전",
                             "A202 / 보스·스토리 대상 / 재사용 대기 150초 · 범위 800",
                             true, combat.CanCastSourceModelRogerInferno(unit.InstanceId),
-                            unit.InstanceId));
+                            unit.InstanceId, liveStatus: "보스·스토리 대상 필요",
+                            cooldownRemainingSeconds:
+                                combat.SourceModelRogerInfernoCooldownRemaining(
+                                    unit.InstanceId)));
                     else
                         actions.Add(new MobileDedicatedSkillOffer(
                             Original323SourceNativeActionKeys.UnlockAction(unit.InstanceId),
@@ -217,7 +239,12 @@ namespace Ordr.Mobile.Mobile
                     "원본 특성포인트 " + points + " / 목재 " + wood +
                     " (스토리·미션 보상 획득 후 구매 가능)",
                     true, combat.Game.Phase == SessionPhase.Running && affordable,
-                    firstVegapunkId));
+                    firstVegapunkId, liveStatus: "위성 " +
+                        combat.PracticeSatellites().Count + "/3 · 특성 " +
+                        wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) +
+                        "/" + points + " · 목재 " +
+                        wallet.Balance(SourceModelNativeCharacterRules.WoodResourceId) +
+                        "/" + wood));
             }
             return actions.AsReadOnly();
         }

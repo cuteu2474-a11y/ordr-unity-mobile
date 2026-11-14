@@ -14,6 +14,10 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, int>();
         private readonly Dictionary<long, double> manualMariaReady =
             new Dictionary<long, double>();
+        // Separate active-effect clock from the 30-second reuse cooldown.
+        // Displaying only last chosen mode implied a permanent effect.
+        private readonly Dictionary<long, double> manualMariaActiveUntil =
+            new Dictionary<long, double>();
         private readonly Dictionary<long, long> manualMariaToken =
             new Dictionary<long, long>();
         private long manualMariaNextToken;
@@ -194,8 +198,20 @@ namespace Ordr.Mobile.Combat
         public string SourceModelMariaCurrentModeName(long id)
         {
             int mode;
-            return manualMariaMode.TryGetValue(id, out mode) ?
-                MariaModeName(mode) : "미발동";
+            double activeUntil;
+            if (!manualMariaMode.TryGetValue(id, out mode))
+                return "미발동";
+            return manualMariaToken.ContainsKey(id) &&
+                manualMariaActiveUntil.TryGetValue(id, out activeUntil) &&
+                Time < activeUntil ? MariaModeName(mode) : "효과 종료";
+        }
+
+        public double SourceModelMariaEffectRemaining(long id)
+        {
+            double until;
+            return manualMariaToken.ContainsKey(id) &&
+                manualMariaActiveUntil.TryGetValue(id, out until)
+                    ? Math.Max(0, until - Time) : 0;
         }
         public string SourceModelMariaNextModeName(long id)
         {
@@ -227,6 +243,10 @@ namespace Ordr.Mobile.Combat
             // The slow is refreshed by the last tick at t=25 and lasts 6s.
             // Do not change to another mode while it is still active.
             manualMariaReady[id] = Time + (stage == 1 ? 31.01 : 30);
+            // Last periodic tick at +25.01. Its effect expires after a
+            // 3.5s stun / 6s slow; fire packets are instant.
+            manualMariaActiveUntil[id] = Time +
+                (stage == 0 ? 28.51 : stage == 1 ? 31.01 : 25.01);
             bool lane = IsStoryDeployed(id);
             long revision = SourceModelLaneRevision(id);
             for (int tick = 0; tick < 6; tick++)
@@ -305,6 +325,7 @@ namespace Ordr.Mobile.Combat
         {
             // Scheduled status ticks are invalid after any lane change.
             manualMariaToken.Remove(id);
+            manualMariaActiveUntil.Remove(id);
             if (deleted)
             {
                 manualMariaMode.Remove(id);

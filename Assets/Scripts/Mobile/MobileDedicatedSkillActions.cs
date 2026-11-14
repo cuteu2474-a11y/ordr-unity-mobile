@@ -17,17 +17,25 @@ namespace Ordr.Mobile.Mobile
         public long OwnerInstanceId { get; private set; }
         public bool RequiresAllyTarget { get; private set; }
         public bool RequiresConfirmation { get; private set; }
+        // Read-only, live evidence calculated from the same authoritative
+        // resource/clock/state services used by Execute. Never an extra timer.
+        public string LiveStatus { get; private set; }
+        public double CooldownRemainingSeconds { get; private set; }
 
         public MobileDedicatedSkillOffer(string id, string title,
             string originalCostAndRules, bool isUnlocked, bool canExecute,
             long ownerInstanceId = 0, bool requiresAllyTarget = false,
-            bool requiresConfirmation = false)
+            bool requiresConfirmation = false, string liveStatus = null,
+            double cooldownRemainingSeconds = 0)
         {
             if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(title) ||
                 string.IsNullOrWhiteSpace(originalCostAndRules) ||
                 (!isUnlocked && canExecute) || ownerInstanceId < 0 ||
                 (requiresAllyTarget && requiresConfirmation) ||
-                ((requiresAllyTarget || requiresConfirmation) && ownerInstanceId == 0))
+                ((requiresAllyTarget || requiresConfirmation) && ownerInstanceId == 0) ||
+                double.IsNaN(cooldownRemainingSeconds) ||
+                double.IsInfinity(cooldownRemainingSeconds) ||
+                cooldownRemainingSeconds < 0)
                 throw new ArgumentException("원작 전용 스킬의 식별자·대상·조건이 불완전합니다.");
             Id = id;
             Title = title;
@@ -37,6 +45,8 @@ namespace Ordr.Mobile.Mobile
             OwnerInstanceId = ownerInstanceId;
             RequiresAllyTarget = requiresAllyTarget;
             RequiresConfirmation = requiresConfirmation;
+            LiveStatus = liveStatus ?? "";
+            CooldownRemainingSeconds = cooldownRemainingSeconds;
         }
     }
 
