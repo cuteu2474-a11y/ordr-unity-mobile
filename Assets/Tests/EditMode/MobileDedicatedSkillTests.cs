@@ -77,6 +77,29 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void TimedQueueLaneRetirementCancelsOnlyLaneBoundSkillWindups()
+        {
+            var queue = new CombatTimedEffectQueue();
+            int ghostDamage = 0;
+            int passiveTicks = 0;
+            queue.Schedule("13", "practice-volley:13:E-12:skill:0:0:3",
+                .08, () => ghostDamage++);
+            queue.Schedule("13", "practice-maria:13:1:2",
+                .12, () => ghostDamage++);
+            queue.Schedule("13", "practice-passive:13",
+                .2, () => passiveTicks++);
+            queue.CancelCasterTargets("13", target => target != null &&
+                (target.StartsWith("practice-volley:13:", StringComparison.Ordinal) ||
+                 target.StartsWith("practice-maria:13:", StringComparison.Ordinal)));
+            Assert.AreEqual(1, queue.PendingCount,
+                "Lane change must remove orphaned callbacks without disabling"
+                + " unrelated self-clocked passive effects.");
+            queue.Advance(.3, seconds => { });
+            Assert.AreEqual(0, ghostDamage);
+            Assert.AreEqual(1, passiveTicks);
+        }
+
+        [Test]
         public void SelectedOwnerAndTargetAreBoundIndependently()
         {
             var actions = new MobileDedicatedSkillActions();

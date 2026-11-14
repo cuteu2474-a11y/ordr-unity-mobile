@@ -17,6 +17,9 @@ namespace Ordr.Mobile.Mobile
         public long OwnerInstanceId { get; private set; }
         public bool RequiresAllyTarget { get; private set; }
         public bool RequiresConfirmation { get; private set; }
+        // A genuine inventory item remains usable after its creator is
+        // sold/fused. Do not make unrelated unit skills globally visible.
+        public bool IsDetachedItem { get; private set; }
         // Read-only, live evidence calculated from the same authoritative
         // resource/clock/state services used by Execute. Never an extra timer.
         public string LiveStatus { get; private set; }
@@ -26,13 +29,15 @@ namespace Ordr.Mobile.Mobile
             string originalCostAndRules, bool isUnlocked, bool canExecute,
             long ownerInstanceId = 0, bool requiresAllyTarget = false,
             bool requiresConfirmation = false, string liveStatus = null,
-            double cooldownRemainingSeconds = 0)
+            double cooldownRemainingSeconds = 0,
+            bool isDetachedItem = false)
         {
             if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(title) ||
                 string.IsNullOrWhiteSpace(originalCostAndRules) ||
                 (!isUnlocked && canExecute) || ownerInstanceId < 0 ||
                 (requiresAllyTarget && requiresConfirmation) ||
                 ((requiresAllyTarget || requiresConfirmation) && ownerInstanceId == 0) ||
+                (isDetachedItem && ownerInstanceId <= 0) ||
                 double.IsNaN(cooldownRemainingSeconds) ||
                 double.IsInfinity(cooldownRemainingSeconds) ||
                 cooldownRemainingSeconds < 0)
@@ -45,6 +50,7 @@ namespace Ordr.Mobile.Mobile
             OwnerInstanceId = ownerInstanceId;
             RequiresAllyTarget = requiresAllyTarget;
             RequiresConfirmation = requiresConfirmation;
+            IsDetachedItem = isDetachedItem;
             LiveStatus = liveStatus ?? "";
             CooldownRemainingSeconds = cooldownRemainingSeconds;
         }
@@ -89,9 +95,9 @@ namespace Ordr.Mobile.Mobile
         public IReadOnlyList<MobileDedicatedSkillOffer> AvailableFor(long ownerId)
         {
             var own = new List<MobileDedicatedSkillOffer>();
-            if (ownerId <= 0) return own.AsReadOnly();
             foreach (var skill in Available())
-                if (skill != null && skill.OwnerInstanceId == ownerId)
+                if (skill != null && (skill.IsDetachedItem ||
+                    (ownerId > 0 && skill.OwnerInstanceId == ownerId)))
                     own.Add(skill);
             return own.AsReadOnly();
         }

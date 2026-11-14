@@ -266,6 +266,8 @@ namespace Ordr.Mobile.Combat
                 (otamaRewardWallet != null &&
                  !Object.ReferenceEquals(otamaRewardWallet, wallet)) ||
                 wallet.Balance(Original323SourceNativeActionKeys.HibariItem(id)) != 1 ||
+                !wallet.HasCompletedTransaction(
+                    Original323SourceNativeActionKeys.HibariCreateReceipt(id)) ||
                 wallet.HasCompletedTransaction(
                     Original323SourceNativeActionKeys.HibariReceipt(id)) ||
                 !IsSourceHibariBentoTarget(recipientId)) return false;
@@ -331,7 +333,9 @@ namespace Ordr.Mobile.Combat
             if (id <= 0 || wallet == null ||
                 (otamaRewardWallet != null &&
                  !Object.ReferenceEquals(otamaRewardWallet, wallet)) ||
-                wallet.Balance(Original323SourceNativeActionKeys.HibariItem(id)) != 1)
+                wallet.Balance(Original323SourceNativeActionKeys.HibariItem(id)) != 1 ||
+                !wallet.HasCompletedTransaction(
+                    Original323SourceNativeActionKeys.HibariCreateReceipt(id)))
                 return false;
             string receipt = Original323SourceNativeActionKeys.HibariSellReceipt(id);
             try
@@ -487,8 +491,11 @@ namespace Ordr.Mobile.Combat
             // Leaving canceled Action lambdas in the queue blocks draft
             // checkpoint capture and retains dead actor references.
             effectExecutor.CancelCasterTargets(InstanceKey(id), target =>
-                target != null && target.StartsWith(
-                    "practice-maria:" + id + ":", StringComparison.Ordinal));
+                target != null &&
+                (target.StartsWith("practice-maria:" + id + ":",
+                    StringComparison.Ordinal) ||
+                 target.StartsWith("practice-volley:" + id + ":",
+                    StringComparison.Ordinal)));
             manualMariaToken.Remove(id);
             if (deleted)
             {

@@ -238,6 +238,46 @@ namespace Ordr.Mobile.Mobile
                         unit.InstanceId));
                 }
             }
+            // JASS Bux creates h0CN as a separate controllable item.
+            // It survives the source h0CM unit's sale/fusion. Inventory
+            // offers must not be tied to currently owned Hibari actors.
+            var liveHibariIds = new HashSet<long>();
+            foreach (var unit in owned)
+                if (unit.Unit.Id == "L-39")
+                    liveHibariIds.Add(unit.InstanceId);
+            foreach (var balance in wallet.CaptureState().Balances)
+            {
+                if (balance == null || balance.Amount != 1 ||
+                    string.IsNullOrEmpty(balance.Id) ||
+                    !balance.Id.StartsWith(
+                        Original323SourceNativeActionKeys.HibariItemPrefix,
+                        StringComparison.Ordinal)) continue;
+                long originalOwner;
+                if (!long.TryParse(balance.Id.Substring(
+                        Original323SourceNativeActionKeys.HibariItemPrefix.Length),
+                        out originalOwner) || originalOwner <= 0 ||
+                    liveHibariIds.Contains(originalOwner) ||
+                    !wallet.HasCompletedTransaction(
+                        Original323SourceNativeActionKeys.HibariCreateReceipt(
+                            originalOwner))) continue;
+                bool canBuff = false;
+                foreach (var unit in owned)
+                    if (combat.CanUseSourceModelHibariBento(
+                        originalOwner, unit.InstanceId, wallet))
+                    { canBuff = true; break; }
+                actions.Add(new MobileDedicatedSkillOffer(
+                    Original323SourceNativeActionKeys.HibariBento(originalOwner, 0),
+                    "보유 도시락 · 아군 사용",
+                    "h0CN/A0HN · 대상 아군 터치 · 1회 소모",
+                    true, canBuff, originalOwner, requiresAllyTarget: true,
+                    liveStatus: "제작자 판매 후에도 남은 도시락 1개",
+                    isDetachedItem: true));
+                actions.Add(new MobileDedicatedSkillOffer(
+                    Original323SourceNativeActionKeys.HibariSell(originalOwner),
+                    "보유 도시락 · 판매",
+                    "h0CN/A0HM · 도시락 소모 → 선택위습 1개",
+                    true, true, originalOwner, isDetachedItem: true));
+            }
             if (firstOtamaId != 0 &&
                 wallet.Balance(Original323SourceNativeActionKeys.ResearchResource) == 0)
                 actions.Add(new MobileDedicatedSkillOffer(
@@ -280,6 +320,23 @@ namespace Ordr.Mobile.Mobile
             if (ownerInstanceId <= 0 || targetInstanceId <= 0)
                 return new ManualActionResult(ManualActionState.Rejected,
                     "유효한 시전자와 대상이 필요합니다.");
+            // An h0CN is an owned item, not a spell cast by a living
+            // Hibari. The original creator may have left the roster.
+            if (offeredSkillId ==
+                    Original323SourceNativeActionKeys.HibariBento(ownerInstanceId, 0) &&
+                wallet.HasCompletedTransaction(
+                    Original323SourceNativeActionKeys.HibariCreateReceipt(
+                        ownerInstanceId)) &&
+                wallet.Balance(Original323SourceNativeActionKeys.HibariItem(
+                    ownerInstanceId)) == 1)
+            {
+                bool used = combat.TryUseSourceModelHibariBento(
+                    ownerInstanceId, targetInstanceId, wallet);
+                return new ManualActionResult(
+                    used ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                    used ? "사랑의 도시락 사용 · 아군 공격속도 영구 강화" :
+                        "도시락 보유·대상 등급·중복 버프를 확인해 주세요.");
+            }
             foreach (var source in combat.MobileUnitSnapshot())
             {
                 if (source.InstanceId != ownerInstanceId) continue;
@@ -295,17 +352,6 @@ namespace Ordr.Mobile.Mobile
                         ok ? "브륄레 복사 완료 · 새 전설 유닛 #" + produced +
                             " · 특성포인트 1 소모 · 공격속도 -5%" :
                             "보유 전설 대상·재화·전장 상태를 다시 확인해 주세요.");
-                }
-                if (source.Unit.Id == "L-39" &&
-                    offeredSkillId == Original323SourceNativeActionKeys.HibariBento(
-                        ownerInstanceId, 0))
-                {
-                    bool ok = combat.TryUseSourceModelHibariBento(ownerInstanceId,
-                        targetInstanceId, wallet);
-                    return new ManualActionResult(
-                        ok ? ManualActionState.Succeeded : ManualActionState.Rejected,
-                        ok ? "사랑의 도시락 사용 · 아군 공격속도 영구 강화" :
-                            "대상 아군·중복 상태·도시락 사용 이력을 확인해 주세요.");
                 }
             }
             return new ManualActionResult(ManualActionState.Rejected,
@@ -434,9 +480,29 @@ namespace Ordr.Mobile.Mobile
             }
             // Every tap re-validates the live unit, selected target,
             // shared wallet and current source-tooltip ownership.
-            if (skillId.StartsWith(Original323SourceNativeActionKeys.HibariCreatePrefix,
-                    StringComparison.Ordinal) ||
-                skillId.StartsWith(Original323SourceNativeActionKeys.HibariSellPrefix,
+            // Buz targets the h0CN item. Its original Hibari need not
+            // remain owned for the player to sell the physical lunch.
+            if (skillId.StartsWith(
+                    Original323SourceNativeActionKeys.HibariSellPrefix,
+                    StringComparison.Ordinal))
+            {
+                long itemOwner;
+                if (!long.TryParse(skillId.Substring(
+                        Original323SourceNativeActionKeys.HibariSellPrefix.Length),
+                        out itemOwner) || itemOwner <= 0 ||
+                    skillId != Original323SourceNativeActionKeys.HibariSell(itemOwner) ||
+                    !wallet.HasCompletedTransaction(
+                        Original323SourceNativeActionKeys.HibariCreateReceipt(itemOwner)))
+                    return new ManualActionResult(ManualActionState.Rejected,
+                        "원본 도시락 소유 기록이 없습니다.");
+                bool sold = combat.TrySellSourceModelHibariBento(itemOwner, wallet);
+                return new ManualActionResult(
+                    sold ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                    sold ? "도시락 판매 · 선택위습 1개 획득" :
+                        "미사용 도시락을 보유하지 않았습니다.");
+            }
+            if (skillId.StartsWith(
+                    Original323SourceNativeActionKeys.HibariCreatePrefix,
                     StringComparison.Ordinal))
             {
                 foreach (var unit in combat.MobileUnitSnapshot())
@@ -450,14 +516,6 @@ namespace Ordr.Mobile.Mobile
                             created ? ManualActionState.Succeeded : ManualActionState.Rejected,
                             created ? "도시락 h0CN 생성 · 사용하거나 선택위습으로 판매 가능" :
                                 "도시락을 이미 생성했거나 히바리 스킬 조건 불일치");
-                    }
-                    if (skillId == Original323SourceNativeActionKeys.HibariSell(id))
-                    {
-                        bool sold = combat.TrySellSourceModelHibariBento(id, wallet);
-                        return new ManualActionResult(
-                            sold ? ManualActionState.Succeeded : ManualActionState.Rejected,
-                            sold ? "도시락 판매 · 선택위습 1개 획득" :
-                                "미사용 도시락 보유 여부를 확인하세요.");
                     }
                 }
                 return new ManualActionResult(ManualActionState.Rejected,

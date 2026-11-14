@@ -2320,6 +2320,61 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void DetachedHibariBentoCanBeConsumedAfterCreatorSale()
+        {
+            using (var live = Create("L-39", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                long target = live.Combat.SpawnCharacter("L-01", -4900, 5400);
+                var port = new Original323SourceDedicatedSkillPort(live.Combat, wallet);
+                var actions = new MobileDedicatedSkillActions();
+                actions.Configure(port);
+                Assert.IsTrue(live.Combat.TryCreateSourceModelHibariBento(
+                    live.ActorId, wallet));
+                live.Combat.RemoveCharacter(live.ActorId);
+                string item = Original323SourceNativeActionKeys.HibariItem(live.ActorId);
+                Assert.AreEqual(1, wallet.Balance(item));
+                string action = Original323SourceNativeActionKeys.HibariBento(
+                    live.ActorId, 0);
+                Assert.IsTrue(actions.AvailableFor(0).Any(x => x.Id == action &&
+                    x.IsDetachedItem && x.RequiresAllyTarget));
+                Assert.AreEqual(ManualActionState.Succeeded,
+                    actions.RequestTargeted(action, live.ActorId, target).State);
+                Assert.AreEqual(0, wallet.Balance(item));
+                Assert.IsFalse(actions.AvailableFor(0).Any(x => x.Id == action));
+                Assert.AreEqual(ManualActionState.Rejected,
+                    actions.RequestTargeted(action, live.ActorId, target).State);
+            }
+        }
+
+        [Test]
+        public void DetachedHibariBentoSellDoesNotGrantTwice()
+        {
+            using (var live = Create("L-39", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                var actions = new MobileDedicatedSkillActions();
+                actions.Configure(new Original323SourceDedicatedSkillPort(
+                    live.Combat, wallet));
+                Assert.IsTrue(live.Combat.TryCreateSourceModelHibariBento(
+                    live.ActorId, wallet));
+                live.Combat.RemoveCharacter(live.ActorId);
+                string action = Original323SourceNativeActionKeys.HibariSell(
+                    live.ActorId);
+                Assert.IsTrue(actions.AvailableFor(0).Any(x => x.Id == action &&
+                    x.IsDetachedItem));
+                Assert.AreEqual(ManualActionState.Succeeded,
+                    actions.Request(action).State);
+                Assert.AreEqual(1, wallet.Balance(WispResourceIds.Choice));
+                Assert.AreEqual(ManualActionState.Rejected,
+                    actions.Request(action).State);
+                Assert.AreEqual(1, wallet.Balance(WispResourceIds.Choice));
+            }
+        }
+
+        [Test]
         public void OriginalHibariBentoRequiresCreationThenConsumesOrSellsTheSameItem()
         {
             using (var live = Create("L-39", false, -4900, 5400))

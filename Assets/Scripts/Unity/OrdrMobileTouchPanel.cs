@@ -1561,10 +1561,7 @@ namespace Ordr.Mobile.Unity
                     GUILayout.MinHeight(48f));
                 if (Event.current.type == EventType.Repaint)
                     skillScrollViewport = new Rect();
-                if (!selected.HasValue)
-                    GUILayout.Label("전장의 유닛을 터치해 스킬을 선택하세요",
-                        OrdrMobileUiTheme.Explanation);
-                else if (!actions.IsConnected)
+                if (!actions.IsConnected)
                     GUILayout.Label("스킬 연결 준비 중", OrdrMobileUiTheme.Explanation);
                 else
                 {
@@ -1573,7 +1570,9 @@ namespace Ordr.Mobile.Unity
                     // owners cannot accidentally occupy the skill bar.
                     var available = actions.AvailableFor(selectedId);
                     if (available.Count == 0)
-                        GUILayout.Label("수동 스킬 없음 · 전투 스킬은 자동 발동",
+                        GUILayout.Label(selected.HasValue ?
+                            "수동 스킬 없음 · 전투 스킬은 자동 발동" :
+                            "전장의 유닛을 터치해 스킬을 선택하세요",
                             OrdrMobileUiTheme.Explanation);
                     else
                     {
