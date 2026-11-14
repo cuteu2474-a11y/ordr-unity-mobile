@@ -4,6 +4,27 @@ using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Mobile
 {
+    [Serializable]
+    public sealed class SourceModelUnitGamblingPendingState
+    {
+        public OriginalGambleTier Tier;
+        public Original323GamblingNavigation Navigation;
+        public List<int> Rolls = new List<int>();
+        public List<string> Rawcodes = new List<string>();
+        public bool Ready;
+        public bool Won;
+        public string Ability;
+        public int WoodReward;
+    }
+
+    [Serializable]
+    public sealed class SourceModelUnitGamblingState
+    {
+        public int Version = 1;
+        public SourceModelUnitGamblingPendingState Pending;
+        public List<string> RecentResults = new List<string>();
+    }
+
     // CJP/CJS/CJK. Script branches and native pool selection stay separate.
     public sealed class SourceModelUnitGambling : IOriginalEconomyPort
     {
@@ -29,6 +50,81 @@ namespace Ordr.Mobile.Mobile
         private readonly List<string> recent = new List<string>();
         public IReadOnlyList<string> RecentResults => recent.AsReadOnly();
         public bool HasPendingDraw => processing || pending != null;
+
+        public SourceModelUnitGamblingState CaptureState()
+        {
+            if (processing) throw new InvalidOperationException("유닛 도박 거래 중에는 저장할 수 없습니다.");
+            var state = new SourceModelUnitGamblingState {
+                RecentResults = new List<string>(recent)
+            };
+            if (pending != null)
+                state.Pending = new SourceModelUnitGamblingPendingState {
+                    Tier = pending.Tier, Navigation = pending.Navigation,
+                    Rolls = new List<int>(pending.Rolls),
+                    Rawcodes = new List<string>(pending.Rawcodes),
+                    Ready = pending.Ready, Won = pending.Won,
+                    Ability = pending.Ability, WoodReward = pending.WoodReward
+                };
+            ValidateState(state);
+            return state;
+        }
+
+        public static void ValidateState(SourceModelUnitGamblingState state)
+        {
+            if (state == null || state.Version != 1 ||
+                state.RecentResults == null || state.RecentResults.Count > 6)
+                throw new FormatException("유닛 도박 장부가 올바르지 않습니다.");
+            var draw = state.Pending;
+            if (draw == null) return;
+            if (!Enum.IsDefined(typeof(OriginalGambleTier), draw.Tier) ||
+                !Enum.IsDefined(typeof(Original323GamblingNavigation), draw.Navigation) ||
+                draw.Rolls == null || draw.Rolls.Count > 16 ||
+                draw.Rawcodes == null || draw.Rawcodes.Count > 2 ||
+                draw.WoodReward < 0 || draw.WoodReward > 1 ||
+                (draw.Ability != null && draw.Ability != "A0YE") ||
+                (draw.Ready && draw.Rolls.Count == 0) ||
+                (!draw.Ready && (draw.Rawcodes.Count != 0 || draw.Won ||
+                    draw.Ability != null || draw.WoodReward != 0)))
+                throw new FormatException("유닛 도박 보류 상태가 잘못됐습니다.");
+            foreach (int roll in draw.Rolls)
+                if (roll < 0 || roll > 1000)
+                    throw new FormatException("유닛 도박 보류 난수가 범위를 벗어났습니다.");
+            foreach (string raw in draw.Rawcodes)
+            {
+                bool known = raw == "h060" || raw == "h05X" || raw == "h06G";
+                if (!known)
+                {
+                    foreach (var id in Original323UnitGamblingRules.Common) if (id == raw) known = true;
+                    foreach (var id in Original323UnitGamblingRules.Uncommon) if (id == raw) known = true;
+                    foreach (var id in Original323UnitGamblingRules.Special) if (id == raw) known = true;
+                    foreach (var id in Original323UnitGamblingRules.HighRare) if (id == raw) known = true;
+                }
+                if (!known) throw new FormatException("유닛 도박 보류 원본 유닛이 확인되지 않습니다.");
+            }
+            if (draw.Ability != null && (!draw.Ready || !draw.Won ||
+                draw.Tier != OriginalGambleTier.High))
+                throw new FormatException("유닛 도박 A0YE 지급 상태가 잘못됐습니다.");
+        }
+
+        public void RestoreState(SourceModelUnitGamblingState state)
+        {
+            ValidateState(state);
+            if (processing || pending != null || recent.Count > 0 ||
+                (state.Pending != null && state.Pending.Navigation != navigation()))
+                throw new InvalidOperationException("새 유닛 도박 서비스와 기존 항법이 필요합니다.");
+            if (state.Pending != null)
+                pending = new Draw {
+                    Tier = state.Pending.Tier, Navigation = state.Pending.Navigation,
+                    Ready = state.Pending.Ready, Won = state.Pending.Won,
+                    Ability = state.Pending.Ability, WoodReward = state.Pending.WoodReward
+                };
+            if (pending != null)
+            {
+                pending.Rolls.AddRange(state.Pending.Rolls);
+                pending.Rawcodes.AddRange(state.Pending.Rawcodes);
+            }
+            recent.AddRange(state.RecentResults);
+        }
         public event Action<Exception> PostCommitObserverFailed;
         public SourceModelUnitGambling(EconomyWallet shared, GameSession session,
             IOriginalWispRandom scriptRandom, IOriginalWispRandom nativeRandom,

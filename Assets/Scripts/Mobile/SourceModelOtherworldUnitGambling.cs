@@ -15,6 +15,30 @@ namespace Ordr.Mobile.Mobile
         void Commit();
     }
 
+    [Serializable]
+    public sealed class SourceModelOtherworldPendingState
+    {
+        public Original323GamblingNavigation Navigation;
+        public long RiskBonus;
+        public bool HasBranch;
+        public int Branch;
+        public bool HasCasinoBranch;
+        public int CasinoBranch;
+        public bool HasIndex;
+        public int Index;
+        public bool HasOutcome;
+        public bool Won;
+        public string Rawcode;
+    }
+
+    [Serializable]
+    public sealed class SourceModelOtherworldUnitGamblingState
+    {
+        public int Version = 1;
+        public SourceModelOtherworldPendingState Pending;
+        public List<string> RecentResults = new List<string>();
+    }
+
     // Result-only mobile commerce, not an observed Warcraft RNG witness.
     // CJM has no BCj call and does NOT count as Low/Mid/High unit gambling.
     public sealed class SourceModelOtherworldUnitGambling : IOriginalEconomyPort
@@ -39,6 +63,90 @@ namespace Ordr.Mobile.Mobile
         public IReadOnlyList<string> RecentResults => recent.AsReadOnly();
         public event Action<Exception> PostCommitObserverFailed;
         public bool HasPendingDraw => processing || pending != null;
+
+        public SourceModelOtherworldUnitGamblingState CaptureState()
+        {
+            if (processing) throw new InvalidOperationException("이세계 도박 거래 중에는 저장할 수 없습니다.");
+            var state = new SourceModelOtherworldUnitGamblingState {
+                RecentResults = new List<string>(recent)
+            };
+            if (pending != null)
+                state.Pending = new SourceModelOtherworldPendingState {
+                    Navigation = pending.Navigation, RiskBonus = pending.RiskBonus,
+                    HasBranch = pending.Branch.HasValue,
+                    Branch = pending.Branch.GetValueOrDefault(),
+                    HasCasinoBranch = pending.CasinoBranch.HasValue,
+                    CasinoBranch = pending.CasinoBranch.GetValueOrDefault(),
+                    HasIndex = pending.Index.HasValue,
+                    Index = pending.Index.GetValueOrDefault(),
+                    HasOutcome = pending.Outcome != null,
+                    Won = pending.Outcome != null && pending.Outcome.Won,
+                    Rawcode = pending.Outcome?.Rawcode
+                };
+            ValidateState(state);
+            return state;
+        }
+
+        public static void ValidateState(SourceModelOtherworldUnitGamblingState state)
+        {
+            if (state == null || state.Version != 1 ||
+                state.RecentResults == null || state.RecentResults.Count > 6)
+                throw new FormatException("이세계 유닛 도박 저장 장부가 올바르지 않습니다.");
+            var draw = state.Pending;
+            if (draw == null) return;
+            if (!Enum.IsDefined(typeof(Original323GamblingNavigation), draw.Navigation) ||
+                draw.RiskBonus < 0 || draw.RiskBonus > 100000 ||
+                (draw.HasBranch && (draw.Branch < 1 || draw.Branch > 100)) ||
+                (!draw.HasBranch && (draw.Branch != 0 || draw.HasCasinoBranch ||
+                    draw.HasIndex || draw.HasOutcome)) ||
+                (draw.HasCasinoBranch && (draw.CasinoBranch < 1 || draw.CasinoBranch > 2)) ||
+                (!draw.HasCasinoBranch && draw.CasinoBranch != 0) ||
+                (draw.HasCasinoBranch && draw.Navigation != Original323GamblingNavigation.Casino) ||
+                (draw.HasIndex && (draw.Index < 0 || draw.Index >
+                    (draw.HasCasinoBranch ? 41 : 13))) ||
+                (!draw.HasIndex && draw.Index != 0) ||
+                (!draw.HasOutcome && (draw.Won || draw.Rawcode != null)) ||
+                (draw.HasOutcome && string.IsNullOrWhiteSpace(draw.Rawcode)))
+                throw new FormatException("이세계 도박 보류 추첨 데이터가 올바르지 않습니다.");
+            if (draw.HasOutcome)
+            {
+                var outcome = new Original323OtherworldGamblingOutcome(
+                    draw.Won, draw.Rawcode, draw.Navigation);
+                if (draw.HasBranch && (draw.Won != (draw.Branch <=
+                    Original323OtherworldGamblingRules.SuccessPercent(draw.Navigation,
+                        draw.RiskBonus))))
+                    throw new FormatException("이세계 도박 당첨 분기 기록이 어긋났습니다.");
+                if (outcome.Won && (!draw.HasIndex ||
+                    draw.Rawcode != Original323OtherworldGamblingRules.RandomRawcodes[draw.Index]))
+                    throw new FormatException("이세계 도박 성공 유닛 인덱스가 다릅니다.");
+                if (!outcome.Won && draw.Rawcode != Original323OtherworldGamblingRules.TokenRawcode &&
+                    (!draw.HasCasinoBranch || draw.CasinoBranch != 1 || !draw.HasIndex ||
+                    draw.Rawcode != Original323OtherworldGamblingRules.CasinoRareRawcodes[draw.Index]))
+                    throw new FormatException("이세계 도박 카지노 희귀 인덱스가 다릅니다.");
+            }
+        }
+
+        public void RestoreState(SourceModelOtherworldUnitGamblingState state)
+        {
+            ValidateState(state);
+            if (processing || pending != null || recent.Count != 0 ||
+                (state.Pending != null && (state.Pending.Navigation != Navigation ||
+                    state.Pending.RiskBonus != RiskBonus)))
+                throw new InvalidOperationException("새 이세계 도박/기존 항법·지갑이 일치해야 합니다.");
+            if (state.Pending != null)
+            {
+                var draw = state.Pending;
+                pending = new Draw {
+                    Navigation = draw.Navigation, RiskBonus = draw.RiskBonus,
+                    Branch = draw.HasBranch ? (int?)draw.Branch : null,
+                    CasinoBranch = draw.HasCasinoBranch ? (int?)draw.CasinoBranch : null,
+                    Index = draw.HasIndex ? (int?)draw.Index : null,
+                    Outcome = draw.HasOutcome ? new Original323OtherworldGamblingOutcome(
+                        draw.Won, draw.Rawcode, draw.Navigation) : null
+                };
+            }
+            recent.AddRange(state.RecentResults);
+        }
         public long Charges => wallet.Balance(Original323OtherworldGamblingRules.ChargesResource);
         public long Attempts => wallet.Balance(Original323OtherworldGamblingRules.AttemptsResource);
         public long Wins => wallet.Balance(Original323OtherworldGamblingRules.WinsResource);

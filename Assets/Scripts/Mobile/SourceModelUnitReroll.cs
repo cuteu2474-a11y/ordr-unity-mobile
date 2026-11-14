@@ -5,6 +5,15 @@ using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Mobile
 {
+    [Serializable]
+    public sealed class SourceModelUnitRerollState
+    {
+        public int Version = 1;
+        public long PendingActor;
+        public string PendingRawcode;
+        public Original323GamblingNavigation PendingNavigation;
+    }
+
     // CRj/CRl are manual unit replacements, not attack buffs.
     public sealed class SourceModelUnitReroll
     {
@@ -19,6 +28,49 @@ namespace Ordr.Mobile.Mobile
         private long pendingActor;
         private string pendingRawcode;
         private Original323GamblingNavigation pendingNavigation;
+        public SourceModelUnitRerollState CaptureState()
+        {
+            if (processing) throw new InvalidOperationException("리롤 중에는 저장할 수 없습니다.");
+            ClearMissingPendingActor();
+            var state = new SourceModelUnitRerollState {
+                PendingActor = pendingActor, PendingRawcode = pendingRawcode,
+                PendingNavigation = pendingNavigation
+            };
+            ValidateState(state);
+            return state;
+        }
+
+        public static void ValidateState(SourceModelUnitRerollState state)
+        {
+            if (state == null || state.Version != 1 ||
+                !Enum.IsDefined(typeof(Original323GamblingNavigation),
+                    state.PendingNavigation) || state.PendingActor < 0 ||
+                (state.PendingActor == 0 && state.PendingRawcode != null) ||
+                (state.PendingActor == 0 && state.PendingNavigation !=
+                    Original323GamblingNavigation.None))
+                throw new FormatException("유닛 리롤 저장 정보가 올바르지 않습니다.");
+            if (state.PendingRawcode == null) return;
+            bool known = false;
+            foreach (var raw in Original323OtherworldGamblingRules.CasinoRareRawcodes)
+                if (raw == state.PendingRawcode) known = true;
+            foreach (var raw in Original323OtherworldGamblingRules.RandomRawcodes)
+                if (raw == state.PendingRawcode) known = true;
+            if (!known) throw new FormatException("리롤 결과가 원본 대상 풀에 없습니다.");
+        }
+
+        public void RestoreState(SourceModelUnitRerollState state)
+        {
+            ValidateState(state);
+            if (processing || pendingActor != 0 || pendingRawcode != null ||
+                (state.PendingActor != 0 && (!Exists(state.PendingActor) ||
+                    state.PendingNavigation != navigation() ||
+                    !HasRerollAbility(state.PendingActor))))
+                throw new InvalidOperationException("유닛 리롤은 복원된 실제 원본 유닛/항법이 필요합니다.");
+            pendingActor = state.PendingActor;
+            pendingRawcode = state.PendingRawcode;
+            pendingNavigation = state.PendingNavigation;
+        }
+
         public bool HasPendingDraw
         {
             get

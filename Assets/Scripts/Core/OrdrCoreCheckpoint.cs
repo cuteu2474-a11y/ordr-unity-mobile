@@ -29,6 +29,9 @@ namespace Ordr.Mobile.Core
         // These are not sufficient to enable game resume by themselves.
         public MobileRollbackWispRandomState ScriptRandom;
         public SourceModelMoneyGamblingDeskState MoneyDesk;
+        public SourceModelUnitGamblingState UnitGambling;
+        public SourceModelOtherworldUnitGamblingState OtherworldGambling;
+        public SourceModelUnitRerollState UnitReroll;
     }
 
     public sealed class OrdrRestoredCoreCheckpoint
@@ -61,7 +64,10 @@ namespace Ordr.Mobile.Core
             CombatWaveDirectorState waves = null,
             SourceModelPracticeBattleState practice = null,
             MobileRollbackWispRandomState scriptRandom = null,
-            SourceModelMoneyGamblingDeskState moneyDesk = null)
+            SourceModelMoneyGamblingDeskState moneyDesk = null,
+            SourceModelUnitGamblingState unitGambling = null,
+            SourceModelOtherworldUnitGamblingState otherworldGambling = null,
+            SourceModelUnitRerollState unitReroll = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -74,7 +80,9 @@ namespace Ordr.Mobile.Core
                 Game = game.CaptureState(), Roster = economy.Units.CaptureState(),
                 MissionGameplay = missions.CaptureState(),
                 Combat = combat, Waves = waves, Practice = practice,
-                ScriptRandom = scriptRandom, MoneyDesk = moneyDesk
+                ScriptRandom = scriptRandom, MoneyDesk = moneyDesk,
+                UnitGambling = unitGambling, OtherworldGambling = otherworldGambling,
+                UnitReroll = unitReroll
             };
             // The mission gameplay component carries the SAME shared wallet.
             // A different wallet or a torn cross-service snapshot is rejected.
@@ -121,6 +129,15 @@ namespace Ordr.Mobile.Core
             ValidateCombatDraft(state);
             if (state.ScriptRandom != null)
                 MobileRollbackWispRandom.Restore(state.ScriptRandom);
+            if (state.UnitGambling != null)
+                SourceModelUnitGambling.ValidateState(state.UnitGambling);
+            if (state.OtherworldGambling != null)
+                SourceModelOtherworldUnitGambling.ValidateState(state.OtherworldGambling);
+            if (state.UnitReroll != null)
+                SourceModelUnitReroll.ValidateState(state.UnitReroll);
+            if ((state.UnitGambling != null || state.OtherworldGambling != null ||
+                state.UnitReroll != null) && state.ScriptRandom == null)
+                throw new FormatException("유닛 도박 보류 결과의 공통 난수열이 누락됐습니다.");
             if (state.MoneyDesk != null)
             {
                 SourceModelMoneyGamblingDesk.ValidateState(state.MoneyDesk);

@@ -1357,7 +1357,10 @@ namespace Ordr.Mobile.Unity
                     "외부 원본 난수 공급자는 세션 복원 계약이 없어 저장할 수 없습니다.");
             return OrdrCoreCheckpoint.Capture(Combat.Game, SharedEconomy,
                 PersonalMissions, Combat.Time, runtime, wave, practice,
-                script?.CaptureState(), money);
+                script?.CaptureState(), money,
+                PracticeTierUnitGambling?.CaptureState(),
+                PracticeUnitGambling?.CaptureState(),
+                PracticeUnitReroll?.CaptureState());
         }
 
         public void WriteWorldCheckpointDraftForDiagnostics()
