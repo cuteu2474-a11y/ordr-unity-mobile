@@ -1,11 +1,13 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using Ordr.Mobile.Combat;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
 using Ordr.Mobile.Mobile;
+using Ordr.Mobile.Unity;
 using UnityEngine;
 
 namespace Ordr.Mobile.Tests
@@ -31,6 +33,51 @@ namespace Ordr.Mobile.Tests
             var combat = new CharacterCombatRuntime(units, skills, rules, rules, random);
             combat.Start();
             return combat;
+        }
+
+        [Test]
+        public void SummonedDuringManualPauseZeffRemainsRegisteredAndAttacksStoryOnResume()
+        {
+            var root = new GameObject("ORDR paused story summon regression");
+            root.SetActive(false);
+            try
+            {
+                var controller = root.AddComponent<OrdrCharacterCombatController>();
+                typeof(OrdrCharacterCombatController).GetMethod(
+                    "Awake", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Invoke(controller, null);
+                controller.BeginUnitPreparation();
+                controller.BeginStandaloneBattle();
+                controller.SetManualGameplayPause(true);
+                Assert.IsTrue(controller.IsGameplayPaused);
+                double pausedAt = controller.Combat.Time;
+                long zeff = controller.Combat.SpawnCharacter("R-32", -3776, 4480);
+                Assert.AreNotEqual(BasicAttackReadinessKind.UnverifiedSource,
+                    controller.Combat.InspectBasicAttack(zeff).Kind,
+                    "Pause must not discard the new unit's attack registration.");
+                Assert.AreEqual(ManualActionState.Succeeded,
+                    controller.ManualActions.RequestStoryDispatch(zeff).State);
+                Assert.IsTrue(controller.Combat.IsStoryDeployed(zeff));
+                var target = controller.PracticeStoryBuildings.Encounters
+                    .Single(x => x.State == Original323StoryBuildingState.Alive);
+                long before = controller.Combat.EnemyOf(target.EnemyId).Health;
+                typeof(OrdrCharacterCombatController).GetMethod(
+                    "Update", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Invoke(controller, null);
+                Assert.AreEqual(pausedAt, controller.Combat.Time);
+                Assert.AreEqual(before, controller.Combat.EnemyOf(target.EnemyId).Health);
+                controller.SetManualGameplayPause(false);
+                Assert.IsFalse(controller.IsGameplayPaused);
+                // Model the resumed combat clock deterministically rather
+                // than depending on Unity Editor's variable Time.deltaTime.
+                var events = controller.PracticeBattle.Advance(1.5);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack &&
+                    x.ActorId == zeff.ToString() &&
+                    x.EnemyId == target.EnemyId && x.Amount > 0));
+                Assert.Less(controller.Combat.EnemyOf(target.EnemyId).Health, before);
+                Assert.AreEqual(1, controller.Combat.Game.CurrentWave);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
         }
 
         [Test]

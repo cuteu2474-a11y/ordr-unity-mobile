@@ -1225,9 +1225,10 @@ namespace Ordr.Mobile.Tests
                     "The first active frame automatically consumes the source evolution draw.");
                 Assert.AreEqual(6, owner.Combat.CharacterCount,
                     "Five Wisp recruits plus one initial uncommon evolution.");
-                Assert.AreEqual(0, owner.Combat.Time);
+                // Preparation now advances the real story-combat clock.
+                // This must NOT start a monster wave or mint wave rewards.
                 // The first story building is present even before wave 1.
-                // No practice battle ticks and no wave-counter mutations.
+                // No monster wave begins and no wave-counter mutations.
                 Assert.AreEqual(1, owner.Combat.EnemyCount);
                 Assert.AreEqual(0, owner.Combat.Game.AliveEnemies);
                 Assert.AreEqual(1, owner.SoloStory.ActiveStage);

@@ -14,3 +14,4 @@ request: rerun integrated Unity tests and create Android development APK if they
 2026-11-14: Build requested APK after imported battle floor/enemy art + finite-range main lane + boss patrol integration (single requested push).
 2026-11-14: Rebuild after explicitly scoping finite range / left formation / boss patrol to playable 65R and updating imported artwork test assertions.
 2026-11-14: Rebuild requested for story assault during pre-wave preparation: enable source basic attack once, tick story without starting monster waves, Zeff R-32 regression.
+2026-11-14: Build request after pause-spawn-story-dispatch-resume regression/UI clarity and fixing three stale post-range EditMode expectations.

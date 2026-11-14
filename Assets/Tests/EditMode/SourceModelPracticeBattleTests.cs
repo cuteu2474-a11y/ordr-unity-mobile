@@ -581,6 +581,20 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        // A newly crafted unit has finite native range on the real phone lane.
+        // Place a clearly labeled TEST_ONLY enemy within that same real
+        // reach instead of assuming arbitrary wave monsters pass within
+        // 525 units during a fixed three-second window.
+        private static void PlaceReachableFusionTarget(
+            CharacterCombatRuntime combat, string enemyId, long ownerId)
+        {
+            var pos = combat.Roster.Get(ownerId);
+            combat.SpawnEnemyWithDefenses(enemyId, 1000000000000,
+                CharacterEnemyKind.Line, pos.X + 2, pos.Y, 0,
+                new EnemyDefenseProfile(CharacterEnemyKind.Line, 0, 0,
+                    "medium", "TEST_ONLY_FINITE_REACH_FUSION_TARGET"));
+        }
+
         [Test]
         public void FusionDuringPracticeReplacesActiveAttackersAndContinuesCombat()
         {
@@ -601,9 +615,13 @@ namespace Ordr.Mobile.Tests
                     owner.ManualActions.ConfirmFusion(offer).State);
                 Assert.AreEqual(1, owner.Combat.CharacterCount);
                 Assert.AreEqual(1, owner.Combat.ReadyAttackers);
-                Assert.AreEqual("S-07", owner.Combat.MobileUnitSnapshot().Single().Unit.Id);
+                var fused = owner.Combat.MobileUnitSnapshot().Single();
+                Assert.AreEqual("S-07", fused.Unit.Id);
+                PlaceReachableFusionTarget(owner.Combat, "fixture:fusion-special", fused.InstanceId);
                 var events = owner.PracticeBattle.Advance(3);
-                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack &&
+                    x.EnemyId == "fixture:fusion-special"), 
+                    "Fusion must preserve a registered native attack and hit a verified in-reach target.");
                 Assert.AreEqual(0, owner.Combat.Game.LeakedEnemies);
                 Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
             }
@@ -633,7 +651,10 @@ namespace Ordr.Mobile.Tests
                 var made = owner.Combat.MobileUnitSnapshot().Single();
                 Assert.AreEqual("R-06", made.Unit.Id);
                 Assert.AreEqual(1, owner.Combat.ReadyAttackers);
-                Assert.IsTrue(owner.PracticeBattle.Advance(3).Any(x => x.Type == CharacterCombatEventType.Attack));
+                PlaceReachableFusionTarget(owner.Combat, "fixture:fusion-rare", made.InstanceId);
+                Assert.IsTrue(owner.PracticeBattle.Advance(3).Any(x =>
+                    x.Type == CharacterCombatEventType.Attack &&
+                    x.EnemyId == "fixture:fusion-rare"));
                 long before = owner.WispBalance(WispResourceIds.Random);
                 long wood = owner.SharedEconomy.Wallet.Balance("wood");
                 Assert.AreEqual(Ordr.Mobile.Mobile.ManualActionState.Succeeded,

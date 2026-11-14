@@ -2625,6 +2625,12 @@ namespace Ordr.Mobile.Unity
             // The player needs one immediate objective, not fourteen large
             // buttons hiding the live fight under a scrolling panel.
             GUILayout.Label("스토리 항해", OrdrMobileUiTheme.Subheading);
+            if (controller.IsGameplayPaused)
+                GUILayout.Label("일시정지 중 · 소환/파견은 가능하지만 공격은 '계속'을 눌러 재개한 뒤 진행됩니다.",
+                    OrdrMobileUiTheme.Explanation);
+            else
+                GUILayout.Label("새로 소환한 유닛은 메인 전장 소속입니다. 스토리 건물을 공격하려면 아래에서 파견해 주세요.",
+                    OrdrMobileUiTheme.Overline);
             GUILayout.BeginVertical(GUI.skin.box);
             int activeStage = scenario.ActiveStage;
             int cleared = scenario.HighestDestroyedStage;
@@ -2910,6 +2916,9 @@ namespace Ordr.Mobile.Unity
             OrdrMobileUiTheme.DrawStatusRow("파견 현황",
                 deployedCount + "기 파견 · " + readyCount + "기 파견 가능",
                 OrdrMobileUiTheme.Aqua);
+            if (controller.IsGameplayPaused)
+                GUILayout.Label("파견을 완료해도 일시정지 중에는 전투 시간이 흐르지 않습니다. 왼쪽 '계속'으로 공격을 재개하세요.",
+                    OrdrMobileUiTheme.Explanation);
             if (readyCount == 0)
                 GUILayout.Label("보스·미션 진행 중이거나 원본 입장 조건에 맞지 않으면" +
                     " 새 유닛을 파견할 수 없습니다.", OrdrMobileUiTheme.Overline);
