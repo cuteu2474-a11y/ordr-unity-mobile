@@ -37,6 +37,8 @@ namespace Ordr.Mobile.Tests
                 CharacterEnemyKind.Line, 10, 0, 0);
             original.Step(1.25);
             var snapshot = original.CaptureRuntimeDraft();
+            Assert.AreEqual(3, snapshot.Version);
+            Assert.AreEqual(snapshot.Actors.Count, snapshot.ManualOwners.Count);
             var restoredRoster = UnitRoster.Restore(original.Roster.CaptureState());
             var restoredGame = GameSession.Restore(original.Game.CaptureState());
             var recovered = World(restoredRoster, restoredGame);
@@ -52,6 +54,38 @@ namespace Ordr.Mobile.Tests
                 recovered.CaptureRuntimeDraft().Actors[0].Abilities.Time);
             Assert.AreEqual(id + 1,
                 recovered.SpawnCharacter("TEST-01", 0, 0));
+        }
+
+        [Test]
+        public void ForgedManualFormCannotBeReplayedOnUnrelatedActor()
+        {
+            var original = World();
+            original.Start();
+            original.BeginWave(1);
+            original.SpawnCharacter("TEST-01", 0, 0);
+            var state = original.CaptureRuntimeDraft();
+            state.ManualOwners[0].MarcoForm = "phoenix";
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateManualOwnerState(state));
+            var recovered = World(
+                UnitRoster.Restore(original.Roster.CaptureState()),
+                GameSession.Restore(original.Game.CaptureState()));
+            Assert.Throws<FormatException>(() =>
+                recovered.RestoreActorWorldDraft(state));
+            Assert.AreEqual(0, recovered.CharacterCount);
+        }
+
+        [Test]
+        public void MissingOrDuplicatedManualOwnersFailClosed()
+        {
+            var original = World();
+            original.Start();
+            original.BeginWave(1);
+            original.SpawnCharacter("TEST-01", 0, 0);
+            var state = original.CaptureRuntimeDraft();
+            state.ManualOwners.Clear();
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateManualOwnerState(state));
         }
 
         [Test]

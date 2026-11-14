@@ -158,12 +158,26 @@ namespace Ordr.Mobile.Combat
             return result.AsReadOnly();
         }
 
+        // Scheduled windups are non-restorable Action closures. Cancelling
+        // their owner tokens alone leaves them in the queue, retaining dead
+        // instances and blocking safe checkpoint capture.
+        private void CancelSourceFormWindupAndAttackPause(long ownerId)
+        {
+            string key = InstanceKey(ownerId);
+            effectExecutor.CancelCasterTargets(key, target =>
+                target == "practice-form-cast:" + key ||
+                (target != null && target.StartsWith(
+                    "practice-attack-pause:" + ownerId + ":",
+                    StringComparison.Ordinal)));
+        }
+
         // A committed lane transfer invalidates form-local attack buffs and
         // pending form windups immediately. Permanent skill cooldowns live in
         // CharacterActiveAbilities and are deliberately NOT reset here.
         // Forest nutrient growth is a separate persistent resource.
         private void ForgetSourceModelFormsOnLaneChange(long id)
         {
+            CancelSourceFormWindupAndAttackPause(id);
             sourceFormCastFinishes.Remove(id);
             sourceFormNames.Remove(id);
             sourceModelYamatoOpeningReady.Remove(id);
@@ -180,6 +194,7 @@ namespace Ordr.Mobile.Combat
 
         private void RemoveSourceTemporaryActors(long ownerId)
         {
+            CancelSourceFormWindupAndAttackPause(ownerId);
             sourceFormCastFinishes.Remove(ownerId);
             sourceAttackPauseFinishes.Remove(ownerId);
             sourceAttackPauseTokens.Remove(ownerId);

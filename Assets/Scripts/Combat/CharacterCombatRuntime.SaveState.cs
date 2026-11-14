@@ -24,6 +24,19 @@ namespace Ordr.Mobile.Combat
         public CombatStatusEngineState Status;
     }
 
+    // S03 manual-owner states that have no future anonymous Action callbacks.
+    // Other forms, independent summons, native equipment and active Maria
+    // periodic spells deliberately remain fail-closed until rebuilt end-to-end.
+    [Serializable]
+    public sealed class SourceCombatManualOwnerCheckpoint
+    {
+        public long InstanceId;
+        public int MariaStage = -1; // -1 = never used; 0..2 = last mode
+        public double MariaReadyAt;
+        public string MarcoForm; // null = default human, or human/phoenix
+        public double MarcoReadyAt;
+    }
+
     [Serializable]
     public sealed class SourceCombatDefenseCheckpoint
     {
@@ -101,9 +114,9 @@ namespace Ordr.Mobile.Combat
     [Serializable]
     public sealed class SourceCombatRuntimeCheckpoint
     {
-        // Version 2 includes the exact native-target and A04R provenance.
-        // Older world drafts cannot silently discard those runtime modifiers.
-        public int Version = 2;
+        // Version 3 includes strict per-owner F/manual-mode clocks. Older
+        // version 2 world drafts cannot silently erase a Marco or Maria state.
+        public int Version = 3;
         public double Time;
         public bool HasSourceModelBasicAttacks;
         public bool MobileMainLaneEnabled;
@@ -111,12 +124,105 @@ namespace Ordr.Mobile.Combat
         public CombatTimedEffectQueueState Timed;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
+        public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
+            new List<SourceCombatManualOwnerCheckpoint>();
         public List<SourceCombatEnemyCheckpoint> Enemies =
             new List<SourceCombatEnemyCheckpoint>();
     }
 
     public sealed partial class CharacterCombatRuntime
     {
+        // A single cross-reference validator is shared by core checkpoint
+        // parsing and unpublished combat reconstruction. Every real roster
+        // actor gets exactly one manual-owner row; no orphan may be replayed.
+        public static void ValidateManualOwnerState(SourceCombatRuntimeCheckpoint state)
+        {
+            if (state == null || state.Version != 3 ||
+                state.Actors == null || state.ManualOwners == null ||
+                state.ManualOwners.Count != state.Actors.Count)
+                throw new FormatException("수동 스킬 보존 상태가 누락되거나 이전 버전입니다.");
+            var actorCatalogs = new Dictionary<long, string>();
+            foreach (var actor in state.Actors)
+            {
+                if (actor == null || actor.InstanceId <= 0 ||
+                    string.IsNullOrWhiteSpace(actor.CatalogId) ||
+                    actorCatalogs.ContainsKey(actor.InstanceId))
+                    throw new FormatException("수동 스킬 유닛의 신원이 중복되거나 불완전합니다.");
+                actorCatalogs.Add(actor.InstanceId, actor.CatalogId);
+            }
+            var seen = new HashSet<long>();
+            foreach (var row in state.ManualOwners)
+            {
+                string catalog;
+                if (row == null || row.InstanceId <= 0 ||
+                    !seen.Add(row.InstanceId) ||
+                    !actorCatalogs.TryGetValue(row.InstanceId, out catalog) ||
+                    row.MariaStage < -1 || row.MariaStage > 2 ||
+                    double.IsNaN(row.MariaReadyAt) ||
+                    double.IsInfinity(row.MariaReadyAt) || row.MariaReadyAt < 0 ||
+                    double.IsNaN(row.MarcoReadyAt) ||
+                    double.IsInfinity(row.MarcoReadyAt) || row.MarcoReadyAt < 0 ||
+                    (row.MariaStage >= 0 && catalog != "D-01") ||
+                    (row.MariaStage == -1 && row.MariaReadyAt != 0) ||
+                    (row.MarcoForm != null &&
+                     (catalog != "LI-03" ||
+                      (row.MarcoForm != "human" &&
+                       row.MarcoForm != "phoenix"))) ||
+                    (row.MarcoReadyAt != 0 && row.MarcoForm == null) ||
+                    (!state.HasSourceModelBasicAttacks &&
+                     (row.MariaStage != -1 || row.MarcoForm != null)))
+                    throw new FormatException("캐릭터별 수동 스킬/폼 상태가 잘못됐습니다.");
+            }
+        }
+
+        private void RejectNonRestorableSourceSkillState()
+        {
+            if (!UsesSourceModelBasicAttacks) return;
+            // Actor-dependent native equipment, living summons and transform
+            // callbacks need distinct reconstruction; never silently erase.
+            if (sourceTemporarySummons.Count != 0 ||
+                sourceFormCastFinishes.Count != 0 ||
+                sourceAttackPauseFinishes.Count != 0 ||
+                sourceFormNames.Count != 0 ||
+                sourceModelTenthForms.Count != 0 ||
+                sourceModelForestNutrients.Count != 0 ||
+                sourceModelBonneyAge.Count != 0 ||
+                sourceModelKingExecutionUsed.Count != 0 ||
+                sourceModelEquippedItems != null ||
+                sourceModelMarcoVerifiedForm != null)
+                throw new NotSupportedException(
+                    "실물 소환/장비/임시 변신/외부 형태 증거가 저장되지 않아 전투 초안을 거부합니다.");
+            foreach (var pair in manualMariaActiveUntil)
+                if (manualMariaToken.ContainsKey(pair.Key) && pair.Value > Time)
+                    throw new NotSupportedException(
+                        "현재 진행 중인 마리아 주기 스킬은 예약 콜백 복원 전까지 저장할 수 없습니다.");
+        }
+
+        private void RestoreManualOwners(SourceCombatRuntimeCheckpoint state)
+        {
+            ValidateManualOwnerState(state);
+            if (manualMariaMode.Count != 0 || manualMariaReady.Count != 0 ||
+                sourceModelMarcoManualForms.Count != 0 ||
+                sourceModelMarcoTransformReadyAt.Count != 0)
+                throw new InvalidOperationException(
+                    "수동 스킬 상태는 초기화된 복원 전투에서만 재구성할 수 있습니다.");
+            // Validation is complete before changing any manual state.
+            foreach (var row in state.ManualOwners)
+            {
+                if (row.MariaStage >= 0)
+                {
+                    manualMariaMode.Add(row.InstanceId, row.MariaStage);
+                    manualMariaReady.Add(row.InstanceId, row.MariaReadyAt);
+                }
+                if (row.MarcoForm != null)
+                {
+                    sourceModelMarcoManualForms.Add(row.InstanceId, row.MarcoForm);
+                    sourceModelMarcoTransformReadyAt.Add(row.InstanceId,
+                        row.MarcoReadyAt);
+                }
+            }
+        }
+
         // Restored GameSession/UnitRoster are constructed by the core loader.
         // This method adds only the existing enemy objects; it does not
         // re-run wave spawns, damage events, native observers or rewards.
@@ -124,7 +230,7 @@ namespace Ordr.Mobile.Combat
         // wave ledger and all missing owner systems before exposing gameplay.
         public void RestoreEnemyWorldDraft(SourceCombatRuntimeCheckpoint state)
         {
-            if (state == null || state.Version != 2 || state.Enemies == null ||
+            if (state == null || state.Version != 3 || state.Enemies == null ||
                 game.Phase != SessionPhase.Running || enemies.Count != 0 ||
                 resolution == null || processingStep || pendingStepSeconds != 0 ||
                 scheduler.Time != 0 || effectExecutor.Time != 0)
@@ -184,7 +290,7 @@ namespace Ordr.Mobile.Combat
         // A rejected reconstruction must be discarded, never published.
         public void RestoreActorWorldDraft(SourceCombatRuntimeCheckpoint state)
         {
-            if (state == null || state.Version != 2 || state.Actors == null ||
+            if (state == null || state.Version != 3 || state.Actors == null ||
                 state.Attacks == null || state.Timed == null ||
                 game.Phase != SessionPhase.Running || characters.Count != 0 ||
                 unitStatuses.Count != 0 || roster.Count != state.Actors.Count ||
@@ -193,6 +299,7 @@ namespace Ordr.Mobile.Combat
                 UsesSourceModelBasicAttacks != state.HasSourceModelBasicAttacks ||
                 (sourceModelMainLane != null) != state.MobileMainLaneEnabled)
                 throw new InvalidOperationException("복원된 로스터·전투 모드에 새 전투 엔진이 필요합니다.");
+            ValidateManualOwnerState(state);
             var staged = new List<StagedRestoredActor>();
             var identifiers = new HashSet<long>();
             foreach (var record in state.Actors)
@@ -285,6 +392,7 @@ namespace Ordr.Mobile.Combat
             if (scheduler.Time != state.Time || effectExecutor.Time != state.Time ||
                 triggers.Time != state.Time)
                 throw new FormatException("복원된 평타·스킬·효과 시계가 맞지 않습니다.");
+            RestoreManualOwners(state);
         }
 
         // Captures real owner identities, resources, status clocks and all
@@ -299,6 +407,7 @@ namespace Ordr.Mobile.Combat
                 scheduler.Time != effectExecutor.Time)
                 throw new InvalidOperationException(
                     "불완전한 전투 스텝·조합·불일치 시계는 저장할 수 없습니다.");
+            RejectNonRestorableSourceSkillState();
             var draft = new SourceCombatRuntimeCheckpoint {
                 Time = scheduler.Time,
                 HasSourceModelBasicAttacks = UsesSourceModelBasicAttacks,
@@ -330,7 +439,22 @@ namespace Ordr.Mobile.Combat
                     Abilities = actor.Abilities.CaptureState(),
                     Status = status.CaptureState()
                 });
+                int mariaStage;
+                double mariaReady, marcoReady;
+                string marcoForm;
+                draft.ManualOwners.Add(new SourceCombatManualOwnerCheckpoint {
+                    InstanceId = id,
+                    MariaStage = manualMariaMode.TryGetValue(id, out mariaStage)
+                        ? mariaStage : -1,
+                    MariaReadyAt = manualMariaReady.TryGetValue(id, out mariaReady)
+                        ? mariaReady : 0,
+                    MarcoForm = sourceModelMarcoManualForms.TryGetValue(
+                        id, out marcoForm) ? marcoForm : null,
+                    MarcoReadyAt = sourceModelMarcoTransformReadyAt.TryGetValue(
+                        id, out marcoReady) ? marcoReady : 0
+                });
             }
+            ValidateManualOwnerState(draft);
             var enemyIds = new List<string>(enemies.Keys);
             enemyIds.Sort(StringComparer.Ordinal);
             foreach (string id in enemyIds)

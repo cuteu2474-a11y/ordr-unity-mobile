@@ -282,7 +282,7 @@ namespace Ordr.Mobile.Core
             var world = state.Combat;
             var waves = state.Waves;
             if (world == null || waves == null ||
-                world.Version != 2 || world.Attacks == null ||
+                world.Version != 3 || world.Attacks == null ||
                 world.Timed == null || world.Actors == null ||
                 world.Enemies == null || waves.Version != 1 ||
                 world.Time != state.LogicalTime ||
@@ -292,6 +292,7 @@ namespace Ordr.Mobile.Core
                 waves.ActiveWave != state.Game.CurrentWave)
                 throw new FormatException(
                     "전투 예약·라운드/게임 시계가 일치하지 않습니다.");
+            CharacterCombatRuntime.ValidateManualOwnerState(world);
             CombatScheduler.ValidateState(world.Attacks.Scheduler);
             CombatSkillTriggerEngine.ValidateState(world.Attacks.Skills);
             if (world.Attacks.Version != 1 || world.Attacks.Events == null)
