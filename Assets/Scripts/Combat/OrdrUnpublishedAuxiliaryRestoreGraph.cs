@@ -15,8 +15,10 @@ namespace Ordr.Mobile.Combat
         public Original323StoryBuildingPracticeWorld StoryBuildings { get; internal set; }
         public Original323SoloStoryScenario SoloStory { get; internal set; }
         public Original323StoryMobileProgression StoryProgression { get; internal set; }
+        public SourceModelPracticeBattle Practice { get; internal set; }
         public void Dispose()
         {
+            Practice?.Dispose();
             SoloStory?.Dispose();
             StoryBuildings?.Dispose();
             Creeps?.Dispose();
@@ -31,13 +33,30 @@ namespace Ordr.Mobile.Combat
             Original323CreepObjectCatalog creepCatalog,
             Func<string, bool> researchCanApply,
             Original323StoryBuildingCatalog storyCatalog = null,
-            Func<int, int, int> storyRandom = null)
+            Func<int, int, int> storyRandom = null,
+            SourceModelPracticeCatalog practiceCatalog = null,
+            Original323MonsterWaveIdentityCatalog originalMonsterCatalog = null,
+            SourceModelBasicCombatRules sourceDamage = null,
+            IOriginalWispRandom originalScriptRandom = null,
+            Action roundStarted = null)
         {
             if (graph == null || graph.Core == null || graph.Combat == null ||
                 save == null || researchCanApply == null)
                 throw new ArgumentNullException("복원된 전투·코어·원본 연구 연결이 필요합니다.");
             OrdrCoreCheckpoint.Validate(save);
+            if (save.Creeps != null && creepCatalog == null)
+                throw new ArgumentNullException(nameof(creepCatalog));
+            if (save.SoloStory != null && (storyCatalog == null || storyRandom == null))
+                throw new ArgumentNullException(
+                    "원본 스토리 카탈로그와 복원 가능한 BFi 난수가 필요합니다.");
+            if (save.Practice != null &&
+                (practiceCatalog == null || originalMonsterCatalog == null ||
+                 sourceDamage == null || originalScriptRandom == null))
+                throw new ArgumentNullException(
+                    "65R 원본 출현 데이터·전투 모델·난수 복원이 필요합니다.");
             var state = new OrdrUnpublishedAuxiliaryRestoreGraph();
+            try
+            {
             if (save.Poneglyph != null)
                 state.Poneglyph = Original323PoneglyphSession.Restore(
                     save.Poneglyph, save.LogicalTime);
@@ -92,8 +111,25 @@ namespace Ordr.Mobile.Combat
                     throw;
                 }
             }
-            // Ownership is not published to controller/scene at this stage.
-            return state;
+                if (save.Practice != null)
+                {
+                    state.Practice = new SourceModelPracticeBattle(
+                        graph.Combat, graph.Waves, graph.Core.Economy,
+                        practiceCatalog, originalMonsterCatalog, sourceDamage,
+                        originalScriptRandom, roundStarted,
+                        mobileMainLane: save.Practice.MobileMainLane);
+                    state.Practice.RestoreState(save.Practice);
+                }
+                // No Start/BeginRound/ApplyPending calls occur on resume.
+                // Controller publication remains blocked until the rest
+                // of source-native effects and saved RNG owners are restored.
+                return state;
+            }
+            catch
+            {
+                state.Dispose();
+                throw;
+            }
         }
     }
 }
