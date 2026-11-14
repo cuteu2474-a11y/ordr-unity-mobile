@@ -8,6 +8,8 @@
 
 # 코드 구조
 
+**1·2·4배속 단일 시간 경로(코드만):** `Assets/Scripts/Core/MobileGameSpeedClock.cs`의 `Scale(unscaledDeltaSeconds, runGate.CanAdvance)` → `OrdrCharacterCombatController.Update`의 `PracticeBattle.Advance` / `VerifiedWaveDirector.Step` / `Combat.Step` / 준비단계 분해 시계. `OrdrMobileTouchPanel.DrawGameplaySpeedControls`는 왼쪽 고정 버튼 1·2·4배를 제공하며 Editor 체험 `SetEditorPreviewSpeed`도 같은 선택자로 통합. Unity `Time.timeScale`은 변경하지 않으므로 UI/물리/화면 프레임은 별개로 유지. Unity·APK 미검증.
+
 **일반 상점 메뉴 제거·APK 빌드 경로:** `OrdrMobileTouchPanel`의 `Tab.Shop`·빈 상점 구매확인 UI·미사용 `pendingEconomy` 상태를 제거했습니다. `DrawWispEconomyOffers`는 기존 위습 실물 거래 버튼으로 남고, `RefreshCurrent`에서 도박과 위습의 실제 `ManualEconomyCategory`만 갱신합니다. `IOriginalEconomyPort`·`VerifiedShopSession`·돈 도박 졸업 상점·콤푸 환전/발굴·강화 서비스는 변경하지 않았습니다. `tests/test_player_building_left_menu.py`·`tests/test_random_wisp_submenu.py`에서 이미 합의한 조합 필터·상점 메뉴/구매확인 구형 문자열 검사를 현행 화면 및 위습 동작 계약으로 갱신했습니다. Actions는 `.github/ordr-apk-build-request.txt` 변경을 포함한 **main의 명시적 요청 커밋만** 푸시 시 검사/APK 제작하고, 일반 코드 푸시는 자동 빌드하지 않습니다.
 
 **미션 UI 분리:** `OrdrMobileTouchPanel.DrawMissions`에서 공유/개인 버튼을 전환합니다. `DrawSharedMissionBoard`는 `Original323PoneglyphSession`의 검증된 공유 8종 상태를 각 카드로 표시하고, `DrawSharedMissionSelectedDetail`에서 원본 목표 설명과 (이미 실제 출현한 경우에만) 기존 `RequestSharedObjectiveDispatch/Recall`을 연결합니다. 신규 미션-클릭 수행은 적격 캐릭터 명세 미확정으로 **비활성 UI만 제공**하고 원본 사건·보상/해금 계산은 변경하지 않습니다. 기록지침의 `DrawPoneglyphPanel`은 해독/보물만 담당하며, 미션 탭의 특성포인트 잔액·보상 문구는 표시하지 않되 기존 지급 거래는 바꾸지 않습니다. 코드 반영만 완료, 컴파일·Android 실제 동작 확인은 남아 있습니다.

@@ -1228,6 +1228,31 @@ namespace Ordr.Mobile.Unity
                 (done < requested ? " · 남은 위습 보존" + (string.IsNullOrEmpty(stopped) ? "" : " · " + stopped) : ""));
         }
         public CharacterCombatRuntime Combat { get; private set; }
+
+        // Player-requested 1/2/4x practice pacing is a multiplier of the
+        // SINGLE authoritative gameplay clock. It never alters original
+        // attack/cast timings, target speed or cooldown values themselves.
+        // A new scene/controller begins at 1x; this UI preference is not
+        // an entitlement/reward and does not enter the savegame ledger.
+        private readonly MobileGameSpeedClock gameplaySpeed = new MobileGameSpeedClock();
+        public int GameplaySpeedMultiplier => gameplaySpeed.Multiplier;
+
+        public void SetGameplaySpeed(int multiplier)
+        {
+            if (Combat == null || Combat.Game.Phase != SessionPhase.Running)
+                throw new InvalidOperationException(
+                    "게임을 시작한 후에만 배속을 선택할 수 있습니다.");
+            gameplaySpeed.SetMultiplier(multiplier);
+#if UNITY_EDITOR
+            if (IsEditorPreview) EditorPreviewSpeed = multiplier;
+#endif
+        }
+
+        // Used only when the shared RunGate permits simulation. Background
+        // delays or long render stalls are bounded, never caught up as free
+        // attacks/rewards on the next frame.
+        public double GameDeltaFromUnscaled(double deltaSeconds) =>
+            gameplaySpeed.Scale(deltaSeconds, runGate.CanAdvance);
         // Session-only evidence for the original chat scoreboard's common-draw page.
         // This is not a persistent save counter or a total-clear score ledger.
         public MobileOriginalChatScoreboard ChatScoreboard { get; } =
@@ -1246,6 +1271,7 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException(
                     "에디터 체험 표시는 게임 시작 전의 테스트 월드에만 설정할 수 있습니다.");
             IsEditorPreview = true;
+            gameplaySpeed.SetMultiplier(1);
             EditorPreviewSpeed = 1;
         }
 
@@ -1259,8 +1285,10 @@ namespace Ordr.Mobile.Unity
             if (speed != 1 && speed != 2 && speed != 4)
                 throw new ArgumentOutOfRangeException(nameof(speed),
                     "Unity Editor 연습 속도는 1배·2배·4배만 가능합니다.");
-            Time.timeScale = speed;
-            EditorPreviewSpeed = speed;
+            // Do not set Unity's global timeScale: source-model simulation,
+            // Editor preview rounds, and Android must share one time source,
+            // while UI visuals and Unity fixed physics keep normal time.
+            SetGameplaySpeed(speed);
         }
 #endif
         private readonly OfflineSessionRunGate runGate = new OfflineSessionRunGate();
@@ -4039,6 +4067,9 @@ namespace Ordr.Mobile.Unity
             // Combat, round events, shared mana regeneration and source RNG
             // remain on one paused logical clock.
             if (!runGate.CanAdvance) return;
+            // This is the only wall -> game clock conversion. A fixed source
+            // second remains one combat second at every selected playback rate.
+            double frameGameSeconds = GameDeltaFromUnscaled(Time.unscaledDeltaTime);
             // Mobile policy: e0HP activates automatically; no second tap.
             // Source RNG is consumed at most once, and retries are throttled.
             if (evolutionService != null && EvolutionProgress != null &&
@@ -4057,16 +4088,16 @@ namespace Ordr.Mobile.Unity
             if (preparing && (!Combat.UsesSourceModelBasicAttacks ||
                               SoloStory == null))
             {
-                UnitDecompositions?.Advance(Time.deltaTime);
+                UnitDecompositions?.Advance(frameGameSeconds);
                 return;
             }
             double timeBeforeStep = Combat.Time;
             IReadOnlyList<CharacterCombatEvent> results;
             try
             {
-                results = PracticeBattle != null ? PracticeBattle.Advance(Time.deltaTime) :
-                    VerifiedWaveDirector.IsActive ? VerifiedWaveDirector.Step(Combat, Time.deltaTime) :
-                    Combat.Step(Time.deltaTime);
+                results = PracticeBattle != null ? PracticeBattle.Advance(frameGameSeconds) :
+                    VerifiedWaveDirector.IsActive ? VerifiedWaveDirector.Step(Combat, frameGameSeconds) :
+                    Combat.Step(frameGameSeconds);
             }
             catch (Exception ex)
             {

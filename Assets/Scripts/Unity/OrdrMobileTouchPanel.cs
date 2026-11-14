@@ -547,6 +547,10 @@ namespace Ordr.Mobile.Unity
                     GUILayout.MinHeight(56)))
                     controller.SetManualGameplayPause(!controller.IsGameplayPaused);
             }
+            if (Combat != null && Combat.Game.Phase == SessionPhase.Running)
+            {
+                DrawGameplaySpeedControls();
+            }
             if (Combat != null && !controller.IsUnitPreparation)
             {
                 if (GUILayout.Button(confirmReturnToTitle ? "처음으로 확정" : "처음으로",
@@ -562,6 +566,43 @@ namespace Ordr.Mobile.Unity
                     confirmReturnToTitle = false;
             }
             GUILayout.EndArea();
+        }
+
+        // Fixed controls remain outside the left-menu scroll view so speed
+        // and pause are always reachable without changing selected tabs.
+        // IMGUI buttons commit only on explicit tap; Repaint/Layout cannot
+        // multiply the game clock or trigger economic actions.
+        private void DrawGameplaySpeedControls()
+        {
+            GUILayout.Space(7f);
+            GUILayout.Label("게임 배속 · " + controller.GameplaySpeedMultiplier + "배",
+                OrdrMobileUiTheme.Overline);
+            GUILayout.BeginHorizontal();
+            DrawGameplaySpeedButton(1);
+            DrawGameplaySpeedButton(2);
+            DrawGameplaySpeedButton(4);
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawGameplaySpeedButton(int speed)
+        {
+            var active = controller.GameplaySpeedMultiplier == speed;
+            var style = active ? OrdrMobileUiTheme.SelectedTab :
+                OrdrMobileUiTheme.NavButton;
+            if (GUILayout.Button(speed + "배", style,
+                GUILayout.MinHeight(46f), GUILayout.ExpandWidth(true)))
+            {
+                try
+                {
+                    controller.SetGameplaySpeed(speed);
+                    notice = "게임 배속 " + speed + "배" +
+                        (controller.IsGameplayPaused ? " · 일시정지 중" : " · 진행 중");
+                }
+                catch (Exception ex)
+                {
+                    notice = ex.Message;
+                }
+            }
         }
 
         private void DrawLeftTab(Tab tab, string title)

@@ -1,5 +1,7 @@
 # 현재 상태
 
+**게임 배속 UI(2026-11-14, 코드 반영·실행 미검증):** 모바일 왼쪽 조작 영역에서 1배·2배·4배를 선택할 수 있습니다. `MobileGameSpeedClock`는 `Time.unscaledDeltaTime`을 게임 논리 시간으로 한 번만 변환하며, 일시정지/앱 백그라운드에서는 기존 RunGate가 진행을 막습니다. 기존 Editor 체험도 같은 시계를 사용해 Unity 전역 `Time.timeScale`의 중복 배속을 제거했습니다. 전투/스토리/65R/마나·해독 시간은 원래 게임 초 기준으로 유지하며 0.25초 초과 정지 프레임은 재생하지 않습니다. Unity/Android 실기·통합 테스트는 진행하지 않았습니다.
+
 > **2026-11-14 UI 폰트 조정:** 기존 Unity Assets에 실제 한글 폰트 바이너리가 없고 `OrdrMobileUiTheme`가 OS 기본 폰트를 사용하던 것을 확인. 메이플스토리 Bold/Light 및 OFL Pretendard Regular를 `Resources/Fonts`에서 불러오는 스타일 분기(제목/버튼 MapleStory, 일반 본문 Pretendard)와 원본 해시 검증 동기화 스크립트를 추가. Microsoft 맑은 고딕은 Android 재배포 허가가 없어 포함하지 않음. 워크플로 `[sync-font-assets]`는 **폰트 업로드 전용**, Unity/Android 빌드와 분리. 원본 파일 다운로드/깃허브 반영 및 APK 기기 확인은 동기화 작업 실행 결과로 별도 판정.
 
 > **2026-11-14 저장 복원 경로 진행:** S02 전투·코어 초안에 일반/고급/졸업 돈 도박 재고와 보류 추첨, 물품 지원·이세계/등급별 도박·리롤의 보류 결과, 공통 BFi 난수 재생 계약을 추가했습니다. 65R 라운드 기록은 복원된 전투/웨이브 월드에 한해 부작용 없이 복구할 수 있는 `SourceModelPracticeBattle.RestoreState`를 추가했습니다. 하지만 **실제 복원된 전투 월드 구성과 스토리/크립/시설/폼·전체 난수 저장, 제목화면 로드 버튼이 아직 없어 이어하기는 미완료**입니다. `OrdrCoreCheckpoint.Restore`의 전투 포함 저장 차단을 유지하며 Unity/Android 실행 검증은 아직 없습니다.
