@@ -67,6 +67,27 @@ namespace Ordr.Mobile.Combat
                 SourceModelTwentiethAttachPassives(actor);
         }
 
+        // Restore-only configuration for a reconstructed mid-wave session.
+        // Unlike the ordinary prepare-time entry point it neither spawns,
+        // advances clocks nor attaches one-time passives to a fresh actor.
+        // All actor instances are introduced from the saved roster later.
+        public void ConfigureSourceModelBasicAttacksForRestore(
+            SourceModelBasicCombatRules practice)
+        {
+            if (practice == null || !practice.Enabled ||
+                game.Phase != SessionPhase.Running ||
+                UsesSourceModelBasicAttacks || characters.Count != 0 ||
+                enemies.Count != 0 || scheduler.Time != 0 ||
+                pendingStepSeconds != 0 || processingStep ||
+                activeOriginalFusionSwap != null ||
+                ReadyAttackers != 0)
+                throw new InvalidOperationException(
+                    "복원된 게임 상태와 빈 전투 모델이 필요합니다.");
+            UsesSourceModelBasicAttacks = true;
+            verifiedAttackProvider = practice;
+            ConfigureSourceModelUnitEffects(practice);
+        }
+
         public sealed class OriginalFusionUnitSwap : IDisposable
         {
             private readonly CharacterCombatRuntime world;

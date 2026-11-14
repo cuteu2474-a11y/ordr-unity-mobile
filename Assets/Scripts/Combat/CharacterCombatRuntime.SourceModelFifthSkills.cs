@@ -42,6 +42,22 @@ namespace Ordr.Mobile.Combat
             RefreshEnemyAuras();
         }
 
+        // Saved coordinates have already been restored by UnitRoster.Restore.
+        // Do not call ordinary ConfigureSourceModelMobileMainLane here: its
+        // auto-placement would overwrite the original actor positions.
+        public void ConfigureSourceModelMobileMainLaneForRestore(
+            SourceModelMainLaneGeometry lane)
+        {
+            if (lane == null || !UsesSourceModelBasicAttacks ||
+                sourceModelMainLane != null || sourceModelRouteCorners == null ||
+                Game.Phase != Ordr.Mobile.Core.SessionPhase.Running ||
+                Game.CurrentWave < 1 || characters.Count != 0 ||
+                enemies.Count != 0 || scheduler.Time != 0)
+                throw new InvalidOperationException(
+                    "복원된 65R 전장에는 기존 좌표와 비어 있는 월드가 필요합니다.");
+            sourceModelMainLane = lane;
+        }
+
         // Profile clearCountScaling is cumulative *completed games*, not
         // in-match round count. Missing persistence is treated as zero.
         public void ConfigureSourceModelAccumulatedClearCount(Func<int?> provider)
