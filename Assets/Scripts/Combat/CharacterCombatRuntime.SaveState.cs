@@ -17,6 +17,9 @@ namespace Ordr.Mobile.Combat
         public bool StoryDeployed;
         public bool PoneglyphChanneling;
         public string SharedObjectiveEnemyId;
+        public string AttackEvidence;
+        public string DeferredAttackReason;
+        public bool SourceManagedResources;
         public CharacterActiveAbilityState Abilities;
         public CombatStatusEngineState Status;
     }
@@ -165,6 +168,125 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        private sealed class StagedRestoredActor
+        {
+            public CharacterInstance Actor;
+            public CombatStatusEngine Status;
+            public OriginalVerifiedAttackBinding Attack;
+            public bool SourceManagedResources;
+        }
+
+        // Rehydrate real roster IDs without invoking SpawnCharacter(): a
+        // spawn would allocate another ID, refresh aura state, roll extra
+        // source effects and potentially re-grant mission/skill rewards.
+        // Only unassigned main-lane actors can be restored here until story,
+        // Poneglyph and shared-objective owners have their own restore ports.
+        // A rejected reconstruction must be discarded, never published.
+        public void RestoreActorWorldDraft(SourceCombatRuntimeCheckpoint state)
+        {
+            if (state == null || state.Version != 2 || state.Actors == null ||
+                state.Attacks == null || state.Timed == null ||
+                game.Phase != SessionPhase.Running || characters.Count != 0 ||
+                unitStatuses.Count != 0 || roster.Count != state.Actors.Count ||
+                processingStep || pendingStepSeconds != 0 ||
+                scheduler.Time != 0 || effectExecutor.Time != 0 ||
+                UsesSourceModelBasicAttacks != state.HasSourceModelBasicAttacks ||
+                (sourceModelMainLane != null) != state.MobileMainLaneEnabled)
+                throw new InvalidOperationException("복원된 로스터·전투 모드에 새 전투 엔진이 필요합니다.");
+            var staged = new List<StagedRestoredActor>();
+            var identifiers = new HashSet<long>();
+            foreach (var record in state.Actors)
+            {
+                if (record == null || record.InstanceId <= 0 ||
+                    !identifiers.Add(record.InstanceId) ||
+                    string.IsNullOrWhiteSpace(record.CatalogId) ||
+                    record.Abilities == null || record.Status == null)
+                    throw new FormatException("저장된 실제 캐릭터의 ID/상태가 잘못됐습니다.");
+                if (record.StoryDeployed || record.PoneglyphChanneling ||
+                    !string.IsNullOrEmpty(record.SharedObjectiveEnemyId))
+                    throw new NotSupportedException(
+                        "스토리·공유 출전·해독 유닛의 원본 소유권 복원이 먼저 필요합니다.");
+                UnitState owned;
+                try { owned = roster.Get(record.InstanceId); }
+                catch (KeyNotFoundException)
+                {
+                    throw new FormatException("공유 로스터에 저장된 유닛 ID가 없습니다.");
+                }
+                if (owned.UnitId != record.CatalogId)
+                    throw new FormatException("저장된 캐릭터 신원이 로스터와 다릅니다.");
+                var catalog = units.Require(record.CatalogId);
+                if (catalog.IsAlternateForm)
+                    throw new FormatException("변신 폼을 독립 유닛으로 저장할 수 없습니다.");
+                var profile = profiles.Find(record.CatalogId);
+                var abilities = new CharacterActiveAbilities(profile);
+                abilities.RestoreState(record.Abilities);
+                var status = CombatStatusEngine.Restore(record.Status);
+                var actor = new CharacterInstance {
+                    Id = record.InstanceId, Catalog = catalog,
+                    Profile = profile, Abilities = abilities,
+                    AttackBlockedByMissingFormula = record.AttackBlocked,
+                    DeferredAttackReason = record.DeferredAttackReason,
+                    AttackEvidence = record.AttackEvidence
+                };
+                OriginalVerifiedAttackBinding attack = null;
+                if (record.AttackReady)
+                {
+                    if (verifiedAttackProvider == null ||
+                        !verifiedAttackProvider.TryResolve(catalog, profile, out attack) ||
+                        attack == null ||
+                        (record.AttackEvidence != null &&
+                         record.AttackEvidence != attack.SourceEvidence))
+                        throw new NotSupportedException(
+                            "저장된 평타 공격 스펙을 원본에서 다시 검증할 수 없습니다.");
+                    var mapping = CharacterCombatMapping.Build(catalog.Id,
+                        UsesSourceModelBasicAttacks ? null : profile,
+                        attack.Stats, attack.OriginalUnitRawcode,
+                        UsesSourceModelBasicAttacks ? null : specialTriggerMapping,
+                        UsesSourceModelBasicAttacks ? null : uncommonAbilities,
+                        UsesSourceModelBasicAttacks ? null : uncommonProcWorld);
+                    actor.Mapping = mapping;
+                    actor.AttackReady = true;
+                    actor.BasicTargetFilter = verifiedAttackProvider as
+                        IOriginalVerifiedBasicAttackTargetFilter;
+                }
+                else if (record.SourceManagedResources)
+                    throw new FormatException("원본 등록되지 않은 유닛의 자원 관리가 저장됐습니다.");
+                if (record.SourceManagedResources &&
+                    !CanRebindRestoredSourceModelResources(actor))
+                    throw new FormatException("원본 HP/MP 자원 관리 정보를 재연결할 수 없습니다.");
+                staged.Add(new StagedRestoredActor {
+                    Actor = actor, Status = status, Attack = attack,
+                    SourceManagedResources = record.SourceManagedResources
+                });
+            }
+            // Every actor is valid before creating any registration entries.
+            foreach (var item in staged)
+            {
+                var actor = item.Actor;
+                characters.Add(actor.Id, actor);
+                unitStatuses.Add(InstanceKey(actor.Id), item.Status);
+                if (item.Attack != null)
+                    attackPipeline.RegisterUnit(InstanceKey(actor.Id),
+                        actor.Mapping.AttackSpec, item.Attack.FirstAttackDelaySeconds);
+                if (item.SourceManagedResources)
+                    RebindRestoredSourceModelResources(actor);
+            }
+            attackPipeline.RestoreState(state.Attacks);
+            effectExecutor.RestoreTimedState(state.Timed,
+                actorId => {
+                    long id;
+                    CharacterInstance actor;
+                    return long.TryParse(actorId, out id) &&
+                        characters.TryGetValue(id, out actor) ? actor.Profile : null;
+                }, enemyId => {
+                    SpatialCombatEnemy live;
+                    return enemies.TryGetValue(enemyId, out live) ? live : null;
+                });
+            if (scheduler.Time != state.Time || effectExecutor.Time != state.Time ||
+                triggers.Time != state.Time)
+                throw new FormatException("복원된 평타·스킬·효과 시계가 맞지 않습니다.");
+        }
+
         // Captures real owner identities, resources, status clocks and all
         // registered basic/skill timers. Unknown delayed lambda state must
         // fail before anyone can accidentally publish a partial checkpoint.
@@ -202,6 +324,9 @@ namespace Ordr.Mobile.Combat
                     StoryDeployed = IsStoryDeployed(id),
                     PoneglyphChanneling = IsOriginalPoneglyphChanneling(id),
                     SharedObjectiveEnemyId = SharedObjectiveTargetOf(id),
+                    AttackEvidence = actor.AttackEvidence,
+                    DeferredAttackReason = actor.DeferredAttackReason,
+                    SourceManagedResources = sourceModelManagedResourceRows.ContainsKey(id),
                     Abilities = actor.Abilities.CaptureState(),
                     Status = status.CaptureState()
                 });

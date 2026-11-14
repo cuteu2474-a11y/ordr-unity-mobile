@@ -38,6 +38,30 @@ namespace Ordr.Mobile.Combat
                 ProvisionSourceModelResources(actor);
         }
 
+        // The saved source-managed flag prevents a loaded non-source HP/MP
+        // pool from being adopted as native SLK regeneration by accident.
+        private bool CanRebindRestoredSourceModelResources(CharacterInstance actor)
+        {
+            if (!UsesSourceModelBasicAttacks ||
+                sourceModelResourceCatalog == null || actor == null ||
+                actor.Mapping == null || actor.Abilities.Resources == null)
+                return false;
+            var spec = sourceModelResourceCatalog.Find(actor.Catalog.Id);
+            return spec != null &&
+                spec.OriginalRawcode == actor.Mapping.AttackSpec.UnitRawCode;
+        }
+
+        private void RebindRestoredSourceModelResources(CharacterInstance actor)
+        {
+            if (!UsesSourceModelBasicAttacks || actor == null ||
+                actor.Abilities.Resources == null ||
+                sourceModelResourceCatalog == null) return;
+            var spec = sourceModelResourceCatalog.Find(actor.Catalog.Id);
+            if (spec != null && actor.Mapping != null &&
+                spec.OriginalRawcode == actor.Mapping.AttackSpec.UnitRawCode)
+                sourceModelManagedResourceRows.Add(actor.Id, spec);
+        }
+
         private bool CanProvisionSourceModelResources(CharacterInstance actor)
         {
             if (!UsesSourceModelBasicAttacks || actor == null ||

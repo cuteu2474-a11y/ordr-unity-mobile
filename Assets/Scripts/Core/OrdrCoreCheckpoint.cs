@@ -214,6 +214,10 @@ namespace Ordr.Mobile.Core
                 if (actor == null || actor.InstanceId <= 0 ||
                     string.IsNullOrWhiteSpace(actor.CatalogId) ||
                     actor.Abilities == null || actor.Status == null ||
+                    (actor.SourceManagedResources &&
+                        (actor.Abilities.Resources == null ||
+                         !world.HasSourceModelBasicAttacks || !actor.AttackReady)) ||
+                    actor.Abilities.Time > state.LogicalTime ||
                     !allUnits.Add(actor.InstanceId))
                     throw new FormatException("전투 유닛 ID/상태가 잘못됐습니다.");
             foreach (var actor in world.Actors)
