@@ -63,6 +63,8 @@ namespace Ordr.Mobile.Combat
                         bonus.Type == "magical" && bonus.Fields.Count == 3 &&
                         bonus.Number("extraTargetMaxHealthPercentPerHit") == 16 &&
                         exception != null && exception.Count == 2 &&
+                        exception.ContainsKey("targetKinds") &&
+                        exception.ContainsKey("flatAmount") &&
                         Kinds(exception["targetKinds"], "boss", "story") &&
                         Equals(exception["flatAmount"], 300000d) &&
                         stun.Type == "stun" && stun.Fields.Count == 4 &&

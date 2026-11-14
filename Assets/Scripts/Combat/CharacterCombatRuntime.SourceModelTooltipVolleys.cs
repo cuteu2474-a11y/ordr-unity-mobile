@@ -14,8 +14,11 @@ namespace Ordr.Mobile.Combat
             double raw, bool fixedDamage)
         {
             SpatialCombatEnemy current;
+            CharacterInstance livingCaster;
             if (raw <= 0 || double.IsNaN(raw) || double.IsInfinity(raw) ||
                 raw >= long.MaxValue ||
+                !characters.TryGetValue(actor.Id, out livingCaster) ||
+                !Object.ReferenceEquals(actor, livingCaster) ||
                 !enemies.TryGetValue(target.Id, out current) ||
                 !Object.ReferenceEquals(target, current) ||
                 !current.Enemy.IsAlive || !CanAttackInThisLane(actor, current))
@@ -27,8 +30,13 @@ namespace Ordr.Mobile.Combat
                 if (!current.Enemy.Defenses.BaseArmor.HasValue ||
                     !Ordr323OriginalDamageRules.TryReadArmorType(
                         current.Enemy.Defenses.WarcraftArmorType, out armor))
-                    throw new InvalidOperationException(
-                        "도감 스킬 대상의 원본 방어 자료가 없습니다.");
+                {
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EffectDeferred,
+                        InstanceKey(actor.Id), current.Id, skill,
+                        "TOOLTIP_MODEL_ONLY 적 방어 자료가 없어 피해 보류", 0));
+                    return;
+                }
                 finalDamage = Ordr323MapDamageMath.ApplyVerifiedFactors(
                     raw, Ordr323AttackType.Spells, armor, true, true,
                     current.Enemy.Defenses.BaseArmor.Value -
