@@ -10,6 +10,20 @@ namespace Ordr.Mobile.Mobile
     // uncommon jZ[0..12] (49.5% overall). All three calls share
     // the same script BFi RNG lane and the sold item refunds 30 gold.
     // Original script SHA256: 96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d.
+    [Serializable]
+    public sealed class SourceModelMaterialSupportState
+    {
+        public int Version = 1;
+        public long PurchasedCount;
+        public bool HasShipRoll;
+        public int ShipRoll;
+        public bool HasGradeRoll;
+        public int GradeRoll;
+        public bool HasUnitRoll;
+        public int UnitRoll;
+        public string PendingRawcode;
+    }
+
     public sealed class SourceModelMaterialSupport : IOriginalEconomyPort
     {
         public const string OfferId = "mobile:material-support:100g";
@@ -39,6 +53,77 @@ namespace Ordr.Mobile.Mobile
             scriptRandom = originalBfiRandom ?? throw new ArgumentNullException(nameof(originalBfiRandom));
             world = roster ?? throw new ArgumentNullException(nameof(roster));
             canInteract = interaction ?? throw new ArgumentNullException(nameof(interaction));
+        }
+
+        public SourceModelMaterialSupportState CaptureState()
+        {
+            if (processing) throw new InvalidOperationException("물품 지원 거래 중에는 저장할 수 없습니다.");
+            var state = new SourceModelMaterialSupportState {
+                PurchasedCount = PurchasedCount,
+                HasShipRoll = pendingShipRoll.HasValue,
+                ShipRoll = pendingShipRoll.GetValueOrDefault(),
+                HasGradeRoll = pendingGradeRoll.HasValue,
+                GradeRoll = pendingGradeRoll.GetValueOrDefault(),
+                HasUnitRoll = pendingUnitRoll.HasValue,
+                UnitRoll = pendingUnitRoll.GetValueOrDefault(),
+                PendingRawcode = pendingRawcode
+            };
+            ValidateState(state);
+            return state;
+        }
+
+        public static void ValidateState(SourceModelMaterialSupportState state)
+        {
+            if (state == null || state.Version != 1 ||
+                state.PurchasedCount < 0 || state.PurchasedCount > PurchaseLimit ||
+                (state.HasShipRoll && (state.ShipRoll < 1 || state.ShipRoll > 1000)) ||
+                (!state.HasShipRoll && (state.ShipRoll != 0 || state.HasGradeRoll ||
+                    state.HasUnitRoll || state.PendingRawcode != null)) ||
+                (state.HasGradeRoll && (state.GradeRoll < 1 || state.GradeRoll > 100)) ||
+                (!state.HasGradeRoll && (state.GradeRoll != 0 || state.HasUnitRoll)) ||
+                (!state.HasUnitRoll && state.UnitRoll != 0) ||
+                (state.PurchasedCount == PurchaseLimit && state.HasShipRoll))
+                throw new FormatException("물품 지원 보류 추첨 상태가 올바르지 않습니다.");
+            if (!state.HasShipRoll) return;
+            if (state.ShipRoll <= 10)
+            {
+                if (state.HasGradeRoll || state.HasUnitRoll ||
+                    (state.PendingRawcode != null && state.PendingRawcode != "h060"))
+                    throw new FormatException("물품 지원 해적선 추첨 기록 불일치");
+                return;
+            }
+            if (state.PendingRawcode == "h060" ||
+                (state.HasUnitRoll && !state.HasGradeRoll))
+                throw new FormatException("물품 지원 유닛 추첨 기록 불일치");
+            if (state.HasGradeRoll)
+            {
+                bool common = state.GradeRoll <= 50;
+                var pool = common ? Original323UnitGamblingRules.Common :
+                    Original323UnitGamblingRules.Uncommon;
+                int minimum = common ? 1 : 0;
+                int maximum = common ? 9 : 12;
+                if (state.HasUnitRoll && (state.UnitRoll < minimum ||
+                    state.UnitRoll > maximum))
+                    throw new FormatException("물품 지원 유닛 인덱스 불일치");
+                if (state.PendingRawcode != null && (!state.HasUnitRoll ||
+                    state.PendingRawcode != pool[state.UnitRoll - minimum]))
+                    throw new FormatException("물품 지원 유닛 신원 불일치");
+            }
+            else if (state.PendingRawcode != null)
+                throw new FormatException("등급 없는 유닛 추첨 결과가 남았습니다.");
+        }
+
+        public void RestoreState(SourceModelMaterialSupportState state)
+        {
+            ValidateState(state);
+            if (processing || pendingShipRoll.HasValue || pendingGradeRoll.HasValue ||
+                pendingUnitRoll.HasValue || pendingRawcode != null ||
+                PurchasedCount != state.PurchasedCount)
+                throw new InvalidOperationException("물품 지원은 새 거래 서비스와 동일한 지갑에만 복원합니다.");
+            pendingShipRoll = state.HasShipRoll ? (int?)state.ShipRoll : null;
+            pendingGradeRoll = state.HasGradeRoll ? (int?)state.GradeRoll : null;
+            pendingUnitRoll = state.HasUnitRoll ? (int?)state.UnitRoll : null;
+            pendingRawcode = state.PendingRawcode;
         }
 
         public long PurchasedCount => wallet.Balance(PurchaseCountResource);

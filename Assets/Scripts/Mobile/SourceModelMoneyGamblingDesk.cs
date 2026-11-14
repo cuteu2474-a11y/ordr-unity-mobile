@@ -10,6 +10,24 @@ namespace Ordr.Mobile.Mobile
     // Native H0B0/CJF is 5000 gold -> one random rare/special source actor,
     // with R01N (story stage five) and a one-use research entitlement.
     // The original SLK sets both graduated shelves to 1 / 3600 seconds.
+    [Serializable]
+    public sealed class SourceModelMoneyGamblingDeskState
+    {
+        public int Version = 1;
+        public string ReceiptPrefix;
+        public long Sequence;
+        public int TraitStock;
+        public int RareStock;
+        public bool HasTraitRestock;
+        public double TraitRestock;
+        public bool HasRareRestock;
+        public double RareRestock;
+        public double LastClock;
+        public SourceModelRegularMoneyGamblingState Regular;
+        public SourceModelRegularMoneyGamblingState High;
+        public SourceModelMaterialSupportState MaterialSupport;
+    }
+
     public sealed class SourceModelMoneyGamblingDesk : IOriginalEconomyPort
     {
         public const string HighOfferId = "original:H0AZ:high-money-gambling";
@@ -37,7 +55,7 @@ namespace Ordr.Mobile.Mobile
         private readonly GameSession game;
         private readonly Func<bool> gate;
         private readonly Func<double> clock;
-        private readonly string receiptPrefix =
+        private string receiptPrefix =
             "graduated-shop:" + Guid.NewGuid().ToString("N") + ":";
         private long sequence;
         private bool processing;
@@ -83,6 +101,72 @@ namespace Ordr.Mobile.Mobile
         public int RareStock { get { RefreshGraduatedStock(); return rareStock; } }
         public bool RareResearchUnlocked => rareResearchUnlocked != null && rareResearchUnlocked();
         public event Action<Exception> PostCommitObserverFailed;
+
+        public SourceModelMoneyGamblingDeskState CaptureState()
+        {
+            if (processing) throw new InvalidOperationException("졸업 상점 거래 중에는 저장할 수 없습니다.");
+            RefreshGraduatedStock();
+            var state = new SourceModelMoneyGamblingDeskState {
+                ReceiptPrefix = receiptPrefix, Sequence = sequence,
+                TraitStock = traitStock, RareStock = rareStock,
+                HasTraitRestock = traitRestock.HasValue,
+                TraitRestock = traitRestock.GetValueOrDefault(),
+                HasRareRestock = rareRestock.HasValue,
+                RareRestock = rareRestock.GetValueOrDefault(),
+                LastClock = lastClock,
+                Regular = Regular.CaptureState(), High = High.CaptureState(),
+                MaterialSupport = MaterialSupport?.CaptureState()
+            };
+            ValidateState(state);
+            return state;
+        }
+
+        public static void ValidateState(SourceModelMoneyGamblingDeskState state)
+        {
+            if (state == null || state.Version != 1 ||
+                string.IsNullOrWhiteSpace(state.ReceiptPrefix) ||
+                !state.ReceiptPrefix.StartsWith("graduated-shop:", StringComparison.Ordinal) ||
+                state.ReceiptPrefix.Length > 120 || state.Sequence < 0 ||
+                state.TraitStock < 0 || state.TraitStock > 1 ||
+                state.RareStock < 0 || state.RareStock > 1 ||
+                state.HasTraitRestock != (state.TraitStock < 1) ||
+                state.HasRareRestock != (state.RareStock < 1) ||
+                double.IsNaN(state.LastClock) || double.IsInfinity(state.LastClock) ||
+                state.LastClock < 0 ||
+                (state.HasTraitRestock && (!ValidNext(state.TraitRestock, state.LastClock))) ||
+                (state.HasRareRestock && (!ValidNext(state.RareRestock, state.LastClock))) ||
+                (!state.HasTraitRestock && state.TraitRestock != 0) ||
+                (!state.HasRareRestock && state.RareRestock != 0))
+                throw new FormatException("졸업 상점 저장 장부가 올바르지 않습니다.");
+            SourceModelRegularMoneyGambling.ValidateState(state.Regular);
+            SourceModelRegularMoneyGambling.ValidateState(state.High);
+            if (state.Regular.HighGrade || !state.High.HighGrade)
+                throw new FormatException("일반·고급 돈 도박 장부가 바뀌었습니다.");
+            if (state.MaterialSupport != null)
+                SourceModelMaterialSupport.ValidateState(state.MaterialSupport);
+        }
+
+        private static bool ValidNext(double next, double last) =>
+            !double.IsNaN(next) && !double.IsInfinity(next) && next >= last;
+
+        public void RestoreState(SourceModelMoneyGamblingDeskState state)
+        {
+            ValidateState(state);
+            if (processing || sequence != 0 ||
+                MaterialSupport == null != (state.MaterialSupport == null))
+                throw new InvalidOperationException("새 도박소 서비스 구성이 저장본과 다릅니다.");
+            // All child snapshots are validated before any local changes.
+            Regular.RestoreState(state.Regular);
+            High.RestoreState(state.High);
+            MaterialSupport?.RestoreState(state.MaterialSupport);
+            receiptPrefix = state.ReceiptPrefix;
+            sequence = state.Sequence;
+            traitStock = state.TraitStock;
+            rareStock = state.RareStock;
+            traitRestock = state.HasTraitRestock ? (double?)state.TraitRestock : null;
+            rareRestock = state.HasRareRestock ? (double?)state.RareRestock : null;
+            lastClock = state.LastClock;
+        }
 
         public SourceModelMoneyGamblingDesk(EconomyWallet shared, GameSession session,
             IOriginalWispRandom random, Func<double> logicalClock, Func<bool> interaction)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Combat;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Core
 {
@@ -24,6 +25,10 @@ namespace Ordr.Mobile.Core
         public SourceCombatRuntimeCheckpoint Combat;
         public CombatWaveDirectorState Waves;
         public SourceModelPracticeBattleState Practice;
+        // Stage S03: independent state for commerce and the shared BFi stream.
+        // These are not sufficient to enable game resume by themselves.
+        public MobileRollbackWispRandomState ScriptRandom;
+        public SourceModelMoneyGamblingDeskState MoneyDesk;
     }
 
     public sealed class OrdrRestoredCoreCheckpoint
@@ -54,7 +59,9 @@ namespace Ordr.Mobile.Core
             double logicalTime,
             SourceCombatRuntimeCheckpoint combat = null,
             CombatWaveDirectorState waves = null,
-            SourceModelPracticeBattleState practice = null)
+            SourceModelPracticeBattleState practice = null,
+            MobileRollbackWispRandomState scriptRandom = null,
+            SourceModelMoneyGamblingDeskState moneyDesk = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -66,7 +73,8 @@ namespace Ordr.Mobile.Core
                 SessionId = missions.Missions.SessionId, LogicalTime = logicalTime,
                 Game = game.CaptureState(), Roster = economy.Units.CaptureState(),
                 MissionGameplay = missions.CaptureState(),
-                Combat = combat, Waves = waves, Practice = practice
+                Combat = combat, Waves = waves, Practice = practice,
+                ScriptRandom = scriptRandom, MoneyDesk = moneyDesk
             };
             // The mission gameplay component carries the SAME shared wallet.
             // A different wallet or a torn cross-service snapshot is rejected.
@@ -111,6 +119,18 @@ namespace Ordr.Mobile.Core
         {
             RestoreCoreOnly(state);
             ValidateCombatDraft(state);
+            if (state.ScriptRandom != null)
+                MobileRollbackWispRandom.Restore(state.ScriptRandom);
+            if (state.MoneyDesk != null)
+            {
+                SourceModelMoneyGamblingDesk.ValidateState(state.MoneyDesk);
+                if (state.ScriptRandom == null)
+                    throw new FormatException("도박소 상태를 복원할 공통 난수 기록이 없습니다.");
+                if (state.MoneyDesk.LastClock > state.LogicalTime ||
+                    state.MoneyDesk.Regular.LastClock > state.LogicalTime ||
+                    state.MoneyDesk.High.LastClock > state.LogicalTime)
+                    throw new FormatException("도박소 시계가 게임 시계보다 앞서 있습니다.");
+            }
         }
 
         private static void ValidateCombatDraft(OrdrCoreCheckpointState state)

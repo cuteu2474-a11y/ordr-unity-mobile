@@ -8,6 +8,26 @@ namespace Ordr.Mobile.Mobile
     // Actual shared-wallet commerce in the development practice. Source CJB
     // payout/SLK cost and stock parameters; no counterfeit Warcraft witness.
     // Native stock initialisation/timer equivalence still needs device/replay QA.
+    [Serializable]
+    public sealed class SourceModelRegularMoneyGamblingState
+    {
+        public int Version = 1;
+        public bool HighGrade;
+        public string ReceiptPrefix;
+        public int Stock;
+        public bool HasNextRestock;
+        public double NextRestock;
+        public double LastClock;
+        public long Sequence;
+        public bool HasFirstRoll;
+        public int FirstRoll;
+        public bool HasSecondRoll;
+        public int SecondRoll;
+        public long Purchases;
+        public long Returned;
+        public List<string> RecentResults = new List<string>();
+    }
+
     public sealed class SourceModelRegularMoneyGambling : IOriginalEconomyPort
     {
         public const string OfferId = "original:h06F:regular-money-gambling";
@@ -19,7 +39,7 @@ namespace Ordr.Mobile.Mobile
         private readonly IOriginalWispRandom random;
         private readonly Func<double> clock;
         private readonly Func<bool> canInteract;
-        private readonly string receiptPrefix;
+        private string receiptPrefix;
         private int stock = MaximumStock;
         private double? nextRestock;
         private double lastClock;
@@ -63,6 +83,79 @@ namespace Ordr.Mobile.Mobile
             unlocked = unlockGate ?? (() => !IsHighGrade);
             stock = Capacity;
             receiptPrefix = "practice-money:" + Guid.NewGuid().ToString("N") + ":";
+        }
+
+        public SourceModelRegularMoneyGamblingState CaptureState()
+        {
+            if (processing) throw new InvalidOperationException("돈 도박 거래 중에는 저장할 수 없습니다.");
+            RefreshStock();
+            var state = new SourceModelRegularMoneyGamblingState {
+                HighGrade = IsHighGrade,
+                ReceiptPrefix = receiptPrefix, Stock = stock,
+                HasNextRestock = nextRestock.HasValue,
+                NextRestock = nextRestock.GetValueOrDefault(),
+                LastClock = lastClock, Sequence = sequence,
+                HasFirstRoll = pendingFirst.HasValue,
+                FirstRoll = pendingFirst.GetValueOrDefault(),
+                HasSecondRoll = pendingSecond.HasValue,
+                SecondRoll = pendingSecond.GetValueOrDefault(),
+                Purchases = PurchaseCount, Returned = GoldReturned,
+                RecentResults = new List<string>(recentResults)
+            };
+            ValidateState(state);
+            return state;
+        }
+
+        public static void ValidateState(SourceModelRegularMoneyGamblingState state)
+        {
+            if (state == null || state.Version != 1 ||
+                string.IsNullOrWhiteSpace(state.ReceiptPrefix) ||
+                !state.ReceiptPrefix.StartsWith("practice-money:", StringComparison.Ordinal) ||
+                state.ReceiptPrefix.Length > 120 ||
+                state.Stock < 0 || state.Stock > (state.HighGrade ? 7 : 3) ||
+                double.IsNaN(state.LastClock) || double.IsInfinity(state.LastClock) ||
+                state.LastClock < 0 ||
+                state.Sequence < 0 || state.Purchases < 0 || state.Returned < 0 ||
+                state.HasNextRestock != (state.Stock < (state.HighGrade ? 7 : 3)) ||
+                (state.HasNextRestock && (double.IsNaN(state.NextRestock) ||
+                    double.IsInfinity(state.NextRestock) ||
+                    state.NextRestock < state.LastClock)) ||
+                (!state.HasNextRestock && state.NextRestock != 0) ||
+                (!state.HasFirstRoll && (state.FirstRoll != 0 || state.HasSecondRoll)) ||
+                (state.HasFirstRoll && (state.FirstRoll < 1 || state.FirstRoll > 100)) ||
+                (!state.HasSecondRoll && state.SecondRoll != 0) ||
+                state.RecentResults == null || state.RecentResults.Count > 6)
+                throw new FormatException("돈 도박 재고·시계·보류 상태가 올바르지 않습니다.");
+            if (state.HasSecondRoll)
+            {
+                bool high; int min, max;
+                Original323MoneyGamblingRules.TryGetAmountBounds(
+                    state.HighGrade ? Original323MoneyGamblingTier.HighGrade :
+                    Original323MoneyGamblingTier.Regular, state.FirstRoll,
+                    out high, out min, out max);
+                if (state.SecondRoll < min || state.SecondRoll > max)
+                    throw new FormatException("돈 도박 반환액 난수가 범위 밖입니다.");
+            }
+        }
+
+        public void RestoreState(SourceModelRegularMoneyGamblingState state)
+        {
+            ValidateState(state);
+            if (processing || state.HighGrade != IsHighGrade || sequence != 0 ||
+                recentResults.Count != 0 || pendingFirst.HasValue || pendingSecond.HasValue ||
+                (IsHighGrade && (state.Purchases != PurchaseCount ||
+                    state.Returned != GoldReturned)))
+                throw new InvalidOperationException("새 돈 도박 서비스와 기존 공유 지갑이 필요합니다.");
+            receiptPrefix = state.ReceiptPrefix;
+            stock = state.Stock;
+            nextRestock = state.HasNextRestock ? (double?)state.NextRestock : null;
+            lastClock = state.LastClock;
+            sequence = state.Sequence;
+            purchases = state.Purchases;
+            returned = state.Returned;
+            pendingFirst = state.HasFirstRoll ? (int?)state.FirstRoll : null;
+            pendingSecond = state.HasSecondRoll ? (int?)state.SecondRoll : null;
+            recentResults.AddRange(state.RecentResults);
         }
 
         public int Stock { get { RefreshStock(); return stock; } }

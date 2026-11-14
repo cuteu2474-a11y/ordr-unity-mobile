@@ -1347,8 +1347,17 @@ namespace Ordr.Mobile.Unity
             var runtime = Combat.CaptureRuntimeDraft();
             var wave = VerifiedWaveDirector.CaptureState();
             var practice = PracticeBattle?.CaptureState();
+            // A source-model BFi stream must be serializable before the
+            // 100G support/regular money shops may be safely preserved.
+            var script = sessionScriptRandom as MobileRollbackWispRandom;
+            var money = PracticeMoneyGamblingDesk == null ? null :
+                PracticeMoneyGamblingDesk.CaptureState();
+            if (money != null && script == null)
+                throw new NotSupportedException(
+                    "외부 원본 난수 공급자는 세션 복원 계약이 없어 저장할 수 없습니다.");
             return OrdrCoreCheckpoint.Capture(Combat.Game, SharedEconomy,
-                PersonalMissions, Combat.Time, runtime, wave, practice);
+                PersonalMissions, Combat.Time, runtime, wave, practice,
+                script?.CaptureState(), money);
         }
 
         public void WriteWorldCheckpointDraftForDiagnostics()

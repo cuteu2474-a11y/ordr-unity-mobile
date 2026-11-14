@@ -12,6 +12,22 @@ namespace Ordr.Mobile.Core
         void RestoreCheckpoint(int drawCount);
     }
 
+    [Serializable]
+    public sealed class MobileRandomDrawState
+    {
+        public int Minimum;
+        public int Maximum;
+        public int Result;
+    }
+
+    [Serializable]
+    public sealed class MobileRollbackWispRandomState
+    {
+        public int Version = 1;
+        public int Seed;
+        public List<MobileRandomDrawState> Draws = new List<MobileRandomDrawState>();
+    }
+
     // One per mobile session: recruitment, resource exchange and lower-grade
     // sales use the same instance. Distribution is uniform, but the unknown
     // Warcraft native seed and unrelated global BFi calls are not claimed.
@@ -21,8 +37,9 @@ namespace Ordr.Mobile.Core
         {
             public int Minimum;
             public int Maximum;
-            public DrawRange(int min, int max)
-            { Minimum = min; Maximum = max; }
+            public int Result;
+            public DrawRange(int min, int max, int result)
+            { Minimum = min; Maximum = max; Result = result; }
         }
 
         private readonly int seed;
@@ -43,8 +60,40 @@ namespace Ordr.Mobile.Core
             if (minimum > maximum || maximum == int.MaxValue)
                 throw new ArgumentOutOfRangeException(nameof(maximum));
             int value = random.Next(minimum, maximum + 1);
-            history.Add(new DrawRange(minimum, maximum));
+            history.Add(new DrawRange(minimum, maximum, value));
             return value;
+        }
+
+        // Complete portable history. Unity JsonUtility persists fields rather
+        // than System.Random internals; a saved seed is never trusted without
+        // replay-checking every original draw/range before publication.
+        public MobileRollbackWispRandomState CaptureState()
+        {
+            var result = new MobileRollbackWispRandomState { Seed = seed };
+            foreach (var draw in history)
+                result.Draws.Add(new MobileRandomDrawState {
+                    Minimum = draw.Minimum, Maximum = draw.Maximum,
+                    Result = draw.Result
+                });
+            return result;
+        }
+
+        public static MobileRollbackWispRandom Restore(MobileRollbackWispRandomState state)
+        {
+            if (state == null || state.Version != 1 || state.Draws == null ||
+                state.Draws.Count > 1000000)
+                throw new FormatException("모바일 난수 저장 형식이 유효하지 않습니다.");
+            var replay = new MobileRollbackWispRandom(state.Seed);
+            foreach (var draw in state.Draws)
+            {
+                if (draw == null || draw.Maximum == int.MaxValue ||
+                    draw.Minimum > draw.Maximum ||
+                    draw.Result < draw.Minimum || draw.Result > draw.Maximum)
+                    throw new FormatException("모바일 난수 호출 범위가 유효하지 않습니다.");
+                if (replay.NextInclusive(draw.Minimum, draw.Maximum) != draw.Result)
+                    throw new FormatException("저장된 난수 결과가 시드와 다릅니다.");
+            }
+            return replay;
         }
 
         public int CaptureCheckpoint() { return history.Count; }
@@ -55,7 +104,11 @@ namespace Ordr.Mobile.Core
                 throw new ArgumentOutOfRangeException(nameof(drawCount));
             var restored = new Random(seed);
             for (int i = 0; i < drawCount; i++)
-                restored.Next(history[i].Minimum, history[i].Maximum + 1);
+            {
+                var entry = history[i];
+                if (restored.Next(entry.Minimum, entry.Maximum + 1) != entry.Result)
+                    throw new FormatException("난수 임시 롤백 기록이 손상됐습니다.");
+            }
             if (drawCount < history.Count)
                 history.RemoveRange(drawCount, history.Count - drawCount);
             random = restored;
