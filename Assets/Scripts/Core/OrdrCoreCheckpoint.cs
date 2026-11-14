@@ -32,6 +32,10 @@ namespace Ordr.Mobile.Core
         public SourceModelUnitGamblingState UnitGambling;
         public SourceModelOtherworldUnitGamblingState OtherworldGambling;
         public SourceModelUnitRerollState UnitReroll;
+        public Original323PlayerResearchState Research;
+        public Original323EvolutionProgressState Evolution;
+        public Original323PoneglyphState Poneglyph;
+        public Original323CreepPracticeState Creeps;
     }
 
     public sealed class OrdrRestoredCoreCheckpoint
@@ -67,7 +71,11 @@ namespace Ordr.Mobile.Core
             SourceModelMoneyGamblingDeskState moneyDesk = null,
             SourceModelUnitGamblingState unitGambling = null,
             SourceModelOtherworldUnitGamblingState otherworldGambling = null,
-            SourceModelUnitRerollState unitReroll = null)
+            SourceModelUnitRerollState unitReroll = null,
+            Original323PlayerResearchState research = null,
+            Original323EvolutionProgressState evolution = null,
+            Original323PoneglyphState poneglyph = null,
+            Original323CreepPracticeState creeps = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -82,7 +90,9 @@ namespace Ordr.Mobile.Core
                 Combat = combat, Waves = waves, Practice = practice,
                 ScriptRandom = scriptRandom, MoneyDesk = moneyDesk,
                 UnitGambling = unitGambling, OtherworldGambling = otherworldGambling,
-                UnitReroll = unitReroll
+                UnitReroll = unitReroll,
+                Research = research, Evolution = evolution,
+                Poneglyph = poneglyph, Creeps = creeps
             };
             // The mission gameplay component carries the SAME shared wallet.
             // A different wallet or a torn cross-service snapshot is rejected.
@@ -129,6 +139,50 @@ namespace Ordr.Mobile.Core
             ValidateCombatDraft(state);
             if (state.ScriptRandom != null)
                 MobileRollbackWispRandom.Restore(state.ScriptRandom);
+            if (state.Research != null)
+                new Original323PlayerResearchSession(restored.Economy.Wallet,
+                    restored.Game, rawcode => true).RestoreState(state.Research);
+            if (state.Evolution != null)
+                Original323EvolutionProgress.ValidateState(state.Evolution,
+                    state.LogicalTime);
+            if (state.Poneglyph != null)
+            {
+                Original323PoneglyphSession.ValidateState(state.Poneglyph,
+                    state.LogicalTime);
+                if (state.Poneglyph.HasActiveUnit)
+                {
+                    bool found = false, channeling = false;
+                    foreach (var unit in state.Roster.Units)
+                        if (unit.InstanceId == state.Poneglyph.ActiveUnitId)
+                            found = true;
+                    if (state.Combat != null)
+                        foreach (var actor in state.Combat.Actors)
+                            if (actor.InstanceId == state.Poneglyph.ActiveUnitId &&
+                                actor.PoneglyphChanneling)
+                                channeling = true;
+                    if (!found || (state.Combat != null && !channeling))
+                        throw new FormatException(
+                            "포네그리프 해독 유닛 신원이 전투 장부와 다릅니다.");
+                }
+            }
+            if (state.Creeps != null)
+            {
+                Original323CreepPracticeWorld.ValidateState(state.Creeps);
+                if (state.Combat == null)
+                    throw new FormatException("실물 전장 없는 크립 기록은 허용되지 않습니다.");
+                var living = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var enemy in state.Combat.Enemies)
+                    if (enemy.Kind == CharacterEnemyKind.Creep)
+                        living.Add(enemy.EnemyId);
+                foreach (var encounter in state.Creeps.Encounters)
+                {
+                    bool exists = living.Remove(encounter.EnemyId);
+                    if ((encounter.State == Original323CreepEncounterState.Alive) != exists)
+                        throw new FormatException("크립 처치 장부와 실물 전장이 다릅니다.");
+                }
+                if (living.Count != 0)
+                    throw new FormatException("크립 기록에 없는 살아 있는 크립이 있습니다.");
+            }
             if (state.UnitGambling != null)
                 SourceModelUnitGambling.ValidateState(state.UnitGambling);
             if (state.OtherworldGambling != null)

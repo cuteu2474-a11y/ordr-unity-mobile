@@ -32,7 +32,7 @@ namespace Ordr.Mobile.Combat
     // Explicit, source-object-backed CREEP lane inside the canonical combat world.
     // No guessed spawn clocks, pathing, hunting unit whitelist, sniper ranges,
     // Amim activation, respawn timers, or reward odds are enabled by this class.
-    public sealed class Original323CreepPracticeWorld : IDisposable
+    public sealed partial class Original323CreepPracticeWorld : IDisposable
     {
         private readonly CharacterCombatRuntime combat;
         private readonly Original323CreepObjectCatalog catalog;

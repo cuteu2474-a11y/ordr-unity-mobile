@@ -26,7 +26,7 @@ namespace Ordr.Mobile.Combat
             bool present, string eventId, out string sourceEvidence);
     }
 
-    public sealed class Original323PoneglyphSession
+    public sealed partial class Original323PoneglyphSession
     {
         public static readonly string[] SharedMissionNames =
         {

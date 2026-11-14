@@ -1360,7 +1360,11 @@ namespace Ordr.Mobile.Unity
                 script?.CaptureState(), money,
                 PracticeTierUnitGambling?.CaptureState(),
                 PracticeUnitGambling?.CaptureState(),
-                PracticeUnitReroll?.CaptureState());
+                PracticeUnitReroll?.CaptureState(),
+                PlayerBuildingResearch?.CaptureState(),
+                EvolutionProgress?.CaptureState(),
+                Poneglyph?.CaptureState(),
+                PracticeCreeps?.CaptureState());
         }
 
         public void WriteWorldCheckpointDraftForDiagnostics()
@@ -3571,7 +3575,7 @@ namespace Ordr.Mobile.Unity
                                 map, gamblingRoutes, deferredWispAbilities);
                             PracticeMaterialSupport = new SourceModelMaterialSupport(
                                 SharedEconomy.Wallet, Combat.Game, sessionScriptRandom,
-                                new MobileUniformWispRandom(), gamblingRoster,
+                                gamblingRoster,
                                 () => runGate.CanAdvance);
                             PracticeMaterialSupport.PostCommitObserverFailed += Debug.LogException;
                             PracticeMoneyGamblingDesk.ConfigureMaterialSupport(PracticeMaterialSupport);

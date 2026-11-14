@@ -5,7 +5,7 @@ namespace Ordr.Mobile.Core
 {
     // e0HP is consumed on activation; the preselected dormant unit is
     // intangible until 152 actual marked kills and 101 source timer ticks.
-    public sealed class Original323EvolutionProgress
+    public sealed partial class Original323EvolutionProgress
     {
         private readonly HashSet<string> defeated = new HashSet<string>(StringComparer.Ordinal);
         public long ActorId { get; private set; }
