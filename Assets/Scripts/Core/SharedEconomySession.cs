@@ -15,6 +15,18 @@ namespace Ordr.Mobile.Core
             Wallet = wallet ?? throw new ArgumentNullException(nameof(wallet));
             Units = roster ?? throw new ArgumentNullException(nameof(roster));
         }
+        // Only the prevalidated save coordinator may use this independent
+        // restoration path. It does not replay CUo/CUn rewards or emit
+        // Granted events, and must be bound to a rebuilt combat world later.
+        public static SharedEconomySession RestoreStarted(
+            EconomyWalletState walletState, UnitRosterState rosterState)
+        {
+            var roster = UnitRoster.Restore(rosterState);
+            var wallet = new EconomyWallet();
+            wallet.RestoreState(walletState);
+            return new SharedEconomySession(wallet, roster) { HasStarted = true };
+        }
+
         public void ApplyVerifiedStart(VerifiedEconomyStartProfile profile,
             Func<string,double,double,long> spawn, Action<long> remove)
         {

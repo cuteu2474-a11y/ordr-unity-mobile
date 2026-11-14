@@ -1307,6 +1307,30 @@ namespace Ordr.Mobile.Unity
             DedicatedSkills.Configure(originalWorld);
         }
         public SharedEconomySession SharedEconomy { get; private set; }
+
+        // S01/S02 integration: core-ledger DRAFT only, never an entire
+        // playable save. The full 65R snapshot still needs live enemies,
+        // skills, timers, other RNG streams, shops and world state.
+        public OrdrCoreCheckpointState CaptureCoreCheckpointDraft()
+        {
+            if (Combat == null || SharedEconomy == null ||
+                PersonalMissions == null || !SharedEconomy.HasStarted ||
+                Combat.Game.Phase == SessionPhase.NotStarted ||
+                Combat.PendingSimulationSeconds != 0)
+                throw new InvalidOperationException(
+                    "완결된 전투 스텝 이후에만 핵심 상태를 캡처할 수 있습니다.");
+            return OrdrCoreCheckpoint.Capture(Combat.Game, SharedEconomy,
+                PersonalMissions, Combat.Time);
+        }
+
+        // Explicit diagnostic persistence only. Never advertise this draft
+        // as the save/continue feature in the release UI.
+        public void WriteCoreCheckpointDraftForDiagnostics()
+        {
+            OrdrCoreCheckpointStore.ForApplication().WriteCore(
+                CaptureCoreCheckpointDraft());
+        }
+
         public Original323PlayerUpgradeSession PlayerBuildingUpgrades { get; private set; }
         public Original323PlayerResearchSession PlayerBuildingResearch { get; private set; }
         private IReadOnlyList<Original323VerifiedUpgradeStep> verifiedUpgradeSteps;

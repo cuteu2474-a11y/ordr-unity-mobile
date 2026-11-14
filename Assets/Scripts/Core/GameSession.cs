@@ -19,6 +19,18 @@ namespace Ordr.Mobile.Core
         public void SetFocus(bool focused) { HasFocus = focused; }
     }
 
+    [Serializable]
+    public sealed class GameSessionState
+    {
+        public int Version = 1;
+        public string ModeId = GameSession.ModeId;
+        public SessionPhase Phase;
+        public int CurrentWave;
+        public int AliveEnemies;
+        public int LeakedEnemies;
+        public int DefeatedEnemies;
+    }
+
     // 악몽 이세계모드 전용 세션. 라운드와 패배 수치는 외부 검증 데이터에서 주입한다.
     public sealed class GameSession
     {
@@ -28,6 +40,41 @@ namespace Ordr.Mobile.Core
         public int AliveEnemies { get; private set; }
         public int LeakedEnemies { get; private set; }
         public int DefeatedEnemies { get; private set; }
+
+        public GameSessionState CaptureState()
+        {
+            return new GameSessionState {
+                Phase = Phase, CurrentWave = CurrentWave,
+                AliveEnemies = AliveEnemies, LeakedEnemies = LeakedEnemies,
+                DefeatedEnemies = DefeatedEnemies
+            };
+        }
+
+        // Restoration is not Start()/BeginWave(); those functions can
+        // trigger start rewards or consume a wave signal a second time.
+        public static GameSession Restore(GameSessionState state)
+        {
+            if (state == null || state.Version != 1 || state.ModeId != ModeId ||
+                !Enum.IsDefined(typeof(SessionPhase), state.Phase) ||
+                state.CurrentWave < 0 || state.CurrentWave > 65 ||
+                state.AliveEnemies < 0 || state.LeakedEnemies < 0 ||
+                state.DefeatedEnemies < 0 ||
+                (state.Phase == SessionPhase.NotStarted &&
+                    (state.CurrentWave != 0 || state.AliveEnemies != 0 ||
+                     state.LeakedEnemies != 0 || state.DefeatedEnemies != 0)) ||
+                (state.Phase != SessionPhase.NotStarted &&
+                    state.CurrentWave == 0 &&
+                    (state.AliveEnemies != 0 || state.LeakedEnemies != 0 ||
+                     state.DefeatedEnemies != 0)) ||
+                (state.Phase == SessionPhase.Won && state.CurrentWave != 65))
+                throw new FormatException("게임 진행 저장 상태가 잘못됐습니다.");
+            return new GameSession {
+                Phase = state.Phase, CurrentWave = state.CurrentWave,
+                AliveEnemies = state.AliveEnemies,
+                LeakedEnemies = state.LeakedEnemies,
+                DefeatedEnemies = state.DefeatedEnemies
+            };
+        }
 
         public void Start()
         {
