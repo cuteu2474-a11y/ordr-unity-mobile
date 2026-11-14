@@ -240,13 +240,9 @@ namespace Ordr.Mobile.Core
                     throw new FormatException(
                         "공유 목표 파견 대상이 실제 전장에 없습니다.");
             }
-            if (state.Practice != null &&
-                (state.Practice.Version != 1 ||
-                 !state.Practice.Started ||
-                 state.Practice.LastRound != 65 ||
-                 state.Practice.CurrentRound != state.Game.CurrentWave))
-                throw new FormatException(
-                    "65라운드 연습 기록이 라운드/원본과 다릅니다.");
+            if (state.Practice != null)
+                SourceModelPracticeBattle.ValidateState(state.Practice, 65,
+                    state.Game.CurrentWave, state.LogicalTime);
         }
 
         public static OrdrRestoredCoreCheckpoint Restore(

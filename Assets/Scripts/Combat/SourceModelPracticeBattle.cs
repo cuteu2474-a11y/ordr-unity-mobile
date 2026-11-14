@@ -364,6 +364,98 @@ namespace Ordr.Mobile.Combat
             return state;
         }
 
+        // Deterministic and side-effect-free validation for the captured
+        // 65R clock/reward ledger. This never awards Wisp, gold or mission
+        // progress, and never starts a new wave during restoration.
+        public static void ValidateState(SourceModelPracticeBattleState state,
+            int expectedLastRound, int expectedWave, double logicalTime)
+        {
+            if (state == null || state.Version != 1 || !state.Started ||
+                state.LastRound != expectedLastRound ||
+                state.CurrentRound != expectedWave ||
+                state.CurrentRound < 1 || state.CurrentRound > state.LastRound ||
+                double.IsNaN(logicalTime) || double.IsInfinity(logicalTime) ||
+                state.RoundStartTime < 0 || double.IsNaN(state.RoundStartTime) ||
+                double.IsInfinity(state.RoundStartTime) || state.RoundStartTime > logicalTime ||
+                double.IsNaN(state.RoundLeadInSeconds) ||
+                double.IsInfinity(state.RoundLeadInSeconds) ||
+                state.RoundLeadInSeconds < 0 ||
+                state.RoundStartingDefeated < 0 || state.RoundStartingGold < 0 ||
+                state.RoundStartingBossScore < 0 || state.GoldAwarded < 0 ||
+                state.BossScoreAwarded < 0 || state.RoundWispsAwarded < 0 ||
+                state.RoundStartingGold > state.GoldAwarded ||
+                state.RoundStartingBossScore > state.BossScoreAwarded ||
+                state.BornAt == null || state.DistanceTravelled == null ||
+                state.RewardedEnemyIds == null || state.History == null ||
+                state.History.Count >= state.CurrentRound)
+                throw new FormatException("65라운드 진행/보상 저장본이 올바르지 않습니다.");
+            var born = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var clock in state.BornAt)
+                if (clock == null || string.IsNullOrWhiteSpace(clock.EnemyId) ||
+                    double.IsNaN(clock.Time) || double.IsInfinity(clock.Time) ||
+                    clock.Time < 0 || !born.Add(clock.EnemyId))
+                    throw new FormatException("몬스터 원본 생성 시각이 중복되거나 손상됐습니다.");
+            var distances = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var clock in state.DistanceTravelled)
+                if (clock == null || string.IsNullOrWhiteSpace(clock.EnemyId) ||
+                    double.IsNaN(clock.Time) || double.IsInfinity(clock.Time) ||
+                    clock.Time < 0 || !born.Contains(clock.EnemyId) ||
+                    !distances.Add(clock.EnemyId))
+                    throw new FormatException("적 이동 누적 거리/신원이 손상됐습니다.");
+            var rewards = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var id in state.RewardedEnemyIds)
+                if (string.IsNullOrWhiteSpace(id) || !born.Contains(id) || !rewards.Add(id))
+                    throw new FormatException("몬스터 처치 보상 중복/신원이 손상됐습니다.");
+            int previous = 0;
+            foreach (var item in state.History)
+                if (item == null || item.Wave != ++previous ||
+                    item.ElapsedSeconds < 0 || double.IsNaN(item.ElapsedSeconds) ||
+                    double.IsInfinity(item.ElapsedSeconds) ||
+                    item.LeadInSeconds < 0 || double.IsNaN(item.LeadInSeconds) ||
+                    double.IsInfinity(item.LeadInSeconds) ||
+                    item.Defeated < 0 || item.AliveEnemies < 0 ||
+                    item.GoldAwarded < 0 || item.BossScoreAwarded < 0)
+                    throw new FormatException("라운드 결과 이력이 손상됐습니다.");
+        }
+
+        // Restores only into a separately reconstructed combat + wave world.
+        // It cannot repair missing enemy identities, hero effects, story lanes
+        // or RNG: the full S03 owner must finish those BEFORE calling this.
+        public void RestoreState(SourceModelPracticeBattleState state)
+        {
+            ValidateState(state, LastRound, combat.Game.CurrentWave, combat.Time);
+            if (Started || !economy.HasStarted ||
+                combat.Game.Phase != SessionPhase.Running ||
+                !combat.UsesSourceModelBasicAttacks ||
+                waves.CaptureState().ActiveWave != state.CurrentRound ||
+                state.MobileMainLane != mobileMainLaneEnabled)
+                throw new InvalidOperationException("복원된 65R 전투/웨이브 월드를 먼저 연결해야 합니다.");
+            roundStart = state.RoundStartTime;
+            roundLeadInSeconds = state.RoundLeadInSeconds;
+            roundStartingDefeated = state.RoundStartingDefeated;
+            roundStartingGold = state.RoundStartingGold;
+            roundStartingBossScore = state.RoundStartingBossScore;
+            GoldAwarded = state.GoldAwarded;
+            BossScoreAwarded = state.BossScoreAwarded;
+            RoundWispsAwarded = state.RoundWispsAwarded;
+            ResultMessage = state.ResultMessage;
+            foreach (var item in state.BornAt) bornAt.Add(item.EnemyId, item.Time);
+            foreach (var item in state.DistanceTravelled)
+                distanceTravelled.Add(item.EnemyId, item.Time);
+            foreach (var id in state.RewardedEnemyIds) rewarded.Add(id);
+            foreach (var item in state.History)
+                history.Add(new SourceModelPracticeRoundResult {
+                    Wave = item.Wave, ElapsedSeconds = item.ElapsedSeconds,
+                    Defeated = item.Defeated, AliveEnemies = item.AliveEnemies,
+                    GoldAwarded = item.GoldAwarded,
+                    LeadInSeconds = item.LeadInSeconds,
+                    BossScoreAwarded = item.BossScoreAwarded
+                });
+            waves.VerifiedMonsterDefeated += RewardActualDeath;
+            combat.SourceModelTimeAdvancing += MoveLivingMonsters;
+            Started = true;
+        }
+
         public bool IsFullGameClear => Started && LastRound == 65 &&
             combat.Game.Phase == SessionPhase.Won &&
             combat.Game.CurrentWave == 65 && combat.Game.AliveEnemies == 0 &&

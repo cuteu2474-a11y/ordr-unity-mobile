@@ -98,7 +98,8 @@ namespace Ordr.Mobile.Mobile
         private void ClearMissingPendingActor()
         {
             if (!processing && pendingActor != 0 && !Exists(pendingActor))
-            { pendingActor = 0; pendingRawcode = null; }
+            { pendingActor = 0; pendingRawcode = null;
+              pendingNavigation = Original323GamblingNavigation.None; }
         }
         private long AvailableToken()
         {
@@ -197,6 +198,7 @@ namespace Ordr.Mobile.Mobile
                 abilities.Forget(actor);
                 string name = world.DisplayName(pendingRawcode);
                 pendingActor = 0; pendingRawcode = null;
+                pendingNavigation = Original323GamblingNavigation.None;
                 combat.Roster.Select(result);
                 if (observer != null) Report(observer);
                 return new ManualActionResult(ManualActionState.Succeeded, name + "(으)로 교체했습니다.");
