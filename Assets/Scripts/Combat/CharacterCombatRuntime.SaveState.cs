@@ -89,12 +89,18 @@ namespace Ordr.Mobile.Combat
         public SourceCombatDefenseCheckpoint Defenses;
         public bool HasOriginalA04RLevel;
         public int OriginalA04RLevel;
+        public string OriginalA04RProvenance;
+        public string ObservedHealthSource;
+        public Original323NativePassiveTargetState NativePassiveTarget;
+        public long NativePassiveTargetRevision;
     }
 
     [Serializable]
     public sealed class SourceCombatRuntimeCheckpoint
     {
-        public int Version = 1;
+        // Version 2 includes the exact native-target and A04R provenance.
+        // Older world drafts cannot silently discard those runtime modifiers.
+        public int Version = 2;
         public double Time;
         public bool HasSourceModelBasicAttacks;
         public bool MobileMainLaneEnabled;
@@ -108,6 +114,57 @@ namespace Ordr.Mobile.Combat
 
     public sealed partial class CharacterCombatRuntime
     {
+        // Restored GameSession/UnitRoster are constructed by the core loader.
+        // This method adds only the existing enemy objects; it does not
+        // re-run wave spawns, damage events, native observers or rewards.
+        // Invoke on a NEW unpublished runtime, then restore actors/attacks,
+        // wave ledger and all missing owner systems before exposing gameplay.
+        public void RestoreEnemyWorldDraft(SourceCombatRuntimeCheckpoint state)
+        {
+            if (state == null || state.Version != 2 || state.Enemies == null ||
+                game.Phase != SessionPhase.Running || enemies.Count != 0 ||
+                resolution == null || processingStep || pendingStepSeconds != 0 ||
+                scheduler.Time != 0 || effectExecutor.Time != 0)
+                throw new InvalidOperationException("새 전투 월드에서만 적의 실물 상태를 복구할 수 있습니다.");
+            var staged = new List<SpatialCombatEnemy>();
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            int waveEnemies = 0;
+            foreach (var entry in state.Enemies)
+            {
+                if (entry == null || !Enum.IsDefined(typeof(CharacterEnemyKind), entry.Kind) ||
+                    !seen.Add(entry.EnemyId) || double.IsNaN(entry.X) ||
+                    double.IsInfinity(entry.X) || double.IsNaN(entry.Y) ||
+                    double.IsInfinity(entry.Y) || double.IsNaN(entry.PathProgress) ||
+                    double.IsInfinity(entry.PathProgress))
+                    throw new FormatException("적 위치·신원이 중복되거나 잘못됐습니다.");
+                var restored = CombatEnemy.RestoreSnapshot(entry);
+                staged.Add(new SpatialCombatEnemy(restored, entry.Kind,
+                    entry.X, entry.Y, entry.PathProgress));
+                if (entry.Kind == CharacterEnemyKind.Line ||
+                    entry.Kind == CharacterEnemyKind.Boss ||
+                    entry.Kind == CharacterEnemyKind.Enraged)
+                    waveEnemies++;
+            }
+            if (waveEnemies != game.AliveEnemies)
+                throw new FormatException("적 숫자와 복원된 라운드 장부가 다릅니다.");
+            // No mutating call occurs until every enemy/status/profile is valid.
+            foreach (var actor in staged)
+            {
+                bool wave = actor.Kind == CharacterEnemyKind.Line ||
+                    actor.Kind == CharacterEnemyKind.Boss ||
+                    actor.Kind == CharacterEnemyKind.Enraged;
+                resolution.AttachRestoredEnemy(actor.Enemy, wave);
+                enemies.Add(actor.Id, actor);
+                statuses.Add(actor.Id, actor.Enemy.Status);
+            }
+            foreach (var entry in state.Enemies)
+            {
+                armorBreakStacks.Add(entry.EnemyId, entry.ArmorBreakStacks);
+                provenA04MStacks.Add(entry.EnemyId, entry.ProvenA04MStacks);
+                provenA04PTotals.Add(entry.EnemyId, entry.ProvenA04PTotals);
+            }
+        }
+
         // Captures real owner identities, resources, status clocks and all
         // registered basic/skill timers. Unknown delayed lambda state must
         // fail before anyone can accidentally publish a partial checkpoint.
@@ -174,7 +231,11 @@ namespace Ordr.Mobile.Combat
                     Defenses = SourceCombatDefenseCheckpoint.Capture(
                         live.Enemy.Defenses),
                     HasOriginalA04RLevel = live.Enemy.OriginalA04RLevel.HasValue,
-                    OriginalA04RLevel = live.Enemy.OriginalA04RLevel.GetValueOrDefault()
+                    OriginalA04RLevel = live.Enemy.OriginalA04RLevel.GetValueOrDefault(),
+                    OriginalA04RProvenance = live.Enemy.OriginalA04RProvenance,
+                    ObservedHealthSource = live.Enemy.ObservedHealthSource,
+                    NativePassiveTarget = live.Enemy.NativePassiveTargetProfile?.CaptureState(),
+                    NativePassiveTargetRevision = live.Enemy.NativePassiveTargetRevision
                 });
             }
             // The core roster can contain only real actors, never detached

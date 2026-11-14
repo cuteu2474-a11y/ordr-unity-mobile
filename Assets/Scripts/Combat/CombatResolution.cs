@@ -108,6 +108,49 @@ namespace Ordr.Mobile.Combat
             Defenses = defenses ?? throw new ArgumentNullException(nameof(defenses));
             Status = new CombatStatusEngine();
         }
+        // Rebuild an existing enemy WITHOUT spawning, dealing fake damage,
+        // incrementing game counters or invoking original live witnesses.
+        // Caller must still verify its owning wave and all auxiliary systems.
+        public static CombatEnemy RestoreSnapshot(SourceCombatEnemyCheckpoint state)
+        {
+            if (state == null || string.IsNullOrWhiteSpace(state.EnemyId) ||
+                state.MaximumHealth <= 0 || state.Health <= 0 ||
+                state.Health > state.MaximumHealth || state.Status == null ||
+                state.Defenses == null ||
+                state.ArmorBreakStacks < 0 || state.ProvenA04MStacks < 0 ||
+                state.ProvenA04PTotals < 0 ||
+                (state.HasOriginalA04RLevel &&
+                 (state.OriginalA04RLevel < 0 ||
+                  state.OriginalA04RLevel > Ordr323OriginalA04R.LastVerifiedFieldLevel ||
+                  string.IsNullOrWhiteSpace(state.OriginalA04RProvenance))) ||
+                (!state.HasOriginalA04RLevel &&
+                 (state.OriginalA04RLevel != 0 ||
+                  state.OriginalA04RProvenance != null)) ||
+                state.NativePassiveTargetRevision < 0 ||
+                (state.NativePassiveTarget == null &&
+                 state.NativePassiveTargetRevision != 0) ||
+                (state.NativePassiveTarget != null &&
+                 state.NativePassiveTargetRevision <= 0))
+                throw new FormatException("적 HP/상태/원본 출처 저장 데이터가 잘못됐습니다.");
+            var defense = state.Defenses.ValidateAndRecreate();
+            if (defense.Kind.HasValue && defense.Kind.Value != state.Kind)
+                throw new FormatException("적 역할과 방어 원본 분류가 다릅니다.");
+            var status = CombatStatusEngine.Restore(state.Status);
+            var native = state.NativePassiveTarget == null ? null :
+                Original323NativePassiveTargetProfile.Restore(state.NativePassiveTarget);
+            var result = new CombatEnemy(state.EnemyId, state.MaximumHealth, defense) {
+                Health = state.Health,
+                Status = status,
+                ObservedHealthSource = state.ObservedHealthSource,
+                OriginalA04RLevel = state.HasOriginalA04RLevel ?
+                    (int?)state.OriginalA04RLevel : null,
+                OriginalA04RProvenance = state.OriginalA04RProvenance,
+                NativePassiveTargetProfile = native,
+                NativePassiveTargetRevision = state.NativePassiveTargetRevision
+            };
+            return result;
+        }
+
         // Atomically replace only the magic-defense level after a distinct, source-
         // verified operation on this live monster. Health and base armor are preserved.
         // An unknown baseline, a stale previous level or an unsupported level fails closed.
@@ -271,6 +314,20 @@ namespace Ordr.Mobile.Combat
             if (countsForWave) session.SpawnEnemy();
             else if (session.Phase != SessionPhase.Running)
                 throw new InvalidOperationException("전투가 시작되어야 비웨이브 적을 생성할 수 있습니다.");
+            enemies.Add(enemy.Id, enemy);
+            if (!countsForWave) nonWaveEnemyIds.Add(enemy.Id);
+        }
+
+        // Restore only on a newly constructed resolution. A restored
+        // GameSession already owns its living-enemy count, so Spawn() would
+        // double-charge the wave and corrupt defeat/loss calculations.
+        public void AttachRestoredEnemy(CombatEnemy enemy, bool countsForWave)
+        {
+            if (enemy == null || !enemy.IsAlive ||
+                session.Phase != SessionPhase.Running ||
+                enemies.ContainsKey(enemy.Id) ||
+                (countsForWave && session.CurrentWave == 0))
+                throw new InvalidOperationException("복원된 적의 신원/라운드가 잘못됐습니다.");
             enemies.Add(enemy.Id, enemy);
             if (!countsForWave) nonWaveEnemyIds.Add(enemy.Id);
         }

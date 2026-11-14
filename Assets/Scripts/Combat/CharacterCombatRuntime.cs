@@ -322,7 +322,7 @@ namespace Ordr.Mobile.Combat
         private readonly CharacterUnitCatalog units;
         private readonly CharacterSkillCatalog profiles;
         private readonly UnitRoster roster;
-        private readonly GameSession game = new GameSession();
+        private readonly GameSession game;
         private readonly CombatScheduler scheduler = new CombatScheduler();
         private readonly CombatSkillTriggerEngine triggers;
         private readonly CombatResolution resolution;
@@ -1776,7 +1776,18 @@ namespace Ordr.Mobile.Combat
             IOriginalDamageResolver verifiedBasicDamage,
             IVerifiedCharacterSkillDamageResolver verifiedSkillDamage,
             ICombatProcRandom random, UnitRoster sharedRoster)
+            : this(units, profiles, verifiedBasicDamage, verifiedSkillDamage,
+                random, sharedRoster, new GameSession()) { }
+
+        // S03 constructor: restore original IDs and counters without
+        // running Start()/BeginWave() again. The runtime is unpublished
+        // until its physical actors and enemy world are fully rehydrated.
+        public CharacterCombatRuntime(CharacterUnitCatalog units, CharacterSkillCatalog profiles,
+            IOriginalDamageResolver verifiedBasicDamage,
+            IVerifiedCharacterSkillDamageResolver verifiedSkillDamage,
+            ICombatProcRandom random, UnitRoster sharedRoster, GameSession restoredGame)
         {
+            game = restoredGame ?? throw new ArgumentNullException(nameof(restoredGame));
             roster = sharedRoster ?? throw new ArgumentNullException(nameof(sharedRoster));
             this.units = units ?? throw new ArgumentNullException(nameof(units));
             this.profiles = profiles ?? throw new ArgumentNullException(nameof(profiles));

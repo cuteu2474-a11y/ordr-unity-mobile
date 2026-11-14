@@ -182,7 +182,7 @@ namespace Ordr.Mobile.Core
             var world = state.Combat;
             var waves = state.Waves;
             if (world == null || waves == null ||
-                world.Version != 1 || world.Attacks == null ||
+                world.Version != 2 || world.Attacks == null ||
                 world.Timed == null || world.Actors == null ||
                 world.Enemies == null || waves.Version != 1 ||
                 world.Time != state.LogicalTime ||
@@ -248,7 +248,9 @@ namespace Ordr.Mobile.Core
                     !enemies.Add(enemy.EnemyId))
                     throw new FormatException("전투 대상 체력/ID가 잘못됐습니다.");
                 CombatStatusEngine.Restore(enemy.Status);
-                enemy.Defenses.ValidateAndRecreate();
+                // Reconstruct every native-target mask and A04R witness in
+                // isolation; malformed data must not reach live GameSession.
+                CombatEnemy.RestoreSnapshot(enemy);
                 if (enemy.Kind == CharacterEnemyKind.Line ||
                     enemy.Kind == CharacterEnemyKind.Boss ||
                     enemy.Kind == CharacterEnemyKind.Enraged)
@@ -268,6 +270,19 @@ namespace Ordr.Mobile.Core
             if (state.Practice != null)
                 SourceModelPracticeBattle.ValidateState(state.Practice, 65,
                     state.Game.CurrentWave, state.LogicalTime);
+        }
+
+        // Build ONLY the core dependency graph for a future complete
+        // world owner. The public Restore() below keeps rejecting partial
+        // battlefield recovery. No reconstructed result is published yet.
+        public static OrdrRestoredCoreCheckpoint PrepareWorldRestore(
+            OrdrCoreCheckpointState state)
+        {
+            Validate(state);
+            if (state.Combat == null || state.Waves == null ||
+                state.Combat.Version != 2)
+                throw new FormatException("복원할 전장 상태가 존재하지 않습니다.");
+            return RestoreCoreOnly(state);
         }
 
         public static OrdrRestoredCoreCheckpoint Restore(

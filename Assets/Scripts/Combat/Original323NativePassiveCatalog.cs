@@ -227,6 +227,16 @@ namespace Ordr.Mobile.Combat
         }
     }
 
+    [Serializable]
+    public sealed class Original323NativePassiveTargetState
+    {
+        public int Version = 1;
+        public string OriginalUnitRawcode;
+        public bool WarcraftHero;
+        public string Evidence;
+        public List<string> EligibleAbilities = new List<string>();
+    }
+
     // Owned, immutable native target state, not a witness returning future
     // skill impacts or HP damage. Revalidate when immunity/hero state changes.
     // Eligibility means the EXACT original target mask and immunity passed.
@@ -251,6 +261,38 @@ namespace Ordr.Mobile.Combat
             Evidence = currentTargetEvidence;
         }
         public bool Allows(string abilityRawcode) { return eligible.Contains(abilityRawcode); }
+
+        public Original323NativePassiveTargetState CaptureState()
+        {
+            var result = new Original323NativePassiveTargetState {
+                OriginalUnitRawcode = OriginalUnitRawcode,
+                WarcraftHero = WarcraftHero, Evidence = Evidence
+            };
+            result.EligibleAbilities.AddRange(eligible);
+            result.EligibleAbilities.Sort(StringComparer.Ordinal);
+            return result;
+        }
+
+        public static Original323NativePassiveTargetProfile Restore(
+            Original323NativePassiveTargetState state)
+        {
+            if (state == null || state.Version != 1 ||
+                state.EligibleAbilities == null ||
+                state.EligibleAbilities.Count > 4096)
+                throw new FormatException("네이티브 스킬 대상 분류 저장 정보가 잘못됐습니다.");
+            try
+            {
+                return new Original323NativePassiveTargetProfile(
+                    state.OriginalUnitRawcode, state.WarcraftHero,
+                    state.EligibleAbilities,
+                    Original323UncommonAbilityCatalog.SourceW3xSha256,
+                    state.Evidence);
+            }
+            catch (ArgumentException)
+            {
+                throw new FormatException("원본 대상의 능력 ID/출처가 잘못됐습니다.");
+            }
+        }
     }
 
     public sealed class Original323NativePassiveActivation
