@@ -122,6 +122,23 @@ namespace Ordr.Mobile.Combat
 
     // 기존 CombatScheduler + CombatResolution + 개인별 스킬 트리거를 연결한 실제 기본타격 경로.
     // 발동한 스킬의 AoE·오라·피해 효과 적용은 후속 엔진으로 연결해야 한다.
+    [Serializable]
+    public sealed class CombatAttackerSequenceState
+    {
+        public string UnitId;
+        public long Sequence;
+    }
+
+    [Serializable]
+    public sealed class CombatAttackPipelineState
+    {
+        public int Version = 1;
+        public CombatSchedulerState Scheduler;
+        public CombatSkillTriggerState Skills;
+        public List<CombatAttackerSequenceState> Events =
+            new List<CombatAttackerSequenceState>();
+    }
+
     public sealed class CombatAttackPipeline
     {
         private sealed class RegisteredUnit
@@ -331,6 +348,52 @@ namespace Ordr.Mobile.Combat
 
         private readonly Dictionary<string, RegisteredUnit> units =
             new Dictionary<string, RegisteredUnit>(StringComparer.Ordinal);
+
+        public CombatAttackPipelineState CaptureState()
+        {
+            if (scheduler.Time != skillTriggers.Time)
+                throw new InvalidOperationException("공격/기술 시계가 일치하지 않습니다.");
+            var state = new CombatAttackPipelineState {
+                Scheduler = scheduler.CaptureState(),
+                Skills = skillTriggers.CaptureState()
+            };
+            foreach (var unit in units)
+                state.Events.Add(new CombatAttackerSequenceState {
+                    UnitId = unit.Key,
+                    Sequence = unit.Value.NextEventSequence
+                });
+            state.Events.Sort((a, b) => string.CompareOrdinal(a.UnitId, b.UnitId));
+            return state;
+        }
+
+        public void RestoreState(CombatAttackPipelineState state)
+        {
+            if (state == null || state.Version != 1 || state.Events == null)
+                throw new FormatException("공격 파이프라인 저장 형식이 잘못됐습니다.");
+            CombatScheduler.ValidateState(state.Scheduler);
+            CombatSkillTriggerEngine.ValidateState(state.Skills);
+            if (state.Scheduler.Time != state.Skills.Time ||
+                units.Count != state.Events.Count ||
+                units.Count != state.Scheduler.Attackers.Count)
+                throw new FormatException("공격/스킬 시계 및 공격자 수가 다릅니다.");
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var entry in state.Events)
+                if (entry == null || string.IsNullOrWhiteSpace(entry.UnitId) ||
+                    entry.Sequence < 0 || !units.ContainsKey(entry.UnitId) ||
+                    !ids.Add(entry.UnitId))
+                    throw new FormatException("공격자 이벤트 순번이 잘못됐습니다.");
+            foreach (var entry in state.Scheduler.Attackers)
+                if (!units.ContainsKey(entry.UnitId))
+                    throw new FormatException("공격 시계의 유닛이 없습니다.");
+            // Skill membership validation must also occur before ANY clock
+            // is mutated. A dry identical-world clone is not available here.
+            // Use the trigger engine's validation-only method first.
+            skillTriggers.ValidateRestoreMembership(state.Skills);
+            scheduler.RestoreState(state.Scheduler);
+            skillTriggers.RestoreState(state.Skills);
+            foreach (var entry in state.Events)
+                units[entry.UnitId].NextEventSequence = entry.Sequence;
+        }
 
         public CombatAttackPipeline(CombatScheduler scheduler, CombatResolution resolution,
             CombatSkillTriggerEngine skillTriggers, IOriginalDamageResolver damageResolver)

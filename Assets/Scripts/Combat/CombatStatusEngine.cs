@@ -134,6 +134,28 @@ namespace Ordr.Mobile.Combat
         double Aggregate(CombatEffectType type, IReadOnlyList<CombatEffect> effects);
     }
 
+    [Serializable]
+    public sealed class CombatActiveEffectState
+    {
+        public string SourceId;
+        public CombatEffectType Type;
+        public CombatEffectOrigin Origin;
+        public double Amount;
+        public double DurationSeconds;
+        public bool NeverExpires;
+        public double ExpiresAt;
+    }
+
+    [Serializable]
+    public sealed class CombatStatusEngineState
+    {
+        public int Version = 1;
+        public double Time;
+        public long Revision;
+        public List<CombatActiveEffectState> Effects =
+            new List<CombatActiveEffectState>();
+    }
+
     // 지속효과를 시간 기반으로 관리한다. 동일 효과 중첩 공식은 임의 계산하지 않는다.
     public sealed class CombatStatusEngine
     {
@@ -150,6 +172,68 @@ namespace Ordr.Mobile.Combat
         // and re-applied with the SAME effect object and identical numbers.
         // Increments only when the status state actually changes.
         public long Revision { get; private set; }
+
+        public CombatStatusEngineState CaptureState()
+        {
+            var state = new CombatStatusEngineState {
+                Time = CurrentTime, Revision = Revision
+            };
+            foreach (var item in effects)
+                state.Effects.Add(new CombatActiveEffectState {
+                    SourceId = item.Effect.SourceId,
+                    Type = item.Effect.Type, Origin = item.Effect.Origin,
+                    Amount = item.Effect.Amount,
+                    DurationSeconds = item.Effect.DurationSeconds,
+                    NeverExpires = item.Effect.Origin == CombatEffectOrigin.Aura,
+                    ExpiresAt = item.Effect.Origin == CombatEffectOrigin.Aura ?
+                        0 : item.ExpiresAt
+                });
+            return state;
+        }
+
+        public static CombatStatusEngine Restore(CombatStatusEngineState state)
+        {
+            if (state == null || state.Version != 1 ||
+                state.Effects == null || state.Revision < 0 ||
+                double.IsNaN(state.Time) || double.IsInfinity(state.Time) ||
+                state.Time < 0)
+                throw new FormatException("상태효과 시계/버전이 잘못됐습니다.");
+            var staged = new List<ActiveEffect>();
+            foreach (var item in state.Effects)
+            {
+                if (item == null ||
+                    !Enum.IsDefined(typeof(CombatEffectType), item.Type) ||
+                    !Enum.IsDefined(typeof(CombatEffectOrigin), item.Origin) ||
+                    item.NeverExpires !=
+                        (item.Origin == CombatEffectOrigin.Aura) ||
+                    (!item.NeverExpires &&
+                        (double.IsNaN(item.ExpiresAt) ||
+                         double.IsInfinity(item.ExpiresAt) ||
+                         item.ExpiresAt <= state.Time)) ||
+                    (item.NeverExpires && item.ExpiresAt != 0))
+                    throw new FormatException(
+                        "상태효과 만료 시간·지속 상태가 잘못됐습니다.");
+                CombatEffect effect;
+                try
+                {
+                    effect = new CombatEffect(item.SourceId, item.Type,
+                        item.Origin, item.Amount, item.DurationSeconds);
+                }
+                catch (ArgumentException)
+                {
+                    throw new FormatException("상태효과 출처/수치가 잘못됐습니다.");
+                }
+                staged.Add(new ActiveEffect {
+                    Effect = effect, ExpiresAt = item.NeverExpires
+                        ? double.PositiveInfinity : item.ExpiresAt
+                });
+            }
+            var result = new CombatStatusEngine {
+                CurrentTime = state.Time, Revision = state.Revision
+            };
+            result.effects.AddRange(staged);
+            return result;
+        }
 
         public void Apply(CombatEffect effect)
         {

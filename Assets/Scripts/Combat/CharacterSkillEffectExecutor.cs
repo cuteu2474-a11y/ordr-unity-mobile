@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Data;
 using Ordr.Mobile.Mobile;
+using UnityEngine;
 
 namespace Ordr.Mobile.Combat
 {
@@ -137,6 +138,18 @@ namespace Ordr.Mobile.Combat
     }
 
     // 지원된 효과만 실제 적용한다. 해석되지 않은 복잡한 수식은 계산하지 않고 이벤트로 기록.
+    // Exact delayed hit descriptor; no Action/closure/Unity object in save.
+    [Serializable]
+    public sealed class CombatVerifiedHitPulseState
+    {
+        public string SkillId;
+        public int ComponentIndex;
+        public int HitIndex;
+        public int HitCount;
+        public double ElapsedSeconds;
+        public bool Primary;
+    }
+
     public sealed class CharacterSkillEffectExecutor
     {
         private readonly CombatResolution resolution;
@@ -150,6 +163,56 @@ namespace Ordr.Mobile.Combat
         private Ordr323VerifiedDefenseEffectRouter verified323DefenseRouter;
 
         public double Time { get { return timedEffects.Time; } }
+        public int PendingTimedEffects => timedEffects.PendingCount;
+
+        // Fail closed while legacy Action callbacks remain. These may hold
+        // target/owner references that cannot be reconstructed from a file.
+        public CombatTimedEffectQueueState CaptureTimedState() =>
+            timedEffects.CaptureState();
+
+        // Invoked only after every original unit identity and enemy object
+        // has been reconstructed. An unknown queue kind is a load error,
+        // not a silently discarded pending damage event.
+        public void RestoreTimedState(CombatTimedEffectQueueState state,
+            Func<string, CharacterSkillProfile> resolveCasterProfile,
+            Func<string, SpatialCombatEnemy> resolveEnemy)
+        {
+            if (resolveCasterProfile == null || resolveEnemy == null)
+                throw new ArgumentNullException(
+                    "복원된 공격자 프로필과 살아 있는 적 조회가 필요합니다.");
+            timedEffects.RestoreState(state, (kind, payload, casterId, targetId) =>
+            {
+                if (kind != "verified-hit-pulse-v1" ||
+                    string.IsNullOrWhiteSpace(payload)) return null;
+                CombatVerifiedHitPulseState record;
+                try { record = JsonUtility.FromJson<CombatVerifiedHitPulseState>(payload); }
+                catch (ArgumentException) { return null; }
+                if (record == null || string.IsNullOrWhiteSpace(record.SkillId) ||
+                    record.ComponentIndex < 0 || record.HitIndex < 0 ||
+                    record.HitCount <= 0 || record.HitIndex >= record.HitCount ||
+                    double.IsNaN(record.ElapsedSeconds) ||
+                    double.IsInfinity(record.ElapsedSeconds) ||
+                    record.ElapsedSeconds <= 0) return null;
+                var profile = resolveCasterProfile(casterId);
+                var target = resolveEnemy(targetId);
+                if (profile == null || target == null || !target.Enemy.IsAlive)
+                    return null;
+                ImportedCombatSkill skill = null;
+                foreach (var candidate in profile.Skills)
+                    if (candidate.Id == record.SkillId)
+                    {
+                        skill = candidate;
+                        break;
+                    }
+                if (skill == null || record.ComponentIndex >= skill.Components.Count ||
+                    !IsDamage(skill.Components[record.ComponentIndex].Type))
+                    return null;
+                var component = skill.Components[record.ComponentIndex];
+                return () => ApplyDamagePulse(casterId, profile, skill,
+                    component, target, record.Primary, record.HitIndex,
+                    record.HitCount, record.ElapsedSeconds);
+            });
+        }
 
         public void ConfigureOriginal323DefenseSkillRouter(
             Ordr323VerifiedDefenseEffectRouter router)
@@ -420,10 +483,32 @@ namespace Ordr.Mobile.Combat
                         ApplyDamagePulse(casterId, profile, skill, component, target,
                             isPrimary, hitIndex, offsets.Count, elapsed);
                     else
-                        timedEffects.Schedule(casterId, target.Id, elapsed,
+                    {
+                        int componentIndex = -1;
+                        for (int part = 0; part < skill.Components.Count; part++)
+                            if (ReferenceEquals(skill.Components[part], component))
+                            {
+                                componentIndex = part;
+                                break;
+                            }
+                        if (componentIndex < 0 || string.IsNullOrWhiteSpace(skill.Id))
+                            throw new InvalidOperationException(
+                                "예약 스킬의 원본 효과 정체성을 찾을 수 없습니다.");
+                        var record = new CombatVerifiedHitPulseState {
+                            SkillId = skill.Id,
+                            ComponentIndex = componentIndex,
+                            HitIndex = hitIndex,
+                            HitCount = offsets.Count,
+                            ElapsedSeconds = elapsed,
+                            Primary = isPrimary
+                        };
+                        timedEffects.ScheduleRestorable(casterId, target.Id,
+                            elapsed, "verified-hit-pulse-v1",
+                            JsonUtility.ToJson(record),
                             () => ApplyDamagePulse(casterId, profile, skill,
-                                component, target, isPrimary, hitIndex, offsets.Count,
-                                elapsed));
+                                component, target, isPrimary, hitIndex,
+                                offsets.Count, elapsed));
+                    }
                 }
                 return;
             }

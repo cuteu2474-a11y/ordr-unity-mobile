@@ -231,6 +231,51 @@ namespace Ordr.Mobile.Combat
 
     // Drives the existing combat runtime/director/wallet. No parallel damage
     // engine, forged native observer, fake live approval or free unit spawns.
+    [Serializable]
+    public sealed class SourceModelPracticeEnemyClockState
+    {
+        public string EnemyId;
+        public double Time;
+    }
+
+    [Serializable]
+    public sealed class SourceModelPracticeRoundHistoryState
+    {
+        public int Wave;
+        public double ElapsedSeconds;
+        public int Defeated;
+        public int AliveEnemies;
+        public long GoldAwarded;
+        public double LeadInSeconds;
+        public int BossScoreAwarded;
+    }
+
+    [Serializable]
+    public sealed class SourceModelPracticeBattleState
+    {
+        public int Version = 1;
+        public int LastRound;
+        public int CurrentRound;
+        public bool Started;
+        public bool MobileMainLane;
+        public double RoundStartTime;
+        public double RoundLeadInSeconds;
+        public int RoundStartingDefeated;
+        public long RoundStartingGold;
+        public int RoundStartingBossScore;
+        public long GoldAwarded;
+        public int BossScoreAwarded;
+        public int RoundWispsAwarded;
+        public string ResultMessage;
+        public List<SourceModelPracticeEnemyClockState> BornAt =
+            new List<SourceModelPracticeEnemyClockState>();
+        public List<SourceModelPracticeEnemyClockState> DistanceTravelled =
+            new List<SourceModelPracticeEnemyClockState>();
+        public List<string> RewardedEnemyIds = new List<string>();
+        public List<SourceModelPracticeRoundHistoryState> History =
+            new List<SourceModelPracticeRoundHistoryState>();
+    }
+
     public sealed class SourceModelPracticeBattle : IDisposable
     {
         private readonly CharacterCombatRuntime combat;
@@ -276,6 +321,49 @@ namespace Ordr.Mobile.Combat
         public IReadOnlyList<CombatPathPoint> RouteCorners => catalog.RouteCorners;
         public int LastRound => catalog.LastRound;
         public int EnemyLimit => catalog.EnemyLimit;
+        public SourceModelPracticeBattleState CaptureState()
+        {
+            if (!Started || combat.PendingSimulationSeconds != 0)
+                throw new InvalidOperationException(
+                    "시작되지 않았거나 미처리 전투 시간이 있는 라운드는 저장할 수 없습니다.");
+            var state = new SourceModelPracticeBattleState {
+                LastRound = LastRound,
+                CurrentRound = combat.Game.CurrentWave,
+                Started = Started, MobileMainLane = mobileMainLaneEnabled,
+                RoundStartTime = roundStart,
+                RoundLeadInSeconds = roundLeadInSeconds,
+                RoundStartingDefeated = roundStartingDefeated,
+                RoundStartingGold = roundStartingGold,
+                RoundStartingBossScore = roundStartingBossScore,
+                GoldAwarded = GoldAwarded, BossScoreAwarded = BossScoreAwarded,
+                RoundWispsAwarded = RoundWispsAwarded,
+                ResultMessage = ResultMessage
+            };
+            foreach (var pair in bornAt)
+                state.BornAt.Add(new SourceModelPracticeEnemyClockState {
+                    EnemyId = pair.Key, Time = pair.Value
+                });
+            foreach (var pair in distanceTravelled)
+                state.DistanceTravelled.Add(new SourceModelPracticeEnemyClockState {
+                    EnemyId = pair.Key, Time = pair.Value
+                });
+            state.BornAt.Sort((a, b) =>
+                string.CompareOrdinal(a.EnemyId, b.EnemyId));
+            state.DistanceTravelled.Sort((a, b) =>
+                string.CompareOrdinal(a.EnemyId, b.EnemyId));
+            state.RewardedEnemyIds.AddRange(rewarded);
+            state.RewardedEnemyIds.Sort(StringComparer.Ordinal);
+            foreach (var item in history)
+                state.History.Add(new SourceModelPracticeRoundHistoryState {
+                    Wave = item.Wave, ElapsedSeconds = item.ElapsedSeconds,
+                    Defeated = item.Defeated, AliveEnemies = item.AliveEnemies,
+                    GoldAwarded = item.GoldAwarded,
+                    LeadInSeconds = item.LeadInSeconds,
+                    BossScoreAwarded = item.BossScoreAwarded
+                });
+            return state;
+        }
+
         public bool IsFullGameClear => Started && LastRound == 65 &&
             combat.Game.Phase == SessionPhase.Won &&
             combat.Game.CurrentWave == 65 && combat.Game.AliveEnemies == 0 &&

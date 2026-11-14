@@ -144,6 +144,41 @@ namespace Ordr.Mobile.Combat
         }
     }
 
+    [Serializable]
+    public sealed class CombatWaveLedgerState
+    {
+        public int WaveNumber;
+        public string PlanEvidence;
+        public int Spawned;
+        public int Defeated;
+        public int Escaped;
+        public int BossSpawned;
+        public int BossDefeated;
+        public int BossEscaped;
+        public List<string> DefeatedEnemyIds = new List<string>();
+        public List<string> DefeatedBossIds = new List<string>();
+    }
+
+    [Serializable]
+    public sealed class CombatWaveOwnerState
+    {
+        public string EnemyId;
+        public int WaveNumber;
+    }
+
+    [Serializable]
+    public sealed class CombatWaveDirectorState
+    {
+        public int Version = 1;
+        public int ActiveWave;
+        public double Elapsed;
+        public int NextSpawn;
+        public List<CombatWaveLedgerState> Waves =
+            new List<CombatWaveLedgerState>();
+        public List<CombatWaveOwnerState> Alive =
+            new List<CombatWaveOwnerState>();
+    }
+
     // Every wave owns its enemy instances independently. Existing monsters
     // may remain alive after a subsequent verified wave is allowed to start:
     // the source map, not this bookkeeping layer, must decide round timing.
@@ -211,6 +246,184 @@ namespace Ordr.Mobile.Combat
             get { return active == null ? 0 : active.Spawns.Count - nextSpawn; }
         }
         public double ElapsedSeconds { get { return elapsed; } }
+
+        public CombatWaveDirectorState CaptureState()
+        {
+            var state = new CombatWaveDirectorState {
+                ActiveWave = active == null ? 0 : active.WaveNumber,
+                Elapsed = elapsed, NextSpawn = nextSpawn
+            };
+            var ids = new List<int>(waves.Keys);
+            ids.Sort();
+            foreach (var id in ids)
+            {
+                var ledger = waves[id];
+                var row = new CombatWaveLedgerState {
+                    WaveNumber = id, PlanEvidence = ledger.Plan.Evidence,
+                    Spawned = ledger.Spawned, Defeated = ledger.Defeated,
+                    Escaped = ledger.Escaped, BossSpawned = ledger.BossSpawned,
+                    BossDefeated = ledger.BossDefeated,
+                    BossEscaped = ledger.BossEscaped
+                };
+                row.DefeatedEnemyIds.AddRange(
+                    ledger.DefeatedMonsterRawcodes.Keys);
+                row.DefeatedBossIds.AddRange(
+                    ledger.DefeatedBossRawcodes.Keys);
+                row.DefeatedEnemyIds.Sort(StringComparer.Ordinal);
+                row.DefeatedBossIds.Sort(StringComparer.Ordinal);
+                state.Waves.Add(row);
+            }
+            foreach (var pair in spawnedOwners)
+                state.Alive.Add(new CombatWaveOwnerState {
+                    EnemyId = pair.Key, WaveNumber = pair.Value
+                });
+            state.Alive.Sort((a, b) =>
+                string.CompareOrdinal(a.EnemyId, b.EnemyId));
+            return state;
+        }
+
+        // All saved wave plans come from the CURRENT pinned source catalog,
+        // not from a user-controlled save file. Restore never calls Begin:
+        // that would respawn enemies and grant an extra round's rewards.
+        public static CombatWaveDirector Restore(
+            CharacterCombatRuntime combat, CombatWaveDirectorState state,
+            Func<int, VerifiedWavePlan> sourcePlans)
+        {
+            if (combat == null || sourcePlans == null || state == null ||
+                state.Version != 1 || state.Waves == null ||
+                state.Alive == null || state.ActiveWave < 0 ||
+                double.IsNaN(state.Elapsed) ||
+                double.IsInfinity(state.Elapsed) || state.Elapsed < 0 ||
+                state.NextSpawn < 0 ||
+                state.ActiveWave != combat.Game.CurrentWave)
+                throw new FormatException("웨이브 저장 시계/라운드가 잘못됐습니다.");
+            if (state.ActiveWave == 0)
+            {
+                if (state.Waves.Count != 0 || state.Alive.Count != 0 ||
+                    state.NextSpawn != 0 || state.Elapsed != 0)
+                    throw new FormatException(
+                        "시작 전 라운드에 적의 진행 기록이 남아 있습니다.");
+                return new CombatWaveDirector();
+            }
+            var restored = new CombatWaveDirector();
+            int previous = 0;
+            var live = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (var item in state.Alive)
+                if (item == null || string.IsNullOrWhiteSpace(item.EnemyId) ||
+                    item.WaveNumber < 1 ||
+                    item.WaveNumber > state.ActiveWave ||
+                    !live.TryAdd(item.EnemyId, item.WaveNumber) ||
+                    combat.EnemyOf(item.EnemyId) == null)
+                    throw new FormatException(
+                        "생존 몬스터 ID/라운드가 복구된 전장과 다릅니다.");
+            var covered = new HashSet<string>(StringComparer.Ordinal);
+            var bossLive = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var saved in state.Waves)
+            {
+                if (saved == null || saved.WaveNumber != previous + 1 ||
+                    saved.WaveNumber > state.ActiveWave ||
+                    saved.DefeatedEnemyIds == null ||
+                    saved.DefeatedBossIds == null)
+                    throw new FormatException("라운드 장부의 순서가 잘못됐습니다.");
+                var plan = sourcePlans(saved.WaveNumber);
+                if (plan == null || plan.WaveNumber != saved.WaveNumber ||
+                    saved.PlanEvidence != plan.Evidence ||
+                    saved.Spawned < 0 || saved.Spawned > plan.Spawns.Count ||
+                    saved.Defeated < 0 || saved.Escaped < 0 ||
+                    saved.Defeated + saved.Escaped > saved.Spawned ||
+                    saved.DefeatedEnemyIds.Count != saved.Defeated ||
+                    saved.BossDefeated < 0 || saved.BossEscaped < 0 ||
+                    saved.BossSpawned < 0 ||
+                    saved.BossDefeated + saved.BossEscaped > saved.BossSpawned ||
+                    saved.BossDefeated != saved.DefeatedBossIds.Count)
+                    throw new FormatException("원본 몬스터 생성/처치 장부가 다릅니다.");
+                int bossSpawned = 0;
+                var spawnedIds = new HashSet<string>(StringComparer.Ordinal);
+                var spawnedBosses = new HashSet<string>(StringComparer.Ordinal);
+                for (int j = 0; j < saved.Spawned; j++)
+                {
+                    var spawn = plan.Spawns[j];
+                    spawnedIds.Add(spawn.EnemyId);
+                    if (spawn.Kind == CharacterEnemyKind.Boss)
+                    {
+                        bossSpawned++;
+                        spawnedBosses.Add(spawn.EnemyId);
+                    }
+                }
+                if (bossSpawned != saved.BossSpawned)
+                    throw new FormatException("보스 등장 장부가 일치하지 않습니다.");
+                var dead = new HashSet<string>(StringComparer.Ordinal);
+                foreach (string id in saved.DefeatedEnemyIds)
+                    if (!spawnedIds.Contains(id) || !dead.Add(id) ||
+                        live.ContainsKey(id))
+                        throw new FormatException(
+                            "처치된 몬스터가 원본 생성 계획과 다릅니다.");
+                var deadBosses = new HashSet<string>(StringComparer.Ordinal);
+                foreach (string id in saved.DefeatedBossIds)
+                    if (!spawnedBosses.Contains(id) || !dead.Contains(id) ||
+                        !deadBosses.Add(id))
+                        throw new FormatException(
+                            "보스 처치 장부가 원본 계획과 다릅니다.");
+                int thisLive = 0, thisBossLive = 0;
+                foreach (var pair in live)
+                    if (pair.Value == saved.WaveNumber)
+                    {
+                        if (!spawnedIds.Contains(pair.Key) ||
+                            !covered.Add(pair.Key))
+                            throw new FormatException(
+                                "생존 몬스터가 생성되지 않았거나 중복됩니다.");
+                        thisLive++;
+                        if (spawnedBosses.Contains(pair.Key))
+                        {
+                            thisBossLive++;
+                            bossLive.Add(pair.Key);
+                        }
+                    }
+                if (thisLive != saved.Spawned - saved.Defeated - saved.Escaped ||
+                    thisBossLive != saved.BossSpawned - saved.BossDefeated -
+                        saved.BossEscaped)
+                    throw new FormatException(
+                        "살아있는 일반/보스 적의 수가 장부와 다릅니다.");
+                var ledger = new WaveLedger(plan) {
+                    Spawned = saved.Spawned,
+                    Defeated = saved.Defeated, Escaped = saved.Escaped,
+                    BossSpawned = saved.BossSpawned,
+                    BossDefeated = saved.BossDefeated,
+                    BossEscaped = saved.BossEscaped
+                };
+                foreach (string id in dead)
+                    ledger.DefeatedMonsterRawcodes.Add(
+                        id, ledger.OriginalRawcodes[id]);
+                foreach (string id in deadBosses)
+                    ledger.DefeatedBossRawcodes.Add(
+                        id, ledger.OriginalRawcodes[id]);
+                restored.waves.Add(saved.WaveNumber, ledger);
+                previous = saved.WaveNumber;
+            }
+            if (previous != state.ActiveWave ||
+                covered.Count != state.Alive.Count)
+                throw new FormatException("복원할 라운드/몬스터가 누락됐습니다.");
+            var current = restored.waves[state.ActiveWave];
+            if (state.NextSpawn != current.Spawned ||
+                (state.NextSpawn > 0 &&
+                 state.Elapsed < current.Plan.Spawns[state.NextSpawn - 1].AtSeconds) ||
+                (state.NextSpawn < current.Plan.Spawns.Count &&
+                 state.Elapsed > current.Plan.Spawns[state.NextSpawn].AtSeconds))
+                throw new FormatException("출현 예정 시각과 생성 장부가 다릅니다.");
+            restored.active = current.Plan;
+            restored.activeLedger = current;
+            restored.nextSpawn = state.NextSpawn;
+            restored.elapsed = state.Elapsed;
+            foreach (var pair in live)
+                restored.spawnedOwners.Add(pair.Key, pair.Value);
+            foreach (string id in bossLive)
+                restored.liveBossInstances.Add(id);
+            // Attach only after EVERY dependency validated successfully.
+            restored.boundCombat = combat;
+            combat.EnemyExited += restored.OnEnemyExited;
+            return restored;
+        }
+
         public VerifiedWaveProgress CurrentProgress
         {
             get { return activeLedger == null ? null : activeLedger.Snapshot(); }

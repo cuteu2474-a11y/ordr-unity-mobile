@@ -3,11 +3,78 @@ using System.Collections.Generic;
 
 namespace Ordr.Mobile.Combat
 {
+    [Serializable]
+    public sealed class CombatAttackReadyState
+    {
+        public string UnitId;
+        public double DueAt;
+    }
+
+    [Serializable]
+    public sealed class CombatSchedulerState
+    {
+        public int Version = 1;
+        public double Time;
+        public List<CombatAttackReadyState> Attackers =
+            new List<CombatAttackReadyState>();
+    }
+
     // 게임 시간은 호출자가 전달한다. 실제 공속 공식은 검증된 도감 데이터로 주입한다.
     public sealed class CombatScheduler
     {
         private readonly Dictionary<string, double> nextReady = new Dictionary<string, double>(StringComparer.Ordinal);
         public double Time { get; private set; }
+
+        public CombatSchedulerState CaptureState()
+        {
+            var state = new CombatSchedulerState { Time = Time };
+            foreach (var pair in nextReady)
+                state.Attackers.Add(new CombatAttackReadyState {
+                    UnitId = pair.Key, DueAt = pair.Value
+                });
+            state.Attackers.Sort((a, b) =>
+                string.CompareOrdinal(a.UnitId, b.UnitId));
+            return state;
+        }
+
+        public static void ValidateState(CombatSchedulerState state)
+        {
+            if (state == null || state.Version != 1 ||
+                state.Attackers == null || !FiniteNonNegative(state.Time))
+                throw new FormatException("공격 시계 저장 형식이 잘못됐습니다.");
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var unit in state.Attackers)
+                if (unit == null || string.IsNullOrWhiteSpace(unit.UnitId) ||
+                    !FiniteNonNegative(unit.DueAt) ||
+                    !seen.Add(unit.UnitId))
+                    throw new FormatException("공격 타이머가 중복되거나 잘못됐습니다.");
+        }
+
+        // Restoring a NEW or already registered attack world must not
+        // silently drop an attacker. Validate all IDs before mutation.
+        public void RestoreState(CombatSchedulerState state,
+            bool requireSameAttackers = true)
+        {
+            ValidateState(state);
+            if (requireSameAttackers)
+            {
+                if (nextReady.Count != state.Attackers.Count)
+                    throw new FormatException("공격자 수가 복원 전후 일치하지 않습니다.");
+                foreach (var entry in state.Attackers)
+                    if (!nextReady.ContainsKey(entry.UnitId))
+                        throw new FormatException("공격자 ID가 복원 전후 다릅니다.");
+            }
+            else if (nextReady.Count != 0 || Time != 0)
+                throw new InvalidOperationException(
+                    "새 공격 시계에만 미등록 상태 복원을 허용합니다.");
+            nextReady.Clear();
+            foreach (var entry in state.Attackers)
+                nextReady.Add(entry.UnitId, entry.DueAt);
+            Time = state.Time;
+        }
+
+        private static bool FiniteNonNegative(double value) =>
+            !double.IsNaN(value) && !double.IsInfinity(value) && value >= 0;
 
         // Small tolerance for IEEE-754 additions (e.g. 2 + .34 + .01).
         // double.Epsilon is subnormal minimum, not machine epsilon.

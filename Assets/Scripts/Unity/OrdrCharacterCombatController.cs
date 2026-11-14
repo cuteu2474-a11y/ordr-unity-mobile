@@ -1331,6 +1331,31 @@ namespace Ordr.Mobile.Unity
                 CaptureCoreCheckpointDraft());
         }
 
+        // Same-frame capture: actual combat owner and enemy HP, scripted
+        // status clocks, timed attacks, 65R spawn ledger and score/counters.
+        // Delayed effects still using anonymous Actions fail closed.
+        // This is NOT the final resume point: restored world/other RNG and
+        // shop state are still pending.
+        public OrdrCoreCheckpointState CaptureWorldCheckpointDraft()
+        {
+            if (Combat == null || SharedEconomy == null ||
+                PersonalMissions == null || !SharedEconomy.HasStarted ||
+                Combat.PendingSimulationSeconds != 0)
+                throw new InvalidOperationException(
+                    "진행 중이며 미처리 스텝이 없는 전투 상태가 필요합니다.");
+            var runtime = Combat.CaptureRuntimeDraft();
+            var wave = VerifiedWaveDirector.CaptureState();
+            var practice = PracticeBattle?.CaptureState();
+            return OrdrCoreCheckpoint.Capture(Combat.Game, SharedEconomy,
+                PersonalMissions, Combat.Time, runtime, wave, practice);
+        }
+
+        public void WriteWorldCheckpointDraftForDiagnostics()
+        {
+            OrdrCoreCheckpointStore.ForApplication().WriteCore(
+                CaptureWorldCheckpointDraft());
+        }
+
         public Original323PlayerUpgradeSession PlayerBuildingUpgrades { get; private set; }
         public Original323PlayerResearchSession PlayerBuildingResearch { get; private set; }
         private IReadOnlyList<Original323VerifiedUpgradeStep> verifiedUpgradeSteps;

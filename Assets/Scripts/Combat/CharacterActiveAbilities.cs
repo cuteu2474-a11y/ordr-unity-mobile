@@ -5,6 +5,33 @@ using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
+    [Serializable]
+    public sealed class CharacterResourceState
+    {
+        public double MaximumHealth;
+        public double Health;
+        public double MaximumMana;
+        public double Mana;
+        public bool AllowsZeroHealth;
+    }
+
+    [Serializable]
+    public sealed class CharacterSkillCooldownState
+    {
+        public string SkillId;
+        public double DueAt;
+    }
+
+    [Serializable]
+    public sealed class CharacterActiveAbilityState
+    {
+        public int Version = 1;
+        public double Time;
+        public CharacterResourceState Resources;
+        public List<CharacterSkillCooldownState> Cooldowns =
+            new List<CharacterSkillCooldownState>();
+    }
+
     // 체력·마나 총량과 현재량은 원본 확인 후 외부 게임 시스템에서 주입한다.
     // 기본 생성 수치나 자연 재생 수치를 여기서 만들어내지 않는다.
     public sealed class CharacterResources
@@ -14,6 +41,27 @@ namespace Ordr.Mobile.Combat
         public double MaximumMana { get; private set; }
         public double Mana { get; private set; }
         private readonly bool sourceModelAllowsZeroHealth;
+        public bool AllowsZeroHealth => sourceModelAllowsZeroHealth;
+
+        public CharacterResourceState CaptureState() => new CharacterResourceState {
+            MaximumHealth = MaximumHealth, Health = Health,
+            MaximumMana = MaximumMana, Mana = Mana,
+            AllowsZeroHealth = sourceModelAllowsZeroHealth
+        };
+
+        public static CharacterResources Restore(CharacterResourceState state)
+        {
+            if (state == null) return null;
+            try
+            {
+                return new CharacterResources(state.MaximumHealth, state.Health,
+                    state.MaximumMana, state.Mana, state.AllowsZeroHealth);
+            }
+            catch (ArgumentException)
+            {
+                throw new FormatException("원본 유닛 HP/MP 저장 상태가 잘못됐습니다.");
+            }
+        }
 
         public CharacterResources(double maxHealth, double health, double maxMana,
             double mana, bool sourceModelAllowsZeroHealth = false)
@@ -128,6 +176,47 @@ namespace Ordr.Mobile.Combat
 
         public double Time { get; private set; }
         public CharacterResources Resources { get { return resources; } }
+
+        public CharacterActiveAbilityState CaptureState()
+        {
+            var state = new CharacterActiveAbilityState {
+                Time = Time, Resources = resources?.CaptureState()
+            };
+            foreach (var pair in cooldownReadyAt)
+                state.Cooldowns.Add(new CharacterSkillCooldownState {
+                    SkillId = pair.Key, DueAt = pair.Value
+                });
+            state.Cooldowns.Sort((a,b) =>
+                string.CompareOrdinal(a.SkillId, b.SkillId));
+            return state;
+        }
+
+        public void RestoreState(CharacterActiveAbilityState state)
+        {
+            if (state == null || state.Version != 1 ||
+                state.Cooldowns == null || double.IsNaN(state.Time) ||
+                double.IsInfinity(state.Time) || state.Time < 0)
+                throw new FormatException("캐릭터 자원/스킬 저장 형식이 잘못됐습니다.");
+            if (Time != 0 || cooldownReadyAt.Count != 0)
+                throw new InvalidOperationException(
+                    "새 캐릭터 액티브 엔진에서만 복원할 수 있습니다.");
+            var valid = new Dictionary<string,double>(StringComparer.Ordinal);
+            foreach (var entry in state.Cooldowns)
+                if (entry == null || string.IsNullOrWhiteSpace(entry.SkillId) ||
+                    !skills.ContainsKey(entry.SkillId) ||
+                    double.IsNaN(entry.DueAt) || double.IsInfinity(entry.DueAt) ||
+                    entry.DueAt < 0 || !valid.TryAdd(entry.SkillId, entry.DueAt))
+                    throw new FormatException(
+                        "캐릭터 고유 기술 쿨타임/식별자가 잘못됐습니다.");
+            var restored = CharacterResources.Restore(state.Resources);
+            if (resources != null && restored == null)
+                throw new FormatException(
+                    "현재 자원이 있는 유닛의 저장 HP/MP가 없습니다.");
+            // No cooldown or resource mutation until every field validates.
+            foreach (var pair in valid) cooldownReadyAt.Add(pair.Key, pair.Value);
+            resources = restored;
+            Time = state.Time;
+        }
 
         public CharacterActiveAbilities(CharacterSkillProfile profile)
         {

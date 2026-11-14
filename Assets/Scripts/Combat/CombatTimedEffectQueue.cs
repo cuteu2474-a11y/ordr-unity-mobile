@@ -4,6 +4,27 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
+    [Serializable]
+    public sealed class CombatTimedEffectState
+    {
+        public long Sequence;
+        public string CasterId;
+        public string TargetId;
+        public double At;
+        public string Kind;
+        public string Payload;
+    }
+
+    [Serializable]
+    public sealed class CombatTimedEffectQueueState
+    {
+        public int Version = 1;
+        public double Time;
+        public long NextSequence;
+        public List<CombatTimedEffectState> Pending =
+            new List<CombatTimedEffectState>();
+    }
+
     // 도감에 없는 연속 타격 간격을 고정 프레임이나 임의 초 단위로 추정하지 않는다.
     // 원작에 맞는 시간 오프셋(시전 시작을 0으로 한 초 단위)을 외부 정책이 제공한다.
     public interface IOriginalSkillHitTimingProvider
@@ -24,6 +45,8 @@ namespace Ordr.Mobile.Combat
             public string TargetId;
             public double At;
             public Action Execute;
+            public string Kind;
+            public string Payload;
         }
 
         private readonly List<Item> pending = new List<Item>();
@@ -31,6 +54,94 @@ namespace Ordr.Mobile.Combat
         private bool advancing;
         public double Time { get; private set; }
         public int PendingCount { get { return pending.Count; } }
+
+        public CombatTimedEffectQueueState CaptureState()
+        {
+            if (advancing)
+                throw new InvalidOperationException("전투 예약 처리 도중 저장할 수 없습니다.");
+            var state = new CombatTimedEffectQueueState {
+                Time = Time, NextSequence = nextSequence
+            };
+            foreach (var item in pending)
+            {
+                // An arbitrary Action closure may capture live units, random
+                // state or status references. Serializing its time alone
+                // would silently erase a future attack on resume.
+                if (string.IsNullOrWhiteSpace(item.Kind))
+                    throw new InvalidOperationException(
+                        "복원 종류가 없는 예약 타격은 저장할 수 없습니다.");
+                state.Pending.Add(new CombatTimedEffectState {
+                    Sequence = item.Sequence, CasterId = item.CasterId,
+                    TargetId = item.TargetId, At = item.At,
+                    Kind = item.Kind, Payload = item.Payload
+                });
+            }
+            state.Pending.Sort((a, b) => a.Sequence.CompareTo(b.Sequence));
+            return state;
+        }
+
+        public static void ValidateState(CombatTimedEffectQueueState state)
+        {
+            if (state == null || state.Version != 1 ||
+                state.Pending == null || state.NextSequence < 0 ||
+                double.IsNaN(state.Time) || double.IsInfinity(state.Time) ||
+                state.Time < 0)
+                throw new FormatException("예약 전투 시계 형식이 잘못됐습니다.");
+            var seen = new HashSet<long>();
+            foreach (var item in state.Pending)
+                if (item == null || item.Sequence <= 0 ||
+                    item.Sequence > state.NextSequence ||
+                    !seen.Add(item.Sequence) ||
+                    string.IsNullOrWhiteSpace(item.CasterId) ||
+                    string.IsNullOrWhiteSpace(item.TargetId) ||
+                    string.IsNullOrWhiteSpace(item.Kind) ||
+                    item.Payload == null ||
+                    double.IsNaN(item.At) || double.IsInfinity(item.At) ||
+                    item.At < state.Time)
+                    throw new FormatException("예약된 공격/효과가 잘못됐습니다.");
+        }
+
+        public void RestoreState(CombatTimedEffectQueueState state,
+            Func<string, string, string, string, Action> recreate)
+        {
+            ValidateState(state);
+            if (advancing || Time != 0 || pending.Count != 0 || nextSequence != 0)
+                throw new InvalidOperationException(
+                    "새 전투 예약 엔진에서만 복원할 수 있습니다.");
+            if (state.Pending.Count > 0 && recreate == null)
+                throw new ArgumentNullException(nameof(recreate));
+            var staged = new List<Item>();
+            foreach (var item in state.Pending)
+            {
+                var callback = recreate(item.Kind, item.Payload,
+                    item.CasterId, item.TargetId);
+                if (callback == null)
+                    throw new FormatException(
+                        "예약 스킬 효과를 다시 연결할 수 없습니다.");
+                staged.Add(new Item {
+                    Sequence = item.Sequence, CasterId = item.CasterId,
+                    TargetId = item.TargetId, At = item.At,
+                    Kind = item.Kind, Payload = item.Payload,
+                    Execute = callback
+                });
+            }
+            // No executable callback is invoked during restore.
+            pending.AddRange(staged);
+            nextSequence = state.NextSequence;
+            Time = state.Time;
+        }
+
+        public void ScheduleRestorable(string casterId, string targetId,
+            double offsetSeconds, string kind, string payload, Action callback)
+        {
+            if (string.IsNullOrWhiteSpace(kind) || payload == null)
+                throw new ArgumentException(
+                    "예약 기술은 복원 종류와 데이터가 필요합니다.");
+            Schedule(casterId, targetId, offsetSeconds, callback);
+            var item = pending[pending.Count - 1];
+            item.Kind = kind;
+            item.Payload = payload;
+        }
 
         public static bool AreValidOffsets(ImportedCombatEffect effect,
             IReadOnlyList<double> offsets)

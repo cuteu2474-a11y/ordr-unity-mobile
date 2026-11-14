@@ -1,5 +1,6 @@
 using System;
-using Ordr.Mobile.Core;
+using System.Collections.Generic;
+using Ordr.Mobile.Combat;
 
 namespace Ordr.Mobile.Core
 {
@@ -18,6 +19,11 @@ namespace Ordr.Mobile.Core
         public UnitRosterState Roster;
         // Same wallet, event receipts and mobile RNG stream as live gameplay.
         public PersonalMissionGameplayState MissionGameplay;
+        // S02 extension: live world draft, never represented as a playable
+        // checkpoint until every world subsystem has an atomic restore path.
+        public SourceCombatRuntimeCheckpoint Combat;
+        public CombatWaveDirectorState Waves;
+        public SourceModelPracticeBattleState Practice;
     }
 
     public sealed class OrdrRestoredCoreCheckpoint
@@ -45,7 +51,10 @@ namespace Ordr.Mobile.Core
 
         public static OrdrCoreCheckpointState Capture(GameSession game,
             SharedEconomySession economy, PersonalMissionGameplay missions,
-            double logicalTime)
+            double logicalTime,
+            SourceCombatRuntimeCheckpoint combat = null,
+            CombatWaveDirectorState waves = null,
+            SourceModelPracticeBattleState practice = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -56,7 +65,8 @@ namespace Ordr.Mobile.Core
             var state = new OrdrCoreCheckpointState {
                 SessionId = missions.Missions.SessionId, LogicalTime = logicalTime,
                 Game = game.CaptureState(), Roster = economy.Units.CaptureState(),
-                MissionGameplay = missions.CaptureState()
+                MissionGameplay = missions.CaptureState(),
+                Combat = combat, Waves = waves, Practice = practice
             };
             // The mission gameplay component carries the SAME shared wallet.
             // A different wallet or a torn cross-service snapshot is rejected.
@@ -99,10 +109,120 @@ namespace Ordr.Mobile.Core
         // running game, and never paying start/mission rewards on recovery.
         public static void Validate(OrdrCoreCheckpointState state)
         {
-            Restore(state);
+            RestoreCoreOnly(state);
+            ValidateCombatDraft(state);
+        }
+
+        private static void ValidateCombatDraft(OrdrCoreCheckpointState state)
+        {
+            if (state.Combat == null && state.Waves == null &&
+                state.Practice == null) return; // S01 compatibility.
+            var world = state.Combat;
+            var waves = state.Waves;
+            if (world == null || waves == null ||
+                world.Version != 1 || world.Attacks == null ||
+                world.Timed == null || world.Actors == null ||
+                world.Enemies == null || waves.Version != 1 ||
+                world.Time != state.LogicalTime ||
+                world.Time != world.Attacks.Scheduler?.Time ||
+                world.Time != world.Attacks.Skills?.Time ||
+                world.Time != world.Timed.Time ||
+                waves.ActiveWave != state.Game.CurrentWave)
+                throw new FormatException(
+                    "전투 예약·라운드/게임 시계가 일치하지 않습니다.");
+            CombatScheduler.ValidateState(world.Attacks.Scheduler);
+            CombatSkillTriggerEngine.ValidateState(world.Attacks.Skills);
+            if (world.Attacks.Version != 1 || world.Attacks.Events == null)
+                throw new FormatException("전투 공격 순번 형식이 잘못됐습니다.");
+            CombatTimedEffectQueue.ValidateState(world.Timed);
+            var registered = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var item in world.Attacks.Events)
+                if (item == null || string.IsNullOrWhiteSpace(item.UnitId) ||
+                    item.Sequence < 0 || !registered.Add(item.UnitId))
+                    throw new FormatException("전투 공격자 이벤트 순번이 중복됐습니다.");
+            foreach (var timer in world.Attacks.Scheduler.Attackers)
+                if (!registered.Contains(timer.UnitId))
+                    throw new FormatException(
+                        "공격자 타이머와 이벤트 순번이 다릅니다.");
+            if (registered.Count != world.Attacks.Scheduler.Attackers.Count)
+                throw new FormatException(
+                    "공격자 타이머 수가 원본 전투와 다릅니다.");
+            var allUnits = new HashSet<long>();
+            foreach (var actor in world.Actors)
+                if (actor == null || actor.InstanceId <= 0 ||
+                    string.IsNullOrWhiteSpace(actor.CatalogId) ||
+                    actor.Abilities == null || actor.Status == null ||
+                    !allUnits.Add(actor.InstanceId))
+                    throw new FormatException("전투 유닛 ID/상태가 잘못됐습니다.");
+            foreach (var actor in world.Actors)
+                if (actor.AttackReady !=
+                    registered.Contains(actor.InstanceId.ToString()))
+                    throw new FormatException(
+                        "공격 가능 상태와 등록된 타이머가 일치하지 않습니다.");
+            if (allUnits.Count != state.Roster.Units.Count)
+                throw new FormatException("공통 로스터와 전투 유닛 수가 다릅니다.");
+            foreach (var unit in state.Roster.Units)
+            {
+                if (!allUnits.Contains(unit.InstanceId)) 
+                    throw new FormatException("전투 로스터와 저장 유닛이 다릅니다.");
+                bool match = false;
+                foreach (var actor in world.Actors)
+                    if (actor.InstanceId == unit.InstanceId)
+                    {
+                        match = actor.CatalogId == unit.UnitId;
+                        break;
+                    }
+                if (!match) throw new FormatException(
+                    "전투 로스터의 원본 유닛이 다릅니다.");
+            }
+            var enemies = new HashSet<string>(StringComparer.Ordinal);
+            int waveEnemies = 0;
+            foreach (var enemy in world.Enemies)
+            {
+                if (enemy == null ||
+                    string.IsNullOrWhiteSpace(enemy.EnemyId) ||
+                    enemy.Health <= 0 || enemy.MaximumHealth < enemy.Health ||
+                    enemy.Status == null || enemy.Defenses == null ||
+                    !enemies.Add(enemy.EnemyId))
+                    throw new FormatException("전투 대상 체력/ID가 잘못됐습니다.");
+                CombatStatusEngine.Restore(enemy.Status);
+                enemy.Defenses.ValidateAndRecreate();
+                if (enemy.Kind == CharacterEnemyKind.Line ||
+                    enemy.Kind == CharacterEnemyKind.Boss ||
+                    enemy.Kind == CharacterEnemyKind.Enraged)
+                    waveEnemies++;
+            }
+            if (waveEnemies != state.Game.AliveEnemies)
+                throw new FormatException(
+                    "라운드에서 살아있는 적 숫자가 저장된 전장과 다릅니다.");
+            foreach (var actor in world.Actors)
+            {
+                CombatStatusEngine.Restore(actor.Status);
+                if (actor.SharedObjectiveEnemyId != null &&
+                    !enemies.Contains(actor.SharedObjectiveEnemyId))
+                    throw new FormatException(
+                        "공유 목표 파견 대상이 실제 전장에 없습니다.");
+            }
+            if (state.Practice != null &&
+                (state.Practice.Version != 1 ||
+                 !state.Practice.Started ||
+                 state.Practice.LastRound != 65 ||
+                 state.Practice.CurrentRound != state.Game.CurrentWave))
+                throw new FormatException(
+                    "65라운드 연습 기록이 라운드/원본과 다릅니다.");
         }
 
         public static OrdrRestoredCoreCheckpoint Restore(
+            OrdrCoreCheckpointState state)
+        {
+            if (state != null && (state.Combat != null ||
+                state.Waves != null || state.Practice != null))
+                throw new NotSupportedException(
+                    "전장 전체의 소환/효과/난수 복원 전까지 이어하기를 허용하지 않습니다.");
+            return RestoreCoreOnly(state);
+        }
+
+        private static OrdrRestoredCoreCheckpoint RestoreCoreOnly(
             OrdrCoreCheckpointState state)
         {
             if (state == null || state.Version != 1 ||
