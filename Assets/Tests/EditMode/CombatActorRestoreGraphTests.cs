@@ -37,7 +37,8 @@ namespace Ordr.Mobile.Tests
                 CharacterEnemyKind.Line, 10, 0, 0);
             original.Step(1.25);
             var snapshot = original.CaptureRuntimeDraft();
-            Assert.AreEqual(3, snapshot.Version);
+            Assert.AreEqual(4, snapshot.Version);
+            Assert.AreEqual(0, snapshot.Summons.Count);
             Assert.AreEqual(snapshot.Actors.Count, snapshot.ManualOwners.Count);
             var restoredRoster = UnitRoster.Restore(original.Roster.CaptureState());
             var restoredGame = GameSession.Restore(original.Game.CaptureState());
@@ -73,6 +74,37 @@ namespace Ordr.Mobile.Tests
             Assert.Throws<FormatException>(() =>
                 recovered.RestoreActorWorldDraft(state));
             Assert.AreEqual(0, recovered.CharacterCount);
+        }
+
+        [Test]
+        public void ForgedSummonAndFormAreRejectedBeforeWorldCreation()
+        {
+            var live = World();
+            live.Start();
+            live.BeginWave(1);
+            long id = live.SpawnCharacter("TEST-01", 0, 0);
+            var snapshot = live.CaptureRuntimeDraft();
+            snapshot.NextSummonId = 1;
+            snapshot.Summons.Add(new SourceCombatSummonCheckpoint {
+                Id = 1, OwnerId = id, SkillName = "clone", Name = "clone",
+                ExpiresAt = snapshot.Time + 10, HasIndependentCombat = true,
+                SourceUnitRawcode = "h085"
+            });
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(snapshot));
+            snapshot.Summons.Clear();
+            snapshot.Forms.Add(new SourceCombatFormCheckpoint {
+                OwnerId = id, Form = "forest",
+                ExpiresAt = snapshot.Time + 5
+            });
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(snapshot));
+            snapshot.Forms.Clear();
+            snapshot.Forest.Add(new SourceCombatForestCheckpoint {
+                OwnerId = id, Nutrients = 2
+            });
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(snapshot));
         }
 
         [Test]

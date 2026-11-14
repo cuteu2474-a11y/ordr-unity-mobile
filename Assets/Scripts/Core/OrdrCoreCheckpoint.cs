@@ -282,7 +282,7 @@ namespace Ordr.Mobile.Core
             var world = state.Combat;
             var waves = state.Waves;
             if (world == null || waves == null ||
-                world.Version != 3 || world.Attacks == null ||
+                world.Version != 4 || world.Attacks == null ||
                 world.Timed == null || world.Actors == null ||
                 world.Enemies == null || waves.Version != 1 ||
                 world.Time != state.LogicalTime ||
@@ -293,6 +293,7 @@ namespace Ordr.Mobile.Core
                 throw new FormatException(
                     "전투 예약·라운드/게임 시계가 일치하지 않습니다.");
             CharacterCombatRuntime.ValidateManualOwnerState(world);
+            CharacterCombatRuntime.ValidateSourceSidecars(world);
             CombatScheduler.ValidateState(world.Attacks.Scheduler);
             CombatSkillTriggerEngine.ValidateState(world.Attacks.Skills);
             if (world.Attacks.Version != 1 || world.Attacks.Events == null)
@@ -326,6 +327,16 @@ namespace Ordr.Mobile.Core
                     registered.Contains(actor.InstanceId.ToString()))
                     throw new FormatException(
                         "공격 가능 상태와 등록된 타이머가 일치하지 않습니다.");
+            var expectedAttackers = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var actor in world.Actors)
+                if (actor.AttackReady)
+                    expectedAttackers.Add(actor.InstanceId.ToString());
+            foreach (var summon in world.Summons)
+                if (summon.HasIndependentCombat &&
+                    !expectedAttackers.Add("practice-summon:" + summon.Id))
+                    throw new FormatException("소환수 공격 ID가 중복됐습니다.");
+            if (!expectedAttackers.SetEquals(registered))
+                throw new FormatException("소환수·캐릭터와 실제 공격 시계의 ID가 다릅니다.");
             if (allUnits.Count != state.Roster.Units.Count)
                 throw new FormatException("공통 로스터와 전투 유닛 수가 다릅니다.");
             foreach (var unit in state.Roster.Units)

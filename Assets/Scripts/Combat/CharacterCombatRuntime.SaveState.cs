@@ -20,6 +20,7 @@ namespace Ordr.Mobile.Combat
         public string AttackEvidence;
         public string DeferredAttackReason;
         public bool SourceManagedResources;
+        public long SourceLaneRevision;
         public CharacterActiveAbilityState Abilities;
         public CombatStatusEngineState Status;
     }
@@ -35,6 +36,33 @@ namespace Ordr.Mobile.Combat
         public double MariaReadyAt;
         public string MarcoForm; // null = default human, or human/phoenix
         public double MarcoReadyAt;
+    }
+
+    [Serializable]
+    public sealed class SourceCombatSummonCheckpoint
+    {
+        public long Id, OwnerId, LaneRevision;
+        public string SkillName, Name, SourceUnitRawcode;
+        public double ExpiresAt, SpawnX, SpawnY;
+        public bool StoryLane, HasIndependentCombat, IsVirtualAttackEffect;
+        public bool HasUnresolvedOriginalLootAbility, AttackBlocked;
+        public CombatStatusEngineState AttackStatus;
+    }
+
+    [Serializable]
+    public sealed class SourceCombatFormCheckpoint
+    {
+        public long OwnerId, LaneRevision;
+        public string Form;
+        public double ExpiresAt;
+        public bool StoryLane;
+    }
+
+    [Serializable]
+    public sealed class SourceCombatForestCheckpoint
+    {
+        public long OwnerId;
+        public int Nutrients;
     }
 
     [Serializable]
@@ -114,9 +142,10 @@ namespace Ordr.Mobile.Combat
     [Serializable]
     public sealed class SourceCombatRuntimeCheckpoint
     {
-        // Version 3 includes strict per-owner F/manual-mode clocks. Older
-        // version 2 world drafts cannot silently erase a Marco or Maria state.
-        public int Version = 3;
+        // V4: per-owner source lane revisions, restorable native summon
+        // attackers and the supported timed-form/growth state. V2/V3 drafts
+        // cannot be upgraded without risking lost combat side effects.
+        public int Version = 4;
         public double Time;
         public bool HasSourceModelBasicAttacks;
         public bool MobileMainLaneEnabled;
@@ -126,6 +155,13 @@ namespace Ordr.Mobile.Combat
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
             new List<SourceCombatManualOwnerCheckpoint>();
+        public long NextSummonId;
+        public List<SourceCombatSummonCheckpoint> Summons =
+            new List<SourceCombatSummonCheckpoint>();
+        public List<SourceCombatFormCheckpoint> Forms =
+            new List<SourceCombatFormCheckpoint>();
+        public List<SourceCombatForestCheckpoint> Forest =
+            new List<SourceCombatForestCheckpoint>();
         public List<SourceCombatEnemyCheckpoint> Enemies =
             new List<SourceCombatEnemyCheckpoint>();
     }
@@ -137,7 +173,7 @@ namespace Ordr.Mobile.Combat
         // actor gets exactly one manual-owner row; no orphan may be replayed.
         public static void ValidateManualOwnerState(SourceCombatRuntimeCheckpoint state)
         {
-            if (state == null || state.Version != 3 ||
+            if (state == null || state.Version != 4 ||
                 state.Actors == null || state.ManualOwners == null ||
                 state.ManualOwners.Count != state.Actors.Count)
                 throw new FormatException("수동 스킬 보존 상태가 누락되거나 이전 버전입니다.");
@@ -175,27 +211,166 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        public static void ValidateSourceSidecars(SourceCombatRuntimeCheckpoint state)
+        {
+            if (state == null || state.Version != 4 || state.Actors == null ||
+                state.Summons == null || state.Forms == null || state.Forest == null ||
+                state.NextSummonId < 0 || double.IsNaN(state.Time) ||
+                double.IsInfinity(state.Time) || state.Time < 0)
+                throw new FormatException("소환/변신 저장 구성이 불완전합니다.");
+            var owners = new Dictionary<long, SourceCombatActorCheckpoint>();
+            foreach (var a in state.Actors)
+            {
+                if (a == null || a.InstanceId <= 0 || a.SourceLaneRevision < 0 ||
+                    string.IsNullOrWhiteSpace(a.CatalogId) ||
+                    owners.ContainsKey(a.InstanceId))
+                    throw new FormatException("전투 소유 유닛 상태가 잘못됐습니다.");
+                owners.Add(a.InstanceId, a);
+            }
+            var seen = new HashSet<long>();
+            foreach (var s in state.Summons)
+            {
+                SourceCombatActorCheckpoint owner;
+                if (s == null || s.Id <= 0 || s.Id > state.NextSummonId ||
+                    !seen.Add(s.Id) || !owners.TryGetValue(s.OwnerId, out owner) ||
+                    string.IsNullOrWhiteSpace(s.Name) ||
+                    string.IsNullOrWhiteSpace(s.SkillName) ||
+                    s.LaneRevision != owner.SourceLaneRevision ||
+                    s.StoryLane != owner.StoryDeployed ||
+                    double.IsNaN(s.ExpiresAt) || double.IsInfinity(s.ExpiresAt) ||
+                    s.ExpiresAt <= state.Time || s.ExpiresAt - state.Time > 3600 ||
+                    double.IsNaN(s.SpawnX) || double.IsInfinity(s.SpawnX) ||
+                    double.IsNaN(s.SpawnY) || double.IsInfinity(s.SpawnY) ||
+                    (s.SourceUnitRawcode != null && s.SourceUnitRawcode.Length != 4) ||
+                    (s.HasIndependentCombat &&
+                     (s.AttackStatus == null ||
+                      s.AttackStatus.Time != state.Time ||
+                      !((s.SourceUnitRawcode == "h085" &&
+                         owner.CatalogId == "L-21") ||
+                        (s.SourceUnitRawcode == "h06N" &&
+                         owner.CatalogId == "L-19")))) ||
+                    (!s.HasIndependentCombat && (s.AttackStatus != null ||
+                                                s.AttackBlocked)))
+                    throw new FormatException("원본 소환 실물/공격 ID/수명/전장이 잘못됐습니다.");
+                if (s.HasIndependentCombat) CombatStatusEngine.Restore(s.AttackStatus);
+            }
+            seen.Clear();
+            foreach (var f in state.Forms)
+            {
+                SourceCombatActorCheckpoint owner;
+                if (f == null || !seen.Add(f.OwnerId) ||
+                    !owners.TryGetValue(f.OwnerId, out owner) ||
+                    f.LaneRevision != owner.SourceLaneRevision ||
+                    f.StoryLane != owner.StoryDeployed ||
+                    double.IsNaN(f.ExpiresAt) || double.IsInfinity(f.ExpiresAt) ||
+                    f.ExpiresAt <= state.Time ||
+                    !((f.Form == "awakening" && owner.CatalogId == "TR-03") ||
+                      (f.Form == "forest" && owner.CatalogId == "TR-06")))
+                    throw new FormatException("원본 임시 변신 상태가 잘못됐습니다.");
+            }
+            seen.Clear();
+            foreach (var f in state.Forest)
+            {
+                SourceCombatActorCheckpoint owner;
+                if (f == null || !seen.Add(f.OwnerId) || f.Nutrients <= 0 ||
+                    !owners.TryGetValue(f.OwnerId, out owner) ||
+                    owner.CatalogId != "TR-06")
+                    throw new FormatException("숲인간 양분 성장 장부가 잘못됐습니다.");
+            }
+            if (!state.HasSourceModelBasicAttacks &&
+                (state.Summons.Count != 0 || state.Forms.Count != 0 ||
+                 state.Forest.Count != 0))
+                throw new FormatException("일반 전투에 원본 소환·폼을 주입할 수 없습니다.");
+        }
+
         private void RejectNonRestorableSourceSkillState()
         {
             if (!UsesSourceModelBasicAttacks) return;
             // Actor-dependent native equipment, living summons and transform
             // callbacks need distinct reconstruction; never silently erase.
-            if (sourceTemporarySummons.Count != 0 ||
-                sourceFormCastFinishes.Count != 0 ||
+            if (sourceFormCastFinishes.Count != 0 ||
                 sourceAttackPauseFinishes.Count != 0 ||
                 sourceFormNames.Count != 0 ||
-                sourceModelTenthForms.Count != 0 ||
-                sourceModelForestNutrients.Count != 0 ||
                 sourceModelBonneyAge.Count != 0 ||
                 sourceModelKingExecutionUsed.Count != 0 ||
                 sourceModelEquippedItems != null ||
                 sourceModelMarcoVerifiedForm != null)
                 throw new NotSupportedException(
                     "실물 소환/장비/임시 변신/외부 형태 증거가 저장되지 않아 전투 초안을 거부합니다.");
+            int covered = 0;
+            foreach (var summon in sourceTemporarySummons)
+                if (summon.HasIndependentCombat)
+                {
+                    SourceIndependentAttacker independent;
+                    if (!sourceIndependentAttackers.TryGetValue(
+                            SummonAttackKey(summon.Id), out independent) ||
+                        independent.Rawcode != summon.SourceUnitRawcode ||
+                        independent.OwnerInstanceId != summon.OwnerId ||
+                        independent.ExpiresAt != summon.ExpiresAt ||
+                        independent.StoryLane != summon.StoryLane ||
+                        independent.X != summon.SpawnX || independent.Y != summon.SpawnY ||
+                        independent.ModelShadowZombie || independent.ModelBlackArrowEffect ||
+                        independent.RenderAsTransientProjectile ||
+                        independent.AttackOnceTargetId != null ||
+                        independent.SatelliteRegenBeginsAt != 0 ||
+                        independent.SatelliteRegenEndsAt != 0 ||
+                        independent.SatelliteRegenPerSecond != 0 ||
+                        independent.MaximumMana != 0 || independent.Mana != 0 ||
+                        independent.SourceManaRegenPerSecond != 0 ||
+                        independent.ShadowInheritedSources.Count != 0)
+                        throw new NotSupportedException(
+                            "소환수의 원본 독립 공격자 부수상태를 복원할 수 없습니다.");
+                    covered++;
+                }
+            if (covered != sourceIndependentAttackers.Count || sourceSatellites.Count != 0)
+                throw new NotSupportedException(
+                    "구매 위성·기타 독립 공격자는 별도의 복원 장부가 필요합니다.");
+            foreach (var form in sourceModelTenthForms.Values)
+                if (form.Form != "awakening" && form.Form != "forest")
+                    throw new NotSupportedException(
+                        "미확인 원본 네이티브 변신은 안전하게 복원할 수 없습니다.");
             foreach (var pair in manualMariaActiveUntil)
                 if (manualMariaToken.ContainsKey(pair.Key) && pair.Value > Time)
                     throw new NotSupportedException(
                         "현재 진행 중인 마리아 주기 스킬은 예약 콜백 복원 전까지 저장할 수 없습니다.");
+        }
+
+        private void RestoreSourceSidecars(SourceCombatRuntimeCheckpoint state)
+        {
+            ValidateSourceSidecars(state);
+            if (sourceTemporarySummons.Count != 0 || sourceNextSummonId != 0 ||
+                sourceIndependentAttackers.Count != 0 ||
+                sourceModelTenthForms.Count != 0 || sourceModelForestNutrients.Count != 0)
+                throw new InvalidOperationException("원본 소환·변신은 빈 그래프에만 복원합니다.");
+            foreach (var a in state.Actors)
+                if (a.SourceLaneRevision > 0)
+                    sourceModelStoryLaneRevisions.Add(a.InstanceId, a.SourceLaneRevision);
+            foreach (var f in state.Forms)
+                sourceModelTenthForms.Add(f.OwnerId, new SourceModelTenthFormState {
+                    Form = f.Form, ExpiresAt = f.ExpiresAt,
+                    StoryLane = f.StoryLane, LaneRevision = f.LaneRevision
+                });
+            foreach (var f in state.Forest)
+                sourceModelForestNutrients.Add(f.OwnerId, f.Nutrients);
+            foreach (var s in state.Summons)
+            {
+                var summoned = new SourceModelSummonState(s.Id, s.OwnerId,
+                    s.SkillName, s.Name, s.ExpiresAt, s.StoryLane,
+                    s.HasIndependentCombat, s.SourceUnitRawcode,
+                    s.HasUnresolvedOriginalLootAbility, s.SpawnX, s.SpawnY,
+                    s.LaneRevision, s.IsVirtualAttackEffect);
+                if (s.HasIndependentCombat)
+                {
+                    string key = SummonAttackKey(s.Id);
+                    RegisterSourceIndependentAttack(key, s.SourceUnitRawcode,
+                        s.StoryLane, s.SpawnX, s.SpawnY, s.OwnerId,
+                        s.ExpiresAt, characters[s.OwnerId].Profile);
+                    sourceIndependentAttackers[key].Blocked = s.AttackBlocked;
+                    unitStatuses[key] = CombatStatusEngine.Restore(s.AttackStatus);
+                }
+                sourceTemporarySummons.Add(summoned);
+            }
+            sourceNextSummonId = state.NextSummonId;
         }
 
         private void RestoreManualOwners(SourceCombatRuntimeCheckpoint state)
@@ -230,7 +405,7 @@ namespace Ordr.Mobile.Combat
         // wave ledger and all missing owner systems before exposing gameplay.
         public void RestoreEnemyWorldDraft(SourceCombatRuntimeCheckpoint state)
         {
-            if (state == null || state.Version != 3 || state.Enemies == null ||
+            if (state == null || state.Version != 4 || state.Enemies == null ||
                 game.Phase != SessionPhase.Running || enemies.Count != 0 ||
                 resolution == null || processingStep || pendingStepSeconds != 0 ||
                 scheduler.Time != 0 || effectExecutor.Time != 0)
@@ -290,7 +465,7 @@ namespace Ordr.Mobile.Combat
         // A rejected reconstruction must be discarded, never published.
         public void RestoreActorWorldDraft(SourceCombatRuntimeCheckpoint state)
         {
-            if (state == null || state.Version != 3 || state.Actors == null ||
+            if (state == null || state.Version != 4 || state.Actors == null ||
                 state.Attacks == null || state.Timed == null ||
                 game.Phase != SessionPhase.Running || characters.Count != 0 ||
                 unitStatuses.Count != 0 || roster.Count != state.Actors.Count ||
@@ -300,6 +475,7 @@ namespace Ordr.Mobile.Combat
                 (sourceModelMainLane != null) != state.MobileMainLaneEnabled)
                 throw new InvalidOperationException("복원된 로스터·전투 모드에 새 전투 엔진이 필요합니다.");
             ValidateManualOwnerState(state);
+            ValidateSourceSidecars(state);
             var staged = new List<StagedRestoredActor>();
             var identifiers = new HashSet<long>();
             foreach (var record in state.Actors)
@@ -378,6 +554,9 @@ namespace Ordr.Mobile.Combat
                 if (item.SourceManagedResources)
                     RebindRestoredSourceModelResources(actor);
             }
+            // Recreate exact summon attack identities before loading the
+            // saved next-hit clocks and per-attacker event sequences.
+            RestoreSourceSidecars(state);
             attackPipeline.RestoreState(state.Attacks);
             effectExecutor.RestoreTimedState(state.Timed,
                 actorId => {
@@ -409,7 +588,7 @@ namespace Ordr.Mobile.Combat
                     "불완전한 전투 스텝·조합·불일치 시계는 저장할 수 없습니다.");
             RejectNonRestorableSourceSkillState();
             var draft = new SourceCombatRuntimeCheckpoint {
-                Time = scheduler.Time,
+                Time = scheduler.Time, NextSummonId = sourceNextSummonId,
                 HasSourceModelBasicAttacks = UsesSourceModelBasicAttacks,
                 MobileMainLaneEnabled = sourceModelMainLane != null,
                 Attacks = attackPipeline.CaptureState(),
@@ -436,6 +615,7 @@ namespace Ordr.Mobile.Combat
                     AttackEvidence = actor.AttackEvidence,
                     DeferredAttackReason = actor.DeferredAttackReason,
                     SourceManagedResources = sourceModelManagedResourceRows.ContainsKey(id),
+                    SourceLaneRevision = SourceModelLaneRevision(id),
                     Abilities = actor.Abilities.CaptureState(),
                     Status = status.CaptureState()
                 });
@@ -455,6 +635,48 @@ namespace Ordr.Mobile.Combat
                 });
             }
             ValidateManualOwnerState(draft);
+            foreach (var row in sourceModelTenthForms)
+                draft.Forms.Add(new SourceCombatFormCheckpoint {
+                    OwnerId = row.Key, Form = row.Value.Form,
+                    ExpiresAt = row.Value.ExpiresAt,
+                    StoryLane = row.Value.StoryLane,
+                    LaneRevision = row.Value.LaneRevision
+                });
+            draft.Forms.Sort((a, b) => a.OwnerId.CompareTo(b.OwnerId));
+            foreach (var row in sourceModelForestNutrients)
+                if (row.Value > 0)
+                    draft.Forest.Add(new SourceCombatForestCheckpoint {
+                        OwnerId = row.Key, Nutrients = row.Value
+                    });
+            draft.Forest.Sort((a, b) => a.OwnerId.CompareTo(b.OwnerId));
+            foreach (var summon in sourceTemporarySummons)
+            {
+                SourceIndependentAttacker independent = null;
+                if (summon.HasIndependentCombat &&
+                    !sourceIndependentAttackers.TryGetValue(
+                        SummonAttackKey(summon.Id), out independent))
+                    throw new InvalidOperationException("독립 소환 공격자가 없습니다.");
+                CombatStatusEngine status = null;
+                if (independent != null &&
+                    !unitStatuses.TryGetValue(independent.Key, out status))
+                    throw new InvalidOperationException("소환 공격자 버프 원장이 없습니다.");
+                draft.Summons.Add(new SourceCombatSummonCheckpoint {
+                    Id = summon.Id, OwnerId = summon.OwnerId,
+                    SkillName = summon.SkillName, Name = summon.Name,
+                    ExpiresAt = summon.ExpiresAt, StoryLane = summon.StoryLane,
+                    LaneRevision = summon.LaneRevision,
+                    HasIndependentCombat = summon.HasIndependentCombat,
+                    IsVirtualAttackEffect = summon.IsVirtualAttackEffect,
+                    SourceUnitRawcode = summon.SourceUnitRawcode,
+                    HasUnresolvedOriginalLootAbility =
+                        summon.HasUnresolvedOriginalLootAbility,
+                    SpawnX = summon.SpawnX, SpawnY = summon.SpawnY,
+                    AttackBlocked = independent != null && independent.Blocked,
+                    AttackStatus = status == null ? null : status.CaptureState()
+                });
+            }
+            draft.Summons.Sort((a, b) => a.Id.CompareTo(b.Id));
+            ValidateSourceSidecars(draft);
             var enemyIds = new List<string>(enemies.Keys);
             enemyIds.Sort(StringComparer.Ordinal);
             foreach (string id in enemyIds)
