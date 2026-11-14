@@ -165,6 +165,27 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void ScriptAndNativePoolRandomStreamsAreIndependentAndTamperChecked()
+        {
+            var snapshot = Example();
+            var script = new MobileRollbackWispRandom(103);
+            var native = new MobileRollbackWispRandom(531);
+            script.NextInclusive(1, 1000);
+            native.NextInclusive(0, 12);
+            native.NextInclusive(0, 42);
+            snapshot.ScriptRandom = script.CaptureState();
+            snapshot.TierPoolRandom = native.CaptureState();
+            OrdrCoreCheckpoint.Validate(snapshot);
+            var recoveredScript = MobileRollbackWispRandom.Restore(snapshot.ScriptRandom);
+            var recoveredNative = MobileRollbackWispRandom.Restore(snapshot.TierPoolRandom);
+            Assert.AreEqual(script.NextInclusive(1, 100), recoveredScript.NextInclusive(1, 100));
+            Assert.AreEqual(native.NextInclusive(0, 42), recoveredNative.NextInclusive(0, 42));
+
+            snapshot.TierPoolRandom.Draws[0].Result = 900;
+            Assert.Throws<FormatException>(() => OrdrCoreCheckpoint.Validate(snapshot));
+        }
+
+        [Test]
         public void InvalidStateNeverClobbersExistingValidSlot()
         {
             string folder = Path.Combine(Path.GetTempPath(),

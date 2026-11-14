@@ -1,3 +1,5 @@
+**S04 거래 재결합:** `Assets/Scripts/Mobile/OrdrUnpublishedCommerceRestoreGraph.cs`는 `OrdrCoreCheckpointState`의 `ScriptRandom`·`WispPoolRandom`·`GraduatedRarePoolRandom`·`TierPoolRandom`를 각각 재생한 뒤 이미 복원된 단일 `EconomyWallet`에 100G 물품 지원, 돈/유닛/이세계 도박·리롤을 복원합니다. 원본 보상 생성기는 새 전투를 참조하는 팩토리로 공급하고 서비스 자체는 씬에 공개하지 않습니다. 누락된 보류 추첨·원본 능력 영수증/전용 난수는 이후 전수 복원 필요.
+
 **소환/변신 S03 v4:** `CharacterCombatRuntime.SaveState`에서 `SourceCombatSummonCheckpoint`, `SourceCombatFormCheckpoint`, `SourceCombatForestCheckpoint`와 캐릭터 전장 리비전을 캡처·검증합니다. `OrdrCoreCheckpoint.ValidateCombatDraft`는 소환수 공격자와 AttackScheduler 타이머 ID 일치를 추가로 검사합니다. `RestoreActorWorldDraft`는 소환 독립 공격자 재등록 후 원래 타이머/순번을 로드하며 신규 보상·소환 추첨은 실행하지 않습니다. 원본 장비·위성/복합 네이티브 폼·익명 Action은 저장 거부 유지. Unity/Android 실행 미확인.
 
 **S03 수동 폼 복원 연결(검사 미실행):** `CharacterCombatRuntime.SaveState.cs`의 v3 `SourceCombatManualOwnerCheckpoint`가 마르코 F 폼·쿨타임 및 마리아 마지막 모드·쿨타임을 저장하고 동일 로스터 ID/카탈로그를 검증합니다. `OrdrCoreCheckpoint.ValidateCombatDraft`가 누락·위조 상태를 차단하며 `RestoreActorWorldDraft`가 **미공개 그래프에만** 상태를 재구성합니다. `SourceModelTemporarySkills.cs`는 전장 이동·삭제 시 `practice-form-cast`·`practice-attack-pause` 예약 람다를 실제 큐에서 취소합니다. 현재 살아있는 소환·복합 폼·장비는 아직 저장 차단 대상입니다.

@@ -727,6 +727,12 @@ namespace Ordr.Mobile.Unity
                 Combat.TrySynchronizeSourceModelEquippedInventory(unitInstanceId);
         }
         private IOriginalWispRandom sessionScriptRandom;
+        // Each existing mobile native pool already had its own RNG owner.
+        // Record them separately, not as invented shared Warcraft dice.
+        private MobileRollbackWispRandom sessionWispPoolRandom;
+        private MobileRollbackWispRandom sessionGraduatedRarePoolRandom;
+        private MobileRollbackWispRandom sessionTierPoolRandom;
+        private bool checkpointCaptureActive;
         public SourceModelPracticeBattle PracticeBattle { get; private set; }
         // The completed 65-round game count is shared by subsequent runs on
         // this installation. Round/mission/story clears never increment it.
@@ -1338,66 +1344,108 @@ namespace Ordr.Mobile.Unity
         }
         public SharedEconomySession SharedEconomy { get; private set; }
 
-        // S01/S02 integration: core-ledger DRAFT only, never an entire
-        // playable save. The full 65R snapshot still needs live enemies,
-        // skills, timers, other RNG streams, shops and world state.
-        public OrdrCoreCheckpointState CaptureCoreCheckpointDraft()
+        // Capture on a single synchronous logical boundary. RunGate pauses
+        // battle ticks but retains its previous MANUAL state on every path;
+        // app-pause/focus flags remain untouched. No gameplay reward or
+        // scene transition occurs while the draft is assembled.
+        private OrdrCoreCheckpointState CaptureCheckpointAtSafeBoundary(
+            Func<OrdrCoreCheckpointState> create)
         {
-            if (Combat == null || SharedEconomy == null ||
+            if (create == null) throw new ArgumentNullException(nameof(create));
+            if (checkpointCaptureActive || Combat == null || SharedEconomy == null ||
                 PersonalMissions == null || !SharedEconomy.HasStarted ||
-                Combat.Game.Phase == SessionPhase.NotStarted ||
+                Combat.Game.Phase != SessionPhase.Running ||
                 Combat.PendingSimulationSeconds != 0)
                 throw new InvalidOperationException(
-                    "완결된 전투 스텝 이후에만 핵심 상태를 캡처할 수 있습니다.");
-            return OrdrCoreCheckpoint.Capture(Combat.Game, SharedEconomy,
-                PersonalMissions, Combat.Time);
+                    "트랜잭션/전투 처리 중 또는 끝난 세션에서는 스냅샷을 만들 수 없습니다.");
+            bool manualWasPaused = runGate.IsManuallyPaused;
+            checkpointCaptureActive = true;
+            runGate.SetManualPause(true);
+            try
+            {
+                double clock = Combat.Time;
+                string gameBefore = JsonUtility.ToJson(Combat.Game.CaptureState());
+                string walletBefore = JsonUtility.ToJson(SharedEconomy.Wallet.CaptureState());
+                string rosterBefore = JsonUtility.ToJson(SharedEconomy.Units.CaptureState());
+                string missionsBefore = JsonUtility.ToJson(PersonalMissions.CaptureState());
+                OrdrCoreCheckpointState result = create();
+                if (Combat.Time != clock || result.LogicalTime != clock ||
+                    Combat.PendingSimulationSeconds != 0 ||
+                    !string.Equals(gameBefore,
+                        JsonUtility.ToJson(Combat.Game.CaptureState()),
+                        StringComparison.Ordinal) ||
+                    !string.Equals(walletBefore,
+                        JsonUtility.ToJson(SharedEconomy.Wallet.CaptureState()),
+                        StringComparison.Ordinal) ||
+                    !string.Equals(rosterBefore,
+                        JsonUtility.ToJson(SharedEconomy.Units.CaptureState()),
+                        StringComparison.Ordinal) ||
+                    !string.Equals(missionsBefore,
+                        JsonUtility.ToJson(PersonalMissions.CaptureState()),
+                        StringComparison.Ordinal))
+                    throw new InvalidOperationException(
+                        "스냅샷 읽기 중 게임/지갑/유닛/미션 상태가 변경되어 저장을 취소했습니다.");
+                return result;
+            }
+            finally
+            {
+                runGate.SetManualPause(manualWasPaused);
+                checkpointCaptureActive = false;
+            }
         }
 
-        // Explicit diagnostic persistence only. Never advertise this draft
-        // as the save/continue feature in the release UI.
+        // S01/S02 core ledger draft only; no real Continue button.
+        public OrdrCoreCheckpointState CaptureCoreCheckpointDraft()
+        {
+            return CaptureCheckpointAtSafeBoundary(() =>
+                OrdrCoreCheckpoint.Capture(Combat.Game, SharedEconomy,
+                    PersonalMissions, Combat.Time));
+        }
+
         public void WriteCoreCheckpointDraftForDiagnostics()
         {
             OrdrCoreCheckpointStore.ForApplication().WriteCore(
                 CaptureCoreCheckpointDraft());
         }
 
-        // Same-frame capture: actual combat owner and enemy HP, scripted
-        // status clocks, timed attacks, 65R spawn ledger and score/counters.
-        // Delayed effects still using anonymous Actions fail closed.
-        // This is NOT the final resume point: restored world/other RNG and
-        // shop state are still pending.
+        // Same frozen frame for live combat, commerce, pending rolls, story
+        // and wave ledgers. Anonymous timed Actions still reject capture.
         public OrdrCoreCheckpointState CaptureWorldCheckpointDraft()
         {
-            if (Combat == null || SharedEconomy == null ||
-                PersonalMissions == null || !SharedEconomy.HasStarted ||
-                Combat.PendingSimulationSeconds != 0)
-                throw new InvalidOperationException(
-                    "진행 중이며 미처리 스텝이 없는 전투 상태가 필요합니다.");
-            var runtime = Combat.CaptureRuntimeDraft();
-            var wave = VerifiedWaveDirector.CaptureState();
-            var practice = PracticeBattle?.CaptureState();
-            // A source-model BFi stream must be serializable before the
-            // 100G support/regular money shops may be safely preserved.
-            var script = sessionScriptRandom as MobileRollbackWispRandom;
-            var money = PracticeMoneyGamblingDesk == null ? null :
-                PracticeMoneyGamblingDesk.CaptureState();
-            if (money != null && script == null)
-                throw new NotSupportedException(
-                    "외부 원본 난수 공급자는 세션 복원 계약이 없어 저장할 수 없습니다.");
-            return OrdrCoreCheckpoint.Capture(Combat.Game, SharedEconomy,
-                PersonalMissions, Combat.Time, runtime, wave, practice,
-                script?.CaptureState(), money,
-                PracticeTierUnitGambling?.CaptureState(),
-                PracticeUnitGambling?.CaptureState(),
-                PracticeUnitReroll?.CaptureState(),
-                PlayerBuildingResearch?.CaptureState(),
-                EvolutionProgress?.CaptureState(),
-                Poneglyph?.CaptureState(),
-                PracticeCreeps?.CaptureState(),
-                PracticeStoryBuildings?.CaptureState(),
-                SoloStory?.CaptureState(),
-                StoryProgression == null ? null :
-                    StoryProgression.CaptureState(SoloStory.NativeRewards));
+            return CaptureCheckpointAtSafeBoundary(() =>
+            {
+                var runtime = Combat.CaptureRuntimeDraft();
+                var wave = VerifiedWaveDirector.CaptureState();
+                var practice = PracticeBattle?.CaptureState();
+                var script = sessionScriptRandom as MobileRollbackWispRandom;
+                var money = PracticeMoneyGamblingDesk == null ? null :
+                    PracticeMoneyGamblingDesk.CaptureState();
+                if (money != null && script == null)
+                    throw new NotSupportedException(
+                        "원본 외부 BFi 난수는 복원 커서가 없어 저장할 수 없습니다.");
+                if (money != null && (sessionWispPoolRandom == null ||
+                    sessionGraduatedRarePoolRandom == null ||
+                    sessionTierPoolRandom == null))
+                    throw new NotSupportedException(
+                        "원본 모바일 위습/졸업 상점/유닛 도박의 난수 기록이 부족합니다.");
+                return OrdrCoreCheckpoint.Capture(Combat.Game, SharedEconomy,
+                    PersonalMissions, Combat.Time, runtime, wave, practice,
+                    script?.CaptureState(), money,
+                    PracticeTierUnitGambling?.CaptureState(),
+                    PracticeUnitGambling?.CaptureState(),
+                    PracticeUnitReroll?.CaptureState(),
+                    PlayerBuildingResearch?.CaptureState(),
+                    EvolutionProgress?.CaptureState(),
+                    Poneglyph?.CaptureState(),
+                    PracticeCreeps?.CaptureState(),
+                    PracticeStoryBuildings?.CaptureState(),
+                    SoloStory?.CaptureState(),
+                    StoryProgression == null ? null :
+                        StoryProgression.CaptureState(SoloStory.NativeRewards),
+                    sessionTierPoolRandom?.CaptureState(),
+                    sessionWispPoolRandom?.CaptureState(),
+                    sessionGraduatedRarePoolRandom?.CaptureState());
+            });
         }
 
         public void WriteWorldCheckpointDraftForDiagnostics()
@@ -3449,6 +3497,9 @@ namespace Ordr.Mobile.Unity
             IOriginalWispRandom sharedMobileWispRandom =
                 randomWispResourceRng ?? new MobileRollbackWispRandom();
             sessionScriptRandom = sharedMobileWispRandom;
+            sessionWispPoolRandom = new MobileRollbackWispRandom();
+            sessionGraduatedRarePoolRandom = new MobileRollbackWispRandom();
+            sessionTierPoolRandom = new MobileRollbackWispRandom();
             if (sourceModelDamage != null && originalEconomyPort == null)
             {
                 PracticeMoneyGamblingDesk = new SourceModelMoneyGamblingDesk(
@@ -3550,7 +3601,7 @@ namespace Ordr.Mobile.Unity
                         var roller = new Original323MobileWispOutcomeRoller(
                             pool.text, sessionScriptRandom,
                             new Original323MobileNativePoolRandom(
-                                new MobileUniformWispRandom()));
+                                sessionWispPoolRandom));
                         deferredWispAbilities =
                             new Original323WispDeferredAbilityRegistry(Combat);
                         Wisps = new MobileWispService(SharedEconomy.Wallet, roller,
@@ -3578,7 +3629,7 @@ namespace Ordr.Mobile.Unity
                         PracticeMoneyGamblingDesk.ConfigureRareReward(
                             new Original323GraduatedRareShopWorld(
                                 Combat, Units, MapBaseStats, map,
-                                sessionScriptRandom, new MobileUniformWispRandom(),
+                                sessionScriptRandom, sessionGraduatedRarePoolRandom,
                                 shopBonus),
                             () => StoryProgression != null &&
                                 StoryProgression.HasResearch("R01N"));
@@ -3613,7 +3664,7 @@ namespace Ordr.Mobile.Unity
                             PracticeMaterialSupport.PostCommitObserverFailed += Debug.LogException;
                             PracticeMoneyGamblingDesk.ConfigureMaterialSupport(PracticeMaterialSupport);
                             PracticeTierUnitGambling = new SourceModelUnitGambling(SharedEconomy.Wallet, Combat.Game,
-                                sessionScriptRandom, new MobileUniformWispRandom(), gamblingRoster, () => runGate.CanAdvance,
+                                sessionScriptRandom, sessionTierPoolRandom, gamblingRoster, () => runGate.CanAdvance,
                                 () => PracticeGamblingNavigation.Navigation,
                                 (receipt, tier, won) => PersonalMissions?.RecordGamble(receipt, tier, won));
                             PracticeTierUnitGambling.PostCommitObserverFailed += Debug.LogException;

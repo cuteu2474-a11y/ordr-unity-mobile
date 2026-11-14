@@ -24,8 +24,14 @@ namespace Ordr.Mobile.Tests
                     BindingFlags.NonPublic | BindingFlags.Instance)
                     .Invoke(owner, null);
                 owner.BeginUnitPreparation();
+                Assert.IsFalse(owner.IsGameplayPaused);
+                var unpaused = owner.CaptureCoreCheckpointDraft();
+                Assert.IsFalse(owner.IsGameplayPaused,
+                    "정상 캡처 후에도 사용자의 일시정지 상태를 바꾸지 않습니다.");
                 owner.SetManualGameplayPause(true);
                 var captured = owner.CaptureWorldCheckpointDraft();
+                Assert.IsTrue(owner.IsGameplayPaused);
+                Assert.AreEqual(unpaused.LogicalTime, captured.LogicalTime);
                 Assert.AreEqual(owner.Combat.Time, captured.LogicalTime);
                 Assert.AreEqual(owner.Combat.CharacterCount, captured.Combat.Actors.Count);
                 Assert.AreEqual(owner.Combat.EnemyCount, captured.Combat.Enemies.Count);

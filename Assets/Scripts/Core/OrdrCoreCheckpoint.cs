@@ -28,6 +28,11 @@ namespace Ordr.Mobile.Core
         // Stage S03: independent state for commerce and the shared BFi stream.
         // These are not sufficient to enable game resume by themselves.
         public MobileRollbackWispRandomState ScriptRandom;
+        // Three distinct local fallback-native draw streams. They MUST NOT
+        // be merged with the source BFi lane or with each other on resume.
+        public MobileRollbackWispRandomState WispPoolRandom;
+        public MobileRollbackWispRandomState GraduatedRarePoolRandom;
+        public MobileRollbackWispRandomState TierPoolRandom;
         public SourceModelMoneyGamblingDeskState MoneyDesk;
         public SourceModelUnitGamblingState UnitGambling;
         public SourceModelOtherworldUnitGamblingState OtherworldGambling;
@@ -81,7 +86,10 @@ namespace Ordr.Mobile.Core
             Original323CreepPracticeState creeps = null,
             Original323StoryBuildingPracticeState storyBuildings = null,
             Original323SoloStoryState soloStory = null,
-            Original323StoryMobileProgressionState storyProgression = null)
+            Original323StoryMobileProgressionState storyProgression = null,
+            MobileRollbackWispRandomState tierPoolRandom = null,
+            MobileRollbackWispRandomState wispPoolRandom = null,
+            MobileRollbackWispRandomState graduatedRarePoolRandom = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -94,7 +102,11 @@ namespace Ordr.Mobile.Core
                 Game = game.CaptureState(), Roster = economy.Units.CaptureState(),
                 MissionGameplay = missions.CaptureState(),
                 Combat = combat, Waves = waves, Practice = practice,
-                ScriptRandom = scriptRandom, MoneyDesk = moneyDesk,
+                ScriptRandom = scriptRandom,
+                TierPoolRandom = tierPoolRandom,
+                WispPoolRandom = wispPoolRandom,
+                GraduatedRarePoolRandom = graduatedRarePoolRandom,
+                MoneyDesk = moneyDesk,
                 UnitGambling = unitGambling, OtherworldGambling = otherworldGambling,
                 UnitReroll = unitReroll,
                 Research = research, Evolution = evolution,
@@ -147,6 +159,12 @@ namespace Ordr.Mobile.Core
             ValidateCombatDraft(state);
             if (state.ScriptRandom != null)
                 MobileRollbackWispRandom.Restore(state.ScriptRandom);
+            if (state.WispPoolRandom != null)
+                MobileRollbackWispRandom.Restore(state.WispPoolRandom);
+            if (state.GraduatedRarePoolRandom != null)
+                MobileRollbackWispRandom.Restore(state.GraduatedRarePoolRandom);
+            if (state.TierPoolRandom != null)
+                MobileRollbackWispRandom.Restore(state.TierPoolRandom);
             if (state.StoryBuildings != null ||
                 state.SoloStory != null || state.StoryProgression != null)
             {
