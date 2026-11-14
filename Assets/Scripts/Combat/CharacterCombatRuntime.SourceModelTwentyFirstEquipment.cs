@@ -149,13 +149,22 @@ namespace Ordr.Mobile.Combat
                 ImportedCombatSkill skill = null;
                 foreach (var candidate in actor.Profile.Skills)
                     if (candidate.Id == "I-05:skill:3") { skill = candidate; break; }
-                if (!SourceModelTwentiethSkillCatalog.CanModelExact(skill)) continue;
+                if (!SourceModelTwentiethSkillCatalog.CanModelExact(skill) ||
+                    !skill.Radius.HasValue || skill.Radius.Value <= 0) continue;
+                // The documented I-05 on-every-attack effect is a caster
+                // area (400). Unique-armor slow must not affect the whole
+                // map, even when a native equipped-item count is witnessed.
+                var ownerPosition = roster.Get(actor.Id);
+                double radiusSquared = skill.Radius.Value * skill.Radius.Value;
                 string key = "practice-tooltip:bullet-armor-slow:" + actor.Id;
                 foreach (var enemy in enemies.Values)
                 {
                     if (!enemy.Enemy.IsAlive || sourceModelUnitEffects == null ||
                         !sourceModelUnitEffects.IsPracticeTarget(enemy.Id) ||
                         !CanAttackInThisLane(actor, enemy)) continue;
+                    double dx = enemy.X - ownerPosition.X;
+                    double dy = enemy.Y - ownerPosition.Y;
+                    if (dx * dx + dy * dy > radiusSquared) continue;
                     modelAuraKeys.Add(key);
                     statuses[enemy.Id].Apply(new CombatEffect(key,
                         CombatEffectType.MovementSlowPercent, CombatEffectOrigin.Aura,
@@ -184,10 +193,9 @@ namespace Ordr.Mobile.Combat
             if (actor.Catalog.Id != "I-05" || actor.Profile == null) return;
             double expires;
             if (!sourceModelBulletRokushikiUntil.TryGetValue(actor.Id, out expires)) return;
-            if (expires < Time)
+            if (expires <= Time)
             {
-                sourceModelBulletRokushikiUntil.Remove(actor.Id);
-                sourceModelBulletRokushikiLane.Remove(actor.Id);
+                ForgetSourceModelBulletCombatStance(actor.Id);
                 return;
             }
             if (!primary.Enemy.IsAlive) return;
@@ -195,8 +203,7 @@ namespace Ordr.Mobile.Combat
             if (!sourceModelBulletRokushikiLane.TryGetValue(actor.Id, out laneRevision) ||
                 laneRevision != SourceModelLaneRevision(actor.Id))
             {
-                sourceModelBulletRokushikiUntil.Remove(actor.Id);
-                sourceModelBulletRokushikiLane.Remove(actor.Id);
+                ForgetSourceModelBulletCombatStance(actor.Id);
                 return;
             }
             ImportedCombatSkill skill = null;
@@ -280,10 +287,15 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        private void ForgetSourceModelTwentyFirstEquipment(long id)
+        private void ForgetSourceModelBulletCombatStance(long id)
         {
             sourceModelBulletRokushikiUntil.Remove(id);
             sourceModelBulletRokushikiLane.Remove(id);
+        }
+
+        private void ForgetSourceModelTwentyFirstEquipment(long id)
+        {
+            ForgetSourceModelBulletCombatStance(id);
             if (sourceModelEquippedItems != null) sourceModelEquippedItems.RemoveOwner(id);
         }
     }

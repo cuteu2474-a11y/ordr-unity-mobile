@@ -424,27 +424,14 @@ namespace Ordr.Mobile.Mobile
                     if (unit.Unit.Id == "E-06" &&
                         skillId == Original323SourceNativeActionKeys.ViviUpgrade(id))
                     {
-                        int level = 1 + (int)Math.Min(9, wallet.Balance(
-                            Original323SourceNativeActionKeys.ViviLevel(id)));
-                        int chance = Original323SourceNativeActionKeys.ViviChance(level);
-                        if (chance == 0 || wallet.Balance("wood") < 2 ||
-                            wallet.Balance(WispResourceIds.Random) < 3)
-                            return new ManualActionResult(ManualActionState.Rejected,
-                                "레벨 상한 또는 목재·기본 랜덤위습 부족");
                         bool success;
-                        if (!combat.TryRollSourceModelViviUpgrade(id, chance, out success))
+                        int level;
+                        if (!combat.TryUpgradeSourceModelViviAlabasta(
+                                id, wallet, out success, out level))
                             return new ManualActionResult(ManualActionState.Rejected,
-                                "비비 강화 출처 또는 게임 상태가 맞지 않습니다.");
-                        var costs = new ResourceBundle().Add("wood", 2)
-                            .Add(WispResourceIds.Random, 3);
-                        var reward = new ResourceBundle();
-                        if (success)
-                            reward.Add(Original323SourceNativeActionKeys.ViviLevel(id), 1);
-                        if (!wallet.TryExchange(costs, reward))
-                            return new ManualActionResult(ManualActionState.Rejected,
-                                "강화 재료 정산이 실패했습니다.");
+                                "강화 레벨·원본 확률·목재·기본 랜덤위습·전투 상태를 확인해 주세요.");
                         return new ManualActionResult(ManualActionState.Succeeded,
-                            success ? "알라바스타 강화 성공 · Lv." + (level + 1) :
+                            success ? "알라바스타 강화 성공 · Lv." + level :
                                 "강화 실패 · 목재 2·기본 랜덤위습 3 소모");
                     }
                     if (unit.Unit.Id == "D-01" &&

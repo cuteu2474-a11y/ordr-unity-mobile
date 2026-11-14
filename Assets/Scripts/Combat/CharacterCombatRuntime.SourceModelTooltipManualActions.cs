@@ -83,6 +83,51 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
+        // One verified UI action owns level validation, the original RNG roll
+        // and the shared-wallet debit/level credit. Callers cannot submit an
+        // arbitrary success rate or forget the failed-roll material cost.
+        public bool TryUpgradeSourceModelViviAlabasta(long id, EconomyWallet wallet,
+            out bool success, out int updatedLevel)
+        {
+            success = false;
+            updatedLevel = 0;
+            if (wallet == null ||
+                (otamaRewardWallet != null &&
+                 !Object.ReferenceEquals(otamaRewardWallet, wallet)))
+                return false;
+            string levelKey = Original323SourceNativeActionKeys.ViviLevel(id);
+            long progress = wallet.Balance(levelKey);
+            if (progress < 0 || progress >= 9) return false;
+            int currentLevel = (int)progress + 1;
+            int chance = Original323SourceNativeActionKeys.ViviChance(currentLevel);
+            if (!CanRollSourceModelViviUpgrade(id, chance) ||
+                wallet.Balance(SourceModelNativeCharacterRules.WoodResourceId) < 2 ||
+                wallet.Balance(WispResourceIds.Random) < 3) return false;
+            var before = wallet.CaptureState();
+            bool rolled;
+            if (!TryRollSourceModelViviUpgrade(id, chance, out rolled)) return false;
+            try
+            {
+                var cost = new ResourceBundle()
+                    .Add(SourceModelNativeCharacterRules.WoodResourceId, 2)
+                    .Add(WispResourceIds.Random, 3);
+                var credit = new ResourceBundle();
+                if (rolled) credit.Add(levelKey, 1);
+                if (!wallet.TryExchange(cost, credit)) return false;
+            }
+            catch
+            {
+                // A Grant observer can throw after an otherwise successful
+                // exchange. Do not keep a level increase without its cost,
+                // or a cost without an acknowledged result.
+                wallet.RestoreState(before);
+                return false;
+            }
+            success = rolled;
+            updatedLevel = currentLevel + (rolled ? 1 : 0);
+            return true;
+        }
+
         public bool CanSourceModelBruleeCopy(long sourceId, long targetId)
         {
             CharacterInstance target;
@@ -145,6 +190,8 @@ namespace Ordr.Mobile.Combat
         {
             CharacterInstance recipient;
             if (wallet == null ||
+                (otamaRewardWallet != null &&
+                 !Object.ReferenceEquals(otamaRewardWallet, wallet)) ||
                 !HasExactManualOwner(id, "L-39", "h0CM", "사랑의도시락(B)") ||
                 !characters.TryGetValue(recipientId, out recipient) ||
                 !CanShareAllyCombatLane(id, recipientId) ||
@@ -166,14 +213,15 @@ namespace Ordr.Mobile.Combat
         {
             if (!CanUseSourceModelHibariBento(id, recipientId, wallet)) return false;
             var before = wallet.CaptureState();
-            if (!wallet.TryExchangeOnce(
-                Original323SourceNativeActionKeys.HibariReceipt(id),
-                new ResourceBundle(), new ResourceBundle())) return false;
+            string receipt = Original323SourceNativeActionKeys.HibariReceipt(id);
+            string source = "practice-tooltip:hibari-bento:" + id + ":" + recipientId;
             try
             {
+                if (!wallet.TryExchangeOnce(receipt,
+                        new ResourceBundle(), new ResourceBundle())) return false;
                 double bonus = characters[recipientId].Catalog.Id == "TR-24" ? 20 : 12;
                 unitStatuses[InstanceKey(recipientId)].Apply(new CombatEffect(
-                    "practice-tooltip:hibari-bento:" + id + ":" + recipientId,
+                    source,
                     CombatEffectType.AttackSpeedBuff,
                     CombatEffectOrigin.Aura, bonus, 0));
                 pendingCommandEvents.Add(new CharacterCombatEvent(
@@ -184,6 +232,11 @@ namespace Ordr.Mobile.Combat
             }
             catch
             {
+                // If the status event fails after the one-use receipt, unwind
+                // both the receipt and its effect instead of burning a Bento.
+                CombatStatusEngine status;
+                if (unitStatuses.TryGetValue(InstanceKey(recipientId), out status))
+                    status.RemoveSource(source);
                 wallet.RestoreState(before);
                 return false;
             }
@@ -226,6 +279,7 @@ namespace Ordr.Mobile.Combat
         public bool CanCycleSourceModelMaria(long id) =>
             HasExactManualOwner(id, "D-01", "h04U", "마리아네트 전환") &&
             SourceModelMariaCooldownRemaining(id) == 0 &&
+            SourceModelMariaEffectRemaining(id) == 0 &&
             !IsOriginalUnitCasting(id) && !SourceFormIsCasting(id);
 
         public bool TryCycleSourceModelMaria(long id)
@@ -323,7 +377,12 @@ namespace Ordr.Mobile.Combat
 
         private void ForgetSourceModelTooltipManualActor(long id, bool deleted)
         {
-            // Scheduled status ticks are invalid after any lane change.
+            // Cancel the actual pending callbacks as well as their token.
+            // Leaving canceled Action lambdas in the queue blocks draft
+            // checkpoint capture and retains dead actor references.
+            effectExecutor.CancelCasterTargets(InstanceKey(id), target =>
+                target != null && target.StartsWith(
+                    "practice-maria:" + id + ":", StringComparison.Ordinal));
             manualMariaToken.Remove(id);
             manualMariaActiveUntil.Remove(id);
             if (deleted)

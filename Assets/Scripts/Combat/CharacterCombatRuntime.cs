@@ -1510,6 +1510,9 @@ namespace Ordr.Mobile.Combat
                 sourceModelStoryLaneRevisions[instanceId] =
                     checked(SourceModelLaneRevision(instanceId) + 1);
                 ForgetSourceModelFormsOnLaneChange(instanceId);
+                // Equipment remains owned, but the triggered 3s Bullet
+                // stance cannot cross story/shared/decoding combat lanes.
+                ForgetSourceModelBulletCombatStance(instanceId);
                 // JASS EXPauseUnit must not follow a unit across story lanes.
                 sourceAttackPauseFinishes.Remove(instanceId);
                 sourceAttackPauseTokens.Remove(instanceId);
@@ -2568,6 +2571,10 @@ namespace Ordr.Mobile.Combat
             ForgetSourceModelNinthActor(instanceId);
             ForgetSourceModelTwentyFifthActor(instanceId);
             ForgetSourceModelTwentiethActor(instanceId);
+            // Native equipment is attached to the actual actor, not to its
+            // catalog ID. Retire equipment and temporary derived buffs in
+            // the same transaction as sale/fusion, leaving receipt tombstones.
+            ForgetSourceModelTwentyFirstEquipment(instanceId);
             sourceModelManagedResourceRows.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
             // Native fusion removes every input as ONE logical batch. Do
