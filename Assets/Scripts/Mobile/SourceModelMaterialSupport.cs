@@ -4,10 +4,12 @@ using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Mobile
 {
-    // 100G support: older 11.089 patch notes confirm a 30G refund,
-    // one common/uncommon unit and two purchases per game. The 2.323[C]
-    // native product and exact grade odds have not been recovered.
-    // Keep the provisional 1:1 grade draw isolated for replacement.
+    // Original ORDR S2 2.323[C] war3map.j CJU (registered sold unit h0AX):
+    // BFi(1,1000)<=10: pirate ship h060 (1%). Otherwise
+    // BFi(1,100)<=50: common jY[1..9] (49.5% overall), or
+    // uncommon jZ[0..12] (49.5% overall). All three calls share
+    // the same script BFi RNG lane and the sold item refunds 30 gold.
+    // Original script SHA256: 96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d.
     public sealed class SourceModelMaterialSupport : IOriginalEconomyPort
     {
         public const string OfferId = "mobile:material-support:100g";
@@ -19,26 +21,24 @@ namespace Ordr.Mobile.Mobile
         private readonly EconomyWallet wallet;
         private readonly GameSession game;
         private readonly IOriginalWispRandom scriptRandom;
-        private readonly IOriginalWispRandom nativePoolRandom;
         private readonly IOriginal323UnitGamblingWorld world;
         private readonly Func<bool> canInteract;
-        private int? pendingGrade;
+        private int? pendingShipRoll;
+        private int? pendingGradeRoll;
+        private int? pendingUnitRoll;
         private string pendingRawcode;
         private bool processing;
         public event Action<Exception> PostCommitObserverFailed;
 
         public SourceModelMaterialSupport(EconomyWallet shared, GameSession session,
-            IOriginalWispRandom gradeRandom, IOriginalWispRandom unitRandom,
+            IOriginalWispRandom originalBfiRandom,
             IOriginal323UnitGamblingWorld roster, Func<bool> interaction)
         {
             wallet = shared ?? throw new ArgumentNullException(nameof(shared));
             game = session ?? throw new ArgumentNullException(nameof(session));
-            scriptRandom = gradeRandom ?? throw new ArgumentNullException(nameof(gradeRandom));
-            nativePoolRandom = unitRandom ?? throw new ArgumentNullException(nameof(unitRandom));
+            scriptRandom = originalBfiRandom ?? throw new ArgumentNullException(nameof(originalBfiRandom));
             world = roster ?? throw new ArgumentNullException(nameof(roster));
             canInteract = interaction ?? throw new ArgumentNullException(nameof(interaction));
-            if (ReferenceEquals(gradeRandom, unitRandom))
-                throw new ArgumentException("등급과 네이티브 유닛 추첨 난수 경로는 분리합니다.");
         }
 
         public long PurchasedCount => wallet.Balance(PurchaseCountResource);
@@ -49,9 +49,9 @@ namespace Ordr.Mobile.Mobile
             if (category != ManualEconomyCategory.Gambling)
                 return Array.Empty<MobileManualOffer>();
             return new [] { new MobileManualOffer(OfferId, "물품 지원",
-                "100골드 결제 → 30골드 반환 + 흔함/안흔함 유닛 1기" +
+                "100골드 결제 → 30골드 반환 + 해적선 1% / 흔함 49.5% / 안흔함 49.5%" +
                 " · 남은 지원 " + RemainingPurchases + "/2회" +
-                " · 구버전 11.089 근거, 2.323[C] 확률 미확인(현재 등급별 1:1 추첨)") };
+                " · 원본 2.323[C] CJU/h0AX의 BFi 분기") };
         }
 
         public ManualActionResult Confirm(ManualEconomyCategory category, string offerId)
@@ -70,25 +70,42 @@ namespace Ordr.Mobile.Mobile
             processing = true;
             try
             {
-                // Preserve both partial grade and complete unit draws on
-                // exceptions: neither a failed spawn nor a declined debit
-                // may reroll a purchase for free.
-                if (!pendingGrade.HasValue)
+                // Cache every original CJU BFi call separately. An exception
+                // after the first roll cannot cause an unrelated reroll or
+                // consume a second global BFi value on retry.
+                if (!pendingShipRoll.HasValue)
                 {
-                    int grade = scriptRandom.NextInclusive(1, 2);
-                    if (grade < 1 || grade > 2)
-                        throw new InvalidOperationException("물품 지원 등급 추첨 범위 오류");
-                    pendingGrade = grade;
+                    int roll = scriptRandom.NextInclusive(1, 1000);
+                    if (roll < 1 || roll > 1000)
+                        throw new InvalidOperationException("물품 지원 해적선 추첨 범위 오류");
+                    pendingShipRoll = roll;
                 }
-                if (pendingRawcode == null)
+                if (pendingShipRoll.Value <= 10)
                 {
-                    var pool = pendingGrade.Value == 1 ?
-                        Original323UnitGamblingRules.Common :
+                    pendingRawcode = "h060";
+                }
+                else if (pendingRawcode == null)
+                {
+                    if (!pendingGradeRoll.HasValue)
+                    {
+                        int roll = scriptRandom.NextInclusive(1, 100);
+                        if (roll < 1 || roll > 100)
+                            throw new InvalidOperationException("물품 지원 등급 추첨 범위 오류");
+                        pendingGradeRoll = roll;
+                    }
+                    bool common = pendingGradeRoll.Value <= 50;
+                    var pool = common ? Original323UnitGamblingRules.Common :
                         Original323UnitGamblingRules.Uncommon;
-                    int index = nativePoolRandom.NextInclusive(0, pool.Count - 1);
-                    if (index < 0 || index >= pool.Count)
-                        throw new InvalidOperationException("물품 지원 유닛 추첨 범위 오류");
-                    pendingRawcode = pool[index];
+                    int minimum = common ? 1 : 0;
+                    int maximum = common ? 9 : 12;
+                    if (!pendingUnitRoll.HasValue)
+                    {
+                        int roll = scriptRandom.NextInclusive(minimum, maximum);
+                        if (roll < minimum || roll > maximum)
+                            throw new InvalidOperationException("물품 지원 유닛 추첨 범위 오류");
+                        pendingUnitRoll = roll;
+                    }
+                    pendingRawcode = pool[pendingUnitRoll.Value - minimum];
                 }
                 string receipt = "mobile:material-support:purchase:" + (PurchasedCount + 1);
                 using (var spawn = world.Begin(new [] { pendingRawcode }, null))
@@ -111,7 +128,9 @@ namespace Ordr.Mobile.Mobile
                     }
                     if (!paid) return Reject("물품 지원 결제 실패. 추첨 결과는 유지됩니다.");
                     spawn.Commit();
-                    pendingGrade = null;
+                    pendingShipRoll = null;
+                    pendingGradeRoll = null;
+                    pendingUnitRoll = null;
                     pendingRawcode = null;
                     if (observerError != null)
                         try { PostCommitObserverFailed?.Invoke(observerError); } catch { }
