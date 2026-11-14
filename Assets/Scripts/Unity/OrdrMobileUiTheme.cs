@@ -295,6 +295,65 @@ namespace Ordr.Mobile.Unity
             themedSkin.scrollView = new GUIStyle(source.scrollView);
             themedSkin.scrollView.normal.background = null;
             InitializeAuxiliaryStyles();
+            ApplyBundledFonts();
+        }
+
+        // Android does not ship Malgun Gothic. Load redistributed typefaces
+        // directly from Unity Resources instead of asking platform font APIs.
+        // Existing builds without the assets retain their current GUI styles.
+        private static void ApplyBundledFonts()
+        {
+            Font body = Resources.Load<Font>("Fonts/Pretendard-Regular");
+            Font mapleBold = Resources.Load<Font>("Fonts/Maplestory-Bold");
+            Font mapleLight = Resources.Load<Font>("Fonts/Maplestory-Light");
+
+            if (body != null)
+            {
+                themedSkin.font = body;
+                UseFont(body,
+                    themedSkin.box, themedSkin.label, themedSkin.textField,
+                    themedSkin.textArea, themedSkin.toggle,
+                    currencyText, overline, explanation, researchDetail,
+                    accordionMeta, accordionBody, wispCountCaption,
+                    scoreCardCaption, scoreCardFooter, confirmationPanel,
+                    helpBubble, fusionIngredientName, fusionNeutralChip,
+                    fusionMissingChip, fusionReadyChip, statusCard);
+            }
+            if (mapleBold != null)
+            {
+                UseFont(mapleBold,
+                    themedSkin.button, selectedTab, primaryButton,
+                    sectionTitle, subheading, navButton, skillButton,
+                    closeButton, researchName, researchNumber,
+                    accordionTitle, accordionArrow, fusionListName,
+                    wispCountValue, scoreCardValue, statusValue,
+                    smallButton, accordionClosed, accordionOpen);
+                // The bundled file itself is a bold typeface: avoid applying
+                // an additional synthetic bold pass to its glyphs.
+                UseNativeWeight(themedSkin.button, selectedTab, primaryButton,
+                    sectionTitle, subheading, navButton, skillButton,
+                    closeButton, researchName, researchNumber,
+                    accordionTitle, accordionArrow, fusionListName,
+                    wispCountValue, scoreCardValue, statusValue,
+                    smallButton, accordionClosed, accordionOpen);
+            }
+            if (mapleLight != null)
+            {
+                UseFont(mapleLight, facilityBadge);
+                facilityBadge.fontStyle = FontStyle.Normal;
+            }
+        }
+
+        private static void UseFont(Font font, params GUIStyle[] styles)
+        {
+            foreach (var style in styles)
+                if (style != null) style.font = font;
+        }
+
+        private static void UseNativeWeight(params GUIStyle[] styles)
+        {
+            foreach (var style in styles)
+                if (style != null) style.fontStyle = FontStyle.Normal;
         }
 
         private static void InitializeAuxiliaryStyles()

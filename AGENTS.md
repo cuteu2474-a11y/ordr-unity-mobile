@@ -1,5 +1,7 @@
 # 개발 작업 규칙
 
+- **모바일 글꼴(2026-11-14):** `OrdrMobileUiTheme.ApplyBundledFonts`는 `Assets/Resources/Fonts/Maplestory-Bold.ttf`(메뉴/제목), `Maplestory-Light.ttf`(보조 표시), `Pretendard-Regular.otf`(본문)를 Unity `Resources.Load<Font>`로 불러옵니다. 맑은 고딕은 Microsoft Windows 글꼴이라 GitHub/APK에 재배포하지 않고, 가독성 좋은 OFL Pretendard로 대체합니다. 메이플스토리 원본은 수정 없이 넥슨 라이선스 고지를 포함해야 합니다. 외부 폰트 파일은 `tools/sync_font_assets.py`를 기존 워크플로의 `[sync-font-assets]` 작업으로 내려받아 해시 검증 후 저장소에 커밋합니다. 신규 브랜치/워크플로는 만들지 않으며 해당 작업에서는 Unity/APK 빌드를 실행하지 않습니다. 저장소에 바이너리가 반영되기 전에는 폰트 적용을 검증했다고 말하지 않습니다.
+
 - **S02 전투 상태 캡처 및 안전 차단(2026-11-14):** 전투 AttackScheduler·SkillTrigger·AttackPipeline 이벤트 순번·StatusRevision/원래 만료시각·액티브 HP/MP·WaveDirector 스폰/처치 장부·65R 카운트다운·적 방어/좌표·공통 로스터를 한 동일 시점으로 기록합니다. `CombatTimedEffectQueue`는 복원할 수 없는 임의 Action 예약이 있으면 **저장 거부**하며 완료/실패 보상을 재생하지 않습니다. 예약된 원본 타격은 `verified-hit-pulse-v1` 기술자 사용. 전체 전투·보물·공유/스토리·도박/아이템·시설·난수커서를 재구성하기 전엔 `OrdrCoreCheckpoint.Restore`가 전장 포함 세션의 직접 이어하기를 거부합니다. 실제 게임 메뉴 버튼 추가 금지. 테스트 코드는 묶음으로 작성했고 실행 전.
 
 - **S01/S02 안전한 첫 저장 묶음(2026-11-14):** 새 `OrdrCoreCheckpoint`는 로스터 ID·nextId·선택·라운드·지갑/개인미션 이벤트·보상 영수증·모바일 미션 난수·원본 해시를 새 인스턴스로 검증합니다. `OrdrCoreCheckpointStore`는 SHA256 이중 슬롯+임시 파일의 핵심 상태 초안만 저장합니다. 절대로 이를 완성된 APK 저장이나 이어하기로 표시하지 마세요. 실제 저장/복귀 활성화 전 전투/소환/상태/예약 타격/적/스토리/크립/도박/아이템/난수/시설 월드까지 데이터 직렬화하고 동일 시점 복원·전체 게임 검증을 통과해야 합니다.
