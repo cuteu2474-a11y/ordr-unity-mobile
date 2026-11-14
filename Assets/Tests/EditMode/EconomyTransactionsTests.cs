@@ -22,6 +22,25 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OneTimeWalletReceiptStillExistsWhenGrantedObserverThrows()
+        {
+            var wallet = new EconomyWallet();
+            wallet.Grant(new ResourceBundle().Add("test-wood", 2));
+            wallet.Granted += reward =>
+                throw new InvalidOperationException("POST_COMMIT_TEST");
+            Assert.Throws<InvalidOperationException>(() =>
+                wallet.TryExchangeOnce("test:once",
+                    new ResourceBundle().Add("test-wood", 2),
+                    new ResourceBundle().Add("test-level", 1)));
+            Assert.IsTrue(wallet.HasCompletedTransaction("test:once"));
+            Assert.AreEqual(0, wallet.Balance("test-wood"));
+            Assert.AreEqual(1, wallet.Balance("test-level"));
+            Assert.IsFalse(wallet.TryExchangeOnce("test:once",
+                new ResourceBundle().Add("test-wood", 2),
+                new ResourceBundle().Add("test-level", 1)));
+        }
+
+        [Test]
         public void FailedPurchaseDoesNotConsumePartialMaterials()
         {
             var wallet = new EconomyWallet();

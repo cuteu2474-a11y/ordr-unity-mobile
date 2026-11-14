@@ -40,12 +40,6 @@ namespace Ordr.Mobile.Combat
                 }, "Bdl/A902/A911/A903/A904 네이티브 조건·투사체 연출 미인증",
                 .04);
 
-        private static readonly SourceScriptAttackSpec KumaJassAdditional =
-            new SourceScriptAttackSpec("L-32", "h030", "BtL", 1, 1,
-                null, new[] { new SourceScriptHit(SourceScriptHitShape.Circle,
-                    500, 0, 200000, 1, 1, Ordr323AttackType.Spells) },
-                "원본 이펙트 객체 및 보스 저항 미확인");
-
         private int SourceRoll1To(int inclusiveMaximum) =>
             sourceModelRules.NextScriptRoll(inclusiveMaximum) + 1;
 
@@ -265,10 +259,30 @@ namespace Ordr.Mobile.Combat
             }
             if (SourceRoll1To(100) <= 10)
             {
-                RecordSourceSpecial(actor, primary, "발바닥발바닥 열매",
-                    "BtL: 10% / 반경500 / 200000 단일 광역 호출");
-                ApplySourceScriptHits(actor, primary, KumaJassAdditional,
-                    KumaJassAdditional.OnProc);
+                // Preserve the original single BtL roll. The manual transfer
+                // already calls this tooltip executor with no extra proc.
+                ImportedCombatSkill paw = FindSourceSkill(
+                    actor, "발바닥발바닥 열매");
+                if (paw == null || paw.Id != "L-32:skill:1" ||
+                    paw.Trigger != "onAttack" || paw.Radius != 500 ||
+                    paw.ChancePercent != 10 || paw.Components.Count != 2 ||
+                    paw.Components[0].Type != "magical" ||
+                    paw.Components[0].Number("amount") != 200000 ||
+                    paw.Components[1].Type != "stun" ||
+                    paw.Components[1].Number("durationSeconds") != 1.4)
+                {
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EffectDeferred,
+                        InstanceKey(actor.Id), primary.Id, "발바닥발바닥 열매",
+                        "원본 후속 효과 명세 불일치: 임의 피해/기절을 만들지 않음", 0));
+                    return;
+                }
+                var targets = SourceScriptTargets(actor, primary,
+                    new SourceScriptHit(SourceScriptHitShape.Circle,
+                        500, 0, 0, 1, 1, Ordr323AttackType.Spells));
+                RecordSourceSpecial(actor, primary, paw.Name,
+                    "BtL: 10% / 500범위 / 마법200000 + 일반 라인 1.4초 기절");
+                ApplySourceModelNextThirtySkill(actor, primary, paw, targets);
             }
         }
     }

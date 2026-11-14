@@ -586,6 +586,11 @@ namespace Ordr.Mobile.Combat
                 scheduler.Time != effectExecutor.Time)
                 throw new InvalidOperationException(
                     "불완전한 전투 스텝·조합·불일치 시계는 저장할 수 없습니다.");
+            // The pending outcome consumed its RNG already; losing the
+            // uncommitted result during save/load would permit free rerolls.
+            if (pendingViviUpgrades.Count != 0)
+                throw new NotSupportedException(
+                    "미확정 비비 강화 추첨은 완료 전 저장할 수 없습니다.");
             RejectNonRestorableSourceSkillState();
             var draft = new SourceCombatRuntimeCheckpoint {
                 Time = scheduler.Time, NextSummonId = sourceNextSummonId,

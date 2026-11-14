@@ -2252,6 +2252,74 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void ViviCommittedUpgradeSurvivesPostCommitWalletObserverException()
+        {
+            using (var live = Create("E-06", true, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle().Add("wood", 2)
+                    .Add(WispResourceIds.Random, 3));
+                wallet.Granted += amount =>
+                    throw new InvalidOperationException("POST_COMMIT_OBSERVER");
+                bool won; int level;
+                Assert.IsTrue(live.Combat.TryUpgradeSourceModelViviAlabasta(
+                    live.ActorId, wallet, out won, out level));
+                Assert.IsTrue(won);
+                Assert.AreEqual(2, level);
+                Assert.AreEqual(0, wallet.Balance("wood"));
+                Assert.AreEqual(0, wallet.Balance(WispResourceIds.Random));
+                Assert.IsFalse(live.Combat.TryUpgradeSourceModelViviAlabasta(
+                    live.ActorId, wallet, out won, out level));
+            }
+        }
+
+        [Test]
+        public void ViviLostRollConsumesCostButAllowsNextPaidTry()
+        {
+            using (var live = Create("E-06", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle().Add("wood", 4)
+                    .Add(WispResourceIds.Random, 6));
+                bool won; int level;
+                Assert.IsTrue(live.Combat.TryUpgradeSourceModelViviAlabasta(
+                    live.ActorId, wallet, out won, out level));
+                Assert.IsFalse(won);
+                Assert.AreEqual(1, level);
+                Assert.AreEqual(2, wallet.Balance("wood"));
+                Assert.AreEqual(3, wallet.Balance(WispResourceIds.Random));
+                Assert.IsTrue(live.Combat.TryUpgradeSourceModelViviAlabasta(
+                    live.ActorId, wallet, out won, out level));
+                Assert.IsFalse(won);
+                Assert.AreEqual(1, level);
+                Assert.AreEqual(0, wallet.Balance("wood"));
+                Assert.AreEqual(0, wallet.Balance(WispResourceIds.Random));
+            }
+        }
+
+        [Test]
+        public void KumaTenPercentAttackSharesTransferDamageAndStunExecutor()
+        {
+            using (var live = Create("L-32", true, -4900, 5400))
+            {
+                var outcomes = live.Battle.Advance(6);
+                Assert.IsTrue(outcomes.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "발바닥발바닥 열매" &&
+                    e.Detail.Contains("BtL: 10%")),
+                    "The attack-declaration proc must occur, not only transfer.");
+                Assert.IsTrue(outcomes.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "발바닥발바닥 열매"));
+                Assert.IsTrue(outcomes.Any(e =>
+                    e.Type == CharacterCombatEventType.StatusApplied &&
+                    e.SkillName == "발바닥발바닥 열매"));
+            }
+        }
+
+        [Test]
         public void KumaJassManaUsesAttackDeclaredNotFreeAutoCast()
         {
             using (var live = Create("L-32", false, -4900, 5400))

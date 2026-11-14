@@ -10,6 +10,17 @@ namespace Ordr.Mobile.Combat
     // status engine, lane checks and source-model combat clock.
     public sealed partial class CharacterCombatRuntime
     {
+        // An interrupted upgrade keeps the already sampled source-script
+        // outcome, rather than charging another RNG call on a retry.
+        private sealed class PendingViviUpgrade
+        {
+            public long Progress;
+            public bool Won;
+            public string Receipt;
+        }
+        private readonly Dictionary<long, PendingViviUpgrade> pendingViviUpgrades =
+            new Dictionary<long, PendingViviUpgrade>();
+
         private readonly Dictionary<long, int> manualMariaMode =
             new Dictionary<long, int>();
         private readonly Dictionary<long, double> manualMariaReady =
@@ -103,28 +114,53 @@ namespace Ordr.Mobile.Combat
             if (!CanRollSourceModelViviUpgrade(id, chance) ||
                 wallet.Balance(SourceModelNativeCharacterRules.WoodResourceId) < 2 ||
                 wallet.Balance(WispResourceIds.Random) < 3) return false;
-            var before = wallet.CaptureState();
-            bool rolled;
-            if (!TryRollSourceModelViviUpgrade(id, chance, out rolled)) return false;
+            PendingViviUpgrade pending;
+            if (pendingViviUpgrades.TryGetValue(id, out pending))
+            {
+                if (pending.Progress != progress)
+                    throw new InvalidOperationException(
+                        "비비 강화의 보류 레벨과 현재 레벨이 다릅니다.");
+                if (wallet.HasCompletedTransaction(pending.Receipt))
+                    return false; // Re-entrant duplicate during notification.
+            }
+            else
+            {
+                bool won;
+                if (!TryRollSourceModelViviUpgrade(id, chance, out won))
+                    return false;
+                pending = new PendingViviUpgrade {
+                    Progress = progress, Won = won,
+                    // A failed roll also consumes materials. It must not
+                    // permanently lock this level against later paid tries.
+                    Receipt = "practice-tooltip:vivi-alabasta:" + id + ":" +
+                        Guid.NewGuid().ToString("N")
+                };
+                pendingViviUpgrades.Add(id, pending);
+            }
+
+            var cost = new ResourceBundle()
+                .Add(SourceModelNativeCharacterRules.WoodResourceId, 2)
+                .Add(WispResourceIds.Random, 3);
+            var credit = new ResourceBundle();
+            if (pending.Won) credit.Add(levelKey, 1);
+            bool committed;
             try
             {
-                var cost = new ResourceBundle()
-                    .Add(SourceModelNativeCharacterRules.WoodResourceId, 2)
-                    .Add(WispResourceIds.Random, 3);
-                var credit = new ResourceBundle();
-                if (rolled) credit.Add(levelKey, 1);
-                if (!wallet.TryExchange(cost, credit)) return false;
+                committed = wallet.TryExchangeOnce(pending.Receipt, cost, credit);
             }
             catch
             {
-                // A Grant observer can throw after an otherwise successful
-                // exchange. Do not keep a level increase without its cost,
-                // or a cost without an acknowledged result.
-                wallet.RestoreState(before);
-                return false;
+                // The wallet can notify listeners AFTER committing both the
+                // debit and durable receipt. Never roll that back and risk a
+                // duplicated reward on retry. A pre-commit failure retains
+                // this outcome for the next attempt.
+                committed = wallet.HasCompletedTransaction(pending.Receipt);
+                if (!committed) return false;
             }
-            success = rolled;
-            updatedLevel = currentLevel + (rolled ? 1 : 0);
+            if (!committed) return false;
+            pendingViviUpgrades.Remove(id);
+            success = pending.Won;
+            updatedLevel = currentLevel + (pending.Won ? 1 : 0);
             return true;
         }
 
@@ -389,6 +425,7 @@ namespace Ordr.Mobile.Combat
             {
                 manualMariaMode.Remove(id);
                 manualMariaReady.Remove(id);
+                pendingViviUpgrades.Remove(id);
             }
             string source = "practice-tooltip:maria:" + id;
             foreach (var status in statuses.Values) status.RemoveSource(source);

@@ -197,8 +197,10 @@ namespace Ordr.Mobile.Combat
                     }
                     foreach (var target in targets)
                     {
+                        // Physical damage uses the source map's MELEE row,
+                        // not its Spells/ATTACK_TYPE_NORMAL armor multipliers.
                         ApplySourceModelTooltipDamage(actor, target, accepted.Name,
-                            "25회 물리", 360000, false);
+                            "25회 물리", 360000, false, Ordr323AttackType.Melee);
                         ApplySourceModelTooltipDamage(actor, target, accepted.Name,
                             "25회 마법", 50000, false);
                     }
