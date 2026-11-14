@@ -36,6 +36,9 @@ namespace Ordr.Mobile.Core
         public Original323EvolutionProgressState Evolution;
         public Original323PoneglyphState Poneglyph;
         public Original323CreepPracticeState Creeps;
+        public Original323StoryBuildingPracticeState StoryBuildings;
+        public Original323SoloStoryState SoloStory;
+        public Original323StoryMobileProgressionState StoryProgression;
     }
 
     public sealed class OrdrRestoredCoreCheckpoint
@@ -75,7 +78,10 @@ namespace Ordr.Mobile.Core
             Original323PlayerResearchState research = null,
             Original323EvolutionProgressState evolution = null,
             Original323PoneglyphState poneglyph = null,
-            Original323CreepPracticeState creeps = null)
+            Original323CreepPracticeState creeps = null,
+            Original323StoryBuildingPracticeState storyBuildings = null,
+            Original323SoloStoryState soloStory = null,
+            Original323StoryMobileProgressionState storyProgression = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -92,7 +98,9 @@ namespace Ordr.Mobile.Core
                 UnitGambling = unitGambling, OtherworldGambling = otherworldGambling,
                 UnitReroll = unitReroll,
                 Research = research, Evolution = evolution,
-                Poneglyph = poneglyph, Creeps = creeps
+                Poneglyph = poneglyph, Creeps = creeps,
+                StoryBuildings = storyBuildings, SoloStory = soloStory,
+                StoryProgression = storyProgression
             };
             // The mission gameplay component carries the SAME shared wallet.
             // A different wallet or a torn cross-service snapshot is rejected.
@@ -139,6 +147,44 @@ namespace Ordr.Mobile.Core
             ValidateCombatDraft(state);
             if (state.ScriptRandom != null)
                 MobileRollbackWispRandom.Restore(state.ScriptRandom);
+            if (state.StoryBuildings != null ||
+                state.SoloStory != null || state.StoryProgression != null)
+            {
+                if (state.StoryBuildings == null || state.SoloStory == null ||
+                    state.StoryProgression == null || state.Combat == null)
+                    throw new FormatException("스토리 실물·상태·보상 기록은 함께 저장해야 합니다.");
+                Original323StoryBuildingPracticeWorld.ValidateState(state.StoryBuildings);
+                Original323SoloStoryScenario.ValidateState(state.SoloStory,
+                    state.LogicalTime);
+                var queue = new Original323StoryNativeRewardQueue();
+                queue.RestoreState(state.SoloStory.NativeRewards);
+                Original323StoryMobileProgression.ValidateState(
+                    state.StoryProgression, queue, restored.Economy.Wallet);
+                var living = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var enemy in state.Combat.Enemies)
+                    if (enemy.Kind == CharacterEnemyKind.Story) living.Add(enemy.EnemyId);
+                var issued = new HashSet<int>();
+                var destroyed = new HashSet<int>();
+                foreach (var entry in state.StoryBuildings.Encounters)
+                {
+                    bool found = living.Remove(entry.EnemyId);
+                    if ((entry.State == Original323StoryBuildingState.Alive) != found)
+                        throw new FormatException("스토리 건물과 실물 적의 상태가 다릅니다.");
+                    issued.Add(entry.Stage);
+                    if (entry.State == Original323StoryBuildingState.Destroyed)
+                        destroyed.Add(entry.Stage);
+                }
+                if (living.Count != 0)
+                    throw new FormatException("스토리 건물 장부에 없는 적이 있습니다.");
+                foreach (int stage in state.SoloStory.IssuedStages)
+                    if (!issued.Contains(stage))
+                        throw new FormatException("출현 기록 없는 스토리 건물이 있습니다.");
+                foreach (int stage in state.SoloStory.CompletedStages)
+                    if (!destroyed.Contains(stage) ||
+                        !restored.Economy.Wallet.HasCompletedTransaction(
+                            "practice:story-stage:" + stage))
+                        throw new FormatException("스토리 파괴/보상 영수증이 다릅니다.");
+            }
             if (state.Research != null)
                 new Original323PlayerResearchSession(restored.Economy.Wallet,
                     restored.Game, rawcode => true).RestoreState(state.Research);

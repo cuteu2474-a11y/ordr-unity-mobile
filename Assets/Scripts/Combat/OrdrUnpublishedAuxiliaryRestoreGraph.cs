@@ -12,7 +12,15 @@ namespace Ordr.Mobile.Combat
         public Original323EvolutionProgress Evolution { get; internal set; }
         public Original323PlayerResearchSession Research { get; internal set; }
         public Original323CreepPracticeWorld Creeps { get; internal set; }
-        public void Dispose() { Creeps?.Dispose(); }
+        public Original323StoryBuildingPracticeWorld StoryBuildings { get; internal set; }
+        public Original323SoloStoryScenario SoloStory { get; internal set; }
+        public Original323StoryMobileProgression StoryProgression { get; internal set; }
+        public void Dispose()
+        {
+            SoloStory?.Dispose();
+            StoryBuildings?.Dispose();
+            Creeps?.Dispose();
+        }
     }
 
     public static class OrdrAuxiliaryRestoreGraphBuilder
@@ -21,7 +29,9 @@ namespace Ordr.Mobile.Combat
             OrdrUnpublishedCombatRestoreGraph graph,
             OrdrCoreCheckpointState save,
             Original323CreepObjectCatalog creepCatalog,
-            Func<string, bool> researchCanApply)
+            Func<string, bool> researchCanApply,
+            Original323StoryBuildingCatalog storyCatalog = null,
+            Func<int, int, int> storyRandom = null)
         {
             if (graph == null || graph.Core == null || graph.Combat == null ||
                 save == null || researchCanApply == null)
@@ -49,6 +59,32 @@ namespace Ordr.Mobile.Combat
                     state.Creeps = new Original323CreepPracticeWorld(
                         graph.Combat, creepCatalog);
                     state.Creeps.RestoreState(save.Creeps);
+                }
+                catch
+                {
+                    state.Dispose();
+                    throw;
+                }
+            }
+            if (save.SoloStory != null)
+            {
+                if (storyCatalog == null || storyRandom == null)
+                    throw new ArgumentNullException(
+                        "원본 스토리 카탈로그와 복원된 BFi 난수열이 필요합니다.");
+                try
+                {
+                    state.StoryBuildings = new Original323StoryBuildingPracticeWorld(
+                        graph.Combat, storyCatalog);
+                    state.StoryBuildings.RestoreState(save.StoryBuildings);
+                    state.SoloStory = new Original323SoloStoryScenario(graph.Combat,
+                        state.StoryBuildings, graph.Core.Economy, storyRandom);
+                    state.SoloStory.RestoreState(save.SoloStory);
+                    state.StoryProgression = new Original323StoryMobileProgression(
+                        graph.Core.Economy.Wallet);
+                    state.StoryProgression.RestoreState(save.StoryProgression,
+                        state.SoloStory.NativeRewards);
+                    // Do not call ConfigureNativeAwardPort: it applies pending
+                    // rewards and must wait until all other owners are restored.
                 }
                 catch
                 {

@@ -10,7 +10,7 @@ namespace Ordr.Mobile.Combat
     // The offline game uses the pinned 2.323[C] story sequence, not fabricated
     // "unlock" buttons. Combat HP is currently an OBJECT-BASE PRACTICE MODEL;
     // it is not an observed, fully modified Nightmare runtime health value.
-    public sealed class Original323SoloStoryScenario : IDisposable
+    public sealed partial class Original323SoloStoryScenario : IDisposable
     {
         public const int Nightmare = 6;
         public const double BuildingX = -6768.0; // original B1 center

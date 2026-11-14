@@ -1365,7 +1365,11 @@ namespace Ordr.Mobile.Unity
                 PlayerBuildingResearch?.CaptureState(),
                 EvolutionProgress?.CaptureState(),
                 Poneglyph?.CaptureState(),
-                PracticeCreeps?.CaptureState());
+                PracticeCreeps?.CaptureState(),
+                PracticeStoryBuildings?.CaptureState(),
+                SoloStory?.CaptureState(),
+                StoryProgression == null ? null :
+                    StoryProgression.CaptureState(SoloStory.NativeRewards));
         }
 
         public void WriteWorldCheckpointDraftForDiagnostics()

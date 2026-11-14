@@ -93,7 +93,7 @@ namespace Ordr.Mobile.Combat
     // Story is a STATIC BUILDING lane, not an enemy waypoint or wave creep.
     // Practice and source-authorized spawns share a damage/death event pipeline
     // but NEVER share eligibility or reward permissions.
-    public sealed class Original323StoryBuildingPracticeWorld : IDisposable
+    public sealed partial class Original323StoryBuildingPracticeWorld : IDisposable
     {
         private readonly CharacterCombatRuntime combat;
         private readonly Original323StoryBuildingCatalog catalog;
