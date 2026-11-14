@@ -123,11 +123,9 @@ namespace Ordr.Mobile.Combat
                     new[] { DerivedCircle(285, 10000, .85,
                         Ordr323AttackType.Chaos) }),
                 Branch("L-11", "h02T", "Bso/HP25", 100,
-                    new[] { DerivedDirect(475000, 4.75, .4,
-                            Ordr323AttackType.Chaos),
-                        DerivedCircle(525, 475000, 4.75,
+                    new[] { DerivedCircle(525, 475000, 4.75,
                             Ordr323AttackType.Chaos) },
-                    "HP25 native fanofknives, exact frame timing and resistance unverified",
+                    "HP25 native fanofknives frame, critical and immunity not fully verified",
                     .20))
         };
 

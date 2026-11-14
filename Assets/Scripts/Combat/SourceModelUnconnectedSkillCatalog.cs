@@ -156,6 +156,10 @@ namespace Ordr.Mobile.Combat
             new SourceModelUnconnectedSkillRow("I-07", "h04E",
                 new[] { "광역 마법 스턴", "마법 타격" },
                 new[] { "체력 소모 폭발 공격" }),
+            // E-06's 20-hit two-random-target skill has a special, exact
+            // tooltip executor; the ordinary area caster would mis-target.
+            new SourceModelUnconnectedSkillRow("E-06", "h057",
+                Array.Empty<string>(), new[] { "광역 난사" }),
             new SourceModelUnconnectedSkillRow("I-08", "h04F",
                 new[] { "단일 물리 타격", "타격·스턴", "기본 공격 추가 고정피해" },
                 new[] { "전체체력 비례 고정피해" }),
@@ -184,7 +188,8 @@ namespace Ordr.Mobile.Combat
             new SourceModelUnconnectedSkillRow("TR-13", "H08Z",
                 new[] { "원형 마법 스턴", "자신중심 마법 스턴" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("E-12", "h05C",
-                new[] { "혼합 공격", "혼합 스턴 타격" }, Array.Empty<string>()),
+                new[] { "혼합 공격", "혼합 스턴 타격" },
+                new[] { "마나 25회 타격" }),
             new SourceModelUnconnectedSkillRow("I-03", "h049",
                 new[] { "기본 공격 광역 추가", "범위 마법" },
                 new[] { "패기발산" }),

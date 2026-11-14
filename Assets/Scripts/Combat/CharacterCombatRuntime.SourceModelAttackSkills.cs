@@ -294,24 +294,23 @@ namespace Ordr.Mobile.Combat
             // proc roll. Do not consume an invented RNG draw on each attack.
             if (script.OnProc.Count == 0 && script.RollSides == 1 &&
                 string.IsNullOrEmpty(script.DeferredNativeEffect)) return;
-            // BpZ makes an independent 10% Blizzard roll BEFORE its 12%
-            // direct-hit roll. Blizzard's object damage is not yet verified,
-            // so preserve the branch and report the unmodeled native cast.
+            // R-27 player tooltip: 10% Meteor Volcano, 700-radius
+            // 8,000 magical damage. Warcraft's Blizzard is only an internal
+            // dummy command; do not invent ice or a freeze status in mobile.
+            // This is independent of the existing 12%/10,000 direct hit.
             if (script.CatalogId == "R-27" &&
                 sourceModelRules.NextScriptRoll(100) < 10)
             {
-                var blizzard = SpawnSourceTemporaryActor(actor,
-                    "BpZ · 블리자드", "아카이누 블리자드", 3, "e0KE",
-                    false, primary.X, primary.Y);
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, attackerId,
-                    primaryTargetId, actor.Catalog.Name + " 블리자드",
-                    "MODEL_ONLY BpZ 10% e0KE 보조 유닛 " + blizzard.Id +
-                    " 생성·3초 원본 수명", 0));
-                events.Add(new CharacterCombatEvent(
-                    CharacterCombatEventType.EffectDeferred, attackerId,
-                    primaryTargetId, actor.Catalog.Name + " 블리자드",
-                    "MODEL_ONLY ABlz 원본 타격·빙결·면역 미공급", 0));
+                    primaryTargetId, "유성 화산",
+                    "TOOLTIP_MODEL_ONLY 아카이누 10% / 700 범위 / 8,000 마법", 0));
+                var meteor = new SourceScriptAttackSpec("R-27", "h01P",
+                    "meteor-volcano-tooltip", 1, 1,
+                    Array.Empty<SourceScriptHit>(),
+                    new[] { new SourceScriptHit(SourceScriptHitShape.Circle,
+                        700, 0, 8000, 1, 1, Ordr323AttackType.Spells) }, null);
+                ApplySourceScriptHits(actor, primary, meteor, meteor.OnProc);
             }
             int roll = script.RollSides == 1 ? 1 :
                 sourceModelRules.NextScriptRoll(script.RollSides) + 1;
@@ -474,8 +473,15 @@ namespace Ordr.Mobile.Combat
                         script.DelaySeconds, () => {
                             if (CanFinishSourceModelDelayedAttack(actor.Id,
                                     sourceStoryLane, sourceLaneRevision))
+                            {
                                 ApplySourceScriptHits(actor, primary, script,
                                     script.OnProc, pinnedX, pinnedY, actual);
+                                // Do not re-run the original 25-HP counter,
+                                // and do not double-count the area impact.
+                                if (script.JassFunction == "Bso/HP25")
+                                    ApplySourceModelMarcoFeatherFollowups(
+                                        actor, primary, actual, pinnedX, pinnedY);
+                            }
                         });
                 }
                 else

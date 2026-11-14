@@ -388,6 +388,8 @@ namespace Ordr.Mobile.Combat
 
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
+            if (SourceModelTooltipVolleyCatalog.IsApproved(skill))
+                return true;
             // Sengoku's HP skill contains a complete one-second area DoT
             // followed by a distinct smaller explosion. Keep this as an
             // exact owner-bound exception; the ordinary area executor would

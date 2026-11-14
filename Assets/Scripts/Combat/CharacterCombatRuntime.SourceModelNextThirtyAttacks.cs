@@ -293,6 +293,11 @@ namespace Ordr.Mobile.Combat
             foreach (var candidate in caster.Profile.Skills)
                 if (candidate.Id == skillId) { selected = candidate; break; }
             if (selected == null) return false;
+            // Exact tooltip multi-hit skills use their own per-hit targeting;
+            // never run the generic one-shot area executor as well.
+            if (SourceModelTooltipVolleyCatalog.IsApproved(selected))
+                return TryCastSourceModelTooltipVolley(caster, selected,
+                    primaryEnemyId, approvedNames, out result);
             // Preserve the latest main owner-bound active-skill authorization.
             // Never permit a known source-model unit to debit a resource
             // through another unit's or an unapproved tooltip packet.

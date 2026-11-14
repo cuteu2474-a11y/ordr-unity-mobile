@@ -8,6 +8,8 @@
 
 # 코드 구조
 
+**도감 우선 4인 공격 묶음(코드만):** `SourceModelTooltipVolleyCatalog.cs`의 정확한 E-06/E-12 스킬 식별 → `SourceModelNextThirtySkillCatalog.CanModelCompleteActive` → `SourceModelUnconnectedSkillCatalog` 승인 목록 → `CharacterCombatRuntime.SourceModelTooltipVolleys.cs`의 원본 비용/타격/상태 엔진. `CharacterActiveAbilities`는 이 두 기술의 문서상 다중 대상 형태만 별도 허용. R-27 유성 화산은 `CharacterCombatRuntime.SourceModelAttackSkills.cs` 기존 BpZ 10% 콜백의 Blizzard 더미 대신 700범위 8천 마법을 처리. L-11은 `SourceModelAfterHitAttackCatalog` 기존 Bso(HP25) 안에서 고정 40%와 7명 마법 후속을 한 번만 실행. 모든 신규 코드는 Unity·Android 미검증.
+
 **1·2·4배속 단일 시간 경로(코드만):** `Assets/Scripts/Core/MobileGameSpeedClock.cs`의 `Scale(unscaledDeltaSeconds, runGate.CanAdvance)` → `OrdrCharacterCombatController.Update`의 `PracticeBattle.Advance` / `VerifiedWaveDirector.Step` / `Combat.Step` / 준비단계 분해 시계. `OrdrMobileTouchPanel.DrawGameplaySpeedControls`는 왼쪽 고정 버튼 1·2·4배를 제공하며 Editor 체험 `SetEditorPreviewSpeed`도 같은 선택자로 통합. Unity `Time.timeScale`은 변경하지 않으므로 UI/물리/화면 프레임은 별개로 유지. Unity·APK 미검증.
 
 **일반 상점 메뉴 제거·APK 빌드 경로:** `OrdrMobileTouchPanel`의 `Tab.Shop`·빈 상점 구매확인 UI·미사용 `pendingEconomy` 상태를 제거했습니다. `DrawWispEconomyOffers`는 기존 위습 실물 거래 버튼으로 남고, `RefreshCurrent`에서 도박과 위습의 실제 `ManualEconomyCategory`만 갱신합니다. `IOriginalEconomyPort`·`VerifiedShopSession`·돈 도박 졸업 상점·콤푸 환전/발굴·강화 서비스는 변경하지 않았습니다. `tests/test_player_building_left_menu.py`·`tests/test_random_wisp_submenu.py`에서 이미 합의한 조합 필터·상점 메뉴/구매확인 구형 문자열 검사를 현행 화면 및 위습 동작 계약으로 갱신했습니다. Actions는 `.github/ordr-apk-build-request.txt` 변경을 포함한 **main의 명시적 요청 커밋만** 푸시 시 검사/APK 제작하고, 일반 코드 푸시는 자동 빌드하지 않습니다.

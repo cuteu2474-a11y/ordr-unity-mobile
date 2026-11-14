@@ -339,14 +339,18 @@ namespace Ordr.Mobile.Combat
                 specialAllowed != null;
             bool approvedTwentyFourth =
                 SourceModelTwentyFourthSkillCatalog.CanModelExactActive(skill);
+            bool approvedTooltipVolley = specialAllowed != null &&
+                SourceModelTooltipVolleyCatalog.IsApproved(skill);
             if (!supportedSelfForm && !approvedImplicitArea &&
                 !approvedSengokuExplosion &&
                 !(approvedTwentyFourth && skill.Target == "line") &&
+                !approvedTooltipVolley &&
                 skill.Target != "single" &&
                 skill.Target != "area" && skill.Target != "targetCircle" &&
                 skill.Target != "casterArea")
                 return false;
-            if (!supportedSelfForm && skill.Target != "single" && (!skill.Radius.HasValue ||
+            if (!supportedSelfForm && !approvedTooltipVolley &&
+                skill.Target != "single" && (!skill.Radius.HasValue ||
                 skill.Radius.Value <= 0)) return false;
             foreach (var component in skill.Components)
             {
