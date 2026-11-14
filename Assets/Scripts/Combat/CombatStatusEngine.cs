@@ -29,7 +29,8 @@ namespace Ordr.Mobile.Combat
         MovementSpeedBuff,
         // S-09/ANba negative death mark; no direct damage modifier.
         // Append only, preserving all older numeric status identities.
-        SourceBlackArrowDeathMark
+        SourceBlackArrowDeathMark,
+        AttackSpeedPenalty // Model-only copied Brulee -5% IAS
     }
 
     public enum CombatEffectOrigin

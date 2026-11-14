@@ -8,6 +8,8 @@
 
 # 코드 구조
 
+**2026-11-14 수동 스킬 묶음(코드 반영·실행 미검증):** E-06 비비의 알라바스타 강화는 목재2+기본 랜덤위습3, 1→10레벨 81/72/63/54/45/36/27/18/9% 성공률과 실패 시에도 비용 소모를 기존 지갑에 연결, 난사 타수마다 레벨×최대 HP 0.5% 추가 고정 피해를 반영. L-14 브륄레는 **자신을** 선택된 소유 전설 유닛으로 바꾸고 원본 대상은 유지하며 특성포인트1과 복사본 공속 -5%를 원본 조합 스테이징으로 처리. L-39 히바리의 사랑의 도시락은 선택된 아군에게 1회 영구 공속 +12%(TR-24 코비 초월 +20%) 상태효과를 부여. D-01 블랙마리아는 30초 전환, 900범위의 5초 주기 기절 3.5초·둔화 40%·20만 마법+잃은 HP 5% 물리 효과를 선택한 상태별로 처리. 모두 현재 원작 스킬 설명 기반 모델이며 시전 프레임·면역·포만감 실제 아이템 소비 및 마리아 원본 전환 수명, Unity 컴파일·APK 실행 결과는 **미검증**. 저장/이어하기는 뒤에서 완성.
+
 **도감 우선 4인 공격 묶음(코드만):** `SourceModelTooltipVolleyCatalog.cs`의 정확한 E-06/E-12 스킬 식별 → `SourceModelNextThirtySkillCatalog.CanModelCompleteActive` → `SourceModelUnconnectedSkillCatalog` 승인 목록 → `CharacterCombatRuntime.SourceModelTooltipVolleys.cs`의 원본 비용/타격/상태 엔진. `CharacterActiveAbilities`는 이 두 기술의 문서상 다중 대상 형태만 별도 허용. R-27 유성 화산은 `CharacterCombatRuntime.SourceModelAttackSkills.cs` 기존 BpZ 10% 콜백의 Blizzard 더미 대신 700범위 8천 마법을 처리. L-11은 `SourceModelAfterHitAttackCatalog` 기존 Bso(HP25) 안에서 고정 40%와 7명 마법 후속을 한 번만 실행. 모든 신규 코드는 Unity·Android 미검증.
 
 **1·2·4배속 단일 시간 경로(코드만):** `Assets/Scripts/Core/MobileGameSpeedClock.cs`의 `Scale(unscaledDeltaSeconds, runGate.CanAdvance)` → `OrdrCharacterCombatController.Update`의 `PracticeBattle.Advance` / `VerifiedWaveDirector.Step` / `Combat.Step` / 준비단계 분해 시계. `OrdrMobileTouchPanel.DrawGameplaySpeedControls`는 왼쪽 고정 버튼 1·2·4배를 제공하며 Editor 체험 `SetEditorPreviewSpeed`도 같은 선택자로 통합. Unity `Time.timeScale`은 변경하지 않으므로 UI/물리/화면 프레임은 별개로 유지. Unity·APK 미검증.

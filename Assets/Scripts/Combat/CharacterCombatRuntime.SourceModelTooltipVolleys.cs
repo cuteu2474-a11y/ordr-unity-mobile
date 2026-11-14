@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
@@ -11,7 +12,8 @@ namespace Ordr.Mobile.Combat
         // applied to a deleted/replaced enemy or an enemy on another lane.
         private void ApplySourceModelTooltipDamage(CharacterInstance actor,
             SpatialCombatEnemy target, string skill, string component,
-            double raw, bool fixedDamage)
+            double raw, bool fixedDamage,
+            Ordr323AttackType attackType = Ordr323AttackType.Spells)
         {
             SpatialCombatEnemy current;
             CharacterInstance livingCaster;
@@ -38,7 +40,7 @@ namespace Ordr.Mobile.Combat
                     return;
                 }
                 finalDamage = Ordr323MapDamageMath.ApplyVerifiedFactors(
-                    raw, Ordr323AttackType.Spells, armor, true, true,
+                    raw, attackType, armor, true, true,
                     current.Enemy.Defenses.BaseArmor.Value -
                         SourceModelUnitEffects.ResolvePracticeArmorReduction(
                             current.Enemy.Status.Snapshot()) -
@@ -150,6 +152,16 @@ namespace Ordr.Mobile.Combat
                         ApplySourceModelTooltipDamage(actor, victim, accepted.Name,
                             "난사 고정 타격 " + (hit + 1) + "/20",
                             300000 + victim.Enemy.MaxHealth * .10, true);
+                        // Alabasta Gun Lv.1 exists before any upgrades.
+                        // The tooltip's extra maximum-HP 0.5% is PER hit
+                        // and PER level, not one grant for the entire barrage.
+                        int level = 1 + (int)Math.Min(9,
+                            otamaRewardWallet == null ? 0 :
+                            otamaRewardWallet.Balance(
+                                Original323SourceNativeActionKeys.ViviLevel(actor.Id)));
+                        ApplySourceModelTooltipDamage(actor, victim, accepted.Name,
+                            "알라바스타 건 Lv." + level,
+                            victim.Enemy.MaxHealth * .005 * level, true);
                         if (victim.Kind == CharacterEnemyKind.Boss)
                             ApplySourceModelTooltipDamage(actor, victim, accepted.Name,
                                 "보스 추가 마법", 500000, false);

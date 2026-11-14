@@ -18,6 +18,23 @@ namespace Ordr.Mobile.Mobile
         public const string UtaUnlockResourcePrefix = "source:native-trait:A0D2:";
         public const string UtaUnlockActionPrefix = "source-native:uta:unlock:";
         public const string MarcoTransformActionPrefix = "source-native:marco:transform:";
+        public const string ViviUpgradePrefix = "source-native:vivi:alabasta:";
+        public const string ViviLevelPrefix = "source-native:vivi:alabasta-level:";
+        public const string BruleeCopyPrefix = "source-native:brulee:copy:";
+        public const string HibariBentoPrefix = "source-native:hibari:bento:";
+        public const string MariaCyclePrefix = "source-native:maria:cycle:";
+        private static readonly int[] ViviChances =
+            { 81, 72, 63, 54, 45, 36, 27, 18, 9 };
+        public static string ViviUpgrade(long id) => ViviUpgradePrefix + id;
+        public static string ViviLevel(long id) => ViviLevelPrefix + id;
+        public static int ViviChance(int currentLevel) =>
+            currentLevel >= 1 && currentLevel <= 9 ? ViviChances[currentLevel - 1] : 0;
+        public static string BruleeCopy(long source, long template) =>
+            BruleeCopyPrefix + source + ":" + template;
+        public static string HibariBento(long source, long ally) =>
+            HibariBentoPrefix + source + ":" + ally;
+        public static string HibariReceipt(long id) => HibariBentoPrefix + "spent:" + id;
+        public static string MariaCycle(long id) => MariaCyclePrefix + id;
         public static string MarcoTransformAction(long id) => MarcoTransformActionPrefix + id;
         public static string UnlockResource(long id) => RogerUnlockResourcePrefix + id;
         public static string UnlockAction(long id) => RogerUnlockActionPrefix + id;
@@ -46,8 +63,72 @@ namespace Ordr.Mobile.Mobile
             if (!combat.UsesSourceModelBasicAttacks) return actions.AsReadOnly();
             bool ownsVegapunk = false;
             bool ownsOtama = false;
-            foreach (var unit in combat.MobileUnitSnapshot())
+            var owned = combat.MobileUnitSnapshot();
+            MobileUnitSnapshot selectedAlly = null;
+            if (combat.Roster.SelectedId.HasValue)
+                foreach (var unit in owned)
+                    if (unit.InstanceId == combat.Roster.SelectedId.Value)
+                    { selectedAlly = unit; break; }
+            foreach (var unit in owned)
             {
+                if (unit.Unit.Id == "E-06")
+                {
+                    int level = 1 + (int)Math.Min(9, wallet.Balance(
+                        Original323SourceNativeActionKeys.ViviLevel(unit.InstanceId)));
+                    int chance = Original323SourceNativeActionKeys.ViviChance(level);
+                    if (chance > 0)
+                        actions.Add(new MobileDedicatedSkillOffer(
+                            Original323SourceNativeActionKeys.ViviUpgrade(unit.InstanceId),
+                            "비비 · 알라바스타 강화 Lv." + level,
+                            "목재 2 + 기본 랜덤위습 3 · 성공률 " + chance +
+                            "% / 실패해도 소모",
+                            true, combat.CanRollSourceModelViviUpgrade(
+                                unit.InstanceId, chance) &&
+                            wallet.Balance("wood") >= 2 &&
+                            wallet.Balance(WispResourceIds.Random) >= 3));
+                }
+                if (unit.Unit.Id == "L-14")
+                {
+                    long target = selectedAlly == null ? 0 : selectedAlly.InstanceId;
+                    bool canCopy = selectedAlly != null &&
+                        combat.CanSourceModelBruleeCopy(unit.InstanceId, target) &&
+                        wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId)
+                            >= 1;
+                    actions.Add(new MobileDedicatedSkillOffer(
+                        Original323SourceNativeActionKeys.BruleeCopy(
+                            unit.InstanceId, target),
+                        "브륄레 · 미러미러열매" +
+                        (canCopy ? " → " + selectedAlly.Unit.Name : ""),
+                        "복사할 보유 전설 유닛을 선택하세요 · 특성포인트 1 · 브륄레 자신 변환",
+                        true, canCopy));
+                }
+                if (unit.Unit.Id == "L-39")
+                {
+                    long target = selectedAlly == null ? 0 : selectedAlly.InstanceId;
+                    bool canBuff = selectedAlly != null &&
+                        combat.CanUseSourceModelHibariBento(unit.InstanceId,
+                            target, wallet);
+                    actions.Add(new MobileDedicatedSkillOffer(
+                        Original323SourceNativeActionKeys.HibariBento(
+                            unit.InstanceId, target),
+                        "히바리 · 사랑의 도시락" +
+                        (canBuff ? " → " + selectedAlly.Unit.Name : ""),
+                        "대상 아군 선택 · 1회 사용 · 영구 공속 +12%(초월 코비 +20%)",
+                        true, canBuff));
+                }
+                if (unit.Unit.Id == "D-01")
+                {
+                    double remain = combat.SourceModelMariaCooldownRemaining(
+                        unit.InstanceId);
+                    actions.Add(new MobileDedicatedSkillOffer(
+                        Original323SourceNativeActionKeys.MariaCycle(unit.InstanceId),
+                        "블랙마리아 · " + combat.SourceModelMariaNextModeName(
+                            unit.InstanceId),
+                        "마리아네트 전환 / 30초 재사용" +
+                        (remain > 0 ? " · 대기 " +
+                            Math.Ceiling(remain * 10) / 10.0 + "초" : ""),
+                        true, combat.CanCycleSourceModelMaria(unit.InstanceId)));
+                }
                 if (unit.Unit.Id == "LI-03")
                 {
                     long id = unit.InstanceId;
@@ -256,6 +337,83 @@ namespace Ordr.Mobile.Mobile
                 }
                 return new ManualActionResult(ManualActionState.Rejected,
                     "해당 우타를 보유하고 있지 않습니다.");
+            }
+            // Every tap re-validates the live unit, selected target,
+            // shared wallet and current source-tooltip ownership.
+            if (skillId.StartsWith(Original323SourceNativeActionKeys.ViviUpgradePrefix,
+                    StringComparison.Ordinal) ||
+                skillId.StartsWith(Original323SourceNativeActionKeys.BruleeCopyPrefix,
+                    StringComparison.Ordinal) ||
+                skillId.StartsWith(Original323SourceNativeActionKeys.HibariBentoPrefix,
+                    StringComparison.Ordinal) ||
+                skillId.StartsWith(Original323SourceNativeActionKeys.MariaCyclePrefix,
+                    StringComparison.Ordinal))
+            {
+                foreach (var unit in combat.MobileUnitSnapshot())
+                {
+                    long id = unit.InstanceId;
+                    if (unit.Unit.Id == "E-06" &&
+                        skillId == Original323SourceNativeActionKeys.ViviUpgrade(id))
+                    {
+                        int level = 1 + (int)Math.Min(9, wallet.Balance(
+                            Original323SourceNativeActionKeys.ViviLevel(id)));
+                        int chance = Original323SourceNativeActionKeys.ViviChance(level);
+                        if (chance == 0 || wallet.Balance("wood") < 2 ||
+                            wallet.Balance(WispResourceIds.Random) < 3)
+                            return new ManualActionResult(ManualActionState.Rejected,
+                                "레벨 상한 또는 목재·기본 랜덤위습 부족");
+                        bool success;
+                        if (!combat.TryRollSourceModelViviUpgrade(id, chance, out success))
+                            return new ManualActionResult(ManualActionState.Rejected,
+                                "비비 강화 출처 또는 게임 상태가 맞지 않습니다.");
+                        var costs = new ResourceBundle().Add("wood", 2)
+                            .Add(WispResourceIds.Random, 3);
+                        var reward = new ResourceBundle();
+                        if (success)
+                            reward.Add(Original323SourceNativeActionKeys.ViviLevel(id), 1);
+                        if (!wallet.TryExchange(costs, reward))
+                            return new ManualActionResult(ManualActionState.Rejected,
+                                "강화 재료 정산이 실패했습니다.");
+                        return new ManualActionResult(ManualActionState.Succeeded,
+                            success ? "알라바스타 강화 성공 · Lv." + (level + 1) :
+                                "강화 실패 · 목재 2·기본 랜덤위습 3 소모");
+                    }
+                    if (unit.Unit.Id == "D-01" &&
+                        skillId == Original323SourceNativeActionKeys.MariaCycle(id))
+                    {
+                        bool cast = combat.TryCycleSourceModelMaria(id);
+                        return new ManualActionResult(
+                            cast ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                            cast ? "마리아네트 · " +
+                                combat.SourceModelMariaCurrentModeName(id) :
+                                "재사용 대기 또는 전환 조건이 충족되지 않았습니다.");
+                    }
+                    long chosen = combat.Roster.SelectedId.GetValueOrDefault();
+                    if (unit.Unit.Id == "L-14" &&
+                        skillId == Original323SourceNativeActionKeys.BruleeCopy(id, chosen))
+                    {
+                        long copyId;
+                        bool success = combat.TrySourceModelBruleeCopy(
+                            id, chosen, wallet, out copyId);
+                        return new ManualActionResult(
+                            success ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                            success ? "브륄레 복사 완료 · 전설 유닛 #" + copyId +
+                                " 생성 · 특성포인트 1 소모 · 공속 -5%" :
+                                "선택 전설·브륄레·특성포인트/전장 조건을 확인해 주세요.");
+                    }
+                    if (unit.Unit.Id == "L-39" &&
+                        skillId == Original323SourceNativeActionKeys.HibariBento(id, chosen))
+                    {
+                        bool success = combat.TryUseSourceModelHibariBento(
+                            id, chosen, wallet);
+                        return new ManualActionResult(
+                            success ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                            success ? "사랑의 도시락 1회 사용 · 대상 공속 영구 강화" :
+                                "아군·중복 강화·1회 사용 조건을 확인해 주세요.");
+                    }
+                }
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "해당 유닛 또는 선택한 대상을 찾지 못했습니다.");
             }
             if (!skillId.StartsWith("vegapunk-satellite:", StringComparison.Ordinal))
                 return otama.Execute(skillId);

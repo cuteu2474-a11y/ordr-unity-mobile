@@ -636,6 +636,15 @@ namespace Ordr.Mobile.Combat
                 }
             }
 
+            // Brulee copies are 5% slower than their unmodified template.
+            // Only this origin is permitted; do not alter generic native
+            // speed stacking or treat an enemy slow as an ally penalty.
+            foreach (var effect in attackerEffects)
+                if (effect.Type == CombatEffectType.AttackSpeedPenalty &&
+                    effect.SourceId.StartsWith("practice-brulee:", StringComparison.Ordinal) &&
+                    effect.Amount == 5)
+                    nextAttackInterval /= .95;
+
             // Read-only target preflight while the enemy is still alive,
             // before a potentially lethal committed basic attack. Rolls occur
             // only AFTER the native hit has succeeded.

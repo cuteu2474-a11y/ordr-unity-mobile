@@ -1522,6 +1522,7 @@ namespace Ordr.Mobile.Combat
                 ForgetSourceModelTwentyFifthActor(instanceId);
                 ForgetSourceModelEleventhActor(instanceId);
                 ForgetSourceManualSupport(instanceId, false);
+                ForgetSourceModelTooltipManualActor(instanceId, false);
                 RefreshSourceTemporaryActors();
             }
             // Returning from a story/shared objective resumes the existing
@@ -2536,6 +2537,7 @@ namespace Ordr.Mobile.Combat
             effectExecutor.CancelTarget(InstanceKey(instanceId));
             // Clean owner AND recipient leases while status dictionaries live.
             ForgetSourceManualSupport(instanceId, true);
+            ForgetSourceModelTooltipManualActor(instanceId, true);
             ForgetSourceMoriaBlackArrowOwner(instanceId);
             // Form/counter cleanup was previously only called on lane transfers.
             ForgetSourceModelEleventhActor(instanceId);

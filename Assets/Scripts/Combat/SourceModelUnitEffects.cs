@@ -233,7 +233,9 @@ namespace Ordr.Mobile.Combat
                     (effect.SourceId.StartsWith("practice-tooltip:ryuma-speed:", StringComparison.Ordinal) ||
                      effect.SourceId.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal) ||
                      effect.SourceId.StartsWith("practice-tooltip:katakuri-max-speed:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-tooltip:bulk:", StringComparison.Ordinal)))
+                     effect.SourceId.StartsWith("practice-tooltip:bulk:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-tooltip:hibari-bento:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-source-manual:", StringComparison.Ordinal)))
                     value = Math.Max(value, effect.Amount);
             // No claim about native cross-buff stacking. This mobile model
             // uses the strongest known effect until the original is observed.
