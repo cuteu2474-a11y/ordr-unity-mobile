@@ -230,37 +230,43 @@ namespace Ordr.Mobile.Combat
             return value;
         }
 
+        // Shared with damage preflight: a speed buff must not accelerate
+        // the attack clock and then be rejected during basic hit resolution.
+        internal static bool IsPracticeAttackSpeedPercentEffect(CombatEffect effect)
+        {
+            if (effect == null || effect.Type != CombatEffectType.AttackSpeedBuff ||
+                string.IsNullOrEmpty(effect.SourceId)) return false;
+            string source = effect.SourceId;
+            return source.StartsWith("practice-native:A08B:", StringComparison.Ordinal) ||
+                source.StartsWith("practice-native:source-remaining-bloodlust:", StringComparison.Ordinal) ||
+                source.EndsWith(":TR-24:skill:4", StringComparison.Ordinal) ||
+                source.StartsWith("practice-shadow:", StringComparison.Ordinal) ||
+                source.StartsWith("practice-form:executioner:", StringComparison.Ordinal) ||
+                source.StartsWith("practice-tooltip:ryuma-speed:", StringComparison.Ordinal) ||
+                source.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal) ||
+                source.StartsWith("practice-tooltip:katakuri-max-speed:", StringComparison.Ordinal) ||
+                source.StartsWith("practice-tooltip:bulk:", StringComparison.Ordinal) ||
+                source.StartsWith("practice-tooltip:hibari-bento:", StringComparison.Ordinal) ||
+                source.StartsWith("practice-source-manual:", StringComparison.Ordinal);
+        }
+
         internal static double ResolvePracticeAttackSpeed(IReadOnlyList<CombatEffect> effects)
         {
             double value = ResolveSingleAura(effects, CombatEffectType.AttackSpeedBuff);
             foreach (var effect in effects)
-                if (effect.Type == CombatEffectType.AttackSpeedBuff &&
-                    (effect.SourceId.StartsWith("practice-native:A08B:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-native:source-remaining-bloodlust:", StringComparison.Ordinal) ||
-                     effect.SourceId.EndsWith(":TR-24:skill:4", StringComparison.Ordinal)))
-                    value = Math.Max(value, effect.Amount);
-                else if (effect.Type == CombatEffectType.AttackSpeedBuff &&
-                         effect.SourceId.StartsWith("practice-form:executioner:", StringComparison.Ordinal))
-                    value = Math.Max(value, effect.Amount);
-                else if (effect.Type == CombatEffectType.AttackSpeedBuff &&
-                    (effect.SourceId.StartsWith("practice-tooltip:ryuma-speed:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-tooltip:katakuri-max-speed:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-tooltip:bulk:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-tooltip:hibari-bento:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-source-manual:", StringComparison.Ordinal)))
+                if (IsPracticeAttackSpeedPercentEffect(effect))
                     value = Math.Max(value, effect.Amount);
             // No claim about native cross-buff stacking. This mobile model
             // uses the strongest known effect until the original is observed.
             return value;
         }
-
         internal static double ResolvePracticeAttackPower(IReadOnlyList<CombatEffect> effects)
         {
             double strongest = ResolveSingleAura(effects, CombatEffectType.AttackPowerBuff);
             foreach (var effect in effects)
                 if (effect.Type == CombatEffectType.AttackPowerBuff &&
-                    (effect.SourceId.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal) ||
+                    (effect.SourceId.StartsWith("practice-shadow:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal) ||
                      effect.SourceId.StartsWith("practice-native:SPH3:A0N1:", StringComparison.Ordinal) ||
                      effect.SourceId.StartsWith("practice-tooltip:armada:A0WQ:", StringComparison.Ordinal) ||
                      effect.SourceId.StartsWith("practice-tooltip:bulk:", StringComparison.Ordinal)))

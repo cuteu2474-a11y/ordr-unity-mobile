@@ -41,6 +41,8 @@ namespace Ordr.Mobile.Combat
             public CharacterActiveAbilities Abilities;
             public bool AttackReady;
             public bool AttackBlockedByMissingFormula;
+            // Transient status-only failure; unknown damage formulas remain blocked.
+            public string AttackBlockedStatusSourceId;
             public string DeferredAttackReason;
             public string AttackEvidence;
             public IOriginalVerifiedBasicAttackTargetFilter BasicTargetFilter;
@@ -2770,6 +2772,7 @@ namespace Ordr.Mobile.Combat
             if (!characters.TryGetValue(instanceId, out unit))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
             unit.AttackBlockedByMissingFormula = false;
+            unit.AttackBlockedStatusSourceId = null;
             unit.DeferredAttackReason = null; // 재승인 후 이전의 실패 사유를 남기지 않는다.
         }
 
@@ -2876,13 +2879,32 @@ namespace Ordr.Mobile.Combat
         }
 
         // 현재 표적을 가진 유닛 중 가장 빠른 공격 시점을 찾는다.
+        // An unsupported temporary buff may expire or be dispelled. Do not
+        // leave its owner permanently disabled; do not auto-approve missing
+        // source attack formulas while their blocking condition still exists.
+        private bool IsAttackFormulaBlocked(CharacterInstance unit)
+        {
+            if (!unit.AttackBlockedByMissingFormula) return false;
+            if (string.IsNullOrEmpty(unit.AttackBlockedStatusSourceId)) return true;
+            CombatStatusEngine status;
+            if (!unitStatuses.TryGetValue(InstanceKey(unit.Id), out status))
+                return true;
+            foreach (var effect in status.Snapshot())
+                if (effect.SourceId == unit.AttackBlockedStatusSourceId)
+                    return true;
+            unit.AttackBlockedByMissingFormula = false;
+            unit.AttackBlockedStatusSourceId = null;
+            unit.DeferredAttackReason = null;
+            return false;
+        }
+
         private double? NextEligibleAttackAt()
         {
             double? next = UsesSourceModelBasicAttacks
                 ? NextSourceIndependentAttackAt() : null;
             foreach (var unit in characters.Values)
             {
-                if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
+                if (!unit.AttackReady || IsAttackFormulaBlocked(unit) ||
                     unit.Mapping == null) continue;
                 double castFinish;
                 if (UsesSourceModelBasicAttacks &&
@@ -3021,7 +3043,7 @@ namespace Ordr.Mobile.Combat
             {
                 if (fired >= budget) break;
                 CharacterInstance unit = characters[id];
-                if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
+                if (!unit.AttackReady || IsAttackFormulaBlocked(unit) ||
                     unit.Mapping == null || SourceFormIsCasting(id) ||
                     (UsesSourceModelBasicAttacks && IsSourceModelUtaSleeping(id))) continue;
                 var at = attackPipeline.NextAttackAt(InstanceKey(id));
@@ -3040,6 +3062,8 @@ namespace Ordr.Mobile.Combat
                 catch (NotSupportedException ex)
                 {
                     unit.AttackBlockedByMissingFormula = true;
+                    var transientStatus = ex as UnsupportedPracticeAttackerStatusException;
+                    unit.AttackBlockedStatusSourceId = transientStatus?.StatusSourceId;
                     unit.DeferredAttackReason = "평타 피해 공식 미연결: " + ex.Message;
                     events.Add(new CharacterCombatEvent(
                         CharacterCombatEventType.EffectDeferred,

@@ -4,6 +4,18 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
+    // Only the offending status may unblock an otherwise unverified attack.
+    internal sealed class UnsupportedPracticeAttackerStatusException : NotSupportedException
+    {
+        internal string StatusSourceId { get; private set; }
+
+        internal UnsupportedPracticeAttackerStatusException(string sourceId)
+            : base("연습의 출처가 확인되지 않은 공격 효과입니다.")
+        {
+            StatusSourceId = sourceId;
+        }
+    }
+
     // Explicit development model. Does NOT implement a native-hit witness,
     // live monster approval, retail quantizer, or verified skill resolver.
     // The runtime's legacy damage interface is reused without granting retail
@@ -153,28 +165,30 @@ namespace Ordr.Mobile.Combat
             return ((effect.Type == CombatEffectType.AttackPowerBuff ||
                      effect.Type == CombatEffectType.AttackSpeedBuff) &&
                     (source.StartsWith("practice-aura:", StringComparison.Ordinal) ||
-                     // The L-12 shadow copies only live OWNER attack-power
-                     // and speed effects; no unknown non-offensive buffs.
                      source.StartsWith("practice-shadow:", StringComparison.Ordinal))) ||
                 (effect.Type == CombatEffectType.AttackSpeedBuff &&
-                 (source.StartsWith("practice-native:A08B:", StringComparison.Ordinal) ||
-                  source.StartsWith("practice-form:interval:", StringComparison.Ordinal) ||
-                  source.StartsWith("practice-tooltip:ryuma-speed:", StringComparison.Ordinal) ||
-                  source.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal) ||
-                  source.StartsWith("practice-tooltip:katakuri-max-speed:", StringComparison.Ordinal))) ||
+                 (SourceModelUnitEffects.IsPracticeAttackSpeedPercentEffect(effect) ||
+                  // This is an interval reduction, not an IAS percentage.
+                  source.StartsWith("practice-form:interval:", StringComparison.Ordinal))) ||
                 (effect.Type == CombatEffectType.AttackPowerBuff &&
                  (source.StartsWith("practice-form:power:", StringComparison.Ordinal) ||
                   source.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal) ||
                   source.StartsWith("practice-native:SPH3:A0N1:", StringComparison.Ordinal) ||
-                  source.StartsWith("practice-tooltip:armada:A0WQ:", StringComparison.Ordinal))) ||
-                // Defensive/position-only statuses are still passed in the
-                // attacker's full snapshot. They have no attack multiplier,
-                // but must not permanently disable ordinary attacks.
+                  source.StartsWith("practice-tooltip:armada:A0WQ:", StringComparison.Ordinal) ||
+                  source.StartsWith("practice-tooltip:bulk:", StringComparison.Ordinal))) ||
+                // Defensive/position-only statuses are carried in the full
+                // attacker snapshot. They must not suppress normal damage.
                 (effect.Type == CombatEffectType.ArmorBuff &&
                  (source.StartsWith("practice-native:SPH3:A0N1:", StringComparison.Ordinal) ||
-                  source.StartsWith("practice-native:ET12:A11L:", StringComparison.Ordinal))) ||
+                  source.StartsWith("practice-native:ET12:A11L:", StringComparison.Ordinal) ||
+                  // The source-remaining Frost Armor buff has zero known armor.
+                  (effect.Amount == 0 &&
+                   source.StartsWith("practice-native:frostarmor:", StringComparison.Ordinal)))) ||
                 (effect.Type == CombatEffectType.MovementSpeedBuff &&
-                 source.StartsWith("practice-native:R00R:A11B:", StringComparison.Ordinal));
+                 source.StartsWith("practice-native:R00R:A11B:", StringComparison.Ordinal)) ||
+                (effect.Type == CombatEffectType.AttackSpeedPenalty &&
+                 source.StartsWith("practice-brulee:", StringComparison.Ordinal) &&
+                 effect.Amount == 5);
         }
         internal long RollSourceObjectAttackPower(string rawcode)
         {
@@ -301,7 +315,7 @@ namespace Ordr.Mobile.Combat
                 throw new NotSupportedException("출처가 있는 공격·적 방어 자료가 필요합니다.");
             foreach (var effect in request.AttackerEffects)
                 if (!AllowsPracticeAttackerEffect(effect))
-                    throw new NotSupportedException("연습의 출처가 확인되지 않은 공격 효과입니다.");
+                    throw new UnsupportedPracticeAttackerStatusException(effect?.SourceId);
             double rawDamage = attack.RollObjectBaseDamage(random) +
                 SourceModelTemporarySkillCatalog.FlatFormPower(request.AttackerEffects) +
                 (PlayerUpgrades?.AttackBonus(rawcode) ?? 0);
