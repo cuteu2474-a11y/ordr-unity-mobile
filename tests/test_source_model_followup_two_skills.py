@@ -101,8 +101,25 @@ class FollowupSourceModelSkillTests(unittest.TestCase):
         native_special = (ROOT / "Assets" / "Scripts" / "Combat" /
                           "CharacterCombatRuntime.SourceModelOriginalSpecials.cs").read_text(
                               encoding="utf-8")
-        self.assertIn('new SourceScriptAttackSpec("L-32", "h030", "BtL"',
+        # Kuma BtL now has a single source-JASS callback owner rather than
+        # a duplicate SourceScriptAttackSpec. Verify actual attack-declaration
+        # dispatch, the 115-mana gate and the independent 10% proc.
+        native_rules = (COMBAT / "SourceModelOriginalSpecialCallbackRules.cs").read_text(
+            encoding="utf-8")
+        self.assertIn('case "h030": catalogId = "L-32"; return true;', native_rules)
+        self.assertIn('case "L-32": ExecuteSourceKuma(actor, primary); break;',
                       native_special)
+        self.assertIn('private void ExecuteSourceKuma(', native_special)
+        self.assertIn('resource.MaximumMana == 115 && resource.Mana == 115',
+                      native_special)
+        self.assertIn('resource.SetMana(0);', native_special)
+        self.assertIn('resource.Mana < 115', native_special)
+        self.assertIn('resource.SetMana(resource.Mana + 1);', native_special)
+        self.assertIn('SourceRoll1To(100) <= 10', native_special)
+        self.assertIn('paw.Id != "L-32:skill:1"', native_special)
+        self.assertIn('ApplySourceModelNextThirtySkill(actor, primary, skill, targets);',
+                      native_special)
+        self.assertNotIn('new SourceScriptAttackSpec("L-32"', native_special)
         self.assertEqual(3, len(self.evidence["deferredRelatedSkills"]))
 
 

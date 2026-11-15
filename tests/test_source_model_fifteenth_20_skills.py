@@ -63,8 +63,16 @@ class FifteenthTwentySkillTests(unittest.TestCase):
         self.assertIn("target.Enemy.MaxHealth", SPECIAL)
 
     def test_unverified_scaling_cannot_generate_hero_attributes(self):
-        self.assertIn("sourceModelStrengthProvider == null) return 0", SPECIAL)
+        # Verified source code selects the original STR stat namespace:
+        # Doflamingo needs bonuses, Tashigi needs unbonused attributes.
+        # Missing source evidence must still produce zero, not fake stats.
+        self.assertIn("includeBonuses ? sourceModelStrengthProvider :", SPECIAL)
+        self.assertIn("sourceModelUnbonusedStrengthProvider", SPECIAL)
+        self.assertIn("if (provider == null) return 0", SPECIAL)
+        self.assertIn("double? recorded = provider(id)", SPECIAL)
         self.assertIn("return recorded.HasValue && recorded.Value >= 0", SPECIAL)
+        self.assertIn("!double.IsNaN(recorded.Value)", SPECIAL)
+        self.assertIn("!double.IsInfinity(recorded.Value)", SPECIAL)
         self.assertIn("CanModelExactSpecial(ImportedCombatSkill skill)", EXACT)
         self.assertIn("skill.OriginalFields.Count == keys", EXACT)
         self.assertIn("effect.Fields.Count != pairs.Length / 2 + 1", EXACT)
