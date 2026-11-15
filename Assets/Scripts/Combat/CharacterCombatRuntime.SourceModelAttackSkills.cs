@@ -12,6 +12,39 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<long, int> sourceAkainuBossStacks =
             new Dictionary<long, int>();
         private long sourceAkainuBossSerial;
+        private Func<long, double?> sourceModelRankyakuFacing;
+
+        // Optional current GetUnitFacing-style evidence. If provided but
+        // unavailable, do not silently substitute an auto-aim direction.
+        public void ConfigureSourceModelRankyakuFacing(
+            Func<long, double?> currentAttackerFacingDegrees)
+        {
+            if (!UsesSourceModelBasicAttacks || processingStep ||
+                pendingStepSeconds != 0 || characters.Count != 0 ||
+                sourceModelRankyakuFacing != null ||
+                currentAttackerFacingDegrees == null)
+                throw new InvalidOperationException(
+                    "람각 방향 공급자는 유닛 소환 전에 한 번만 연결합니다.");
+            sourceModelRankyakuFacing = currentAttackerFacingDegrees;
+        }
+
+        private double? SourceModelRankyakuAttackFacing(
+            CharacterInstance actor, SpatialCombatEnemy target)
+        {
+            if (sourceModelRankyakuFacing != null)
+            {
+                double? facing = sourceModelRankyakuFacing(actor.Id);
+                return facing.HasValue && !double.IsNaN(facing.Value) &&
+                    !double.IsInfinity(facing.Value) ? facing : null;
+            }
+            // The mobile model's normal attack already steers the shooter
+            // toward its selected victim. Snapshot that shooter-facing now:
+            // the dummy spell TARGET POINT remains the shooter position.
+            var source = roster.Get(actor.Id);
+            double dx = target.X - source.X, dy = target.Y - source.Y;
+            if (dx == 0 && dy == 0) return null;
+            return Math.Atan2(dy, dx) * 180 / Math.PI;
+        }
 
         private void ForgetSourceAkainuBoss(long actorId)
         {
@@ -328,6 +361,19 @@ namespace Ordr.Mobile.Combat
                 roll + "/" + script.RollSides,
                 0));
             BeforeSourceModelLegacyProc(actor, primary, script);
+            double? rankyakuFacing = null;
+            if (script.CatalogId == "U-04" || script.CatalogId == "U-13")
+            {
+                rankyakuFacing = SourceModelRankyakuAttackFacing(actor, primary);
+                if (!rankyakuFacing.HasValue)
+                {
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EffectDeferred, attackerId,
+                        primaryTargetId, skillName,
+                        "A0VS 시전자 방향을 알 수 없어 파동 보류", 0));
+                    return;
+                }
+            }
             if (script.CatalogId == "R-06")
                 BeginSourceAttackPause(actor, primary,
                     "루피 기어써드 · 거인 공격", .44);
@@ -349,7 +395,8 @@ namespace Ordr.Mobile.Combat
                     });
             }
             else
-                ApplySourceScriptHits(actor, primary, script, script.OnProc);
+                ApplySourceScriptHits(actor, primary, script, script.OnProc,
+                    rankyakuFacingDegrees: rankyakuFacing);
 
             // Bq9: when an enraged A903 target is already protected by
             // B05G, the successful ordinary 16% packet adds exactly one
@@ -501,7 +548,8 @@ namespace Ordr.Mobile.Combat
 
         private List<SpatialCombatEnemy> SourceScriptTargets(
             CharacterInstance actor, SpatialCombatEnemy primary, SourceScriptHit hit,
-            double? pinnedX = null, double? pinnedY = null)
+            double? pinnedX = null, double? pinnedY = null,
+            double? rankyakuFacingDegrees = null)
         {
             var found = new List<SpatialCombatEnemy>();
             if (hit.Shape == SourceScriptHitShape.Direct)
@@ -533,22 +581,25 @@ namespace Ordr.Mobile.Combat
                     if (x * x + y * y <= hit.Radius * hit.Radius)
                         found.Add(candidate);
                 }
-                else if ((hit.Shape == SourceScriptHitShape.RankyakuLine ||
-                          hit.Shape == SourceScriptHitShape.ProjectileLine) && length > 0)
+                else if (hit.Shape == SourceScriptHitShape.RankyakuLine)
                 {
-                    // AUcs/A0VS geometry from W3A. The point-cast range
-                    // must not discard the selected enemy on the same lane:
-                    // mobile uses unlimited spell reach, but keeps the
-                    // original corridor half-width and minimum segment
-                    // length. Native projectile flight/physics are still
-                    // separate from this deterministic damage footprint.
+                    // Caster-origin e0KD; 800 travel, tapered 200->250 width.
+                    // No target-location cast or distance-to-victim extension.
+                    if (rankyakuFacingDegrees.HasValue &&
+                        SourceModelRankyakuGeometry.Contains(hit,
+                            position.X, position.Y, rankyakuFacingDegrees.Value,
+                            candidate.X, candidate.Y))
+                        found.Add(candidate);
+                }
+                else if (hit.Shape == SourceScriptHitShape.ProjectileLine &&
+                         length > 0)
+                {
+                    // Unrelated script projectiles retain their own reach.
                     double x = candidate.X - position.X;
                     double y = candidate.Y - position.Y;
                     double forward = (x * dx + y * dy) / length;
                     double side = Math.Abs(x * dy - y * dx) / length;
-                    double forwardLimit = hit.Shape ==
-                        SourceScriptHitShape.ProjectileLine
-                            ? Math.Max(hit.Length, length) : hit.Length;
+                    double forwardLimit = Math.Max(hit.Length, length);
                     if (forward >= 0 && forward <= forwardLimit &&
                         side <= hit.Radius)
                         found.Add(candidate);
@@ -610,12 +661,14 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy primary, SourceScriptAttackSpec script,
             IReadOnlyList<SourceScriptHit> hits,
             double? pinnedX = null, double? pinnedY = null,
-            long sourceBasicDamage = 0)
+            long sourceBasicDamage = 0,
+            double? rankyakuFacingDegrees = null)
         {
             string attackerId = InstanceKey(actor.Id);
             foreach (var hit in hits)
             {
-                var targets = SourceScriptTargets(actor, primary, hit, pinnedX, pinnedY);
+                var targets = SourceScriptTargets(actor, primary, hit,
+                    pinnedX, pinnedY, rankyakuFacingDegrees);
                 foreach (var target in targets)
                 {
                     // Bq9's story-only bonus must not splash to a normal

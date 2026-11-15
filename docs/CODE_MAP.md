@@ -14,6 +14,9 @@
 
 ## 원본 확인 스킬 진입점
 
+- `SourceModelScriptAttackCatalog.Rankyaku` / `SourceModelRankyakuGeometry.Contains`: 원본 `A0VS(AUcs)` 반폭 200→250·이동 800을 `Rng=1700` 시전 거리와 구분해 블루노(U-04, Bnm) 및 후쿠로(U-13, Bnp)에 공유합니다. `CharacterCombatRuntime.SourceModelAttackSkills.cs`는 공격 선언에서 시전자 방향을 1회 취득해 캐스터 기점 람각 경로를 계산합니다. 외부 방향 관측은 `ConfigureSourceModelRankyakuFacing`, 기본 모바일 모델은 공격 선언의 공격 방향을 사용합니다. 다른 타깃 지향 투사체에는 적용하지 않습니다. 동위치 주문의 엔진 발사·비행·면역은 미확인입니다.
+
+
 - `CharacterCombatRuntime.SourceModelTooltipVolleys.cs`: 비비 B5s/핸콕 B5F 20·25타 시점 예약, 살아 있는 적 재선정, 핸콕 물리 Chaos 적용.
 - `CharacterCombatRuntime.SourceModelTooltipManualActions.cs`: 히바리 h0CN 물품 제작/사용/판매 거래 및 마리아 CDh 5초 영속 주기.
 - `Original323SourceDedicatedSkillPort.cs`: 지갑의 h0CN 제작 영수증·재고에서 도시락 생성자를 복원하고, 제작자 소멸 뒤에도 별도 물품 사용/판매 제어 제공.

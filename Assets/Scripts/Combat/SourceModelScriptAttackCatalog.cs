@@ -12,6 +12,8 @@ namespace Ordr.Mobile.Combat
     {
         public SourceScriptHitShape Shape { get; private set; }
         public double Radius { get; private set; }
+        // AUcs DataD: travelling wave's ending half-width.
+        public double EndRadius { get; private set; }
         public double Length { get; private set; }
         public double Damage { get; private set; }
         public double Minimum { get; private set; }
@@ -50,9 +52,11 @@ namespace Ordr.Mobile.Combat
             double targetCurrentHealthMultiplier = 0,
             double lineMaxHealthMultiplier = 0,
             double lineCurrentHealthMultiplier = 0,
-            Ordr323AttackType? lineAttackOverride = null)
+            Ordr323AttackType? lineAttackOverride = null,
+            double endRadius = -1)
         {
-            Shape = shape; Radius = radius; Length = length; Damage = damage;
+            Shape = shape; Radius = radius; EndRadius = endRadius >= 0 ? endRadius : radius;
+            Length = length; Damage = damage;
             Minimum = minimum; Maximum = maximum; Attack = attack;
             BossCurrentHealthPercent = bossCurrentHealthPercent;
             EnragedMaxHealthPercent = enragedMaxHealthPercent;
@@ -65,6 +69,31 @@ namespace Ordr.Mobile.Combat
             LineMaxHealthMultiplier = lineMaxHealthMultiplier;
             LineCurrentHealthMultiplier = lineCurrentHealthMultiplier;
             LineAttackOverride = lineAttackOverride;
+        }
+    }
+
+    // A0VS AUcs uses the caster's facing and starts at the caster, not the
+    // attacked unit. Area=200 -> DataD=250 half-width over DataC=800 travel.
+    // The actual same-point Warcraft native heading and projectile timing
+    // still require runtime observation; this is deterministic mobile geometry.
+    public static class SourceModelRankyakuGeometry
+    {
+        public static bool Contains(SourceScriptHit wave, double originX,
+            double originY, double facingDegrees, double targetX, double targetY)
+        {
+            if (wave == null || wave.Shape != SourceScriptHitShape.RankyakuLine ||
+                wave.Length <= 0 || wave.Radius < 0 || wave.EndRadius < 0 ||
+                double.IsNaN(facingDegrees) || double.IsInfinity(facingDegrees))
+                return false;
+            double angle = facingDegrees * Math.PI / 180;
+            double fx = Math.Cos(angle), fy = Math.Sin(angle);
+            double x = targetX - originX, y = targetY - originY;
+            double along = x * fx + y * fy;
+            if (along < 0 || along > wave.Length) return false;
+            double across = Math.Abs(x * fy - y * fx);
+            double width = wave.Radius +
+                (wave.EndRadius - wave.Radius) * along / wave.Length;
+            return across <= width;
         }
     }
 
@@ -111,12 +140,14 @@ namespace Ordr.Mobile.Combat
 
         private static SourceScriptHit Rankyaku()
         {
-            // A0VS/AUcs: area=200, range=1700, damage=150. Bnm/Bnp
-            // actually order carrionswarm at the ATTACKER'S OWN location.
-            // The mobile aim toward the current target is a model choice:
-            // no Warcraft facing/path witness is available.
+            // Pinned AbilityData.slk A0VS/AUcs: Area=200, Rng=1700
+            // (CAST reach, NOT travel), DataA=150, DataC=800 (travel),
+            // DataD=250 (ending half-width). Bnm/Bnp create e0KD at
+            // GetUnitLoc(attacker), facing GetUnitFacing(attacker), and
+            // issue carrionswarm at that very same location.
             return new SourceScriptHit(SourceScriptHitShape.RankyakuLine,
-                200, 1700, 150, 1, 1, Ordr323AttackType.Spells);
+                200, 800, 150, 1, 1, Ordr323AttackType.Spells,
+                endRadius: 250);
         }
 
         private static SourceScriptAttackSpec Row(string id, string raw,
@@ -127,9 +158,9 @@ namespace Ordr.Mobile.Combat
 
         private static readonly SourceScriptAttackSpec[] Entries = {
             Row("U-04", "h00M", "Bnm", 100, 10,
-                new[] { Rankyaku() }, "A0VS 원본 투사체/방향·면역 미검증"),
+                new[] { Rankyaku() }, "A0VS 동일점 시전의 원본 엔진 진행방향·비행시각/면역 미검증"),
             Row("U-13", "h00A", "Bnp", 100, 10,
-                new[] { Rankyaku() }, "A0VS 원본 투사체/방향·면역 미검증"),
+                new[] { Rankyaku() }, "A0VS 동일점 시전의 원본 엔진 진행방향·비행시각/면역 미검증"),
             Row("S-03", "h00P", "Bnt", 100, 10,
                 new[] { Circle(400, 800) }, "e00K/A089 이동속도 -5% 오라의 원본 지속/중첩·면역 미검증"),
             Row("S-13", "h013", "Bn6", 100, 20,

@@ -239,6 +239,34 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [TestCase("h00M", "U-04", "Bnm")]
+        [TestCase("h00A", "U-13", "Bnp")]
+        public void RankyakuUsesEightHundredTravelAndTaperedCasterFacing(
+            string rawcode, string unitId, string callback)
+        {
+            SourceScriptAttackSpec spec;
+            Assert.IsTrue(SourceModelScriptAttackCatalog.TryGet(rawcode, out spec));
+            Assert.AreEqual(unitId, spec.CatalogId);
+            Assert.AreEqual(callback, spec.JassFunction);
+            Assert.AreEqual(100, spec.RollSides);
+            Assert.AreEqual(10, spec.RollSuccess);
+            var wave = spec.OnProc.Single();
+            Assert.AreEqual(SourceScriptHitShape.RankyakuLine, wave.Shape);
+            Assert.AreEqual(150, wave.Damage);
+            Assert.AreEqual(800, wave.Length, "AUcs DataC, not 1700 Rng");
+            Assert.AreEqual(200, wave.Radius);
+            Assert.AreEqual(250, wave.EndRadius);
+            Assert.IsTrue(SourceModelRankyakuGeometry.Contains(wave, 0, 0, 0, 400, 225));
+            Assert.IsFalse(SourceModelRankyakuGeometry.Contains(wave, 0, 0, 0, 400, 226));
+            Assert.IsTrue(SourceModelRankyakuGeometry.Contains(wave, 0, 0, 0, 800, 250));
+            Assert.IsFalse(SourceModelRankyakuGeometry.Contains(wave, 0, 0, 0, 801, 0));
+            Assert.IsFalse(SourceModelRankyakuGeometry.Contains(wave, 0, 0, 0, -1, 0));
+            Assert.IsTrue(SourceModelRankyakuGeometry.Contains(wave, 0, 0, 90, 0, 400));
+            Assert.IsFalse(SourceModelRankyakuGeometry.Contains(wave, 0, 0, 90, 400, 0));
+            Assert.IsFalse(SourceModelRankyakuGeometry.Contains(
+                wave, 0, 0, double.NaN, 0, 400));
+        }
+
         [TestCase("U-04")][TestCase("U-13")][TestCase("S-03")][TestCase("S-13")]
         [TestCase("R-11")][TestCase("R-12")][TestCase("R-13")][TestCase("R-21")]
         [TestCase("R-23")][TestCase("R-26")][TestCase("R-30")][TestCase("R-31")]
