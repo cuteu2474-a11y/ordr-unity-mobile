@@ -488,29 +488,16 @@ namespace Ordr.Mobile.Combat
             // Secondary missiles have the same full native base damage,
             // independently rolled/defended for each enemy. The primary
             // already received its basic hit: never hit it twice.
-            const double radiusSquared = 600d * 600d;
+            // Reuse the shared living-enemy, lane, radius, closest-first
+            // and ID-tie selector. Robin excludes its already-hit primary;
+            // Marco's AEfk independently selects up to seven total enemies.
+            var excluded = new HashSet<string>(StringComparer.Ordinal) {
+                hit.TargetId
+            };
             var position = roster.Get(actor.Id);
-            var candidates = new List<SpatialCombatEnemy>();
-            foreach (var target in enemies.Values)
-            {
-                if (target.Id == hit.TargetId || !target.Enemy.IsAlive ||
-                    !CanAttackInThisLane(actor, target)) continue;
-                double dx = target.X - position.X, dy = target.Y - position.Y;
-                if (dx * dx + dy * dy <= radiusSquared)
-                    candidates.Add(target);
-            }
-            // Maintain the existing mobile closest-first + ordinal tie
-            // policy; Warcraft native Aroc enumeration order is not proven.
-            candidates.Sort((a, b) => {
-                double da = (a.X-position.X)*(a.X-position.X) +
-                    (a.Y-position.Y)*(a.Y-position.Y);
-                double db = (b.X-position.X)*(b.X-position.X) +
-                    (b.Y-position.Y)*(b.Y-position.Y);
-                int cmp = da.CompareTo(db);
-                return cmp != 0 ? cmp :
-                    StringComparer.Ordinal.Compare(a.Id, b.Id);
-            });
-            int additional = Math.Min(totalTargets - 1, candidates.Count);
+            var candidates = RemainingNativeTargets(actor, position.X,
+                position.Y, 600, totalTargets - 1, excluded);
+            int additional = candidates.Count;
             if (additional == 0) return;
             string attackerId = InstanceKey(actor.Id);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,

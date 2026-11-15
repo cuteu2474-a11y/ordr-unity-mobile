@@ -40,11 +40,20 @@ namespace Ordr.Mobile.Combat
                 castRange: ability.CastRange1);
         }
 
+        // Source W3X: Bn0/e0KD/A08L (AEfk). DataA1=1500,
+        // Area1=1150, DataC1=7 maximum distinct enemies.
+        private static SourceScriptHit MarcoFanOfKnives()
+        {
+            return new SourceScriptHit(SourceScriptHitShape.AttackerCircle,
+                1150, 0, 1500, 1, 1, Ordr323AttackType.Spells,
+                maxTargets: 7);
+        }
+
         private static readonly SourceScriptAttackSpec[] Entries = {
-            // Bn0: native e0KD/A08L (AEfk) at the ATTACKER, not the target.
+            // Bn0: 10% cast at ATTACKER, maximum seven targets.
             new SourceScriptAttackSpec("S-08", "h00T", "Bn0", 100, 10,
-                null, new[] { Hit(SourceScriptHitShape.AttackerCircle, 1500, 1150) },
-                "A08L fanofknives 원본 최대 대상·면역·미사일 미검증"),
+                null, new[] { MarcoFanOfKnives() },
+                "A08L 최대7명 가까운 대상 우선 모델 / 원본 대상 순서·면역·미사일 미검증"),
             // Bn4: h0C5 adds A08O (Apxf), lives 1.2s; no direct JASS hit.
             new SourceScriptAttackSpec("S-12", "h014", "Bn4", 100, 12,
                 null, Array.Empty<SourceScriptHit>(),

@@ -566,6 +566,13 @@ namespace Ordr.Mobile.Combat
                 return found;
             }
             var position = roster.Get(actor.Id);
+            // Capped caster-centered native attacks (AEfk/A08L) reuse
+            // Robin's eligible-target selector, counting ALL hits toward
+            // the cap. Other uncapped areas retain their old ordering.
+            if (hit.Shape == SourceScriptHitShape.AttackerCircle &&
+                hit.MaxTargets > 0)
+                return RemainingNativeTargets(actor, position.X, position.Y,
+                    hit.Radius, hit.MaxTargets);
             double dx = primary.X - position.X;
             double dy = primary.Y - position.Y;
             double length = Math.Sqrt(dx * dx + dy * dy);
