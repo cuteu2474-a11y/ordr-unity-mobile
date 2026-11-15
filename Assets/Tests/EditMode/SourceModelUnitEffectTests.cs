@@ -448,7 +448,10 @@ namespace Ordr.Mobile.Tests
             using (var game = Create())
             {
                 game.Battle.Advance(2);
-                game.Combat.SpawnCharacter("U-01", -4000, 4000);
+                // Four existing wave enemies are clustered near the
+                // original spawn lane; Robin must be close enough for
+                // the native A07M additional-target radius (600).
+                game.Combat.SpawnCharacter("U-01", -4960, 5400);
                 var events = game.Battle.Advance(.3);
                 Assert.AreEqual(4, game.Combat.MobileEnemySnapshot().Count);
                 Assert.AreEqual(3, game.Combat.MobileEnemySnapshot().Count(e => e.Health < e.MaxHealth));
@@ -456,6 +459,39 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(1, events.Count(e => e.Type == CharacterCombatEventType.Attack));
             }
         }
+        [Test]
+        public void RobinAdditionalHitsRespectCasterCenteredSixHundredRange()
+        {
+            using (var game = Create(true, true))
+            {
+                // One spawned monster is the primary. Secondary targets
+                // are placed exactly at 600 and just outside (601).
+                game.Battle.Advance(.5);
+                var primary = game.Combat.MobileEnemySnapshot().Single();
+                game.Combat.SpawnEnemyWithDefenses("robin-edge", 1000000,
+                    CharacterEnemyKind.Line, primary.X + 600, primary.Y, 0,
+                    new EnemyDefenseProfile(CharacterEnemyKind.Line, 0, null,
+                        "normal", "TEST_ONLY: Robin A07M 600 range edge"));
+                game.Combat.SpawnEnemyWithDefenses("robin-outside", 1000000,
+                    CharacterEnemyKind.Line, primary.X + 601, primary.Y, 0,
+                    new EnemyDefenseProfile(CharacterEnemyKind.Line, 0, null,
+                        "normal", "TEST_ONLY: Robin A07M 601 out of range"));
+
+                game.Combat.SpawnCharacter("U-01", primary.X, primary.Y);
+                var events = game.Battle.Advance(.3);
+                Assert.AreEqual(1, events.Count(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.TargetId == "robin-edge" && e.SkillName == "꽃꽃 열매"));
+                Assert.IsFalse(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.TargetId == "robin-outside"));
+                var all = game.Combat.MobileEnemySnapshot();
+                Assert.Less(all.Single(e => e.Id == "robin-edge").Health, 1000000L);
+                Assert.AreEqual(1000000L,
+                    all.Single(e => e.Id == "robin-outside").Health);
+            }
+        }
+
         private static long LuffyFirstDamage(params string[] auraUnits)
         {
             using (var game = Create())

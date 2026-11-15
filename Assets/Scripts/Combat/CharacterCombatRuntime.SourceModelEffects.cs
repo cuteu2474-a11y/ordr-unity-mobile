@@ -460,14 +460,26 @@ namespace Ordr.Mobile.Combat
                 }
             }
             if (actor.Catalog.Id != "U-01") return;
-            // Source A07M has THREE total targets. The practice selects the
-            // nearest two additional living targets, tied by immutable ID;
-            // native missile flight and target ordering remain unverified.
+            // Original h00O A07M/Aroc: one normal shot plus at most two
+            // additional enemies within 600 Warcraft units of ROBIN.
+            // Do not give barrage unlimited reach just because the enemy
+            // belongs to the same lane. Mobile has no separate air/ground
+            // classification; keep the existing lane/target policy.
+            const double robinBarrageRadiusSquared = 600d * 600d;
+            var position = roster.Get(actor.Id);
             var candidates = new List<SpatialCombatEnemy>();
             foreach (var other in enemies.Values)
-                if (other.Id != hit.TargetId && other.Enemy.IsAlive && CanAttackInThisLane(actor, other))
+            {
+                if (other.Id == hit.TargetId || !other.Enemy.IsAlive ||
+                    !CanAttackInThisLane(actor, other))
+                    continue;
+                double dx = other.X - position.X;
+                double dy = other.Y - position.Y;
+                if (dx * dx + dy * dy <= robinBarrageRadiusSquared)
                     candidates.Add(other);
-            var position = roster.Get(actor.Id);
+            }
+            // Keep existing closest-first/id-tie mobile target policy.
+            // Native barrage projectile ordering remains unverified.
             candidates.Sort((a,b) => {
                 double da = (a.X-position.X)*(a.X-position.X)+(a.Y-position.Y)*(a.Y-position.Y);
                 double db = (b.X-position.X)*(b.X-position.X)+(b.Y-position.Y)*(b.Y-position.Y);
