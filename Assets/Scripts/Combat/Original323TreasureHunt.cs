@@ -22,7 +22,7 @@ namespace Ordr.Mobile.Combat
         // BeM(3) is a treasure-map effect, NOT a free game-start spawn.
         public const int TreasureMapBonusSpawnCount = 3;
         public const int InitialExtraTreasureCount = TreasureMapBonusSpawnCount;
-        public const int ScheduledSpawnCount = 4;
+        public const int ScheduledSpawnCount = 5; // CUn n9 = 4 + solo player.
 
         public static bool IsScheduledSpawnRound(int round) =>
             round > 0 && round <= 50 && round % 10 == 0;
@@ -341,8 +341,7 @@ namespace Ordr.Mobile.Combat
             int before;
             countByWave.TryGetValue(originalRound,out before);
             int maximum=originalRound==0 ?
-                Original323TreasureRules.InitialExtraTreasureCount :
-                Original323TreasureRules.ScheduledSpawnCount;
+                int.MaxValue : Original323TreasureRules.ScheduledSpawnCount;
             if(before>=maximum)
                 throw new InvalidOperationException("원본 라운드 보물 출현 수 초과");
             var chest=new Original323TreasureLocation(uniqueId,
@@ -350,6 +349,16 @@ namespace Ordr.Mobile.Combat
             byId.Add(uniqueId,chest);
             ordered.Add(chest);
             countByWave[originalRound]=before+1;
+        }
+
+        // Mobile BFj-equivalent generated positions are marked as such;
+        // they are NOT external JASS spawn observations.
+        internal void RegisterMobilePortSpawn(string id,int round,double x,double y)
+        {
+            if(string.IsNullOrWhiteSpace(id) ||
+                !id.StartsWith("mobile-port:",StringComparison.Ordinal))
+                throw new ArgumentException("모바일 보물 출현 ID 필요");
+            RegisterObservedSpawn(id,round,x,y,"mobile-port:BFj:"+id);
         }
 
         // Validate the WHOLE source-observed packet before mutating the
@@ -368,8 +377,8 @@ namespace Ordr.Mobile.Combat
             countByWave.TryGetValue(originalRound,out before);
             int maximum=originalRound==0 ?
                 Original323TreasureRules.TreasureMapBonusSpawnCount :
-                Original323TreasureRules.ScheduledSpawnCount;
-            if(packet.Count>maximum-before)
+                Original323TreasureRules.ScheduledSpawnCount-before;
+            if(packet.Count>maximum)
                 throw new InvalidOperationException("원본 출현 보물 상한 초과");
             var newIds=new HashSet<string>(StringComparer.Ordinal);
             foreach(var chest in packet)

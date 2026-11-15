@@ -37,8 +37,7 @@ namespace Ordr.Mobile.Mobile
             if(string.IsNullOrWhiteSpace(id)||id.Length>128 ||
                 string.IsNullOrWhiteSpace(sourceHash) || wave<1||wave>65 ||
                 !Original323TreasureRules.Finite(internalX) ||
-                !Original323TreasureRules.Finite(internalY) ||
-                (nami && !gaimon))
+                !Original323TreasureRules.Finite(internalY))
                 throw new ArgumentException("원본 보물 탐색의 검증된 기회·상태가 필요합니다.");
             Id=id;OriginalW3xSha256=sourceHash;Round=wave;
             InternalX=internalX;InternalY=internalY;
@@ -84,8 +83,7 @@ namespace Ordr.Mobile.Mobile
                 string name=reward.WispResourceId==WispResourceIds.Random ?
                     "랜덤위습" : reward.WispResourceId==WispResourceIds.Choice ?
                     "선택위습" : "안흔함위습";
-                lines.Add(name+" "+reward.WispCount+"개"+
-                    (reward.BonusBerry ? " · 베리 1개 추가" : ""));
+                lines.Add(name+" "+reward.WispCount+"개");
             }
             return string.Join(" / ",lines.ToArray());
         }
@@ -134,8 +132,9 @@ namespace Ordr.Mobile.Mobile
             new HashSet<string>(StringComparer.Ordinal);
         private bool inProgress;
         public int AttemptsUsed => consumedIds.Count;
-        public bool CanAttempt => policy.IsCalibrationApproved &&
-            Original323BossRoundRules.TrustedRuntimeEvidence(policy.CalibrationEvidence);
+        public bool CanAttempt => policy is Original323MobileTreasureSession ||
+            (policy.IsCalibrationApproved &&
+             Original323BossRoundRules.TrustedRuntimeEvidence(policy.CalibrationEvidence));
 
         public MobileTreasureGachaCheckpoint CaptureCheckpoint()
         {

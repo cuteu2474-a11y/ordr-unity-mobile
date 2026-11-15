@@ -3814,7 +3814,8 @@ namespace Ordr.Mobile.Unity
             bool valid = treasure != null && controller.MobileTreasureGacha != null &&
                 controller.MobileTreasureGacha.CanAttempt &&
                 Combat != null && Combat.Game.Phase == SessionPhase.Running &&
-                !controller.IsUnitPreparation && Combat.Game.CurrentWave > 0;
+                !controller.IsUnitPreparation && Combat.Game.CurrentWave > 0 &&
+                treasure.UncollectedCountAtOriginalRound(Combat.Game.CurrentWave) > 0;
             bool wasEnabled = GUI.enabled;
             GUI.enabled = wasEnabled && valid;
             if (OrdrMobileUiTheme.DrawActionRow("보물 탐색",
@@ -3827,8 +3828,12 @@ namespace Ordr.Mobile.Unity
             if (!valid)
                 GUILayout.Label(controller.MobileTreasureGacha == null ||
                     !controller.MobileTreasureGacha.CanAttempt
-                        ? "원본 탐색 기회·실제 보물 출현 확인 대기"
-                        : "진행 중인 라운드에서 사용 가능",
+                        ? "보물 탐색 세션 준비 전"
+                        : treasure != null && Combat != null &&
+                          Combat.Game.CurrentWave > 0 &&
+                          treasure.UncollectedCountAtOriginalRound(Combat.Game.CurrentWave) == 0
+                            ? "현재 보물이 없습니다. 10라운드마다 추가됩니다."
+                            : "진행 중인 라운드에서 사용 가능",
                     OrdrMobileUiTheme.Overline);
 
             // The verified reveal is only a status; it never pays out again.

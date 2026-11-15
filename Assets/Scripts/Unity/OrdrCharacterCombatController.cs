@@ -2522,6 +2522,7 @@ namespace Ordr.Mobile.Unity
                 ? "공유 목표에서 복귀했습니다."
                 : "복귀할 공유 목표 출전 유닛이 없습니다.";
         private IOriginal323PoneglyphEventWitness originalPoneglyphWitness;
+        private Original323MobileTreasureSession standaloneTreasure;
         public MobileTreasureGacha MobileTreasureGacha { get; private set; }
         public Original323GaimonRevealPort GaimonReveal { get; private set; }
 
@@ -2728,6 +2729,30 @@ namespace Ordr.Mobile.Unity
             MobileTreasureGacha=new MobileTreasureGacha(OriginalTreasureHunt,policy);
         }
 
+        // The external original source, if configured, always takes precedence.
+        // Otherwise use the explicit local A05D mobile interaction adapter.
+        private void ConfigureStandaloneTreasureIfAbsent()
+        {
+            if(OriginalTreasureHunt!=null || Combat==null ||
+                SharedEconomy==null || sessionScriptRandom==null) return;
+            standaloneTreasure=new Original323MobileTreasureSession(
+                sessionScriptRandom,
+                () => GaimonDream.Applied,
+                () => GaimonDream.NamiBonusWhenApplied);
+            ConfigureOriginal323TreasureHunt(
+                new Original323TreasureWalletWorld(
+                    SharedEconomy.Wallet,standaloneTreasure),sessionScriptRandom);
+            MobileTreasureGacha=new MobileTreasureGacha(
+                OriginalTreasureHunt,standaloneTreasure);
+        }
+
+        private void SpawnStandaloneTreasureForRound(int round)
+        {
+            if(standaloneTreasure!=null && OriginalTreasureHunt!=null &&
+                round>=1 && round<=65)
+                standaloneTreasure.SpawnThroughRound(OriginalTreasureHunt,round);
+        }
+
         public MobileTreasureGachaResult RequestMobileTreasureGacha()
         {
             if (Combat == null || IsUnitPreparation ||
@@ -2737,6 +2762,7 @@ namespace Ordr.Mobile.Unity
                 return new MobileTreasureGachaResult(
                     MobileTreasureOutcome.Unavailable,0,0,
                     "원작 보물 가챠 확률·탐색 기회 검증 대기");
+            SpawnStandaloneTreasureForRound(Combat.Game.CurrentWave);
             var result = MobileTreasureGacha.TrySearch(Combat.Game.CurrentWave,
                 GaimonDream != null && GaimonDream.Applied,
                 GaimonDream != null && GaimonDream.Applied && GaimonDream.NamiBonusWhenApplied,
@@ -3806,6 +3832,7 @@ namespace Ordr.Mobile.Unity
                         startEvolutionWorld.RemoveAndUntrack(SharedEconomy, id);
                     else Combat.RemoveCharacter(id);
                 });
+            ConfigureStandaloneTreasureIfAbsent();
             Combat.Start();
             runGate.SetManualPause(false);
             RecordSessionIssue("게임 시작", "악몽 · 이세계모드");
@@ -4014,6 +4041,7 @@ namespace Ordr.Mobile.Unity
                 }
             }
             VerifiedWaveDirector.Begin(Combat, plan);
+            SpawnStandaloneTreasureForRound(waveNumber);
             if (originalEventConfirmed)
                 commonSourceFusion?.ConfirmObservedOriginalRound(waveNumber);
             RecordSessionIssue("라운드 시작", waveNumber + "라운드 / 원본 이벤트 승인");
@@ -4085,6 +4113,7 @@ namespace Ordr.Mobile.Unity
             VerifiedWavePlan first = RequireVerifiedMonsterWavePlan(1);
             if (!IsUnitPreparation) BeginSession();
             VerifiedWaveDirector.Begin(Combat, first);
+            SpawnStandaloneTreasureForRound(1);
             commonSourceFusion?.ConfirmObservedOriginalRound(1);
             RecordSessionIssue("라운드 시작", "1라운드 / 원본 이벤트 승인");
             PersonalMissions?.OnRoundStarted();
@@ -4143,9 +4172,16 @@ namespace Ordr.Mobile.Unity
             // CCP applies only after a committed Gaimon is visible in the
             // live roster. The YL witness is mandatory and read once.
             // A failed / unverified rare-Wisp transaction cannot trigger it.
-            if (!GaimonDream.Applied && originalGaimonYlSource != null)
-                GaimonDream.TryApplyAfterOwnedGaimon(
-                    HasOwnedOriginalGaimon, originalGaimonYlSource);
+            if (!GaimonDream.Applied)
+            {
+                if (originalGaimonYlSource != null)
+                    GaimonDream.TryApplyAfterOwnedGaimon(
+                        HasOwnedOriginalGaimon, originalGaimonYlSource);
+                else if (standaloneTreasure != null)
+                    GaimonDream.TryApplyMobileAfterOwnedGaimon(
+                        HasOwnedOriginalGaimon);
+            }
+            SpawnStandaloneTreasureForRound(Combat.Game.CurrentWave);
             // Never catch up elapsed wall-clock time after backgrounding.
             // Combat, round events, shared mana regeneration and source RNG
             // remain on one paused logical clock.

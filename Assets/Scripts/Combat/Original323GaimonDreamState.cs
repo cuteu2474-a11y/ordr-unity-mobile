@@ -41,6 +41,16 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
+        // Standalone mobile CCP equivalent: committed h0BG enables the
+        // dream even without a Warcraft cast callback. Unknown YL stays off.
+        public bool TryApplyMobileAfterOwnedGaimon(bool committedGaimon)
+        {
+            if(Applied || !committedGaimon) return false;
+            Applied=true;
+            NamiBonusWhenApplied=false;
+            return true;
+        }
+
         // Original CCP has no automatic "unapply on sell" step.
         // Any save/load must restore the whole snapshot atomically.
         public Original323GaimonDreamSnapshot Capture() =>
