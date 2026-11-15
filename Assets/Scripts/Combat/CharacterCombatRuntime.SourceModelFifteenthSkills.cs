@@ -28,11 +28,18 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
-        private double SourceModelFifteenthStrength(long id)
+        private double SourceModelFifteenthStrength(long id, bool includeBonuses)
         {
-            if (sourceModelStrengthProvider == null) return 0;
-            double? recorded = sourceModelStrengthProvider(id);
+            // B11/B12 in the original JASS use GetHeroStatBJ(STR,false)
+            // for Tashigi, while Doflamingo uses STR,true. They must not
+            // share a total-bonused stat accessor.
+            var provider = includeBonuses ? sourceModelStrengthProvider :
+                sourceModelUnbonusedStrengthProvider;
+            if (provider == null) return 0;
+            double? recorded = provider(id);
             return recorded.HasValue && recorded.Value >= 0 &&
+                recorded.Value <= int.MaxValue &&
+                Math.Floor(recorded.Value) == recorded.Value &&
                 !double.IsNaN(recorded.Value) && !double.IsInfinity(recorded.Value)
                 ? recorded.Value : 0;
         }
@@ -49,9 +56,9 @@ namespace Ordr.Mobile.Combat
             switch (skill.Id)
             {
                 case "TR-03:skill:1":
-                    return raw + SourceModelFifteenthStrength(actor.Id) * 10000;
+                    return raw + SourceModelFifteenthStrength(actor.Id, true) * 10000;
                 case "TR-27:skill:2":
-                    return 350000 + SourceModelFifteenthStrength(actor.Id) * 2500 +
+                    return 350000 + SourceModelFifteenthStrength(actor.Id, false) * 2500 +
                         SourceModelUpgradeAdjustedAttackPower(actor) * 6;
                 case "T-01:skill:0":
                     return raw + (target.Kind == CharacterEnemyKind.Line ?

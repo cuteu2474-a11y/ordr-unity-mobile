@@ -8,7 +8,7 @@
 - `CharacterCombatRuntime.SourceModelRemainingCallbacks.cs`: 검은수염 Bzz/Bzr/Bzx의 순수 힘 `GetHeroStatBJ(STR,false)`×60,000/5,000/5,000을 기존 1회 피해 계산에 반영. `SourceModelCompositeEffects.cs`의 `ConfigureSourceModelHeroUnbonusedStrengthProvider`가 미연결이면 계수 보류.
 - `CharacterCombatRuntime.SourceModelBulkAutoSkills.cs`: 나미 BWT의 보너스 포함 현재 INT `GetHeroStatBJ(INT,true)`×3,500/타를 시전 시점에 1회 취득. `ConfigureSourceModelHeroIntelligenceProvider` 공급 미연결이면 계수 보류.
 - `Original323HeroAttributeWorld.cs`: 원본 객체의 초기 STR/AGI/INT 출처(맵 SHA, 원본 rawcode) + 동일 게임 경험치 장부의 레벨별 성장 + 개체별 보너스 목격값을 합성하는 공통 엔진. `OrdrCharacterCombatController`가 `Original323MobileStoryHeroExperienceWorld.LevelStateOf`와 함께 전투에 연결. 순수 STR(false) / 보너스 포함 STR·AGI·INT(true) 구분, 미공급이면 null 유지. `CharacterCombatRuntime.SourceModelSeventeenthSpecials.cs`는 구매한 위성의 개별 ID를 전달하므로 제작자와 rawcode만 같은 서로 다른 위성을 섞지 않음.
-- **원본 초기 능력치와 실제 네이티브 보너스 입력은 현재 저장소에 없어 미등록 상태입니다.** 성장·폼은 연결되었지만 스탯 0이나 UnitPointValue 131을 기본값으로 넣지 않습니다. 추출·검증한 원본 UnitBalance.slk 및 각 개체 보너스를 공급하기 전에는 18개 기술의 실전 계수 완성으로 간주하지 않습니다.
+- `Original323UnitBalanceHeroInitialAttributes.cs` / `data/original-2323C-hero-initial-attributes.json`: 고정 원본 W3X `Units/UnitBalance.slk` SHA `f7f26217…`에서 확인한 **H05N·H0A5(STR10/AGI11/INT1), H0BX·H0BY(각1)**만 장면 초기화에 등록. 70개 H-객체의 다른 66개는 세 셀이 생략되어 미확정; 절대 0으로 추측하지 않음. `SourceModelFifteenthSkills.cs`의 타시기 `TR-27:skill:2`는 원본 `GetHeroStatBJ(STR,false)`를 따르도록 수정(도플라밍고 STR(true)와 분리). 실제 네이티브 보너스와 나머지 초기 스탯이 미공급이므로 18개 효과·위성의 실전 피해 완성 판정은 보류.
 
 ## 원본 확인 스킬 진입점
 

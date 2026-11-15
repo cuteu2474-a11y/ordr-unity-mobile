@@ -33,9 +33,11 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentNullException(nameof(witnessedLevels));
         }
 
-        // This API deliberately has no default rows: the checked-in W3X
-        // export currently contains hero XP growth, but not starting
-        // STR/AGI/INT. Call only with a rawcode-matched original SLK witness.
+        // No default rows: direct original UnitBalance.slk inspection exposes
+        // explicit STR/AGI/INT triples for 4 of 70 uppercase H rawcodes.
+        // All 66 other hero rows OMIT the fields; an omitted cell is not a
+        // witnessed zero and must remain unknown until sourced separately.
+        // Use only matching rawcode and pinned-map original SLK evidence.
         public void RegisterOriginalUnitBalanceRow(string sourceW3xSha256,
             string originalRawcode, int strength, int agility, int intelligence)
         {

@@ -1006,11 +1006,13 @@ namespace Ordr.Mobile.Unity
                         PracticeUnitGambling != null && PracticeUnitGambling.Navigation ==
                             Original323GamblingNavigation.Casino);
                     Combat.ConfigureSourceHeroLevelProgression(heroExperience);
-                    // One source XP state drives every stat-scaled hero skill.
-                    // Initial SLK STR/AGI/INT and native bonuses still need
-                    // actual 2.323[C] evidence before any extra damage applies.
+                    // Only explicit original SLK hero-attribute triples are
+                    // registered. Missing base cells and native bonus input
+                    // remain unknown rather than being replaced by zero.
                     var originalHeroAttributes =
                         new Original323HeroAttributeWorld(heroExperience.LevelStateOf);
+                    Original323UnitBalanceHeroInitialAttributes.RegisterVerifiedRows(
+                        originalHeroAttributes);
                     Combat.ConfigureSourceModelOriginalHeroAttributes(
                         originalHeroAttributes);
                     OriginalHeroAttributes = originalHeroAttributes;
