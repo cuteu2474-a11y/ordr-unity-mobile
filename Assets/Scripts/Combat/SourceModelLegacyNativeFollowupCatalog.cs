@@ -32,6 +32,10 @@ namespace Ordr.Mobile.Combat
         public const string NamiAuraAbility = "A089";
         public const double NamiMovementSlowPercent = 5;
         public const double NamiZoneRadius = 450;
+        // The original Bnt/A089 inputs pin the radius and strength;
+        // the S-03 character tooltip independently pins aftershock to 3s.
+        // Do NOT claim the Bnt callback itself contains a timed-life call.
+        public const double NamiAftershockDurationSeconds = 3;
         public const string SentinelFaerieAbility = "A10I";
         public const double SentinelArmorReduction = 50;
         public const double SentinelFaerieDuration = 60;

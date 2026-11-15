@@ -203,9 +203,11 @@ namespace Ordr.Mobile.Combat
                 new[] { Rankyaku() }, "A0VS 동일점 시전의 원본 엔진 진행방향·비행시각/면역 미검증"),
             Row("U-13", "h00A", "Bnp", 100, 10,
                 new[] { Rankyaku() }, "A0VS 동일점 시전의 원본 엔진 진행방향·비행시각/면역 미검증"),
+            // Original JASS Bnt handles the 10% / 800 Universal packet.
+            // Its e00K/A089 helper is implemented by the legacy follow-up;
+            // aftershock duration 3s is from the S-03 skill description.
             Row("S-03", "h00P", "Bnt", 100, 10,
-                new[] { NamiUniversalCircle() },
-                "e00K/A089 -5% 이동속도/450 범위. 원본 Bnt 내 수명 지정 없음, 전체 제거 조건 미확정"),
+                new[] { NamiUniversalCircle() }),
             Row("S-13", "h013", "Bn6", 100, 20,
                 new[] { Direct(500) }, "e00P 보조 소환의 네이티브 효과"),
             Row("R-11", "h04H", "Bo4", 100, 10,

@@ -291,6 +291,12 @@ namespace Ordr.Mobile.Combat
             if (moriaParticipation.HasPending)
                 throw new NotSupportedException(
                     "모리아 처치 기여 장부가 저장 형식에 없어 진행 중 저장을 거부합니다.");
+            // The source-model save graph cannot reconstruct e00K locations,
+            // relative expiries, and 5% B010 aura leases. Never save a
+            // checkpoint that would silently lose an active 3s aftershock.
+            if (HasUnexpiredSourceNamiZones())
+                throw new NotSupportedException(
+                    "나미 크리마텍트 3초 여진의 위치·남은 시간이 저장되지 않아 진행 중 저장을 거부합니다.");
             // Actor-dependent native equipment, living summons and transform
             // callbacks need distinct reconstruction; never silently erase.
             if (sourceFormCastFinishes.Count != 0 ||

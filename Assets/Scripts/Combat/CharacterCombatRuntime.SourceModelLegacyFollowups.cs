@@ -11,6 +11,7 @@ namespace Ordr.Mobile.Combat
             public double X;
             public double Y;
             public bool Story;
+            public double ExpiresAt;
         }
 
         private readonly List<PracticeNamiZone> sourceNamiZones = new List<PracticeNamiZone>();
@@ -66,19 +67,21 @@ namespace Ordr.Mobile.Combat
             if (spec.CatalogId == "S-03")
             {
                 // Bnt creates the e00K/A089 helper at the target location.
-                // It contains no timed-life or explicit removal call; do not
-                // invent expiry. The existing RefreshEnemyAuras path recomputes
-                // coverage when enemies enter or leave the 450-radius zone.
+                // The S-03 character tooltip independently specifies a 3s
+                // aftershock; Bnt alone does not describe timed-life removal.
+                // Keep this temporary area distinct from any innate A088 buff.
                 if (sourceFollowupSequence == long.MaxValue)
                     throw new OverflowException("연습 소환 순번 초과");
                 sourceNamiZones.Add(new PracticeNamiZone {
                     Source = "practice-nami:A089:" + (++sourceFollowupSequence),
-                    X = primary.X, Y = primary.Y, Story = IsStoryDeployed(actor.Id)
+                    X = primary.X, Y = primary.Y, Story = IsStoryDeployed(actor.Id),
+                    ExpiresAt = effectExecutor.Time +
+                        SourceModelLegacyNativeFollowupCatalog.NamiAftershockDurationSeconds
                 });
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
                     primary.Id, "나미 · 크리마텍트 오라",
-                    "MODEL_ONLY Bnt→e00K/A089: 이동속도 -5%, 반경 450 · Bnt 내 수명 지정 없음, 외부 제거·중첩 조건 미확정", 0));
+                    "Bnt→e00K/A089: 이동속도 -5%, 반경 450, 여진 3초(도감 기준) · 원본 버프 중첩/네이티브 면역 미확정", 0));
                 RefreshSourceModelNamiZones();
             }
             if (spec.CatalogId == "RN-04")
@@ -193,13 +196,24 @@ namespace Ordr.Mobile.Combat
                 });
         }
 
+        private bool HasUnexpiredSourceNamiZones()
+        {
+            foreach (var zone in sourceNamiZones)
+                if (zone.ExpiresAt > effectExecutor.Time) return true;
+            return false;
+        }
+
         private void RefreshSourceModelNamiZones()
         {
             if (!UsesSourceModelBasicAttacks) return;
+            // Remove prior aura leases FIRST. Expired zones must not leave
+            // permanent 0-duration enemy statuses behind.
             foreach (var status in statuses.Values)
                 foreach (var key in sourceNamiAuraKeys)
                     status.RemoveSource(key);
             sourceNamiAuraKeys.Clear();
+            sourceNamiZones.RemoveAll(zone =>
+                effectExecutor.Time >= zone.ExpiresAt);
             foreach (var zone in sourceNamiZones)
             {
                 sourceNamiAuraKeys.Add(zone.Source);
@@ -208,7 +222,8 @@ namespace Ordr.Mobile.Combat
                     if (!target.Enemy.IsAlive ||
                         (zone.Story ? target.Kind != CharacterEnemyKind.Story :
                             target.Kind != CharacterEnemyKind.Line &&
-                            target.Kind != CharacterEnemyKind.Boss)) continue;
+                            target.Kind != CharacterEnemyKind.Boss &&
+                            target.Kind != CharacterEnemyKind.Enraged)) continue;
                     double dx = target.X - zone.X, dy = target.Y - zone.Y;
                     if (dx * dx + dy * dy >
                         SourceModelLegacyNativeFollowupCatalog.NamiZoneRadius *

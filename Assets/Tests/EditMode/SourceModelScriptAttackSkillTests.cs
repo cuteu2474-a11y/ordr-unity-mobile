@@ -580,6 +580,30 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void NamiAftershockExpiresAfterThreeSecondsWithoutStaleSlow()
+        {
+            using (var live = Create("S-03", true, -4900, 5400))
+            {
+                var triggered = live.Battle.Advance(2.5);
+                Assert.IsTrue(triggered.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains("e00K/A089")));
+                Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(e =>
+                    live.Combat.StatusOf(e.Id).Snapshot().Any(status =>
+                        status.SourceId.StartsWith("practice-nami:A089:"))));
+                // Future ordinary attacks still occur, but cannot refresh
+                // the already cast zone after the fixed 3s expires.
+                live.Rolls.Trigger = false;
+                live.Battle.Advance(
+                    SourceModelLegacyNativeFollowupCatalog.NamiAftershockDurationSeconds + .1);
+                Assert.IsFalse(live.Combat.MobileEnemySnapshot().Any(e =>
+                    live.Combat.StatusOf(e.Id).Snapshot().Any(status =>
+                        status.SourceId.StartsWith("practice-nami:A089:"))),
+                    "Expired e00K aura must not permanently slow enemies.");
+            }
+        }
+
+        [Test]
         public void SentinelAppliesFifteenNativeA04RLevelsAndSixtySecondFaerieFire()
         {
             using (var live = Create("RN-04", true, -4900, 5400))
