@@ -442,6 +442,64 @@ namespace Ordr.Mobile.Tests
                 Assert.AreNotEqual(target.Y, game.Combat.MobileEnemySnapshot().Single().Y);
             }
         }
+        [TestCase("U-03", CharacterEnemyKind.Boss, 0.3, false)]
+        [TestCase("U-03", CharacterEnemyKind.Enraged, 0.3, false)]
+        [TestCase("U-09", CharacterEnemyKind.Boss, 0.7, true)]
+        [TestCase("U-09", CharacterEnemyKind.Enraged, 0.7, true)]
+        public void UncommonNativePassivesApplyToBossAndEnraged(
+            string unitId, CharacterEnemyKind kind, double expectedStun,
+            bool bonusDamage)
+        {
+            long plain = -1, activated = -1;
+            foreach (bool proc in new[] { false, true })
+            using (var game = Create(proc, true))
+            {
+                // The actual first-wave target stays far away. This external
+                // test target has no wave-spawn/reward ownership.
+                game.Battle.Advance(.5);
+                const string targetId = "uncommon-native-round-target";
+                game.Combat.SpawnEnemyWithDefenses(targetId, 1000000000000L,
+                    kind, -20000, -20000, 0,
+                    new EnemyDefenseProfile(kind, 0, null, "normal",
+                        "TEST_ONLY: round native passive"));
+                game.Rules.UnitEffects.RegisterPracticeTarget(targetId);
+                long attacker = game.Combat.SpawnCharacter(unitId, -20000, -20000);
+                var events = game.Battle.Advance(.3);
+                var hits = events.Where(e =>
+                    e.Type == CharacterCombatEventType.Attack &&
+                    e.ActorId == attacker.ToString() && e.TargetId == targetId)
+                    .ToArray();
+                Assert.AreEqual(1, hits.Length, unitId + " " + kind);
+                bool stunEvent = events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.ActorId == attacker.ToString() && e.TargetId == targetId &&
+                    e.Detail.Contains("기절"));
+                Assert.AreEqual(proc, stunEvent, unitId + " " + kind);
+                var status = game.Combat.StatusOf(targetId);
+                Assert.AreEqual(proc, status.IsStunned(), unitId + " " + kind);
+                Assert.AreEqual(proc, !game.Combat.TryMoveEnemy(
+                    targetId, -19999, -20000, 0), unitId + " " + kind);
+                if (proc)
+                {
+                    Assert.Greater(status.RemainingStunSeconds, 0);
+                    Assert.LessOrEqual(status.RemainingStunSeconds,
+                        expectedStun + 0.000001);
+                }
+                bool bonusEvent = events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.ActorId == attacker.ToString() && e.TargetId == targetId &&
+                    e.Detail.Contains("추가 피해"));
+                Assert.AreEqual(proc && bonusDamage, bonusEvent,
+                    unitId + " " + kind);
+                if (proc) activated = hits[0].Amount;
+                else plain = hits[0].Amount;
+            }
+            if (bonusDamage)
+                Assert.Greater(activated, plain, "A07Q 200 extra physical");
+            else
+                Assert.AreEqual(plain, activated, "A07P no extra damage");
+        }
+
         [Test]
         public void RobinVolleyDamagesAtMostThreeDistinctLivingEnemies()
         {

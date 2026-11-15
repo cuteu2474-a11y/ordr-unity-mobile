@@ -14,6 +14,7 @@
 
 ## 원본 확인 스킬 진입점
 
+- `SourceModelUnitEffects.IsRoundNativePassiveTarget` 및 `CharacterCombatRuntime.SourceModelEffects.cs:CompleteSourceModelHit`: 브룩 `U-03/A07P`·타시기 `U-09/A07Q`가 일반/광폭화/보스 모두에서 동일한 발동 가능 대상 조건을 사용합니다. 추가 피해는 기존 기본 공격 피해 패킷에 1회, 기절은 생존 대상에 0.3/0.7초. `SourceModelUnitEffectTests.cs`에 발동·불발·피해 회귀 테스트 소스 작성(미실행); 네이티브 저항과 실기 검증 별도.
 - `CharacterCombatRuntime.SourceModelEffects.cs`의 `CompleteSourceModelHit`: 로빈 U-01 `A07M` 추가 2명은 주공격 1명 외 **시전자 기준 600 이내** 같은 전장 살아 있는 적만 선택합니다. 기존 가까운 순서/ID 동률·개별 기본 피해/처치 정산 재사용. 지상/공중 별도 모바일 엔진은 없으며, 원작 네이티브 추가 발사 순서는 실측 전입니다. `SourceModelUnitEffectTests.cs`의 600/601 경계 회귀 검사 코드는 작성됐지만 미실행입니다.
 - `SourceModelScriptAttackCatalog.Rankyaku` / `SourceModelRankyakuGeometry.Contains`: 원본 `A0VS(AUcs)` 반폭 200→250·이동 800을 `Rng=1700` 시전 거리와 구분해 블루노(U-04, Bnm) 및 후쿠로(U-13, Bnp)에 공유합니다. `CharacterCombatRuntime.SourceModelAttackSkills.cs`는 공격 선언에서 시전자 방향을 1회 취득해 캐스터 기점 람각 경로를 계산합니다. 외부 방향 관측은 `ConfigureSourceModelRankyakuFacing`, 기본 모바일 모델은 공격 선언의 공격 방향을 사용합니다. 다른 타깃 지향 투사체에는 적용하지 않습니다. 동위치 주문의 엔진 발사·비행·면역은 미확인입니다.
 

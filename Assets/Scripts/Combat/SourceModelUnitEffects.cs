@@ -141,6 +141,15 @@ namespace Ordr.Mobile.Combat
             return aura.Type == CombatEffectType.MovementSlowPercent || aura.Type == CombatEffectType.AttackPowerBuff ||
                 aura.Type == CombatEffectType.AttackSpeedBuff;
         }
+        // All three 65-round enemy roles are native passive targets.
+        // The mobile lane role does not imply Warcraft's Hero unit flag.
+        internal static bool IsRoundNativePassiveTarget(CharacterEnemyKind kind)
+        {
+            return kind == CharacterEnemyKind.Line ||
+                kind == CharacterEnemyKind.Enraged ||
+                kind == CharacterEnemyKind.Boss;
+        }
+
         internal double BeforeBasicHit(BasicDamageRequest request, CombatEnemy target, double raw)
         {
             string key = request.UnitInstanceId + ":" + target.Id;
@@ -173,13 +182,12 @@ namespace Ordr.Mobile.Combat
                     OriginalTargetMask = passive.OriginalTargetMask
                 };
             }
-            if (!practiceTargets.Contains(target.Id) || passive == null || (target.Defenses.Kind != CharacterEnemyKind.Line &&
-                target.Defenses.Kind != CharacterEnemyKind.Boss)) return raw;
-            // The development combat path treats its line/boss targets as air.
-            // Boss Arsk/JASS resistance has no approved reduction equation;
-            // model stuns therefore only affect ordinary line monsters.
-            if (passive.Kind == OriginalNativePassiveKind.Stun &&
-                target.Defenses.Kind != CharacterEnemyKind.Line) return raw;
+            if (!practiceTargets.Contains(target.Id) || passive == null ||
+                !target.Defenses.Kind.HasValue ||
+                !IsRoundNativePassiveTarget(target.Defenses.Kind.Value)) return raw;
+            // All three round roles use the native normal-unit duration:
+            // no inferred hero flag or unverified Arsk resistance factor.
+            // Story, creep and challenge targets keep their distinct rules.
             bool air = false;
             foreach (string token in passive.OriginalTargetMask.Split(',')) if (token == "air") air = true;
             if (!air) return raw;

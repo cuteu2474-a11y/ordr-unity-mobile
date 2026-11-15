@@ -447,7 +447,8 @@ namespace Ordr.Mobile.Combat
                      passive.Kind == OriginalNativePassiveKind.CriticalStun ||
                      passive.Kind == OriginalNativePassiveKind.BonusStun ||
                      passive.Kind == OriginalNativePassiveKind.CriticalBonusStun) && primary.Enemy.IsAlive &&
-                    hit.ActualDamage > 0 && primary.Kind == CharacterEnemyKind.Line)
+                    hit.ActualDamage > 0 &&
+                     SourceModelUnitEffects.IsRoundNativePassiveTarget(primary.Kind))
                 {
                     var status = primary.Enemy.Status;
                     string key = "practice-passive:" + passive.AbilityRawcode;
@@ -456,7 +457,8 @@ namespace Ordr.Mobile.Combat
                         CombatEffectOrigin.TriggeredSkill, 1, passive.NormalStunSeconds));
                     events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                         InstanceKey(actor.Id), hit.TargetId, passive.Name,
-                        "연습 객체 기절 · " + passive.NormalStunSeconds + "초 / 보스 저항 별도", 0));
+                        "연습 객체 기절 · " + passive.NormalStunSeconds +
+                        "초 / 원본 실기 저항·면역 미검증", 0));
                 }
             }
             if (actor.Catalog.Id != "U-01") return;
