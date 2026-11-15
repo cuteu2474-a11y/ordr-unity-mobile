@@ -43,7 +43,9 @@ namespace Ordr.Mobile.Unity
         private bool showStoryGreenBloodTargets;
         private int storyGreenBloodPage;
         private const int StoryGreenBloodPageSize = 6;
-        private bool showStoryDispatch;
+        private bool showStoryDispatch = true;
+        private bool showStoryRewards;
+        private bool showStoryCreeps;
         private bool showStoryStageHistory;
         private bool showStoryNativeRewards;
         private bool confirmStoryRecallAll;
@@ -717,6 +719,7 @@ namespace Ordr.Mobile.Unity
 
             if (currentTab == Tab.Fusion && Combat != null)
                 DrawFusionSelectedHeader();
+            if (currentTab == Tab.Story) DrawStoryNavigation();
             scroll = BeginPanelScroll(scroll);
             if (Combat == null && currentTab != Tab.Units)
                 GUILayout.Label("게임 월드 연결 전입니다. 재화나 유닛을 임의로 처리하지 않습니다.");
@@ -2930,8 +2933,85 @@ namespace Ordr.Mobile.Unity
             }
         }
 
+        private void DrawStoryNavigation()
+        {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("건물 공략", showStoryCreeps ?
+                OrdrMobileUiTheme.NavButton : OrdrMobileUiTheme.SelectedTab,
+                GUILayout.MinHeight(54), GUILayout.ExpandWidth(true)) && showStoryCreeps)
+            {
+                showStoryCreeps = false;
+                confirmStoryRecallAll = false;
+                scroll = Vector2.zero;
+            }
+            if (GUILayout.Button("크립 사냥", showStoryCreeps ?
+                OrdrMobileUiTheme.SelectedTab : OrdrMobileUiTheme.NavButton,
+                GUILayout.MinHeight(54), GUILayout.ExpandWidth(true)) && !showStoryCreeps)
+            {
+                showStoryCreeps = true;
+                confirmStoryRecallAll = false;
+                scroll = Vector2.zero;
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawStoryHealth(double health, double maximum)
+        {
+            double percent = maximum <= 0 ? 0 :
+                Math.Max(0, Math.Min(100, 100.0 * health / maximum));
+            GUILayout.Label("HP " + health.ToString("N0") + " / " +
+                maximum.ToString("N0") + " · " + percent.ToString("0.#") + "%",
+                OrdrMobileUiTheme.Explanation);
+            Rect bar = GUILayoutUtility.GetRect(0f, 12f, GUILayout.ExpandWidth(true));
+            if (Event.current.type != EventType.Repaint) return;
+            Color previous = GUI.color;
+            GUI.color = new Color(0.12f, 0.18f, 0.20f, 1f);
+            GUI.DrawTexture(bar, Texture2D.whiteTexture);
+            GUI.color = OrdrMobileUiTheme.Aqua;
+            GUI.DrawTexture(new Rect(bar.x, bar.y,
+                bar.width * (float)(percent / 100.0), bar.height), Texture2D.whiteTexture);
+            GUI.color = previous;
+        }
+
+        private void DrawStoryCreepOverview()
+        {
+            GUILayout.Label("크립 파견은 아직 이용할 수 없습니다.",
+                OrdrMobileUiTheme.Explanation);
+            var creeps = controller.PracticeCreeps;
+            if (creeps == null)
+            {
+                GUILayout.Label("크립 정보를 불러오는 중입니다.",
+                    OrdrMobileUiTheme.Explanation);
+                return;
+            }
+            for (int stage = 1; stage <= 3; stage++)
+            {
+                Original323CreepEncounter latest = null;
+                foreach (var encounter in creeps.Encounters)
+                    if (encounter.OriginalObject.Stage == stage) latest = encounter;
+                string name = stage == 1 ? "듀공" : stage == 2 ? "파파구" : "슈슈";
+                string state = latest == null ? "미등장" :
+                    latest.State == Original323CreepEncounterState.Alive ? "출현" :
+                    latest.State == Original323CreepEncounterState.Defeated ? "격파" : "퇴장";
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                OrdrMobileUiTheme.DrawStatusRow(stage + "단계 · " + name,
+                    state, OrdrMobileUiTheme.Aqua);
+                if (latest != null && latest.State == Original323CreepEncounterState.Alive)
+                {
+                    var enemy = Combat.EnemyOf(latest.EnemyId);
+                    if (enemy != null) DrawStoryHealth(enemy.Health, enemy.MaxHealth);
+                }
+                GUILayout.EndVertical();
+            }
+        }
+
         private void DrawStory()
         {
+            if (showStoryCreeps)
+            {
+                DrawStoryCreepOverview();
+                return;
+            }
             var scenario = controller.SoloStory;
             var catalog = controller.StoryBuildingCatalog;
             var world = controller.PracticeStoryBuildings;
@@ -2943,14 +3023,10 @@ namespace Ordr.Mobile.Unity
 
             // The player needs one immediate objective, not fourteen large
             // buttons hiding the live fight under a scrolling panel.
-            GUILayout.Label("스토리 항해", OrdrMobileUiTheme.Subheading);
             if (controller.IsGameplayPaused)
-                GUILayout.Label("일시정지 중 · 소환/파견은 가능하지만 공격은 '계속'을 눌러 재개한 뒤 진행됩니다.",
+                GUILayout.Label("일시정지 · 파견 가능 / 공격 정지",
                     OrdrMobileUiTheme.Explanation);
-            else
-                GUILayout.Label("새로 소환한 유닛은 메인 전장 소속입니다. 스토리 건물을 공격하려면 아래에서 파견해 주세요.",
-                    OrdrMobileUiTheme.Overline);
-            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
             int activeStage = scenario.ActiveStage;
             int cleared = scenario.HighestDestroyedStage;
             string headline = scenario.CompletedAllBuildings ? "14개 스토리 건물 격파 완료" :
@@ -2975,16 +3051,8 @@ namespace Ordr.Mobile.Unity
                 var enemy = Combat.EnemyOf(active.EnemyId);
                 if (enemy != null)
                 {
-                    double percent = enemy.MaxHealth <= 0 ? 0 :
-                        Math.Max(0, Math.Min(100, 100.0 * enemy.Health / enemy.MaxHealth));
-                    OrdrMobileUiTheme.DrawStatusRow("현재 건물 HP",
-                        enemy.Health + " / " + enemy.MaxHealth +
-                        " · " + percent.ToString("0.#") + "%",
-                        OrdrMobileUiTheme.Aqua);
+                    DrawStoryHealth(enemy.Health, enemy.MaxHealth);
                 }
-                if (!active.SourceVerifiedSpawn)
-                    GUILayout.Label("전투 HP는 원본 객체 기반 연습 모델입니다.",
-                        OrdrMobileUiTheme.Overline);
             }
             if (scenario.EggheadWaitRemaining > 0)
                 OrdrMobileUiTheme.DrawStatusRow("에그헤드 출현까지",
@@ -3000,157 +3068,158 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("악몽 목표: 35라운드 시작 전 와노쿠니(13단계) 격파" +
                     " · 현재 " + Combat.Game.CurrentWave + "라운드",
                     OrdrMobileUiTheme.Explanation);
-            if (!string.IsNullOrWhiteSpace(scenario.LastNotice))
-                GUILayout.Label(scenario.LastNotice, OrdrMobileUiTheme.Overline);
-            GUILayout.EndVertical();
-
-            GUILayout.BeginVertical(GUI.skin.box);
-            OrdrMobileUiTheme.DrawStatusRow("스토리 획득",
-                "골드 " + scenario.AwardedGold + " · 목재 " + scenario.AwardedWood,
-                OrdrMobileUiTheme.Gold);
-            var progression = controller.StoryProgression;
-            if (progression != null)
-                OrdrMobileUiTheme.DrawStatusRow("연구·유닛 도박",
-                    "연구 " + progression.Researches.Count + "개 · 남은 도박 충전 " +
-                    progression.GamblingCharges + "회", OrdrMobileUiTheme.Aqua);
-            if (controller.StoryHeroExperience != null &&
-                scenario.HighestDestroyedStage >= 13)
-                OrdrMobileUiTheme.DrawStatusRow("스토리 영웅 경험치",
-                    "13·14단계 격파 시 원본 A07O 영웅 그룹에 +300 XP" +
-                    " · 영웅 레벨/스탯에 반영",
-                    OrdrMobileUiTheme.Aqua);
-            if (!string.IsNullOrEmpty(scenario.LastUniqueItemAward))
-                OrdrMobileUiTheme.DrawStatusRow("스토리 고유 아이템",
-                    scenario.LastUniqueItemAward + " 획득 · 원본 5% 추첨 보상",
-                    OrdrMobileUiTheme.Gold);
-            OrdrMobileUiTheme.DrawStatusRow("원본 추가 보상",
-                "실제 적용 대기 " + scenario.NativeRewards.PendingCount + "건",
-                OrdrMobileUiTheme.Aqua);
-            if (controller.PendingAllStoryTranscendWisps > 0)
-            {
-                OrdrMobileUiTheme.DrawStatusRow("10단계 초월위습",
-                    "남은 선택 " + controller.PendingAllStoryTranscendWisps + "회",
-                    OrdrMobileUiTheme.Gold);
-                DrawOriginalTranscendWispChoiceButtons();
-            }
-            if (controller.SharedEconomy != null && controller.Combat != null &&
-                controller.SharedEconomy.Wallet.Balance(
-                    Original323StoryMobileProgression.GreenBloodUseResourceId) > 0)
-            {
-                long remaining = controller.SharedEconomy.Wallet.Balance(
-                    Original323StoryMobileProgression.GreenBloodUseResourceId);
-                OrdrMobileUiTheme.DrawStatusRow("14단계 그린블러드",
-                    "사용권 " + remaining + "회 · 자신의 대상 유닛을 눌러 즉시 적용",
-                    OrdrMobileUiTheme.Gold);
-                if (OrdrMobileUiTheme.DrawAccordionHeader(
-                    "그린블러드 대상 선택", "세라핌 변환 또는 전설·히든 강화",
-                    showStoryGreenBloodTargets, OrdrMobileUiTheme.Gold))
-                {
-                    showStoryGreenBloodTargets = !showStoryGreenBloodTargets;
-                    storyGreenBloodPage = 0;
-                }
-                if (showStoryGreenBloodTargets)
-                {
-                    var eligible = new List<MobileUnitSnapshot>();
-                    foreach (var unit in controller.Combat.MobileUnitSnapshot())
-                    {
-                        Original323GreenBloodPlan plan;
-                        string unitName;
-                        if (controller.TryPlanOriginalStoryGreenBlood(
-                            unit.InstanceId, out plan, out unitName) &&
-                            (plan.Kind == Original323GreenBloodActionKind.Transform ||
-                             !controller.Combat.HasOriginal323GreenBloodEnhancement(
-                                 unit.InstanceId)))
-                            eligible.Add(unit);
-                    }
-                    if (eligible.Count == 0)
-                        GUILayout.Label("현재 사용 가능한 전설·히든 유닛이 없습니다.",
-                            OrdrMobileUiTheme.Explanation);
-                    else
-                    {
-                        int pages = (eligible.Count + StoryGreenBloodPageSize - 1) /
-                            StoryGreenBloodPageSize;
-                        storyGreenBloodPage = Math.Max(0,
-                            Math.Min(storyGreenBloodPage, pages - 1));
-                        int begin = storyGreenBloodPage * StoryGreenBloodPageSize;
-                        for (int index = begin;
-                             index < Math.Min(begin + StoryGreenBloodPageSize, eligible.Count);
-                             index++)
-                        {
-                            var unit = eligible[index];
-                            Original323GreenBloodPlan plan;
-                            string unitName;
-                            if (!controller.TryPlanOriginalStoryGreenBlood(
-                                    unit.InstanceId, out plan, out unitName)) continue;
-                            string action = plan.Kind == Original323GreenBloodActionKind.Transform
-                                ? " → " + GreenBloodSeraphimName(plan.ReplacementRawcode)
-                                : " · 공속 +30% 및 주위 피해";
-                            if (GUILayout.Button(unitName + " #" + unit.InstanceId + action,
-                                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
-                                ShowResult(controller.RequestOriginalStoryGreenBlood(
-                                    unit.InstanceId));
-                        }
-                        if (pages > 1)
-                        {
-                            GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("이전", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(52)) &&
-                                storyGreenBloodPage > 0) storyGreenBloodPage--;
-                            GUILayout.Label((storyGreenBloodPage + 1) + " / " + pages,
-                                OrdrMobileUiTheme.Explanation);
-                            if (GUILayout.Button("다음", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(52)) &&
-                                storyGreenBloodPage + 1 < pages) storyGreenBloodPage++;
-                            GUILayout.EndHorizontal();
-                        }
-                    }
-                }
-            }
-            int rewardStage = selectedStoryRewardStage >= 1 &&
-                selectedStoryRewardStage <= Original323StoryUnlockRules.FinalStage ?
-                selectedStoryRewardStage :
-                Math.Max(1, Math.Min(Original323StoryUnlockRules.FinalStage,
-                    scenario.CompletedAllBuildings ||
-                    scenario.EggheadWaitRemaining > 0 ? 14 :
-                    activeStage > 0 ? activeStage : cleared + 1));
-            var rewardBuilding = catalog.Find(rewardStage);
-            GUILayout.Label("기본 보상 미리보기 · " + rewardStage + "단계 " +
-                (rewardBuilding == null ? "" : rewardBuilding.Name),
-                OrdrMobileUiTheme.Subheading);
-            GUILayout.Label(Original323SoloStoryScenario.BaseRewardSummary(rewardStage),
-                OrdrMobileUiTheme.Explanation);
-            GUILayout.Label("원본 추가 보상은 실제 대상에 적용될 때만 완료 처리됩니다.",
-                OrdrMobileUiTheme.Overline);
-            if (OrdrMobileUiTheme.DrawAccordionHeader("추가 보상 적용 상태",
-                scenario.NativeRewards.PendingCount + "건 대기",
-                showStoryNativeRewards, OrdrMobileUiTheme.Gold))
-                showStoryNativeRewards = !showStoryNativeRewards;
-            if (showStoryNativeRewards)
-            {
-                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                if (scenario.NativeRewards.Awards.Count == 0)
-                    GUILayout.Label("아직 격파로 발생한 원본 추가 보상이 없습니다.");
-                foreach (var award in scenario.NativeRewards.Awards)
-                {
-                    string kind = award.Kind == Original323StoryNativeRewardKind.Research ?
-                        "연구 해금" :
-                        award.Kind == Original323StoryNativeRewardKind.TraitPoints ?
-                        "특성포인트" :
-                        award.Kind == Original323StoryNativeRewardKind.GamblingCharges ?
-                        "유닛 도박 충전" :
-                        award.Kind == Original323StoryNativeRewardKind.AncientShip ?
-                        "고대의 배" :
-                        award.Kind == Original323StoryNativeRewardKind.HeroExperience ?
-                        "영웅 경험치" : "그린블러드";
-                    OrdrMobileUiTheme.DrawStatusRow(award.Stage + "단계 · " + kind,
-                        award.Applied ? "실제 적용 완료" : "대상 연결·적용 대기",
-                        award.Applied ? OrdrMobileUiTheme.Aqua : OrdrMobileUiTheme.Gold);
-                }
-                GUILayout.EndVertical();
-            }
             GUILayout.EndVertical();
 
             DrawStoryDispatchPanel();
 
-            if (OrdrMobileUiTheme.DrawAccordionHeader("스토리 건물 14종 기록",
+            string rewardSummary = "골드 " + scenario.AwardedGold +
+                " · 목재 " + scenario.AwardedWood;
+            if (controller.PendingAllStoryTranscendWisps > 0)
+                rewardSummary += " · 초월위습 " + controller.PendingAllStoryTranscendWisps;
+            if (controller.SharedEconomy != null)
+            {
+                long greenBlood = controller.SharedEconomy.Wallet.Balance(
+                    Original323StoryMobileProgression.GreenBloodUseResourceId);
+                if (greenBlood > 0) rewardSummary += " · 그린블러드 " + greenBlood;
+            }
+            if (scenario.NativeRewards.PendingCount > 0)
+                rewardSummary += " · 지급 대기 " + scenario.NativeRewards.PendingCount;
+            if (OrdrMobileUiTheme.DrawAccordionHeader("획득 보상", rewardSummary,
+                showStoryRewards, OrdrMobileUiTheme.Gold))
+                showStoryRewards = !showStoryRewards;
+            if (showStoryRewards)
+            {
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                OrdrMobileUiTheme.DrawStatusRow("스토리 획득",
+                    "골드 " + scenario.AwardedGold + " · 목재 " + scenario.AwardedWood,
+                    OrdrMobileUiTheme.Gold);
+                var progression = controller.StoryProgression;
+                if (progression != null)
+                    OrdrMobileUiTheme.DrawStatusRow("연구·유닛 도박",
+                        "연구 " + progression.Researches.Count + "개 · 남은 도박 충전 " +
+                        progression.GamblingCharges + "회", OrdrMobileUiTheme.Aqua);
+                if (controller.StoryHeroExperience != null &&
+                    scenario.HighestDestroyedStage >= 13)
+                    OrdrMobileUiTheme.DrawStatusRow("스토리 영웅 경험치",
+                        "13·14단계 격파 시 원본 A07O 영웅 그룹에 +300 XP" +
+                        " · 영웅 레벨/스탯에 반영",
+                        OrdrMobileUiTheme.Aqua);
+                if (!string.IsNullOrEmpty(scenario.LastUniqueItemAward))
+                    OrdrMobileUiTheme.DrawStatusRow("스토리 고유 아이템",
+                        scenario.LastUniqueItemAward + " 획득 · 원본 5% 추첨 보상",
+                        OrdrMobileUiTheme.Gold);
+                OrdrMobileUiTheme.DrawStatusRow("원본 추가 보상",
+                    "실제 적용 대기 " + scenario.NativeRewards.PendingCount + "건",
+                    OrdrMobileUiTheme.Aqua);
+                if (controller.PendingAllStoryTranscendWisps > 0)
+                {
+                    OrdrMobileUiTheme.DrawStatusRow("10단계 초월위습",
+                        "남은 선택 " + controller.PendingAllStoryTranscendWisps + "회",
+                        OrdrMobileUiTheme.Gold);
+                    DrawOriginalTranscendWispChoiceButtons();
+                }
+                if (controller.SharedEconomy != null && controller.Combat != null &&
+                    controller.SharedEconomy.Wallet.Balance(
+                        Original323StoryMobileProgression.GreenBloodUseResourceId) > 0)
+                {
+                    long remaining = controller.SharedEconomy.Wallet.Balance(
+                        Original323StoryMobileProgression.GreenBloodUseResourceId);
+                    OrdrMobileUiTheme.DrawStatusRow("14단계 그린블러드",
+                        "사용권 " + remaining + "회 · 자신의 대상 유닛을 눌러 즉시 적용",
+                        OrdrMobileUiTheme.Gold);
+                    if (OrdrMobileUiTheme.DrawAccordionHeader(
+                        "그린블러드 대상 선택", "세라핌 변환 또는 전설·히든 강화",
+                        showStoryGreenBloodTargets, OrdrMobileUiTheme.Gold))
+                    {
+                        showStoryGreenBloodTargets = !showStoryGreenBloodTargets;
+                        storyGreenBloodPage = 0;
+                    }
+                    if (showStoryGreenBloodTargets)
+                    {
+                        var eligible = new List<MobileUnitSnapshot>();
+                        foreach (var unit in controller.Combat.MobileUnitSnapshot())
+                        {
+                            Original323GreenBloodPlan plan;
+                            string unitName;
+                            if (controller.TryPlanOriginalStoryGreenBlood(
+                                unit.InstanceId, out plan, out unitName) &&
+                                (plan.Kind == Original323GreenBloodActionKind.Transform ||
+                                 !controller.Combat.HasOriginal323GreenBloodEnhancement(
+                                     unit.InstanceId)))
+                                eligible.Add(unit);
+                        }
+                        if (eligible.Count == 0)
+                            GUILayout.Label("현재 사용 가능한 전설·히든 유닛이 없습니다.",
+                                OrdrMobileUiTheme.Explanation);
+                        else
+                        {
+                            int pages = (eligible.Count + StoryGreenBloodPageSize - 1) /
+                                StoryGreenBloodPageSize;
+                            storyGreenBloodPage = Math.Max(0,
+                                Math.Min(storyGreenBloodPage, pages - 1));
+                            int begin = storyGreenBloodPage * StoryGreenBloodPageSize;
+                            for (int index = begin;
+                                 index < Math.Min(begin + StoryGreenBloodPageSize, eligible.Count);
+                                 index++)
+                            {
+                                var unit = eligible[index];
+                                Original323GreenBloodPlan plan;
+                                string unitName;
+                                if (!controller.TryPlanOriginalStoryGreenBlood(
+                                        unit.InstanceId, out plan, out unitName)) continue;
+                                string action = plan.Kind == Original323GreenBloodActionKind.Transform
+                                    ? " → " + GreenBloodSeraphimName(plan.ReplacementRawcode)
+                                    : " · 공속 +30% 및 주위 피해";
+                                if (GUILayout.Button(unitName + " #" + unit.InstanceId + action,
+                                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
+                                    ShowResult(controller.RequestOriginalStoryGreenBlood(
+                                        unit.InstanceId));
+                            }
+                            if (pages > 1)
+                            {
+                                GUILayout.BeginHorizontal();
+                                if (GUILayout.Button("이전", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(52)) &&
+                                    storyGreenBloodPage > 0) storyGreenBloodPage--;
+                                GUILayout.Label((storyGreenBloodPage + 1) + " / " + pages,
+                                    OrdrMobileUiTheme.Explanation);
+                                if (GUILayout.Button("다음", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(52)) &&
+                                    storyGreenBloodPage + 1 < pages) storyGreenBloodPage++;
+                                GUILayout.EndHorizontal();
+                            }
+                        }
+                    }
+                }
+                if (OrdrMobileUiTheme.DrawAccordionHeader("추가 보상 적용 상태",
+                    scenario.NativeRewards.PendingCount + "건 대기",
+                    showStoryNativeRewards, OrdrMobileUiTheme.Gold))
+                    showStoryNativeRewards = !showStoryNativeRewards;
+                if (showStoryNativeRewards)
+                {
+                    GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                    if (scenario.NativeRewards.Awards.Count == 0)
+                        GUILayout.Label("아직 격파로 발생한 원본 추가 보상이 없습니다.");
+                    foreach (var award in scenario.NativeRewards.Awards)
+                    {
+                        string kind = award.Kind == Original323StoryNativeRewardKind.Research ?
+                            "연구 해금" :
+                            award.Kind == Original323StoryNativeRewardKind.TraitPoints ?
+                            "특성포인트" :
+                            award.Kind == Original323StoryNativeRewardKind.GamblingCharges ?
+                            "유닛 도박 충전" :
+                            award.Kind == Original323StoryNativeRewardKind.AncientShip ?
+                            "고대의 배" :
+                            award.Kind == Original323StoryNativeRewardKind.HeroExperience ?
+                            "영웅 경험치" : "그린블러드";
+                        OrdrMobileUiTheme.DrawStatusRow(award.Stage + "단계 · " + kind,
+                            award.Applied ? "실제 적용 완료" : "대상 연결·적용 대기",
+                            award.Applied ? OrdrMobileUiTheme.Aqua : OrdrMobileUiTheme.Gold);
+                    }
+                    GUILayout.EndVertical();
+                }
+                GUILayout.EndVertical();
+            }
+
+            if (OrdrMobileUiTheme.DrawAccordionHeader("건물별 보상",
                 "격파 " + cleared + " / 14 · 건물별 보상 보기",
                 showStoryStageHistory, OrdrMobileUiTheme.Aqua))
                 showStoryStageHistory = !showStoryStageHistory;
@@ -3176,13 +3245,16 @@ namespace Ordr.Mobile.Unity
                     " · " + state +
                     (selectedStoryRewardStage == stage ? " ✓" : ""),
                     GUILayout.MinHeight(58)))
-                    selectedStoryRewardStage = stage;
+                    selectedStoryRewardStage = selectedStoryRewardStage == stage ? 0 : stage;
                 if (controller.CanRequestOriginalStoryBuilding && !alive &&
                     (encountered == null || !encountered.SourceSettlementConfirmed) &&
                     GUILayout.Button("원본 출현 확인",
                         GUILayout.Width(112), GUILayout.MinHeight(58)))
                     ShowResult(controller.RequestOriginalStoryBuilding(stage));
                 GUILayout.EndHorizontal();
+                if (selectedStoryRewardStage == stage)
+                    GUILayout.Label(Original323SoloStoryScenario.BaseRewardSummary(stage),
+                        OrdrMobileUiTheme.Explanation);
             }
             GUILayout.EndVertical();
         }
@@ -3194,32 +3266,8 @@ namespace Ordr.Mobile.Unity
                 OrdrMobileUiTheme.DrawStatusRow("스토리 파견",
                     "원본 이동 서비스 준비 중", OrdrMobileUiTheme.Gold);
             if (Combat == null || manual == null) return;
-            long? selected = Combat.Roster.SelectedId;
-            if (selected.HasValue)
-            {
-                bool deployed = manual.IsStoryDeployed(selected.Value);
-                bool shared = Combat.IsSharedObjectiveDeployed(selected.Value);
-                bool decoding = Combat.IsOriginalPoneglyphChanneling(selected.Value);
-                bool canAct = deployed ? manual.CanRecallStory(selected.Value) :
-                    manual.CanDispatchStory(selected.Value);
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("선택 유닛 #" + selected.Value +
-                    (deployed ? " · 스토리 파견 중" :
-                     shared ? " · 공유 목표 출전 중" :
-                     decoding ? " · 포네그리프 해독 중" : " · 메인 전장"),
-                    OrdrMobileUiTheme.Overline);
-                bool wasEnabled = GUI.enabled;
-                GUI.enabled = wasEnabled && canAct;
-                if (GUILayout.Button(deployed ? "선택 유닛 복귀" : "선택 유닛 파견",
-                    GUILayout.MinHeight(60)))
-                    ShowResult(deployed ?
-                        manual.RequestStoryRecall(selected.Value) :
-                        manual.RequestStoryDispatch(selected.Value));
-                GUI.enabled = wasEnabled;
-                GUILayout.EndHorizontal();
-            }
-            if (OrdrMobileUiTheme.DrawAccordionHeader("스토리 파견 관리",
-                "파견 유닛·파견 가능 유닛", showStoryDispatch, OrdrMobileUiTheme.Gold))
+            if (OrdrMobileUiTheme.DrawAccordionHeader("파견 / 복귀",
+                "실제 보유 유닛 선택", showStoryDispatch, OrdrMobileUiTheme.Gold))
                 showStoryDispatch = !showStoryDispatch;
             if (!showStoryDispatch) return;
 
@@ -3235,9 +3283,6 @@ namespace Ordr.Mobile.Unity
             OrdrMobileUiTheme.DrawStatusRow("파견 현황",
                 deployedCount + "기 파견 · " + readyCount + "기 파견 가능",
                 OrdrMobileUiTheme.Aqua);
-            if (controller.IsGameplayPaused)
-                GUILayout.Label("파견을 완료해도 일시정지 중에는 전투 시간이 흐르지 않습니다. 왼쪽 '계속'으로 공격을 재개하세요.",
-                    OrdrMobileUiTheme.Explanation);
             if (readyCount == 0)
                 GUILayout.Label("보스·미션 진행 중이거나 원본 입장 조건에 맞지 않으면" +
                     " 새 유닛을 파견할 수 없습니다.", OrdrMobileUiTheme.Overline);
@@ -3253,6 +3298,40 @@ namespace Ordr.Mobile.Unity
             { storyRosterFilter = MobileStoryRosterFilter.Deployed; storyRosterPage = 0; }
             GUILayout.EndHorizontal();
 
+            if (matched == 0)
+                GUILayout.Label(storyRosterFilter == MobileStoryRosterFilter.Deployed ?
+                    "파견 중인 유닛이 없습니다." :
+                    storyRosterFilter == MobileStoryRosterFilter.ReadyToDispatch ?
+                    "지금 파견할 수 있는 유닛이 없습니다." : "보유 유닛이 없습니다.",
+                    OrdrMobileUiTheme.Explanation);
+            DrawPager(storyRosterPage, pages, page => storyRosterPage = page);
+            foreach (var unit in visibleUnits)
+            {
+                var actor = unit.Unit;
+                GUILayout.BeginHorizontal();
+                DrawCharacterPortrait(actor.Unit.Id, 48f);
+                if (OrdrMobileUiTheme.DrawActionRow(actor.Unit.Name,
+                    actor.Unit.Grade + " · #" + actor.InstanceId +
+                    (unit.IsDeployed ? (unit.CanRecall ? " · 파견 중" : " · 복귀 제한") :
+                     Combat.IsSharedObjectiveDeployed(actor.InstanceId) ? " · 공유 목표 출전 중" :
+                     Combat.IsOriginalPoneglyphChanneling(actor.InstanceId) ? " · 해독 중" :
+                     unit.CanDispatch ? " · 파견 가능" : " · 파견 조건 미충족"),
+                    OrdrMobileUiTheme.Aqua, 68f))
+                {
+                    Combat.Roster.Select(actor.InstanceId);
+                    notice = actor.Unit.Name + " 선택";
+                }
+                bool enabled = GUI.enabled;
+                GUI.enabled = enabled && (unit.IsDeployed ? unit.CanRecall : unit.CanDispatch);
+                if (GUILayout.Button(unit.IsDeployed ? "복귀" : "파견",
+                    GUILayout.Width(68f), GUILayout.MinHeight(68f)))
+                    ShowResult(unit.IsDeployed ?
+                        manual.RequestStoryRecall(actor.InstanceId) :
+                        manual.RequestStoryDispatch(actor.InstanceId));
+                GUI.enabled = enabled;
+                GUILayout.EndHorizontal();
+            }
+            DrawPager(storyRosterPage, pages, page => storyRosterPage = page);
             if (recallCount > 0)
             {
                 if (!confirmStoryRecallAll)
@@ -3287,34 +3366,6 @@ namespace Ordr.Mobile.Unity
                 }
             }
             else confirmStoryRecallAll = false;
-
-            GUILayout.Label("조건에 맞는 유닛 " + matched + "기 · 높은 등급순",
-                OrdrMobileUiTheme.Overline);
-            DrawPager(storyRosterPage, pages, page => storyRosterPage = page);
-            foreach (var unit in visibleUnits)
-            {
-                var actor = unit.Unit;
-                GUILayout.BeginHorizontal();
-                DrawCharacterPortrait(actor.Unit.Id, 48f);
-                if (OrdrMobileUiTheme.DrawActionRow(actor.Unit.Name,
-                    actor.Unit.Grade + " · #" + actor.InstanceId +
-                    (unit.IsDeployed ? " · 파견 중" : ""),
-                    OrdrMobileUiTheme.Aqua, 68f))
-                {
-                    Combat.Roster.Select(actor.InstanceId);
-                    notice = actor.Unit.Name + " 선택";
-                }
-                bool enabled = GUI.enabled;
-                GUI.enabled = enabled && (unit.IsDeployed ? unit.CanRecall : unit.CanDispatch);
-                if (GUILayout.Button(unit.IsDeployed ? "복귀" : "파견",
-                    GUILayout.Width(68f), GUILayout.MinHeight(68f)))
-                    ShowResult(unit.IsDeployed ?
-                        manual.RequestStoryRecall(actor.InstanceId) :
-                        manual.RequestStoryDispatch(actor.InstanceId));
-                GUI.enabled = enabled;
-                GUILayout.EndHorizontal();
-            }
-            DrawPager(storyRosterPage, pages, page => storyRosterPage = page);
             GUILayout.EndVertical();
         }
 
