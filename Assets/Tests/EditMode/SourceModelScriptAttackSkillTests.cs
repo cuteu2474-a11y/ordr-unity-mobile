@@ -540,6 +540,30 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void NamiBntPreservesUniversalDamageAndOriginalAttackType()
+        {
+            var spec = SourceModelScriptAttackCatalog.All.Single(x => x.CatalogId == "S-03");
+            Assert.AreEqual("Bnt", spec.JassFunction);
+            Assert.AreEqual(100, spec.RollSides);
+            Assert.AreEqual(10, spec.RollSuccess);
+            Assert.AreEqual(1, spec.OnProc.Count);
+            var hit = spec.OnProc[0];
+            Assert.AreEqual(SourceScriptHitShape.Circle, hit.Shape);
+            Assert.AreEqual(400d, hit.Radius);
+            Assert.AreEqual(800d, hit.Damage);
+            // In this project Spells is JASS ATTACK_TYPE_NORMAL, not magic attack.
+            Assert.AreEqual(Ordr323AttackType.Spells, hit.Attack);
+            Assert.AreEqual(SourceScriptDamageType.Universal, hit.DamageType);
+            Assert.IsFalse(hit.UsesArmorRating);
+            // Universal ignores the numeric armor, but keeps its attack-type
+            // versus armor-class row (Medium is 1x in this map).
+            double amount = Ordr323MapDamageMath.ApplyVerifiedFactors(
+                hit.Damage, hit.Attack, Ordr323ArmorType.Medium,
+                true, hit.UsesArmorRating, 1000, false, 0, 1);
+            Assert.AreEqual(800d, amount, .00001);
+        }
+
+        [Test]
         public void NamiDummyPlacesAnActualFivePercentSlowZone()
         {
             using (var live = Create("S-03", true, -4900, 5400))

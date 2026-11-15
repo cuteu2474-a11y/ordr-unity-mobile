@@ -356,6 +356,8 @@ namespace Ordr.Mobile.Combat
                 skillName = "람각";
             else if (script.CatalogId == "S-18")
                 skillName = "갈래 번개";
+            else if (script.CatalogId == "S-03")
+                skillName = "크리마텍트";
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, attackerId,
                 primaryTargetId, skillName,
@@ -710,7 +712,8 @@ namespace Ordr.Mobile.Combat
                     if (hit.StoryOnly && target.Kind != CharacterEnemyKind.Story)
                         continue;
                     Ordr323ArmorType armor;
-                    if (!target.Enemy.Defenses.BaseArmor.HasValue ||
+                    if ((hit.UsesArmorRating &&
+                         !target.Enemy.Defenses.BaseArmor.HasValue) ||
                         !Ordr323OriginalDamageRules.TryReadArmorType(
                             target.Enemy.Defenses.WarcraftArmorType, out armor))
                     {
@@ -751,18 +754,23 @@ namespace Ordr.Mobile.Combat
                             hit.EnragedMaxHealthPercent / 100.0;
                     double sourceDamage = Ordr323MapDamageMath.ScriptDamageBeforeDefense(
                         raw, hit.Minimum, hit.Maximum, uniform);
-                    // Consistent with the existing practice basic-damage
-                    // reference model. Damage type / armor bypass / native
-                    // immunity still need original Warcraft comparison.
+                    // Original Warcraft attack type controls the map-specific
+                    // armor table, whereas DAMAGE_TYPE_UNIVERSAL bypasses
+                    // numeric armor rating and magic immunity independently.
+                    // Keep all other scripted packets on their existing
+                    // model default until their JASS damage type is pinned.
+                    double armorRating = hit.UsesArmorRating
+                        ? target.Enemy.Defenses.BaseArmor.Value -
+                            SourceModelUnitEffects.ResolvePracticeArmorReduction(
+                                target.Enemy.Status.Snapshot())
+                        : 0;
                     double modeled = Ordr323MapDamageMath.ApplyVerifiedFactors(
                         sourceDamage,
                         target.Kind == CharacterEnemyKind.Line &&
                         hit.LineAttackOverride.HasValue
                             ? hit.LineAttackOverride.Value : hit.Attack,
-                        armor, true, true,
-                        target.Enemy.Defenses.BaseArmor.Value -
-                        SourceModelUnitEffects.ResolvePracticeArmorReduction(
-                            target.Enemy.Status.Snapshot()), false, 0, 1);
+                        armor, true, hit.UsesArmorRating,
+                        armorRating, false, 0, 1);
                     if (modeled >= long.MaxValue)
                         throw new OverflowException("모델 공격 스킬 피해 범위 초과");
                     long planned = (long)Math.Floor(modeled);

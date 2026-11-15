@@ -65,6 +65,10 @@ namespace Ordr.Mobile.Combat
         {
             if (spec.CatalogId == "S-03")
             {
+                // Bnt creates the e00K/A089 helper at the target location.
+                // It contains no timed-life or explicit removal call; do not
+                // invent expiry. The existing RefreshEnemyAuras path recomputes
+                // coverage when enemies enter or leave the 450-radius zone.
                 if (sourceFollowupSequence == long.MaxValue)
                     throw new OverflowException("연습 소환 순번 초과");
                 sourceNamiZones.Add(new PracticeNamiZone {
@@ -74,7 +78,7 @@ namespace Ordr.Mobile.Combat
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
                     primary.Id, "나미 · 크리마텍트 오라",
-                    "MODEL_ONLY e00K/A089: 위치형 적 이동속도 -5%, 범위 450 · 지속/중첩 원본 미검증", 0));
+                    "MODEL_ONLY Bnt→e00K/A089: 이동속도 -5%, 반경 450 · Bnt 내 수명 지정 없음, 외부 제거·중첩 조건 미확정", 0));
                 RefreshSourceModelNamiZones();
             }
             if (spec.CatalogId == "RN-04")

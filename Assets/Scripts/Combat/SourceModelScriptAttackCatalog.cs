@@ -8,6 +8,10 @@ namespace Ordr.Mobile.Combat
     // instructions, NOT permission to claim Warcraft native spell parity.
     public enum SourceScriptHitShape { Direct, Circle, RankyakuLine, AttackerCircle, ProjectileLine, ForkedLightningCone }
 
+    // Attack type and JASS damage type are separate Warcraft parameters.
+    // Retain the old model behavior for skills without a pinned damage type.
+    public enum SourceScriptDamageType { ModelDefault, Universal }
+
     public sealed class SourceScriptHit
     {
         public SourceScriptHitShape Shape { get; private set; }
@@ -22,6 +26,8 @@ namespace Ordr.Mobile.Combat
         public double Minimum { get; private set; }
         public double Maximum { get; private set; }
         public Ordr323AttackType Attack { get; private set; }
+        public SourceScriptDamageType DamageType { get; private set; }
+        public bool UsesArmorRating => DamageType != SourceScriptDamageType.Universal;
         // JASS Bcb uses target HP at damage time for some attacks. These
         // alternative branches are source-callback inputs, not extra hits.
         public double BossCurrentHealthPercent { get; private set; }
@@ -56,8 +62,11 @@ namespace Ordr.Mobile.Combat
             double lineMaxHealthMultiplier = 0,
             double lineCurrentHealthMultiplier = 0,
             Ordr323AttackType? lineAttackOverride = null,
-            double endRadius = -1, int maxTargets = 0, double castRange = 0)
+            double endRadius = -1, int maxTargets = 0, double castRange = 0,
+            SourceScriptDamageType damageType = SourceScriptDamageType.ModelDefault)
         {
+            if (!Enum.IsDefined(typeof(SourceScriptDamageType), damageType))
+                throw new ArgumentOutOfRangeException(nameof(damageType));
             if (shape == SourceScriptHitShape.ForkedLightningCone &&
                 (maxTargets <= 0 || castRange <= 0 || length <= 0 ||
                  radius < 0 || endRadius < 0 || damage <= 0))
@@ -67,6 +76,7 @@ namespace Ordr.Mobile.Combat
             MaxTargets = maxTargets; CastRange = castRange;
             Length = length; Damage = damage;
             Minimum = minimum; Maximum = maximum; Attack = attack;
+            DamageType = damageType;
             BossCurrentHealthPercent = bossCurrentHealthPercent;
             EnragedMaxHealthPercent = enragedMaxHealthPercent;
             StoryOnly = storyOnly; StoryDamage = storyDamage;
@@ -160,6 +170,16 @@ namespace Ordr.Mobile.Combat
         { return new SourceScriptHit(SourceScriptHitShape.Circle, radius, 0,
             damage, 1, 1, attack); }
 
+        // 2.323[C] JASS Bnt calls UnitDamagePointLoc with
+        // ATTACK_TYPE_NORMAL + DAMAGE_TYPE_UNIVERSAL. The former maps to
+        // Ordr323AttackType.Spells; the latter bypasses numeric armor.
+        private static SourceScriptHit NamiUniversalCircle()
+        {
+            return new SourceScriptHit(SourceScriptHitShape.Circle,
+                400, 0, 800, 1, 1, Ordr323AttackType.Spells,
+                damageType: SourceScriptDamageType.Universal);
+        }
+
         private static SourceScriptHit Rankyaku()
         {
             // Pinned AbilityData.slk A0VS/AUcs: Area=200, Rng=1700
@@ -184,7 +204,8 @@ namespace Ordr.Mobile.Combat
             Row("U-13", "h00A", "Bnp", 100, 10,
                 new[] { Rankyaku() }, "A0VS 동일점 시전의 원본 엔진 진행방향·비행시각/면역 미검증"),
             Row("S-03", "h00P", "Bnt", 100, 10,
-                new[] { Circle(400, 800) }, "e00K/A089 이동속도 -5% 오라의 원본 지속/중첩·면역 미검증"),
+                new[] { NamiUniversalCircle() },
+                "e00K/A089 -5% 이동속도/450 범위. 원본 Bnt 내 수명 지정 없음, 전체 제거 조건 미확정"),
             Row("S-13", "h013", "Bn6", 100, 20,
                 new[] { Direct(500) }, "e00P 보조 소환의 네이티브 효과"),
             Row("R-11", "h04H", "Bo4", 100, 10,
