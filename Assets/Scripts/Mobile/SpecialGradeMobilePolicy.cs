@@ -103,13 +103,18 @@ namespace Ordr.Mobile.Mobile
         bool TryCast(long lawId, long targetId, double time);
     }
 
-    // 한 적에게 여러 모리아가 기여해도 싱글플레이 플레이어의 좀비 보상은
-    // 한 번이다. 피해 0, 단순 디버프, 다른 적, 누수는 처치 참여가 아니다.
+    // 실제 양수 피해를 준 모리아의 처치 기여는 막타까지 유지한다.
+    // 적 1기당 결과 1회, 일반 라인 몬스터만 허용한다. 시간 만료는 없다.
     public sealed class MoriaParticipationLedger
     {
         private readonly HashSet<string> participated =
             new HashSet<string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, HashSet<long>> ownersByEnemy =
+            new Dictionary<string, HashSet<long>>(StringComparer.Ordinal);
 
+        public bool HasPending => participated.Count != 0;
+
+        // Existing non-source combat and caller contracts stay unchanged.
         public void Record(string enemyId, bool isMoria, long actualDamage,
             CharacterEnemyKind kind)
         {
@@ -119,11 +124,55 @@ namespace Ordr.Mobile.Mobile
                 participated.Add(enemyId);
         }
 
+        // The mobile h00H reward needs a real surviving Moria owner to keep
+        // the temporary attack in the right lane. Do not use the last hitter.
+        public void Record(string enemyId, long moriaOwnerId, long actualDamage,
+            CharacterEnemyKind kind)
+        {
+            if (moriaOwnerId <= 0) throw new ArgumentOutOfRangeException(nameof(moriaOwnerId));
+            Record(enemyId, true, actualDamage, kind);
+            if (actualDamage <= 0 || kind != CharacterEnemyKind.Line) return;
+            HashSet<long> owners;
+            if (!ownersByEnemy.TryGetValue(enemyId, out owners))
+            {
+                owners = new HashSet<long>();
+                ownersByEnemy.Add(enemyId, owners);
+            }
+            owners.Add(moriaOwnerId);
+        }
+
+        public bool TryCompleteWithOwner(string enemyId, out long ownerId)
+        {
+            ownerId = 0;
+            HashSet<long> owners;
+            if (!ownersByEnemy.TryGetValue(enemyId, out owners) ||
+                owners.Count == 0) return false;
+            // Deterministic single creator even when multiple Morias dealt damage.
+            ownerId = long.MaxValue;
+            foreach (long id in owners)
+                if (id < ownerId) ownerId = id;
+            return Complete(enemyId);
+        }
+
         public bool Complete(string enemyId)
         {
+            ownersByEnemy.Remove(enemyId);
             return participated.Remove(enemyId);
         }
 
-        public void Forget(string enemyId) { participated.Remove(enemyId); }
+        public void ForgetOwner(long ownerId)
+        {
+            var empty = new List<string>();
+            foreach (var entry in ownersByEnemy)
+                if (entry.Value.Remove(ownerId) && entry.Value.Count == 0)
+                    empty.Add(entry.Key);
+            foreach (string enemyId in empty) Forget(enemyId);
+        }
+
+        public void Forget(string enemyId)
+        {
+            ownersByEnemy.Remove(enemyId);
+            participated.Remove(enemyId);
+        }
     }
 }

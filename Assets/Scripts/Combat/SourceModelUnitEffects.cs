@@ -85,7 +85,7 @@ namespace Ordr.Mobile.Combat
             if (id == "S-05" && rawcode == "h01H")
                 result.Add("A08B 언홀리 프렌지 · 자신 공속 +100% / 7초 / 50초 재사용 · 연습 자기 시전 모델, 원작 자동 대상 미검증");
             if (id == "S-09" && rawcode == "h00B")
-                result.Add("A087 블랙 애로우 · 일반 적 처치 시 h00H 좀비 1기 / 10초 · 연습 소환 모델, 원본 조건 미검증");
+                result.Add("A087 블랙 애로우 · 라인 적에게 양수 피해 기여 후 처치 시 h00H 공격 효과 / 10초 · 막타 무관, 투사체 모델");
             if (id == "S-20" && rawcode == "h00Z")
                 result.Add("A0EG 리퀴드 파이어 · 타격 시 150/초 3초 화상 모델 · 원작 틱·면역·중첩 미검증");
             if (id == "S-28" && rawcode == "h017")

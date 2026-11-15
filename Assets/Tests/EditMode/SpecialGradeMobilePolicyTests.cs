@@ -172,6 +172,30 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void MoriaContributionSurvivesMarkWindowAndCreditsOneLivingOwner()
+        {
+            var ledger = new MoriaParticipationLedger();
+            ledger.Record("line", 17L, 4, CharacterEnemyKind.Line);
+            ledger.Record("line", 8L, 1, CharacterEnemyKind.Line);
+            ledger.Record("line", false, 100, CharacterEnemyKind.Line);
+            Assert.IsTrue(ledger.HasPending);
+            // No .05-second timer exists: kill can be arbitrarily later.
+            ledger.ForgetOwner(8L);
+            long owner;
+            Assert.IsTrue(ledger.TryCompleteWithOwner("line", out owner));
+            Assert.AreEqual(17L, owner);
+            Assert.IsFalse(ledger.TryCompleteWithOwner("line", out owner));
+            Assert.IsFalse(ledger.HasPending);
+            ledger.Record("boss", 17L, 10, CharacterEnemyKind.Boss);
+            ledger.Record("zero", 17L, 0, CharacterEnemyKind.Line);
+            Assert.IsFalse(ledger.TryCompleteWithOwner("boss", out owner));
+            Assert.IsFalse(ledger.TryCompleteWithOwner("zero", out owner));
+            ledger.Record("leak", 17L, 3, CharacterEnemyKind.Line);
+            ledger.Forget("leak");
+            Assert.IsFalse(ledger.TryCompleteWithOwner("leak", out owner));
+        }
+
+        [Test]
         public void MoriaZeroDamageBossAndLeakDoNotProduceZombie()
         {
             var ledger = new MoriaParticipationLedger();

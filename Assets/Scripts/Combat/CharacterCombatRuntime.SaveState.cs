@@ -286,6 +286,11 @@ namespace Ordr.Mobile.Combat
         private void RejectNonRestorableSourceSkillState()
         {
             if (!UsesSourceModelBasicAttacks) return;
+            // Active Moria damage contributors have no checkpoint sidecar
+            // yet; never silently drop their later on-kill entitlement.
+            if (moriaParticipation.HasPending)
+                throw new NotSupportedException(
+                    "모리아 처치 기여 장부가 저장 형식에 없어 진행 중 저장을 거부합니다.");
             // Actor-dependent native equipment, living summons and transform
             // callbacks need distinct reconstruction; never silently erase.
             if (sourceFormCastFinishes.Count != 0 ||

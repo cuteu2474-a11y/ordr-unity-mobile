@@ -417,9 +417,6 @@ namespace Ordr.Mobile.Combat
             if (actor.Catalog.Id == "S-20" && hit.ActualDamage > 0 &&
                 primary.Enemy.IsAlive)
                 ScheduleSourceModelLiquidFire(actor, primary);
-            if (actor.Catalog.Id == "S-09" && hit.BasicHitApplied &&
-                hit.ActualDamage > 0)
-                ApplySourceMoriaBlackArrowAfterBasicHit(actor, primary);
             // Marco's 375/400 splash is a separate confirmed-hit passive.
             // It never fires for canceled declarations or zero HP damage.
             if (actor.Catalog.Id == "LI-03" && hit.BasicHitApplied &&
