@@ -117,9 +117,21 @@ namespace Ordr.Mobile.Combat
         }
     }
 
-    // Keep the existing Rankyaku interface stable for its callers/tests.
+    // Both h00M/h00A A0VS and h00R A08D are original AUcs Carrion Swarms.
+    // They share DataC1=800 travel, Area1=200 starting half-width and
+    // DataD1=250 ending half-width; only their DataA1 damage differs.
+    // Rng1=1700 is the cast-point range, NOT the projectile's travel.
     public static class SourceModelRankyakuGeometry
     {
+        public static SourceScriptHit PinnedAucs(double damage)
+        {
+            if (damage <= 0 || double.IsNaN(damage) || double.IsInfinity(damage))
+                throw new ArgumentOutOfRangeException(nameof(damage));
+            return new SourceScriptHit(SourceScriptHitShape.RankyakuLine,
+                200, 800, damage, 1, 1, Ordr323AttackType.Spells,
+                endRadius: 250);
+        }
+
         public static bool Contains(SourceScriptHit wave, double originX,
             double originY, double facingDegrees, double targetX, double targetY)
         {
@@ -187,9 +199,7 @@ namespace Ordr.Mobile.Combat
             // DataD=250 (ending half-width). Bnm/Bnp create e0KD at
             // GetUnitLoc(attacker), facing GetUnitFacing(attacker), and
             // issue carrionswarm at that very same location.
-            return new SourceScriptHit(SourceScriptHitShape.RankyakuLine,
-                200, 800, 150, 1, 1, Ordr323AttackType.Spells,
-                endRadius: 250);
+            return SourceModelRankyakuGeometry.PinnedAucs(150);
         }
 
         private static SourceScriptAttackSpec Row(string id, string raw,

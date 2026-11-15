@@ -95,6 +95,8 @@ namespace Ordr.Mobile.Combat
                 result.Add("A0EA 피닉스 파이어 · 0.2초마다 600 범위 150 피해 · 연습 자동 타깃 모델, 원본 타이밍 미검증");
             if (id == "S-03" && rawcode == "h00P")
                 result.Add("A089 크리마텍트 · 발동 위치 반경 450 적 이동속도 -5% / 여진 3초(도감) · A088/B010 공유 버프 중첩 미검증");
+            if (id == "S-06" && rawcode == "h00R")
+                result.Add("Bnw/A08D 람각 · 공격 시 10%, 600 마법 피해, 시전자 방향 직선 800, 폭 200→250 · e0KE 1초 객체 효과");
             SourceModelInfernoFollowup inferno;
             if (SourceModelLegacyNativeFollowupCatalog.TryGet(id, out inferno))
                 result.Add(inferno.AbilityRawcode + " 인페르노 · " +

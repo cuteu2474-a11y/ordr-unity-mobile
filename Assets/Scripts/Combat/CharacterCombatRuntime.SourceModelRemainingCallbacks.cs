@@ -33,7 +33,7 @@ namespace Ordr.Mobile.Combat
 
         private static readonly SourceRemainingCallback[] Entries = {
             new SourceRemainingCallback("S-06", "h00R", "Bnw", 100, 10,
-                "A08D/사거리800/폭200/피해600 확인; 원본 자기위치 주문 방향 미검증"),
+                "e0KE/A08D: 800 이동, 폭 200→250, 피해600, 보조 객체 수명 1초; 네이티브 비행·면역 미검증"),
             new SourceRemainingCallback("S-07", "h00U", "Bny", 100, 16,
                 "A08I/B00F 1.75초/공격속도 +360% 확인; 원본 중첩·시전 지연 미검증"),
             new SourceRemainingCallback("R-08", "h022", "Bou", 100, 10,
@@ -329,10 +329,30 @@ namespace Ordr.Mobile.Combat
             var position = roster.Get(actor.Id);
             switch (spec.CatalogId)
             {
-                case "S-06": // e0KE/A08D AUcs, point order at caster location.
-                    RemainingHits(actor, target, spec,
-                        new SourceScriptHit(SourceScriptHitShape.ProjectileLine,
-                            200, 800, 600, 1, 1, Ordr323AttackType.Spells));
+                case "S-06":
+                    // Pinned 2.323[C] Bnw: at 10%, create e0KE at
+                    // GetUnitLoc(attacker), face it to GetUnitFacing(attacker),
+                    // give it 1s timed life, and cast A08D Carrion Swarm
+                    // at the SAME location (not the attacked unit).
+                    // Native AUcs: Area1=200, DataC1=800, DataD1=250,
+                    // DataA1=600, Rng1=1700 is CAST range only.
+                    // Reuse the same caster-facing tapered wave as Bnm/Bnp
+                    // instead of ProjectileLine's target-heading + max-length
+                    // extension. No fictitious extra damage or target count.
+                    double? lucciFacing = SourceModelRankyakuAttackFacing(
+                        actor, target);
+                    if (!lucciFacing.HasValue)
+                    {
+                        RemainingDeferred(actor, target, spec,
+                            "Bnw/e0KE: 시전자 방향이 확인되지 않아 람각 타격 보류");
+                        return;
+                    }
+                    var lucciPacket = RemainingHitSpec(spec.CatalogId,
+                        spec.Rawcode, spec.Jass,
+                        SourceModelRankyakuGeometry.PinnedAucs(600));
+                    ApplySourceScriptHits(actor, target, lucciPacket,
+                        lucciPacket.OnProc,
+                        rankyakuFacingDegrees: lucciFacing);
                     break;
                 case "S-07": // e0KD/A08I Ablo, B00F refresh gate.
                     if (!RemainingHasNativeBuff(actor, "B00F"))

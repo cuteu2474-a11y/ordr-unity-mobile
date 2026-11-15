@@ -239,6 +239,65 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [Test]
+        public void SpecialLucciBnwUsesOriginalA08DTravelFacingAndTailWidth()
+        {
+            // Verified W3X Bnw: 10%, e0KE timed life 1s,
+            // A08D/AUcs DataA=600, Area=200, DataC=800, DataD=250.
+            // Cast order is at the attacker's own location; the 1700
+            // Rng1 input is not an excuse to extend the wave to the target.
+            var wave = SourceModelRankyakuGeometry.PinnedAucs(600);
+            Assert.AreEqual(SourceScriptHitShape.RankyakuLine, wave.Shape);
+            Assert.AreEqual(600, wave.Damage);
+            Assert.AreEqual(800, wave.Length);
+            Assert.AreEqual(200, wave.Radius);
+            Assert.AreEqual(250, wave.EndRadius);
+            Assert.AreEqual(Ordr323AttackType.Spells, wave.Attack);
+            Assert.IsTrue(SourceModelRankyakuGeometry.Contains(
+                wave, 0, 0, 0, 400, 225));
+            Assert.IsFalse(SourceModelRankyakuGeometry.Contains(
+                wave, 0, 0, 0, 400, 226));
+            Assert.IsTrue(SourceModelRankyakuGeometry.Contains(
+                wave, 0, 0, 0, 800, 250));
+            Assert.IsFalse(SourceModelRankyakuGeometry.Contains(
+                wave, 0, 0, 0, 800, 251));
+            Assert.IsFalse(SourceModelRankyakuGeometry.Contains(
+                wave, 0, 0, 0, 801, 0));
+            Assert.IsFalse(SourceModelRankyakuGeometry.Contains(
+                wave, 0, 0, 0, -1, 0));
+            Assert.IsFalse(SourceModelRankyakuGeometry.Contains(
+                wave, 0, 0, 90, 400, 0));
+            Assert.IsTrue(SourceModelRankyakuGeometry.Contains(
+                wave, 0, 0, 90, 0, 400));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                SourceModelRankyakuGeometry.PinnedAucs(0));
+        }
+
+        [Test]
+        public void SpecialLucciBnwProducesARealModeledLineHitAndKeepsNativeCritical()
+        {
+            using (var live = Create("S-06", true, -4900, 5400))
+            {
+                var result = live.Battle.Advance(2);
+                Assert.IsTrue(result.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains("Bnw")));
+                Assert.IsTrue(result.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.Amount > 0), "A08D must deal modeled damage in its source geometry");
+            }
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var native = Original323NativePassiveCatalog.FromJson(
+                Data("original-2323C-native-pure-passives.json"), map);
+            var crit = native.ForRawcode("h00R");
+            Assert.IsNotNull(crit);
+            Assert.AreEqual("A08C", crit.AbilityRawcode);
+            Assert.AreEqual(150000, crit.ChancePerMillion);
+            Assert.AreEqual(2, crit.CriticalMultiplier);
+        }
+
         [TestCase("h00M", "U-04", "Bnm")]
         [TestCase("h00A", "U-13", "Bnp")]
         public void RankyakuUsesEightHundredTravelAndTaperedCasterFacing(
