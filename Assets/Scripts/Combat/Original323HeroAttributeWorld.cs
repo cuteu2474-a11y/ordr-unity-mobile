@@ -3,11 +3,15 @@ using System.Collections.Generic;
 
 namespace Ordr.Mobile.Combat
 {
-    // Exact native hero attributes are not a rarity, unit-point value or
-    // nominal attack-power conversion. Baselines must come from the pinned
-    // 2.323[C] UnitBalance.slk; level additions come from the LIVE XP wallet.
-    // Bonuses (GetHeroStatBJ with includeBonuses=true) are a separate live
-    // native observation. Missing any input yields null, NEVER a guessed 0.
+    // Native hero attributes are not rarity, point value or attack power.
+    // Initial values come from the pinned 2.323[C] UnitBalance.slk.
+    // OpenRealm's typed SLK loader allocates zero-filled numeric rows and
+    // leaves missing STR/INT/AGI cells at zero (sheet.c + g_metadata.c).
+    // That numeric default is source-engine evidence, NOT an arbitrary
+    // hero stat and NOT a verified retail-Warcraft gameplay comparison.
+    // Current bonused GetHeroStatBJ(true) remains unknown until bonuses
+    // are observed; only unbonused GetHeroStatBJ(false) is currently
+    // guaranteed by the input+XP model.
     public sealed class Original323HeroAttributeWorld
     {
         public const string OriginalW3xSha256 =
@@ -33,11 +37,11 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentNullException(nameof(witnessedLevels));
         }
 
-        // No default rows: direct original UnitBalance.slk inspection exposes
-        // explicit STR/AGI/INT triples for 4 of 70 uppercase H rawcodes.
-        // All 66 other hero rows OMIT the fields; an omitted cell is not a
-        // witnessed zero and must remain unknown until sourced separately.
-        // Use only matching rawcode and pinned-map original SLK evidence.
+        // Of the 70 source H rows, 4 explicitly state STR/AGI/INT; 66
+        // omit all three numeric cells. The latter use the documented
+        // OpenRealm zero-initialized SLK numeric default, separately
+        // recorded from explicit source cells. Never apply to a rawcode
+        // outside this audited source-sheet set.
         public void RegisterOriginalUnitBalanceRow(string sourceW3xSha256,
             string originalRawcode, int strength, int agility, int intelligence)
         {
@@ -58,6 +62,18 @@ namespace Ordr.Mobile.Combat
             sourceBases.Add(originalRawcode, new BaseAttributes {
                 Strength = strength, Agility = agility, Intelligence = intelligence
             });
+        }
+
+        // Imported sparse SLK numeric defaults are the only known zeros.
+        // This dedicated registration rejects a wrong archive/sheet hash;
+        // it is not the generic zero-stat fallback for unmatched heroes.
+        internal void RegisterOriginalUnitBalanceSparseNumericDefault(
+            string mapSha256, string unitBalanceSlkSha256, string originalRawcode)
+        {
+            if (unitBalanceSlkSha256 !=
+                Original323UnitBalanceHeroInitialAttributes.SourceUnitBalanceSlkSha256)
+                throw new ArgumentException("원본 UnitBalance.slk 해시가 일치하지 않습니다.");
+            RegisterOriginalUnitBalanceRow(mapSha256, originalRawcode, 0, 0, 0);
         }
 
         // Native bonus readers MUST report an explicit integer zero when

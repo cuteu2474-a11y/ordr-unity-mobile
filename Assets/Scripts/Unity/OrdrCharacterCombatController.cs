@@ -1006,12 +1006,14 @@ namespace Ordr.Mobile.Unity
                         PracticeUnitGambling != null && PracticeUnitGambling.Navigation ==
                             Original323GamblingNavigation.Casino);
                     Combat.ConfigureSourceHeroLevelProgression(heroExperience);
-                    // Only explicit original SLK hero-attribute triples are
-                    // registered. Missing base cells and native bonus input
-                    // remain unknown rather than being replaced by zero.
+                    // Original SLK numeric cells: 4 explicit hero triples,
+                    // 66 missing triples decoded to the engine's sparse
+                    // integer default (zero). Bonused stats stay unknown.
                     var originalHeroAttributes =
                         new Original323HeroAttributeWorld(heroExperience.LevelStateOf);
                     Original323UnitBalanceHeroInitialAttributes.RegisterVerifiedRows(
+                        originalHeroAttributes);
+                    Original323UnitBalanceHeroInitialAttributes.RegisterSparseNumericDefaults(
                         originalHeroAttributes);
                     Combat.ConfigureSourceModelOriginalHeroAttributes(
                         originalHeroAttributes);
