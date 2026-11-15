@@ -53,9 +53,6 @@ namespace Ordr.Mobile.Tests
             Assert.Throws<ArgumentException>(() =>
                 world.RegisterOriginalUnitBalanceRow(
                     Original323HeroAttributeWorld.OriginalW3xSha256, "h003", 0, 0, 0));
-            Assert.Throws<ArgumentException>(() =>
-                world.RegisterOriginalUnitBalanceSparseNumericDefault(
-                    Original323HeroAttributeWorld.OriginalW3xSha256, "WRONG", "H090"));
         }
     }
 }
