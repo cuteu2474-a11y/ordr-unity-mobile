@@ -95,6 +95,9 @@ namespace Ordr.Mobile.Combat
         public string AttackerId { get; }
         public string TargetId { get; }
         public long ActualDamage { get; }
+        // Intended final HP damage before a lethal target's remaining-HP cap.
+        // Kept distinct from ActualDamage for post-hit source-model procs.
+        public long ResolvedDamage { get; }
         // False when a declared-attack effect removed the target before contact.
         public bool BasicHitApplied { get; }
         public IReadOnlyList<string> ActivatedSkillRawCodes { get; }
@@ -108,11 +111,12 @@ namespace Ordr.Mobile.Combat
         internal BasicAttackResult(string attackerId, string targetId, long damage,
             List<string> activatedSkills,
             IReadOnlyList<Original323NativePassiveActivation> nativePassives,
-            bool basicHitApplied = true)
+            bool basicHitApplied = true, long resolvedDamage = 0)
         {
             AttackerId = attackerId;
             TargetId = targetId;
             ActualDamage = damage;
+            ResolvedDamage = resolvedDamage;
             BasicHitApplied = basicHitApplied;
             ActivatedSkillRawCodes = activatedSkills.AsReadOnly();
             NativePassiveActivations = new List<Original323NativePassiveActivation>(
@@ -714,7 +718,7 @@ namespace Ordr.Mobile.Combat
                     activated.Add(skill.RawCode);
             }
             result = new BasicAttackResult(attackerInstanceId, targetId, actual, activated,
-                damageRequest.NativePassives);
+                damageRequest.NativePassives, true, resolved);
             return true;
         }
     }

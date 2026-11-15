@@ -3035,6 +3035,12 @@ namespace Ordr.Mobile.Combat
                 fired++;
                 events.Add(new CharacterCombatEvent(CharacterCombatEventType.Attack,
                     InstanceKey(id), hit.TargetId, null, "basic", hit.ActualDamage));
+                // Kaido's ATTACKED callback is rolled at declaration, but
+                // its GetEventDamage fraction can only settle after the hit.
+                // This also clears canceled declarations without leaking a
+                // percent packet into the next attack.
+                if (UsesSourceModelBasicAttacks && unit.Catalog.Id == "I-11")
+                    CompleteSourceKaidoPostHit(unit, hit);
                 // A declared skill already handled damage/death/rewards. Do
                 // not run Robin extra hits, native passives or emit a second
                 // basic-attack death for an attack that never made contact.

@@ -27,6 +27,22 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, int>();
         private readonly Dictionary<long, int> sourceKaidoAttackCounters =
             new Dictionary<long, int>();
+        // One ATTACKED declaration can yield at most one source Kaido branch.
+        // The percentage is committed only with the SAME real basic hit, not
+        // with a fresh RNG roll or a fabricated attack-power tooltip value.
+        private sealed class SourceKaidoPendingPercent
+        {
+            public string TargetId;
+            public string Name;
+            public double Fraction;
+            public double PrimaryFixedBonus;
+            public Ordr323AttackType AttackType;
+            public bool StoryLane;
+            public long LaneRevision;
+        }
+        private readonly Dictionary<long, SourceKaidoPendingPercent>
+            sourceKaidoPendingPercent =
+                new Dictionary<long, SourceKaidoPendingPercent>();
         private sealed class SourceKaidoArmorStacks
         {
             public int Single;
@@ -142,7 +158,10 @@ namespace Ordr.Mobile.Combat
             else if (actor.Catalog.Id == SourceModelNativeCharacterRules.Vegapunk)
                 ExecuteVegapunkSourceAttack(actor, primary);
             else if (actor.Catalog.Id == SourceModelNativeCharacterRules.Kaido)
+            {
+                sourceKaidoPendingPercent.Remove(actor.Id);
                 ExecuteKaidoSourceAttack(actor, primary);
+            }
         }
 
         private void ExecuteChopperSourceAttack(CharacterInstance actor,
@@ -359,6 +378,60 @@ namespace Ordr.Mobile.Combat
                 "Bcc 원작 공격·피해타입·지연 커맨드/면역 판정은 모델이며 네이티브 실행 미검증", 0));
         }
 
+        private void QueueSourceKaidoPostHit(CharacterInstance actor,
+            SpatialCombatEnemy primary, string name, double fraction,
+            Ordr323AttackType attackType, double primaryFixedBonus = 0)
+        {
+            if (fraction <= 0 && primaryFixedBonus <= 0) return;
+            sourceKaidoPendingPercent[actor.Id] = new SourceKaidoPendingPercent {
+                TargetId = primary.Id,
+                Name = name,
+                Fraction = fraction,
+                PrimaryFixedBonus = primaryFixedBonus,
+                AttackType = attackType,
+                StoryLane = IsStoryDeployed(actor.Id),
+                LaneRevision = SourceModelLaneRevision(actor.Id)
+            };
+        }
+
+        private void CompleteSourceKaidoPostHit(CharacterInstance actor,
+            BasicAttackResult hit)
+        {
+            SourceKaidoPendingPercent pending;
+            if (!sourceKaidoPendingPercent.TryGetValue(actor.Id, out pending))
+                return;
+            // Consume the declaration, including when the callback killed its
+            // target and the ordinary attack could not make contact.
+            sourceKaidoPendingPercent.Remove(actor.Id);
+            SpatialCombatEnemy primary;
+            if (!hit.BasicHitApplied || hit.ResolvedDamage <= 0 ||
+                hit.TargetId != pending.TargetId ||
+                pending.StoryLane != IsStoryDeployed(actor.Id) ||
+                pending.LaneRevision != SourceModelLaneRevision(actor.Id) ||
+                !enemies.TryGetValue(pending.TargetId, out primary))
+                return;
+            double scaled = hit.ResolvedDamage * pending.Fraction;
+            // The original JASS GetEventDamage value is not captured by Unity;
+            // use committed pre-HP-cap basic damage as the model input.
+            // ActualDamage (HP removed) would undercount lethal overkill.
+            if (scaled < 0 || double.IsNaN(scaled) ||
+                double.IsInfinity(scaled) || scaled >= long.MaxValue)
+            {
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.EffectDeferred, InstanceKey(actor.Id),
+                    pending.TargetId, pending.Name,
+                    "원본 비례 타격 계산 범위 초과: 임의 피해량으로 대체하지 않음", 0));
+                return;
+            }
+            if (scaled > 0)
+                ApplySourceModelAreaPacket(InstanceKey(actor.Id),
+                    pending.StoryLane, primary, 500, scaled,
+                    pending.AttackType, pending.Name);
+            if (pending.PrimaryFixedBonus > 0 && primary.Enemy.IsAlive)
+                ApplySourceModelFixedPrimaryPacket(InstanceKey(actor.Id),
+                    primary, pending.PrimaryFixedBonus, pending.Name);
+        }
+
         private void ExecuteKaidoSecondSpecialModelPacket(CharacterInstance actor,
             SpatialCombatEnemy primary)
         {
@@ -379,6 +452,8 @@ namespace Ordr.Mobile.Combat
                 primary, 500, flat, Ordr323AttackType.Chaos, name);
             if (!dragon) ApplySourceModelFixedPrimaryPacket(attacker, primary,
                 critical ? 750000 : 500000, name);
+            QueueSourceKaidoPostHit(actor, primary, name, .30,
+                Ordr323AttackType.Chaos);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
                 attacker, primary.Id, name,
                 "원본 EventDamage 비례·40% 분기 난수·공격 면역·지연 판정 미검증", 0));
@@ -402,6 +477,8 @@ namespace Ordr.Mobile.Combat
             else
                 ApplySourceModelAreaPacket(attacker, IsStoryDeployed(actor.Id),
                     primary, 0, 500000, Ordr323AttackType.Chaos, name);
+            QueueSourceKaidoPostHit(actor, primary, name,
+                dragon ? .10 : .25, Ordr323AttackType.Spells);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
                 attacker, primary.Id, name,
                 "MODEL_ONLY CBE/CBI: 원본 EventDamage 비례·공격 유형·시간차 면역 미검증", 0));
@@ -456,6 +533,8 @@ namespace Ordr.Mobile.Combat
                         critical ? 1275000 : 850000, name);
                 ApplySourceModelLineStun(attacker, primary, name, 1.5);
             }
+            QueueSourceKaidoPostHit(actor, primary, name,
+                dragon ? .30 : .50, Ordr323AttackType.Chaos);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
                 attacker, primary.Id, name,
                 "평타 비례 추가피해·원본 치명/고정 피해 면역 계산 미검증", 0));
@@ -555,6 +634,9 @@ namespace Ordr.Mobile.Combat
                 skill.Components.Count != 3 || skill.Components[0].Type != "physical" ||
                 skill.Components[0].Number("amount") != flat ||
                 skill.Components[0].Number("plusBasicAttackDamagePercent") != percent ||
+                skill.Components[1].Type != "fixed" ||
+                skill.Components[1].Text("scope") != "singlePrimaryTarget" ||
+                skill.Components[1].Number("bonusPercent") != (dragon ? 75 : 150) ||
                 skill.Components[2].Type != "stun" ||
                 skill.Components[2].Number("durationSeconds") != 2.5)
             {
@@ -579,9 +661,12 @@ namespace Ordr.Mobile.Combat
                     ApplySourceKaidoArmorStack(actor, target, true);
                 }
             }
+            QueueSourceKaidoPostHit(actor, primary, name, percent / 100,
+                Ordr323AttackType.Spells,
+                flat * skill.Components[1].Number("bonusPercent").Value / 100);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
                 attacker, primary.Id, name,
-                "원본 JASS 판정·평타 비례 추가피해·고정 비율 보너스·저항 무시 미검증", 0));
+                "평타 비례·단일 고정 추가 피해는 명중 후 모델 정산 / 원본 GetEventDamage·면역·저항무시 미검증", 0));
         }
 
         private void ForgetNativeSourceCharacter(long id)
@@ -592,6 +677,7 @@ namespace Ordr.Mobile.Combat
             sourceNativeForms.Remove(id);
             sourceKaidoLifeCounters.Remove(id);
             sourceKaidoAttackCounters.Remove(id);
+            sourceKaidoPendingPercent.Remove(id);
             sourceKaidoArmorStacks.Remove(id);
             string armorKey = "practice-kaido:armor:" + id;
             foreach (var enemy in enemies.Values)
