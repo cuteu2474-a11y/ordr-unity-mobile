@@ -31,7 +31,7 @@ namespace Ordr.Mobile.Combat
     // Mobile follows the user decision: Q/W/R automatic, manual treasure
     // search remains a single gacha button. CCQ reveals ONLY; its observed
     // outcome never pays a Wisp, Berry, or rolls the original BeI stream.
-    public sealed class Original323GaimonRevealPort
+    public sealed partial class Original323GaimonRevealPort
     {
         private readonly Original323TreasureHunt hunt;
         private readonly IOriginal323GaimonCcqEventWitness source;

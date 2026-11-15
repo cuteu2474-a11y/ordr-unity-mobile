@@ -44,6 +44,8 @@ namespace Ordr.Mobile.Core
         public Original323StoryBuildingPracticeState StoryBuildings;
         public Original323SoloStoryState SoloStory;
         public Original323StoryMobileProgressionState StoryProgression;
+        // Source-verified snapshots for treasure only; never enable Continue.
+        public Original323TreasureSessionState Treasure;
     }
 
     public sealed class OrdrRestoredCoreCheckpoint
@@ -89,7 +91,8 @@ namespace Ordr.Mobile.Core
             Original323StoryMobileProgressionState storyProgression = null,
             MobileRollbackWispRandomState tierPoolRandom = null,
             MobileRollbackWispRandomState wispPoolRandom = null,
-            MobileRollbackWispRandomState graduatedRarePoolRandom = null)
+            MobileRollbackWispRandomState graduatedRarePoolRandom = null,
+            Original323TreasureSessionState treasure = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -112,7 +115,8 @@ namespace Ordr.Mobile.Core
                 Research = research, Evolution = evolution,
                 Poneglyph = poneglyph, Creeps = creeps,
                 StoryBuildings = storyBuildings, SoloStory = soloStory,
-                StoryProgression = storyProgression
+                StoryProgression = storyProgression,
+                Treasure = treasure
             };
             // The mission gameplay component carries the SAME shared wallet.
             // A different wallet or a torn cross-service snapshot is rejected.
@@ -165,6 +169,25 @@ namespace Ordr.Mobile.Core
                 MobileRollbackWispRandom.Restore(state.GraduatedRarePoolRandom);
             if (state.TierPoolRandom != null)
                 MobileRollbackWispRandom.Restore(state.TierPoolRandom);
+            if(state.Treasure != null)
+            {
+                if(state.ScriptRandom==null || state.Treasure.Hunt==null ||
+                    state.Treasure.Mobile==null || state.Treasure.Gacha==null ||
+                    state.Treasure.Alarms==null ||
+                    (!state.Treasure.DreamApplied && state.Treasure.NamiAtDream))
+                    throw new FormatException("보물 전체 상태/난수 복원 자료 부족");
+                Original323TreasureHunt.ValidateState(
+                    state.Treasure.Hunt,restored.Economy.Wallet);
+                Original323MobileTreasureSession.ValidateState(
+                    state.Treasure.Mobile,state.Treasure.Hunt);
+                MobileTreasureGacha.ValidateState(
+                    state.Treasure.Gacha,state.Treasure.Mobile);
+                Original323TreasureAlarmJournal.ValidateState(
+                    state.Treasure.Alarms);
+                if(state.Treasure.Reveals!=null)
+                    Original323GaimonRevealPort.ValidateState(
+                        state.Treasure.Reveals,state.Treasure.Hunt);
+            }
             if (state.StoryBuildings != null ||
                 state.SoloStory != null || state.StoryProgression != null)
             {

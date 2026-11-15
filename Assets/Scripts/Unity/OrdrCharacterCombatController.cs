@@ -1440,6 +1440,26 @@ namespace Ordr.Mobile.Unity
                 CaptureCoreCheckpointDraft());
         }
 
+        private Original323TreasureSessionState CaptureTreasureCheckpointDraft()
+        {
+            if(OriginalTreasureHunt==null) return null;
+            if(standaloneTreasure==null || MobileTreasureGacha==null ||
+                TreasureAlarms==null ||
+                !(sessionScriptRandom is MobileRollbackWispRandom))
+                throw new NotSupportedException(
+                    "외부 보물 월드/난수의 전체 복원 증빙이 없어 저장을 차단합니다.");
+            var dream=GaimonDream.Capture();
+            return new Original323TreasureSessionState {
+                Hunt=OriginalTreasureHunt.CaptureState(),
+                Mobile=standaloneTreasure.CaptureState(),
+                Gacha=MobileTreasureGacha.CaptureState(),
+                Alarms=TreasureAlarms.CaptureState(),
+                Reveals=GaimonReveal?.CaptureState(),
+                DreamApplied=dream.Applied,
+                NamiAtDream=dream.NamiBonusWhenApplied
+            };
+        }
+
         // Same frozen frame for live combat, commerce, pending rolls, story
         // and wave ledgers. Anonymous timed Actions still reject capture.
         public OrdrCoreCheckpointState CaptureWorldCheckpointDraft()
@@ -1476,7 +1496,8 @@ namespace Ordr.Mobile.Unity
                         StoryProgression.CaptureState(SoloStory.NativeRewards),
                     sessionTierPoolRandom?.CaptureState(),
                     sessionWispPoolRandom?.CaptureState(),
-                    sessionGraduatedRarePoolRandom?.CaptureState());
+                    sessionGraduatedRarePoolRandom?.CaptureState(),
+                    CaptureTreasureCheckpointDraft());
             });
         }
 
@@ -2523,6 +2544,9 @@ namespace Ordr.Mobile.Unity
                 : "복귀할 공유 목표 출전 유닛이 없습니다.";
         private IOriginal323PoneglyphEventWitness originalPoneglyphWitness;
         private Original323MobileTreasureSession standaloneTreasure;
+        private IOriginal323TreasureMapPrizeWitness treasureMapPrizeWitness;
+        private IOriginal323MobileTreasureA05DCast originalMobileA05d;
+        private IOriginal323GaimonCcqEventWitness originalGaimonCcqSource;
         public MobileTreasureGacha MobileTreasureGacha { get; private set; }
         public Original323GaimonRevealPort GaimonReveal { get; private set; }
 
@@ -2680,13 +2704,15 @@ namespace Ordr.Mobile.Unity
         public void ConfigureOriginal323GaimonReveal(
             IOriginal323GaimonCcqEventWitness sourceEvent)
         {
-            if (Combat == null || OriginalTreasureHunt == null ||
-                GaimonReveal != null ||
-                Combat.Game.Phase != SessionPhase.NotStarted)
+            if (Combat == null || GaimonReveal != null ||
+                originalGaimonCcqSource != null ||
+                Combat.Game.Phase != SessionPhase.NotStarted || sourceEvent==null)
                 throw new InvalidOperationException(
-                    "CCQ 위치 공개는 원본 보물 월드를 게임 시작 전 연결해야 합니다.");
-            GaimonReveal = new Original323GaimonRevealPort(
-                OriginalTreasureHunt,sourceEvent);
+                    "CCQ 원본 사건은 세션 시작 전에 한 번만 연결합니다.");
+            originalGaimonCcqSource=sourceEvent;
+            if(OriginalTreasureHunt!=null)
+                GaimonReveal=new Original323GaimonRevealPort(
+                    OriginalTreasureHunt,sourceEvent);
         }
 
         public Original323GaimonRevealResult ObserveOriginal323GaimonCcq(
@@ -2709,6 +2735,16 @@ namespace Ordr.Mobile.Unity
                     originalNativeEventId,
                     OriginalTreasureHunt.LastAuthorizedCastEvidence,Combat.Time);
             return result;
+        }
+
+        public void ConfigureOriginal323MobileA05DCast(
+            IOriginal323MobileTreasureA05DCast originalCast)
+        {
+            if(Combat==null || Combat.Game.Phase!=SessionPhase.NotStarted ||
+                originalMobileA05d!=null || originalCast==null)
+                throw new InvalidOperationException(
+                    "원본 A05D 마나·쿨타임·시전 조건 공급자는 시작 전에 연결합니다.");
+            originalMobileA05d=originalCast;
         }
 
         // Only register a source-calibrated gacha before gameplay begins.
@@ -2738,12 +2774,21 @@ namespace Ordr.Mobile.Unity
             standaloneTreasure=new Original323MobileTreasureSession(
                 sessionScriptRandom,
                 () => GaimonDream.Applied,
-                () => GaimonDream.NamiBonusWhenApplied);
+                () => GaimonDream.NamiBonusWhenApplied,
+                () => {
+                    bool yl; string proof;
+                    return originalGaimonYlSource != null &&
+                        originalGaimonYlSource.TryReadOriginalYlFlag(out yl,out proof) &&
+                        Original323BossRoundRules.TrustedRuntimeEvidence(proof) && yl;
+                },originalMobileA05d,originalGaimonCcqSource);
             ConfigureOriginal323TreasureHunt(
                 new Original323TreasureWalletWorld(
                     SharedEconomy.Wallet,standaloneTreasure),sessionScriptRandom);
             MobileTreasureGacha=new MobileTreasureGacha(
                 OriginalTreasureHunt,standaloneTreasure);
+            if(GaimonReveal==null && originalGaimonCcqSource!=null)
+                GaimonReveal=new Original323GaimonRevealPort(
+                    OriginalTreasureHunt,standaloneTreasure);
         }
 
         private void SpawnStandaloneTreasureForRound(int round)
@@ -2751,6 +2796,40 @@ namespace Ordr.Mobile.Unity
             if(standaloneTreasure!=null && OriginalTreasureHunt!=null &&
                 round>=1 && round<=65)
                 standaloneTreasure.SpawnThroughRound(OriginalTreasureHunt,round);
+        }
+
+        // CRW bounty treasure maps are granted by witnessed chest outcomes,
+        // not a new button or an imaginary free-use inventory item.
+        public void ConfigureOriginal323TreasureMapPrizes(
+            IOriginal323TreasureMapPrizeWitness witness)
+        {
+            if(Combat==null || Combat.Game.Phase!=SessionPhase.NotStarted ||
+                treasureMapPrizeWitness!=null || witness==null)
+                throw new InvalidOperationException(
+                    "보물지도 원본 사건 공급자는 세션 시작 전에 한 번만 연결합니다.");
+            treasureMapPrizeWitness=witness;
+        }
+
+        public bool ObserveOriginal323TreasureMapPrize(string sourceEventId)
+        {
+            if(Combat==null || Combat.Game.Phase!=SessionPhase.Running ||
+                standaloneTreasure==null || OriginalTreasureHunt==null ||
+                treasureMapPrizeWitness==null ||
+                string.IsNullOrWhiteSpace(sourceEventId)) return false;
+            int remaining; string proof;
+            if(!treasureMapPrizeWitness.TryConfirmMapPrize(sourceEventId,
+                Combat.Game.CurrentWave,out remaining,out proof))
+                return false;
+            // Fifth CRW map is a distinct One Piece/native ability reward,
+            // not a fifth BeM(3). Do not award fabricated native effects.
+            if(remaining==0)
+            {
+                RecordSessionIssue("보물지도", "마지막 지도: 원피스 원본 능력 보상 연결 필요");
+                return false;
+            }
+            return standaloneTreasure.RegisterObservedTreasureMapPrize(
+                OriginalTreasureHunt,sourceEventId,Combat.Game.CurrentWave,
+                remaining,proof);
         }
 
         public MobileTreasureGachaResult RequestMobileTreasureGacha()
@@ -2763,6 +2842,14 @@ namespace Ordr.Mobile.Unity
                     MobileTreasureOutcome.Unavailable,0,0,
                     "원작 보물 가챠 확률·탐색 기회 검증 대기");
             SpawnStandaloneTreasureForRound(Combat.Game.CurrentWave);
+            var recovered = MobileTreasureGacha.TryReconcilePending();
+            if(recovered!=null)
+            {
+                // Never register a second BJI alarm or spend another ticket.
+                TrySettleTreasureHunterAfterCollection(
+                    recovered.Collected>0,recovered.Collected);
+                return recovered;
+            }
             var result = MobileTreasureGacha.TrySearch(Combat.Game.CurrentWave,
                 GaimonDream != null && GaimonDream.Applied,
                 GaimonDream != null && GaimonDream.Applied && GaimonDream.NamiBonusWhenApplied,

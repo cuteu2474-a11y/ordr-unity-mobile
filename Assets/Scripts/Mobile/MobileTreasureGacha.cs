@@ -124,7 +124,7 @@ namespace Ordr.Mobile.Mobile
 
     // Never executes automatically: one button tap consumes at most one
     // source-approved attempt. Both original cast and wallet must also approve.
-    public sealed class MobileTreasureGacha
+    public sealed partial class MobileTreasureGacha
     {
         private readonly Original323TreasureHunt hunt;
         private readonly IOriginal323MobileTreasureGachaPolicy policy;
@@ -188,6 +188,32 @@ namespace Ordr.Mobile.Mobile
             hunt=source ?? throw new ArgumentNullException(nameof(source));
             policy=calibratedPolicy ??
                 throw new ArgumentNullException(nameof(calibratedPolicy));
+        }
+
+        // Recovery is not a new hunt: no ticket or random draw is consumed.
+        // Only the previously authorized chest/cast and wallet receipt may settle.
+        public MobileTreasureGachaResult TryReconcilePending()
+        {
+            if(inProgress) return Reject("보물 거래 처리 중");
+            inProgress=true;
+            try
+            {
+                var recovered=hunt.ReconcilePending();
+                if(recovered==null) return null;
+                return new MobileTreasureGachaResult(
+                    recovered.Collected==0 ? MobileTreasureOutcome.Uncertain :
+                    recovered.Collected<recovered.Matched ?
+                        MobileTreasureOutcome.Partial : MobileTreasureOutcome.Found,
+                    recovered.Matched,recovered.Collected,recovered.Message,
+                    recovered.Rewards);
+            }
+            catch(Exception ex)
+            {
+                return new MobileTreasureGachaResult(
+                    MobileTreasureOutcome.Uncertain,0,0,
+                    "보류 보상 확인 실패 · 재추첨 없음: "+ex.Message);
+            }
+            finally {inProgress=false;}
         }
 
         public MobileTreasureGachaResult TrySearch(int round,

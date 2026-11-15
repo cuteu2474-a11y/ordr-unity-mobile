@@ -54,6 +54,26 @@ namespace Ordr.Mobile.Combat
             sourceBerryResourceId = verifiedBerryResourceId;
         }
 
+        // Called only after the complete chest ledger and shared wallet have
+        // passed checkpoint validation. This restores receipts and pending
+        // authorizations without granting a single resource or rolling BFi.
+        internal void RestoreTreasureReceipts(
+            IReadOnlyList<Original323TreasureLocation> chests)
+        {
+            if(chests==null || settled.Count!=0 ||
+                validatedCasts.Count!=0 || settling)
+                throw new InvalidOperationException("보물 지갑 복원 순서 오류");
+            foreach(var chest in chests)
+            {
+                if(chest.Pending!=null)
+                    validatedCasts.Add(chest.PendingCastEvidence);
+                var reward=chest.Collected ? chest.Awarded : chest.Pending;
+                if(reward!=null && wallet.HasCompletedTransaction(
+                    "original323:treasure:"+chest.OriginalChestId))
+                    settled.Add(chest.OriginalChestId,reward);
+            }
+        }
+
         public bool TryConfirmOriginalTreasureCast(double x, double y,
             double halfExtent, bool collect, int originalRound,
             out string originalCastEvidence)

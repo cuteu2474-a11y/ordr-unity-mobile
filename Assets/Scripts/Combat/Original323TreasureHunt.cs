@@ -110,6 +110,8 @@ namespace Ordr.Mobile.Combat
         public double Y { get; private set; }
         public bool Collected { get; internal set; }
         internal Original323TreasureReward Pending;
+        internal Original323TreasureReward Awarded;
+        internal string PendingCastEvidence;
         internal string SpawnEvidence { get; private set; }
 
         internal Original323TreasureLocation(string id,int wave,double x,
@@ -163,7 +165,7 @@ namespace Ordr.Mobile.Combat
 
     // One battle-clock journal for all witnessed treasure casts. A missed
     // treasure still starts the source BJI alarm; pauses do not advance it.
-    public sealed class Original323TreasureAlarmJournal
+    public sealed partial class Original323TreasureAlarmJournal
     {
         private readonly HashSet<string> seenCasts =
             new HashSet<string>(StringComparer.Ordinal);
@@ -269,7 +271,7 @@ namespace Ordr.Mobile.Combat
     // One original round-spawn ledger and one original BFi stream per game.
     // Registration requires confirmed BFj positions; this does not invent
     // the 3 initial coordinates or four positions at each scheduled round.
-    public sealed class Original323TreasureHunt
+    public sealed partial class Original323TreasureHunt
     {
         private readonly IOriginal323TreasureNativeWorld native;
         private readonly IOriginalWispRandom scriptRng;
@@ -457,16 +459,18 @@ namespace Ordr.Mobile.Combat
                     // An aborted native settlement cannot roll this chest
                     // a second time; its original reward stays pending.
                     if(chest.Pending==null)
+                    {
                         chest.Pending=Original323TreasureRules.RollOriginalReward(
                             originalRound,gaimon,extraQuantityRoll,
                             berryDisabled,scriptRng);
+                        chest.PendingCastEvidence=cast;
+                    }
+                    // Do not reroll after an observer fails post-receipt.
                     if(!native.TrySettleTreasureOnce(chest.OriginalChestId,
-                        chest.Pending,cast,chest.SpawnEvidence))
+                        chest.Pending,chest.PendingCastEvidence,chest.SpawnEvidence))
                         break;
                     paid.Add(chest.Pending);
-                    chest.Collected=true;
-                    chest.Pending=null;
-                    CollectedCount++;
+                    CompletePendingChest(chest);
                     done++;
                 }
                 if (done > 0) LastCollectedCastEvidence = cast;
@@ -477,5 +481,53 @@ namespace Ordr.Mobile.Combat
             }
             finally {inSearch=false;}
         }
+
+        private void CompletePendingChest(Original323TreasureLocation chest)
+        {
+            chest.Awarded=chest.Pending;
+            chest.Pending=null;
+            chest.PendingCastEvidence=null;
+            chest.Collected=true;
+            CollectedCount++;
+        }
+
+        // The original authorized cast settles a previously rolled reward.
+        // A wallet observer failure cannot force an extra search or BFi draw.
+        public Original323TreasureSearchResult ReconcilePending()
+        {
+            if(inSearch)
+                return new Original323TreasureSearchResult(0,0,false,
+                    "보류 보물 정산 중");
+            int waiting=0,done=0;
+            string lastCast=null;
+            var paid=new List<Original323TreasureReward>();
+            inSearch=true;
+            try
+            {
+                foreach(var chest in ordered)
+                {
+                    if(chest.Collected || chest.Pending==null) continue;
+                    waiting++;
+                    if(!Original323BossRoundRules.TrustedRuntimeEvidence(
+                            chest.PendingCastEvidence) ||
+                        !native.TrySettleTreasureOnce(chest.OriginalChestId,
+                            chest.Pending,chest.PendingCastEvidence,
+                            chest.SpawnEvidence))
+                        break;
+                    lastCast=chest.PendingCastEvidence;
+                    paid.Add(chest.Pending);
+                    CompletePendingChest(chest);
+                    done++;
+                }
+                if(waiting==0) return null;
+                if(done>0) LastCollectedCastEvidence=lastCast;
+                return new Original323TreasureSearchResult(waiting,done,
+                    true,"보류 보물 "+done+"/"+waiting+"개 정산"+
+                    (done<waiting ? " · 미정산 항목 유지" : ""),
+                    paid.AsReadOnly());
+            }
+            finally {inSearch=false;}
+        }
+
     }
 }
