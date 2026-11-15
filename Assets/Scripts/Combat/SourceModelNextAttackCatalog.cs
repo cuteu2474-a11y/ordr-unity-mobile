@@ -17,6 +17,29 @@ namespace Ordr.Mobile.Combat
                 Ordr323AttackType.Spells);
         }
 
+        // Build the mobile cone from the pinned W3X e0KD/A086 (ANfl) facts,
+        // rather than treating a native multi-target order as one direct hit.
+        private static SourceScriptHit EnelForkedLightning()
+        {
+            Original323AttackDummySpellCommand order;
+            Original323NativeDummyAbilityFacts ability;
+            if (!Original323ScriptAttackEffectCoordinator.TryCreateOriginalSpell(
+                    "h00Q", out order) ||
+                !Original323NativeDummyAbilityCatalog.TryGet(order, out ability) ||
+                ability.AbilityRawcode != "A086" ||
+                ability.ParentWarcraftAbility != "ANfl" ||
+                !ability.MaxNativeTargets.HasValue ||
+                ability.MaxNativeTargets.Value != ability.DataB1 ||
+                ability.WarcraftTargetMask != "air,ground,enemy,neutral,organic")
+                throw new InvalidOperationException("에넬 갈래 번개 원본 능력 연결 불일치");
+            return new SourceScriptHit(SourceScriptHitShape.ForkedLightningCone,
+                ability.Area1, ability.DataC1, ability.DataA1, 1, 1,
+                Ordr323AttackType.Spells,
+                endRadius: ability.DataD1,
+                maxTargets: ability.MaxNativeTargets.Value,
+                castRange: ability.CastRange1);
+        }
+
         private static readonly SourceScriptAttackSpec[] Entries = {
             // Bn0: native e0KD/A08L (AEfk) at the ATTACKER, not the target.
             new SourceScriptAttackSpec("S-08", "h00T", "Bn0", 100, 10,
@@ -30,10 +53,11 @@ namespace Ordr.Mobile.Combat
             new SourceScriptAttackSpec("S-15", "h012", "BoC", 100, 16,
                 null, new[] { Hit(SourceScriptHitShape.Circle, 3000, 450) },
                 "BoB 대상 A904 보유 시 추가 5000·0.45초 복구/공격 일시정지 미검증", .29),
-            // Bnr issues a target order to e0KD/A086 (ANfl).
+            // Bnr: 10% native e0KD/A086 (ANfl), caster-origin tapered
+            // cone, four total eligible targets, 1500 magic per target.
             new SourceScriptAttackSpec("S-18", "h00Q", "Bnr", 100, 10,
-                null, new[] { Hit(SourceScriptHitShape.Direct, 1500) },
-                "A086 forkedlightning 4갈래 후속 대상·거리·면역 미검증"),
+                null, new[] { EnelForkedLightning() },
+                "A086 원본 범위·4명 모바일 모델 / 네이티브 대상 열거·면역·최종 HP 별도 미인증"),
             // BoE casts e0KG/A0ES (AUcs) toward attacked unit.
             new SourceScriptAttackSpec("S-19", "h01J", "BoE", 100, 14,
                 null, new[] { Hit(SourceScriptHitShape.ProjectileLine, 850, 215, 1700) },

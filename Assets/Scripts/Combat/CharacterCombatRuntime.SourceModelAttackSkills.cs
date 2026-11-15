@@ -354,6 +354,8 @@ namespace Ordr.Mobile.Combat
             string skillName = actor.Catalog.Name + " 공격 기술";
             if (script.CatalogId == "U-04" || script.CatalogId == "U-13")
                 skillName = "람각";
+            else if (script.CatalogId == "S-18")
+                skillName = "갈래 번개";
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, attackerId,
                 primaryTargetId, skillName,
@@ -565,6 +567,12 @@ namespace Ordr.Mobile.Combat
             double dx = primary.X - position.X;
             double dy = primary.Y - position.Y;
             double length = Math.Sqrt(dx * dx + dy * dy);
+            // ANfl targets a unit within Rng1 and fans out from the dummy
+            // at the attacker; DataC1 is the independent cone reach.
+            if (hit.Shape == SourceScriptHitShape.ForkedLightningCone &&
+                (length <= 0 || length > hit.CastRange)) return found;
+            double targetHeading = length > 0 ?
+                Math.Atan2(dy, dx) * 180.0 / Math.PI : 0;
             foreach (var candidate in enemies.Values)
             {
                 if (!candidate.Enemy.IsAlive ||
@@ -591,6 +599,15 @@ namespace Ordr.Mobile.Combat
                             candidate.X, candidate.Y))
                         found.Add(candidate);
                 }
+                else if (hit.Shape == SourceScriptHitShape.ForkedLightningCone)
+                {
+                    // Original ANfl: Area1=initial width, DataD1=final
+                    // width, DataC1=distance. Never damage behind the caster.
+                    if (SourceModelTaperedConeGeometry.Contains(hit,
+                            position.X, position.Y, targetHeading,
+                            candidate.X, candidate.Y))
+                        found.Add(candidate);
+                }
                 else if (hit.Shape == SourceScriptHitShape.ProjectileLine &&
                          length > 0)
                 {
@@ -605,8 +622,25 @@ namespace Ordr.Mobile.Combat
                         found.Add(candidate);
                 }
             }
-            // Stable model enumeration only. Warcraft native enumeration
-            // order (and therefore its BFh draw order) is NOT certified.
+            if (hit.Shape == SourceScriptHitShape.ForkedLightningCone)
+            {
+                // Unit-targeted ANfl starts with the attacked unit. Fill
+                // remaining slots by nearest eligible cone targets, with a
+                // stable ID tie-break. Retail target tie-order is unverified.
+                found.Sort((a, b) => {
+                    if (ReferenceEquals(a, primary)) return ReferenceEquals(b, primary) ? 0 : -1;
+                    if (ReferenceEquals(b, primary)) return 1;
+                    double ax = a.X - position.X, ay = a.Y - position.Y;
+                    double bx = b.X - position.X, by = b.Y - position.Y;
+                    int distanceOrder = (ax * ax + ay * ay).CompareTo(bx * bx + by * by);
+                    return distanceOrder != 0 ? distanceOrder :
+                        StringComparer.Ordinal.Compare(a.Id, b.Id);
+                });
+                if (found.Count > hit.MaxTargets)
+                    found.RemoveRange(hit.MaxTargets, found.Count - hit.MaxTargets);
+                return found;
+            }
+            // Other model skills retain their existing deterministic order.
             found.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
             return found;
         }

@@ -6,7 +6,7 @@ namespace Ordr.Mobile.Combat
     // Offline practice ONLY. Each row is transcribed from the pinned w5 attack
     // callbacks in original-2323C-attack-skill-batch.json. These are source
     // instructions, NOT permission to claim Warcraft native spell parity.
-    public enum SourceScriptHitShape { Direct, Circle, RankyakuLine, AttackerCircle, ProjectileLine }
+    public enum SourceScriptHitShape { Direct, Circle, RankyakuLine, AttackerCircle, ProjectileLine, ForkedLightningCone }
 
     public sealed class SourceScriptHit
     {
@@ -14,6 +14,9 @@ namespace Ordr.Mobile.Combat
         public double Radius { get; private set; }
         // AUcs DataD: travelling wave's ending half-width.
         public double EndRadius { get; private set; }
+        // Native ANfl's target cap and unit-target cast range.
+        public int MaxTargets { get; private set; }
+        public double CastRange { get; private set; }
         public double Length { get; private set; }
         public double Damage { get; private set; }
         public double Minimum { get; private set; }
@@ -53,9 +56,15 @@ namespace Ordr.Mobile.Combat
             double lineMaxHealthMultiplier = 0,
             double lineCurrentHealthMultiplier = 0,
             Ordr323AttackType? lineAttackOverride = null,
-            double endRadius = -1)
+            double endRadius = -1, int maxTargets = 0, double castRange = 0)
         {
+            if (shape == SourceScriptHitShape.ForkedLightningCone &&
+                (maxTargets <= 0 || castRange <= 0 || length <= 0 ||
+                 radius < 0 || endRadius < 0 || damage <= 0))
+                throw new ArgumentOutOfRangeException(nameof(maxTargets),
+                    "원본 갈래 번개 범위·피해·대상 수가 올바르지 않습니다.");
             Shape = shape; Radius = radius; EndRadius = endRadius >= 0 ? endRadius : radius;
+            MaxTargets = maxTargets; CastRange = castRange;
             Length = length; Damage = damage;
             Minimum = minimum; Maximum = maximum; Attack = attack;
             BossCurrentHealthPercent = bossCurrentHealthPercent;
@@ -72,16 +81,17 @@ namespace Ordr.Mobile.Combat
         }
     }
 
-    // A0VS AUcs uses the caster's facing and starts at the caster, not the
-    // attacked unit. Area=200 -> DataD=250 half-width over DataC=800 travel.
-    // The actual same-point Warcraft native heading and projectile timing
-    // still require runtime observation; this is deterministic mobile geometry.
-    public static class SourceModelRankyakuGeometry
+    // Shared authored tapered-cone geometry: the caster is the origin;
+    // Area1 is the initial half-width and DataD1 the final half-width.
+    // The heading is supplied by the individual native ability's order.
+    public static class SourceModelTaperedConeGeometry
     {
         public static bool Contains(SourceScriptHit wave, double originX,
             double originY, double facingDegrees, double targetX, double targetY)
         {
-            if (wave == null || wave.Shape != SourceScriptHitShape.RankyakuLine ||
+            if (wave == null ||
+                (wave.Shape != SourceScriptHitShape.RankyakuLine &&
+                 wave.Shape != SourceScriptHitShape.ForkedLightningCone) ||
                 wave.Length <= 0 || wave.Radius < 0 || wave.EndRadius < 0 ||
                 double.IsNaN(facingDegrees) || double.IsInfinity(facingDegrees))
                 return false;
@@ -94,6 +104,18 @@ namespace Ordr.Mobile.Combat
             double width = wave.Radius +
                 (wave.EndRadius - wave.Radius) * along / wave.Length;
             return across <= width;
+        }
+    }
+
+    // Keep the existing Rankyaku interface stable for its callers/tests.
+    public static class SourceModelRankyakuGeometry
+    {
+        public static bool Contains(SourceScriptHit wave, double originX,
+            double originY, double facingDegrees, double targetX, double targetY)
+        {
+            return wave != null && wave.Shape == SourceScriptHitShape.RankyakuLine &&
+                SourceModelTaperedConeGeometry.Contains(wave, originX,
+                    originY, facingDegrees, targetX, targetY);
         }
     }
 
