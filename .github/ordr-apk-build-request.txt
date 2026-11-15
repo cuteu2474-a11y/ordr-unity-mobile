@@ -17,3 +17,4 @@ request: rerun integrated Unity tests and create Android development APK if they
 2026-11-14: Build request after pause-spawn-story-dispatch-resume regression/UI clarity and fixing three stale post-range EditMode expectations.
 2026-11-14: Single grouped Unity/Android run after S02 combat save draft integration (timeline, queues, source pulse, wave ledgers, resource and status snapshots, strict non-resumable world gate).
 2026-11-14: Download and commit licensed MapleStory Bold/Light + Pretendard Regular (font-assets-only workflow branch, no Unity or APK test).
+2026-11-16: Build requested after grouped source-model combat fix cd9601bad0e1aab7f289b043a305ecb46536563e (Zeff R-32 / Luffy S-07 native speed buffs, shared attacker effect approval, transient attack unblock).
