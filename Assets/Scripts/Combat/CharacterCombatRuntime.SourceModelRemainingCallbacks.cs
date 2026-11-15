@@ -106,6 +106,25 @@ namespace Ordr.Mobile.Combat
             remainingBlackbeardWindow64.Remove(enemyId);
         }
 
+        // Bzr/Bzx/Bzz in pinned war3map.j read the unbonused
+        // GetHeroStatBJ(bj_HEROSTAT_STR, caster, false). Neither the
+        // UnitData point value nor the caster's attack damage is Strength.
+        private bool TryRemainingBlackbeardStrength(CharacterInstance actor,
+            out double strength)
+        {
+            strength = 0;
+            if (actor == null || actor.Catalog.Id != "TR-01" ||
+                sourceModelUnbonusedStrengthProvider == null) return false;
+            double? value = sourceModelUnbonusedStrengthProvider(actor.Id);
+            if (!value.HasValue || value.Value < 0 ||
+                value.Value > int.MaxValue ||
+                Math.Floor(value.Value) != value.Value ||
+                double.IsNaN(value.Value) || double.IsInfinity(value.Value))
+                return false;
+            strength = value.Value;
+            return true;
+        }
+
         private bool RemainingBlackbeardForcesBzq(SpatialCombatEnemy target)
         {
             // A903 makes Bzq unconditional in the original Bz1. Bdi boss
@@ -611,12 +630,19 @@ namespace Ordr.Mobile.Combat
                     {
                         hp.SetHealth(1);
                         RemainingProc(actor, target, spec, "HP85 지진 폭발");
+                        double strength;
+                        bool supplied = TryRemainingBlackbeardStrength(
+                            actor, out strength);
+                        // Original Bzz: 1750000 + STR*60000 +
+                        // target current HP*0.03, paid in ONE packet.
                         RemainingHits(actor, target, spec,
                             new SourceScriptHit(SourceScriptHitShape.AttackerCircle,
-                                925, 0, 1750000, 1, 1,
+                                925, 0, 1750000 +
+                                    (supplied ? strength * 60000 : 0), 1, 1,
                                 Ordr323AttackType.Spells,
                                 targetCurrentHealthMultiplier: .03));
-                        RemainingDeferred(actor, target, spec, "힘 60000배 스케일 미공급");
+                        if (!supplied) RemainingDeferred(actor, target, spec,
+                            "GetHeroStatBJ(STR,false) 미공급: 힘당 60000 보류");
                     }
                     else hp.SetHealth(Math.Min(85, hp.Health + 1));
                 }
@@ -668,11 +694,17 @@ namespace Ordr.Mobile.Combat
                     if (alternate < 17)
                     {
                         RemainingProc(actor, target, spec, "10% → 17% 광역 연계");
+                        double strength;
+                        bool supplied = TryRemainingBlackbeardStrength(
+                            actor, out strength);
+                        // Original Bzr: 650000 + STR*5000, one proc roll.
                         RemainingHits(actor, target, spec,
                             new SourceScriptHit(SourceScriptHitShape.AttackerCircle,
-                                700, 0, 650000, 1, 1,
+                                700, 0, 650000 +
+                                    (supplied ? strength * 5000 : 0), 1, 1,
                                 Ordr323AttackType.Spells));
-                        RemainingDeferred(actor, target, spec, "힘 5000배 스케일 미공급");
+                        if (!supplied) RemainingDeferred(actor, target, spec,
+                            "GetHeroStatBJ(STR,false) 미공급: 힘당 5000 보류");
                     }
                     else
                     {
@@ -686,9 +718,18 @@ namespace Ordr.Mobile.Combat
                 if (sourceModelRules.NextScriptRoll(100) < 4)
                 {
                     RemainingProc(actor, target, spec, "독립 4% 연쇄 타격");
+                    double strength;
+                    bool supplied = TryRemainingBlackbeardStrength(
+                        actor, out strength);
+                    // Original Bzx: 625000 + STR*5000. Native moving
+                    // dummy Bzy has multiple locations; the existing
+                    // simplified one-hit geometry is still unverified.
                     RemainingDelayedHits(actor, target, spec, .06,
-                        RemainingCircle(415, 625000));
-                    RemainingDeferred(actor, target, spec, "힘 5000배 및 이동 투사체 미모델");
+                        RemainingCircle(415, 625000 +
+                            (supplied ? strength * 5000 : 0)));
+                    RemainingDeferred(actor, target, spec, supplied ?
+                        "원본 Bzy 이동/충돌 시계 미완료" :
+                        "STR 미공급 + Bzy 이동/충돌 시계 미완료");
                 }
                 return;
             }

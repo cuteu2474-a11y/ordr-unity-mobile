@@ -101,6 +101,88 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void HibariUsesRawUnitDataPointValuesNotRarityProxies()
+        {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var rules = new SourceModelBasicCombatRules(map, new Dice(false));
+            Assert.AreEqual(90, rules.OriginalUnitPointValue("R-07", "h025"));
+            Assert.AreEqual(101, rules.OriginalUnitPointValue("L-01", "h02U"));
+            Assert.AreEqual(131, rules.OriginalUnitPointValue("TR-24", "H0CO"));
+            Assert.IsNull(rules.OriginalUnitPointValue("L-01", "h0CM"),
+                "Do not apply another rawcode's point value.");
+            using (var live = Create("L-39", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                long rare = live.Combat.SpawnCharacter("R-07", -4900, 5400);
+                long legendary = live.Combat.SpawnCharacter("L-01", -4900, 5400);
+                long koby = live.Combat.SpawnCharacter("TR-24", -4900, 5400);
+                Assert.IsTrue(live.Combat.TryCreateSourceModelHibariBento(
+                    live.ActorId, wallet));
+                Assert.IsFalse(live.Combat.CanUseSourceModelHibariBento(
+                    live.ActorId, rare, wallet));
+                Assert.IsTrue(live.Combat.CanUseSourceModelHibariBento(
+                    live.ActorId, legendary, wallet));
+                Assert.IsTrue(live.Combat.CanUseSourceModelHibariBento(
+                    live.ActorId, koby, wallet));
+                Assert.AreEqual(1, wallet.Balance(
+                    Original323SourceNativeActionKeys.HibariItem(live.ActorId)));
+            }
+        }
+
+        [Test]
+        public void SourceBlackbeardJassStrengthScalingAddsDamageOnlyWithBaseStatWitness()
+        {
+            double baseline, witnessed;
+            using (var first = Create("TR-01", true, -4900, 5400,
+                       withSourceResources: true))
+            {
+                baseline = first.Battle.Advance(2).Where(evt =>
+                    evt.Type == CharacterCombatEventType.SkillDamage)
+                    .Sum(evt => evt.Amount);
+            }
+            using (var second = Create("TR-01", true, -4900, 5400,
+                       withSourceResources: true))
+            {
+                second.Combat.ConfigureSourceModelHeroUnbonusedStrengthProvider(
+                    id => id == second.ActorId ? (double?)10 : null);
+                witnessed = second.Battle.Advance(2).Where(evt =>
+                    evt.Type == CharacterCombatEventType.SkillDamage)
+                    .Sum(evt => evt.Amount);
+            }
+            Assert.Greater(baseline, 0);
+            Assert.Greater(witnessed, baseline,
+                "Bzz/Bzr/Bzx must apply source STR*60000/5000/5000 " +
+                "within their existing packets, with no second proc.");
+        }
+
+        [Test]
+        public void SourceNamiJassIntelligenceScalingRequiresTrueHeroStatWitness()
+        {
+            double baseline, witnessed;
+            using (var first = Create("TR-02", true, -4900, 5400))
+            {
+                baseline = first.Battle.Advance(3).Where(evt =>
+                    evt.Type == CharacterCombatEventType.SkillDamage &&
+                    evt.SkillName == "낙뢰").Sum(evt => evt.Amount);
+            }
+            using (var second = Create("TR-02", true, -4900, 5400))
+            {
+                second.Combat.ConfigureSourceModelHeroIntelligenceProvider(
+                    id => id == second.ActorId ? (double?)8 : null);
+                witnessed = second.Battle.Advance(3).Where(evt =>
+                    evt.Type == CharacterCombatEventType.SkillDamage &&
+                    evt.SkillName == "낙뢰").Sum(evt => evt.Amount);
+            }
+            Assert.Greater(baseline, 0);
+            Assert.Greater(witnessed, baseline,
+                "Nami Bxp snapshots the witnessed INT including bonuses " +
+                "and adds 3500 per eight damage hits.");
+        }
+
+        [Test]
         public void NewMysticHanmaUsesOriginalObjectAttackInsteadOfEmptyShell()
         {
             var source = OriginalMapBaseStatCatalog.FromJson(

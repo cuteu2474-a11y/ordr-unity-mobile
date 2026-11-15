@@ -126,6 +126,8 @@ namespace Ordr.Mobile.Combat
 
         private Func<long, double?> sourceModelStrengthProvider;
         private Func<long, double?> sourceModelAgilityProvider;
+        private Func<long, double?> sourceModelIntelligenceProvider;
+        private Func<long, double?> sourceModelUnbonusedStrengthProvider;
         private readonly Dictionary<long, double> sourceModelFireFistReadyAt =
             new Dictionary<long, double>();
 
@@ -139,6 +141,25 @@ namespace Ordr.Mobile.Combat
         public void ConfigureSourceModelHeroAgilityProvider(Func<long, double?> provider)
         {
             sourceModelAgilityProvider = provider;
+        }
+
+        // These are distinct Warcraft GetHeroStatBJ(.., true/false)
+        // readings. Do not bind them to UnitData "points" or generic
+        // attack power. Missing source evidence means no extra damage.
+        public void ConfigureSourceModelHeroIntelligenceProvider(
+            Func<long, double?> witnessedCurrentIntelligence)
+        {
+            sourceModelIntelligenceProvider =
+                witnessedCurrentIntelligence ??
+                throw new ArgumentNullException(nameof(witnessedCurrentIntelligence));
+        }
+
+        public void ConfigureSourceModelHeroUnbonusedStrengthProvider(
+            Func<long, double?> witnessedUnbonusedStrength)
+        {
+            sourceModelUnbonusedStrengthProvider =
+                witnessedUnbonusedStrength ??
+                throw new ArgumentNullException(nameof(witnessedUnbonusedStrength));
         }
 
         private int SourceModelSongSoldiers(long casterId)

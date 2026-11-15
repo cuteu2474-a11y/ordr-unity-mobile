@@ -52,6 +52,18 @@ namespace Ordr.Mobile.Combat
             UnitEffects = effects ?? throw new ArgumentNullException(nameof(effects));
         }
 
+        // Original UnitData.slk points are GetUnitPointValue, not
+        // hero Strength/Agility/Intelligence. Require the mapped rawcode
+        // to prevent alternate forms from inheriting the wrong row.
+        public int? OriginalUnitPointValue(string catalogId, string rawcode)
+        {
+            if (string.IsNullOrWhiteSpace(catalogId) ||
+                string.IsNullOrWhiteSpace(rawcode)) return null;
+            var entry = objects.Find(catalogId);
+            return entry != null && entry.OriginalRawcode == rawcode ?
+                entry.UnitPointValue : null;
+        }
+
         public SourceModelBasicCombatRules(OriginalMapBaseStatCatalog source, ICombatProcRandom dice)
         {
             objects = source ?? throw new ArgumentNullException(nameof(source));

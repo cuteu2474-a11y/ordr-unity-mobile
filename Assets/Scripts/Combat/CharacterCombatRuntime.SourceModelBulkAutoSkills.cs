@@ -352,6 +352,27 @@ namespace Ordr.Mobile.Combat
             double scale = BulkScale(c);
             int hits = (int)(c.Number("hits") ?? 1);
             hits = Math.Max(1, Math.Min(30, hits));
+            // Nami Bxp at JASS 23281 captures INT WITH bonuses at
+            // cast/attack declaration, before the eight damage packets.
+            // Do not resample attributes after an earlier victim is hit.
+            double snapshotIntelligence = 0;
+            if (skill.Id == "TR-02:skill:3" &&
+                c.Number("intelligenceScalingPerHit").HasValue)
+            {
+                double? value = sourceModelIntelligenceProvider == null ?
+                    null : sourceModelIntelligenceProvider(actor.Id);
+                if (value.HasValue && value.Value >= 0 &&
+                    value.Value <= int.MaxValue &&
+                    Math.Floor(value.Value) == value.Value &&
+                    !double.IsNaN(value.Value) &&
+                    !double.IsInfinity(value.Value))
+                    snapshotIntelligence = value.Value;
+                else
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EffectDeferred,
+                        InstanceKey(actor.Id), primary.Id, skill.Name,
+                        "GetHeroStatBJ(INT,true) 미공급: 타당 지능×3500 보류", 0));
+            }
             foreach (var victim in targets)
             {
                 if (c.Text("scope") == "singlePrimaryTarget" &&
@@ -360,13 +381,10 @@ namespace Ordr.Mobile.Combat
                     continue;
                 double raw = (c.Number("amount") ?? c.Number("amountPerHit") ??
                     c.Number("amountPerAttack") ?? 0) * scale;
-                // No pinned source strength snapshot is available for this
-                // packet. Keep the literal base rather than a guessed STR.
-                if (c.Number("intelligenceScalingPerHit").HasValue)
-                {
-                    // An original intelligence provider has not been supplied:
-                    // retain the documented base packet, not a guessed stat.
-                }
+                if (skill.Id == "TR-02:skill:3" &&
+                    c.Number("intelligenceScalingPerHit").HasValue)
+                    raw += snapshotIntelligence *
+                        c.Number("intelligenceScalingPerHit").Value;
                 raw += victim.Enemy.MaxHealth *
                     (c.Number("plusTargetMaxHealthPercent") ?? 0) / 100;
                 if (c.Number("targetMaxHealthPercent").HasValue &&

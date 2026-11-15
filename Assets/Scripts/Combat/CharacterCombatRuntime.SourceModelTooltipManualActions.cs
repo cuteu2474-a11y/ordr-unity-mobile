@@ -247,16 +247,12 @@ namespace Ordr.Mobile.Combat
                 target.Mapping.AttackSpec.UnitRawCode == "h0CM" ||
                 IsLockedFromRosterTransactions(targetId))
                 return false;
-            // Source Buy: GetUnitPointValue(target)>=101 and not h0CM.
-            // Grade is a conservative mobile proxy until the original
-            // per-rawcode point-value table is available.
-            switch (target.Catalog.Grade)
-            {
-                case "전설": case "히든": case "변화": case "제한됨":
-                case "왜곡됨": case "초월함": case "영원한": case "불멸의":
-                case "신비함": case "세라핌": return true;
-                default: return false;
-            }
+            // JASS Buy: GetUnitPointValue(target) >= 101.
+            // Never substitute a rarity/grade threshold.
+            int? points = sourceModelRules == null ? null :
+                sourceModelRules.OriginalUnitPointValue(target.Catalog.Id,
+                    target.Mapping.AttackSpec.UnitRawCode);
+            return points.HasValue && points.Value >= 101;
         }
 
         public bool CanUseSourceModelHibariBento(long id, long recipientId,
