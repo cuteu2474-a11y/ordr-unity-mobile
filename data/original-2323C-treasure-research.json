@@ -17,6 +17,8 @@
       6080
     ],
     "treasuresAddedPerScheduledSpawn": 4,
+    "soloAdditionalPlayerSpawn": 1,
+    "soloTotalScheduledSpawn": 5,
     "scheduledSpawnRounds": [
       10,
       20,
@@ -86,6 +88,29 @@
       "firstLine": 59119,
       "source": "function CVC takes nothing returns nothing\nlocal integer YJ=X3\nlocal integer EK=0\nif ModuloInteger(X3,10)==0 and X3>0 and (X3>0 and X3<=50) then\ncall BeM(n9,\"(신세계 이전까지 매 10라운드마다 갱신)\")\nendif\nif YJ==1 then\ncall SetPlayerTechResearched(HY,$52303030,12)\ncall SetPlayerTechResearched(HY,$52303031,12)\ncall SetPlayerTechResearched(HY,$52303032,12)\ncall SetPlayerTechResearched(HY,$52303033,12)\ncall SetPlayerTechResearched(HY,$52303034,12)\ncall SetPlayerTechResearched(HY,$52303139,12)\ncall SetPlayerTechResearched(HY,$52303256,12)\nelseif YJ==10 then\ncall BhG()\nset EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall CUT(Player(EK))\nendif\nset EK=EK+1\nendloop\nelseif YJ==15 then\nset EK=0\nloop\nexitwhen EK>=LG\ncall SetPlayerTechResearched(Player(EK),$52303047,1)\nset EK=EK+1\nendloop\ncall DisplayTimedTextToPlayer(GetLocalPlayer(),0,0,5,\"|cffF15F5F[시스템]|r 깅 제압 미션 활성화\")\nelseif YJ==20 then\ncall SetPlayerTechResearched(HY,$52303030,21)\ncall SetPlayerTechResearched(HY,$52303031,21)\ncall SetPlayerTechResearched(HY,$52303032,21)\ncall SetPlayerTechResearched(HY,$52303033,21)\ncall SetPlayerTechResearched(HY,$52303034,21)\ncall SetPlayerTechResearched(HY,$52303139,21)\ncall SetPlayerTechResearched(HY,$52303256,21)\nelseif YJ==31 then\nset EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall CUU(Player(EK))\nendif\nset EK=EK+1\nendloop\nelseif YJ==41 then\nif NE==NF then\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,\"|cff04ffc4[알림]|r 41라운드가 되어 유닛 카운트가 |cffff00ff55|r (으)로 줄어듭니다. 유닛 카운트 경고 알림이 45부터 활성화됩니다.\")\nset ia=55\nelseif NE==NL then\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,\"|cff04ffc4[알림]|r 41라운드가 되어 유닛 카운트가 |cffff00ff50|r (으)로 줄어듭니다. 유닛 카운트 경고 알림이 40부터 활성화됩니다.\")\nset ia=50\nendif\ncall MultiboardSetTitleText(iZ[iV],\"|cffffb0ff유닛 카운트 제한 : |cff00FF00\"+(I2S(ia)+\" |cffffb0ff도달시 패배\"))\nendif\nif YJ>=3 and YJ<10 then\nset EK=0\nloop\nexitwhen EK>=LG\nif not jJ[EK] and not jK[EK] and Ji[EK] then\ncall DisplayTimedTextToPlayer(Player(EK),0,0,3,\"|cff04ffc4[알림]|r 좌측 상단에 |cffffcc00'로그인'|r 버튼을 눌러 로드를 진행해주세요. |cffFF00009라운드|r까지만 로드가 가능합니다.\")\ncall DisplayTimedTextToPlayer(Player(EK),0,0,3,\"|cff04ffc4[알림]|r |cffffcc00'-오프라인모드'|r 명령어를 통해 세이브횟수 50회를 획득할 수 있습니다.\\n|cffFF0000※ 주의 : 세이브를 할 수 없습니다.|r \")\nendif\nset EK=EK+1\nendloop\nendif\nif YJ>=21 and YJ<25 then\nset EK=0\nloop\nexitwhen EK>=LG\nif not P9[EK] and Ji[EK] then\nif YJ==21 then\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 지금부터 기록지침을 통해 항법을 선택할 수 있습니다.\")\nelse\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 항법을 아직 선택하지 않으셨습니다.\\n|cffFF0000※ 주의 : 25라운드 시작전까지 항법을 선택하지 않으시면 강제 선택됩니다.|r\")\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 항법을 아직 선택하지 않으셨습니다.\\n|cffFF0000※ 주의 : 25라운드 시작전까지 항법을 선택하지 않으시면 강제 선택됩니다.|r\")\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 항법을 아직 선택하지 않으셨습니다.\\n|cffFF0000※ 주의 : 25라운드 시작전까지 항법을 선택하지 않으시면 강제 선택됩니다.|r\")\nendif\nendif\nset EK=EK+1\nendloop\nendif\nendfunction"
     }
+  },
+  "bountyHunterChestCrw": {
+    "source": "Pinned 2.323[C] war3map.j CRW around lines 55657-55688 and LV initializer around line 4750; static JASS source research",
+    "separateFromA05dSearch": true,
+    "originalDiceRange": [1, 100],
+    "diceResults": [
+      { "from": 1, "to": 20, "reward": "wood", "count": 1 },
+      { "from": 21, "to": 40, "reward": "e0IX random Wisp", "count": 1 },
+      { "from": 41, "to": 95, "reward": "gold", "minimum": 2000, "maximum": 5000 },
+      { "from": 96, "to": 100, "reward": "treasure map when LV>0, gold 2000..5000 when LV=0" }
+    ],
+    "initialMapCharges": 5,
+    "mapPrizesWhenRemainingAfterReward": [4, 3, 2, 1],
+    "newSearchChestsPerFirstFourMapPrizes": 3,
+    "fifthMapWhenRemainingAfterReward": 0,
+    "fifthMapNonBerryRewards": {
+      "recordGuidanceAbility": "A0KV",
+      "nativeI4Abilities": ["A0KT", "A0KU", "A0KS", "A0KR"],
+      "lineExplosionLLIncrease": 10,
+      "lineMagicDefenseLKIncrease": 10
+    },
+    "berryExcludedByMobilePolicy": true,
+    "runtimeBoundary": "CRW live chest/death source event, A05D W3A mana/cooldown/range, and native A0KV/i4 abilities are not supplied by these static JASS observations"
   },
   "searchAbilityOrigin": {
     "abilityRawcode": "A05D",

@@ -1448,6 +1448,13 @@ namespace Ordr.Mobile.Unity
                 !(sessionScriptRandom is MobileRollbackWispRandom))
                 throw new NotSupportedException(
                     "외부 보물 월드/난수의 전체 복원 증빙이 없어 저장을 차단합니다.");
+            // The global restore graph must not preserve a debited map
+            // without its pending BFj spawn obligation/native completion.
+            if(BountyTreasures!=null &&
+                (BountyTreasures.HasUnfinishedMapSpawn ||
+                 BountyTreasures.HasUnfinishedNativeAbility))
+                throw new NotSupportedException(
+                    "보물지도 출현·원피스 네이티브 능력 후속 정산 후 저장할 수 있습니다.");
             var dream=GaimonDream.Capture();
             return new Original323TreasureSessionState {
                 Hunt=OriginalTreasureHunt.CaptureState(),
@@ -2545,6 +2552,9 @@ namespace Ordr.Mobile.Unity
         private IOriginal323PoneglyphEventWitness originalPoneglyphWitness;
         private Original323MobileTreasureSession standaloneTreasure;
         private IOriginal323TreasureMapPrizeWitness treasureMapPrizeWitness;
+        private IOriginal323BountyChestOpenWitness originalBountyChestWitness;
+        private IOriginal323OnePieceNativeAbilityWorld originalOnePieceNativeWorld;
+        public Original323BountyTreasureWorld BountyTreasures { get; private set; }
         private IOriginal323MobileTreasureA05DCast originalMobileA05d;
         private IOriginal323GaimonCcqEventWitness originalGaimonCcqSource;
         public MobileTreasureGacha MobileTreasureGacha { get; private set; }
@@ -2786,6 +2796,9 @@ namespace Ordr.Mobile.Unity
                     SharedEconomy.Wallet,standaloneTreasure),sessionScriptRandom);
             MobileTreasureGacha=new MobileTreasureGacha(
                 OriginalTreasureHunt,standaloneTreasure);
+            BountyTreasures=new Original323BountyTreasureWorld(
+                SharedEconomy.Wallet,Combat.Game,OriginalTreasureHunt,
+                standaloneTreasure,originalBountyChestWitness,originalOnePieceNativeWorld);
             if(GaimonReveal==null && originalGaimonCcqSource!=null)
                 GaimonReveal=new Original323GaimonRevealPort(
                     OriginalTreasureHunt,standaloneTreasure);
@@ -2796,6 +2809,42 @@ namespace Ordr.Mobile.Unity
             if(standaloneTreasure!=null && OriginalTreasureHunt!=null &&
                 round>=1 && round<=65)
                 standaloneTreasure.SpawnThroughRound(OriginalTreasureHunt,round);
+        }
+
+        // CRW is a source-witnessed bounty-hunter chest opening, NOT an
+        // automatic reward from any monster death or an A05D button tap.
+        public void ConfigureOriginal323BountyChestOpens(
+            IOriginal323BountyChestOpenWitness witness)
+        {
+            if(Combat==null || Combat.Game.Phase!=SessionPhase.NotStarted ||
+                originalBountyChestWitness!=null || witness==null)
+                throw new InvalidOperationException(
+                    "CRW 상자 개봉 관측자는 게임 시작 전에 한 번만 지정합니다.");
+            originalBountyChestWitness=witness;
+        }
+
+        public void ConfigureOriginal323OnePieceNativeAbilities(
+            IOriginal323OnePieceNativeAbilityWorld originalWorld)
+        {
+            if(Combat==null || Combat.Game.Phase!=SessionPhase.NotStarted ||
+                originalOnePieceNativeWorld!=null || originalWorld==null)
+                throw new InvalidOperationException(
+                    "원피스 A0KV/i4 원본 능력은 시작 전에 실물 공급자를 연결합니다.");
+            originalOnePieceNativeWorld=originalWorld;
+        }
+
+        public Original323CrwResult ObserveOriginal323CrwChestOpen(
+            string sourceChestEventId)
+        {
+            if(BountyTreasures==null || Combat==null ||
+                Combat.Game.Phase!=SessionPhase.Running)
+                return new Original323CrwResult(false,
+                    Original323CrwOutcome.Unavailable,0,0,
+                    "바운티헌터 원본 상자 개봉 월드가 준비되지 않았습니다.");
+            var result=BountyTreasures.ObserveChestOpen(sourceChestEventId);
+            if(result.Succeeded)
+                RecordSessionIssue("바운티헌터 상자",result.Message);
+            return result;
         }
 
         // CRW bounty treasure maps are granted by witnessed chest outcomes,
@@ -2820,16 +2869,14 @@ namespace Ordr.Mobile.Unity
             if(!treasureMapPrizeWitness.TryConfirmMapPrize(sourceEventId,
                 Combat.Game.CurrentWave,out remaining,out proof))
                 return false;
-            // Fifth CRW map is a distinct One Piece/native ability reward,
-            // not a fifth BeM(3). Do not award fabricated native effects.
-            if(remaining==0)
-            {
-                RecordSessionIssue("보물지도", "마지막 지도: 원피스 원본 능력 보상 연결 필요");
-                return false;
-            }
-            return standaloneTreasure.RegisterObservedTreasureMapPrize(
-                OriginalTreasureHunt,sourceEventId,Combat.Game.CurrentWave,
-                remaining,proof);
+            // One source-confirmed map result is a single atomic wallet
+            // operation; the fifth LV=0 result gives One Piece, not BeM(3).
+            if(BountyTreasures==null) return false;
+            var result=BountyTreasures.ProcessObservedMapPrize(
+                sourceEventId,Combat.Game.CurrentWave,remaining,proof);
+            if(result.Succeeded)
+                RecordSessionIssue("보물지도",result.Message);
+            return result.Succeeded;
         }
 
         public MobileTreasureGachaResult RequestMobileTreasureGacha()
@@ -4269,6 +4316,23 @@ namespace Ordr.Mobile.Unity
                         HasOwnedOriginalGaimon);
             }
             SpawnStandaloneTreasureForRound(Combat.Game.CurrentWave);
+            // CRW wallet debit precedes BFj registration. A failed observer
+            // is retried against the SAME event ID without paying or drawing
+            // another prize. Native ability follow-up is separately idempotent.
+            if(BountyTreasures!=null)
+            {
+                try
+                {
+                    if(BountyTreasures.HasUnfinishedMapSpawn)
+                        BountyTreasures.ReconcileMapSpawn();
+                    if(BountyTreasures.HasUnfinishedNativeAbility)
+                        BountyTreasures.TryReconcileOnePieceNative();
+                }
+                catch(Exception error)
+                {
+                    RecordSessionIssue("보물지도 정산 보류",error.Message);
+                }
+            }
             // Never catch up elapsed wall-clock time after backgrounding.
             // Combat, round events, shared mana regeneration and source RNG
             // remain on one paused logical clock.

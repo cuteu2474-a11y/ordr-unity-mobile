@@ -138,11 +138,14 @@ namespace Ordr.Mobile.Tests
                     "observed source BFj coordinates"),
                 new Original323ObservedTreasureSpawn("fourth",300,400,
                     "observed source BFj coordinates")}));
+            Assert.AreEqual(1,h.RegisterObservedSpawnBatch(10,10,new [] {
+                new Original323ObservedTreasureSpawn("fifth",400,500,
+                    "observed source BFj coordinates")}));
             Assert.Throws<InvalidOperationException>(()=>
                 h.RegisterObservedSpawnBatch(10,10,new [] {
-                    new Original323ObservedTreasureSpawn("fifth",400,500,
+                    new Original323ObservedTreasureSpawn("sixth",500,600,
                         "observed source BFj coordinates")}));
-            Assert.AreEqual(4,h.SpawnCount);
+            Assert.AreEqual(5,h.SpawnCount);
         }
 
         [Test]

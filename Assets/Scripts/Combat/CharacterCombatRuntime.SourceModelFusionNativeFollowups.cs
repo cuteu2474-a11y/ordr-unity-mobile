@@ -249,7 +249,13 @@ namespace Ordr.Mobile.Combat
                 .SignedLineExplosionAdjustment(SourceModelFusionNativeBalance);
             bool item = SourceModelFusionNativeBalance(
                 "source:unique-obtained:AI20") > 0;
-            return fusion + (item ? 5 : 0);
+            // CRW fifth map adds LL[player]+10 once, on top of AI20
+            // and fusion modifiers. The same spawn snapshot consumes LL.
+            double onePiece = Math.Min(
+                Original323BountyTreasureWorld.OnePieceLineIncrease,
+                SourceModelFusionNativeBalance(
+                    Original323BountyTreasureWorld.LineExplosionIncreaseId));
+            return fusion + (item ? 5 : 0) + onePiece;
         }
 
         // LL[player] starts at 21 (JASS initialisation 4738), and fusion
@@ -260,21 +266,26 @@ namespace Ordr.Mobile.Combat
             string enemyId, CharacterEnemyKind kind)
         {
             SpatialCombatEnemy spawned;
+            int lineMagicBonus =
+                (SourceModelFusionNativeBalance("source:unique-obtained:AI19") > 0
+                    ? Original323SourceItemPassiveRules.UniqueLineMagicDefenseDecrease
+                    : 0) +
+                (int)Math.Min(Original323BountyTreasureWorld.OnePieceLineIncrease,
+                    SourceModelFusionNativeBalance(
+                        Original323BountyTreasureWorld.LineMagicDefenseIncreaseId));
             if (kind == CharacterEnemyKind.Line &&
                 enemies.TryGetValue(enemyId, out spawned) &&
                 !spawned.Enemy.Defenses.HasVerifiedMagicResistance &&
-                SourceModelFusionNativeBalance("source:unique-obtained:AI19") > 0)
+                lineMagicBonus > 0)
             {
-                // Nightmare initial LK=16; AI19 changes the original
-                // A04Q level by +5. No runtime source LK witness exists
-                // for later level changes, so this is ONLY an incremental
-                // practice-model snapshot, not a fabricated native profile.
+                // Nightmare initial LK=16. AI19 adds five, the fifth
+                // source CRW treasure-map outcome adds ten. A witnessed
+                // A04Q profile already contains these upgrades.
                 double withoutItem, withItem;
                 if (Ordr323VerifiedDefenseAbilities.TryGetMagicDamageTakenFactor(
                         16, out withoutItem) &&
                     Ordr323VerifiedDefenseAbilities.TryGetMagicDamageTakenFactor(
-                        16 + Original323SourceItemPassiveRules.UniqueLineMagicDefenseDecrease,
-                        out withItem) && withoutItem > 0)
+                        16 + lineMagicBonus, out withItem) && withoutItem > 0)
                     sourceModelLineItemMagicFactorAtSpawn[enemyId] =
                         withItem / withoutItem;
             }

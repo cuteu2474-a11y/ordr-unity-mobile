@@ -216,8 +216,11 @@ namespace Ordr.Mobile.Mobile
         public static int SourceLineMagicDefenseLevelIncrease(EconomyWallet wallet)
         {
             if (wallet == null) throw new ArgumentNullException(nameof(wallet));
-            return Original323FusionSourceItemLedger.WasEverObtained(wallet, "AI19")
+            int item=Original323FusionSourceItemLedger.WasEverObtained(wallet, "AI19")
                 ? UniqueLineMagicDefenseDecrease : 0;
+            return item + (int)Math.Min(
+                Original323BountyTreasureWorld.OnePieceLineIncrease,
+                wallet.Balance(Original323BountyTreasureWorld.LineMagicDefenseIncreaseId));
         }
 
         // Only record-guidance RV gets AI10's A05D level increase. Shinobu's
@@ -259,10 +262,17 @@ namespace Ordr.Mobile.Mobile
             return wallet.Balance(receiptId);
         }
 
-        public static bool HasLineExplosionBonus(EconomyWallet wallet)
+        public static int SourceLineExplosionLevelIncrease(EconomyWallet wallet)
         {
             if (wallet == null) throw new ArgumentNullException(nameof(wallet));
-            return Original323FusionSourceItemLedger.WasEverObtained(wallet, "AI20");
+            int item=Original323FusionSourceItemLedger.WasEverObtained(wallet, "AI20")
+                ? UniqueLineExplosionPercent : 0;
+            return item + (int)Math.Min(
+                Original323BountyTreasureWorld.OnePieceLineIncrease,
+                wallet.Balance(Original323BountyTreasureWorld.LineExplosionIncreaseId));
         }
+
+        public static bool HasLineExplosionBonus(EconomyWallet wallet) =>
+            SourceLineExplosionLevelIncrease(wallet)>0;
     }
 }
