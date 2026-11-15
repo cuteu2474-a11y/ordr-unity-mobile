@@ -10,6 +10,8 @@ namespace Ordr.Mobile.Combat
         // game-state adapter may provide witnessed native attribute values for
         // a purchased Vegapunk satellite. Missing evidence contributes zero.
         private Func<long, string, string, double?> sourceSatelliteAttributeEvidence;
+        private Func<long, long, string, string, double?>
+            sourceSatelliteInstanceAttributeEvidence;
         private Func<long, string, string, bool> sourceBuggyCrewIdentityEvidence;
         private Func<long, string, bool> sourceKaidoNativeMorphEvidence;
 
@@ -146,20 +148,39 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentNullException(nameof(evidence));
         }
 
+        // Exact observed native attributes are keyed by the purchased
+        // satellite instance, never solely by its creator and rawcode.
+        public void ConfigureSourceModelSatelliteInstanceAttributeEvidence(
+            Func<long, long, string, string, double?> evidence)
+        {
+            if (!UsesSourceModelBasicAttacks || processingStep ||
+                pendingStepSeconds != 0 ||
+                sourceSatelliteInstanceAttributeEvidence != null ||
+                sourceSatellites.Count != 0)
+                throw new InvalidOperationException(
+                    "위성 개체별 원본 능력치 증거는 구매 전에 한 번 연결합니다.");
+            sourceSatelliteInstanceAttributeEvidence = evidence ??
+                throw new ArgumentNullException(nameof(evidence));
+        }
+
         private bool TrySourceModelSatelliteAttribute(
             SourceIndependentAttacker attacker, string attribute,
             out double amount)
         {
             amount = 0;
-            if (sourceSatelliteAttributeEvidence == null ||
+            if ((sourceSatelliteAttributeEvidence == null &&
+                 sourceSatelliteInstanceAttributeEvidence == null) ||
                 (attribute != "strength" && attribute != "agility")) return false;
             foreach (var satellite in sourceSatellites)
             {
                 if (SatelliteAttackKey(satellite.Id) != attacker.Key ||
-                    satellite.OriginalRawcode != attacker.Rawcode ||
-                    !characters.ContainsKey(satellite.CreatorId)) continue;
-                double? value = sourceSatelliteAttributeEvidence(
-                    satellite.CreatorId, attacker.Rawcode, attribute);
+                    satellite.OriginalRawcode != attacker.Rawcode) continue;
+                double? value = sourceSatelliteInstanceAttributeEvidence == null ?
+                    (double?)null : sourceSatelliteInstanceAttributeEvidence(
+                        satellite.CreatorId, satellite.Id, attacker.Rawcode, attribute);
+                if (!value.HasValue && sourceSatelliteAttributeEvidence != null)
+                    value = sourceSatelliteAttributeEvidence(
+                        satellite.CreatorId, attacker.Rawcode, attribute);
                 if (!value.HasValue || value.Value < 0 ||
                     double.IsNaN(value.Value) || double.IsInfinity(value.Value))
                     return false;

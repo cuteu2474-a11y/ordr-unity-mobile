@@ -128,11 +128,46 @@ namespace Ordr.Mobile.Combat
         private Func<long, double?> sourceModelAgilityProvider;
         private Func<long, double?> sourceModelIntelligenceProvider;
         private Func<long, double?> sourceModelUnbonusedStrengthProvider;
+        private Original323HeroAttributeWorld sourceOriginalHeroAttributes;
         private readonly Dictionary<long, double> sourceModelFireFistReadyAt =
             new Dictionary<long, double>();
 
-        // An actual hero-attribute provider may be attached later without
-        // changing any skill formula; absent data contributes ZERO scaling.
+        // The same source hero XP wallet already tracks real earned growth.
+        // Only a pinned native SLK baseline PLUS a witnessed live bonus may
+        // produce a total GetHeroStatBJ(..., true) for these 18 skill effects.
+        // Unbonused Blackbeard STR reads the independent 'false' path.
+        public void ConfigureSourceModelOriginalHeroAttributes(
+            Original323HeroAttributeWorld attributes)
+        {
+            if (!UsesSourceModelBasicAttacks || processingStep ||
+                pendingStepSeconds != 0 || sourceOriginalHeroAttributes != null ||
+                attributes == null)
+                throw new InvalidOperationException(
+                    "원본 영웅 능력치 월드는 초기 전투 구성에서 한 번만 연결합니다.");
+            sourceOriginalHeroAttributes = attributes;
+            if (sourceModelStrengthProvider == null)
+                sourceModelStrengthProvider =
+                    id => attributes.ReadHero(id, "strength", true);
+            if (sourceModelAgilityProvider == null)
+                sourceModelAgilityProvider =
+                    id => attributes.ReadHero(id, "agility", true);
+            if (sourceModelIntelligenceProvider == null)
+                sourceModelIntelligenceProvider =
+                    id => attributes.ReadHero(id, "intelligence", true);
+            if (sourceModelUnbonusedStrengthProvider == null)
+                sourceModelUnbonusedStrengthProvider =
+                    id => attributes.ReadHero(id, "strength", false);
+            // The specific purchased satellite is part of the attribute
+            // identity: two H0AB actors need not share bonus states.
+            if (sourceSatelliteInstanceAttributeEvidence == null)
+                sourceSatelliteInstanceAttributeEvidence =
+                    (creator, satellite, rawcode, attribute) =>
+                        attributes.ReadSatellite(satellite, rawcode, attribute, true);
+        }
+
+        // A witnessed provider may be attached directly as before. Missing
+        // stat observations contribute no scaling; no fabricated native zero.
+
         public void ConfigureSourceModelHeroStrengthProvider(Func<long, double?> provider)
         {
             sourceModelStrengthProvider = provider;

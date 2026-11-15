@@ -791,6 +791,7 @@ namespace Ordr.Mobile.Unity
         public Original323StoryMobileProgression StoryProgression { get; private set; }
         private Original323KumaWispChoiceWorld practiceStoryKumaChoice;
         public Original323MobileStoryHeroExperienceWorld StoryHeroExperience { get; private set; }
+        public Original323HeroAttributeWorld OriginalHeroAttributes { get; private set; }
         public Original323ShirahoshiTraitPurchase ShirahoshiTrait { get; private set; }
         public long PendingPracticeStoryTranscendWisps =>
             SoloStory != null && SoloStory.HighestDestroyedStage >= 10 &&
@@ -1005,6 +1006,14 @@ namespace Ordr.Mobile.Unity
                         PracticeUnitGambling != null && PracticeUnitGambling.Navigation ==
                             Original323GamblingNavigation.Casino);
                     Combat.ConfigureSourceHeroLevelProgression(heroExperience);
+                    // One source XP state drives every stat-scaled hero skill.
+                    // Initial SLK STR/AGI/INT and native bonuses still need
+                    // actual 2.323[C] evidence before any extra damage applies.
+                    var originalHeroAttributes =
+                        new Original323HeroAttributeWorld(heroExperience.LevelStateOf);
+                    Combat.ConfigureSourceModelOriginalHeroAttributes(
+                        originalHeroAttributes);
+                    OriginalHeroAttributes = originalHeroAttributes;
                     StoryHeroExperience = heroExperience;
                     ShirahoshiTrait = shirahoshiTrait;
                     if (originalStoryNativeAwards != null)
