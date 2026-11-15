@@ -422,83 +422,118 @@ namespace Ordr.Mobile.Combat
             if (actor.Catalog.Id == "LI-03" && hit.BasicHitApplied &&
                 hit.ActualDamage > 0)
                 SourceModelMarcoBasicSplash(actor, hit, primary);
-            if (sourceModelUnitEffects == null) return;
-            var passive = sourceModelUnitEffects.Take(InstanceKey(actor.Id), hit.TargetId);
-            if (passive != null)
+            // The optional object-passive catalog must not gate the
+            // innate Aroc multishot on U-01/S-04.
+            if (sourceModelUnitEffects != null)
             {
-                if (passive.Kind == OriginalNativePassiveKind.Critical ||
-                    passive.Kind == OriginalNativePassiveKind.CriticalStun ||
-                    passive.Kind == OriginalNativePassiveKind.CriticalBonus ||
-                    passive.Kind == OriginalNativePassiveKind.CriticalBonusStun)
-                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
-                        InstanceKey(actor.Id), hit.TargetId, passive.Name,
-                        "연습 객체 크리티컬 · " + passive.CriticalMultiplier + "배 타격에 반영", 0));
-                if (passive.Kind == OriginalNativePassiveKind.Bonus ||
-                    passive.Kind == OriginalNativePassiveKind.BonusStun ||
-                    passive.Kind == OriginalNativePassiveKind.CriticalBonus ||
-                    passive.Kind == OriginalNativePassiveKind.CriticalBonusStun)
-                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
-                        InstanceKey(actor.Id), hit.TargetId, passive.Name,
-                        "연습 객체 추가 피해 " + passive.BonusDamage + " · 기본 타격에 반영", 0));
-                if ((passive.Kind == OriginalNativePassiveKind.Stun ||
-                     passive.Kind == OriginalNativePassiveKind.CriticalStun ||
-                     passive.Kind == OriginalNativePassiveKind.BonusStun ||
-                     passive.Kind == OriginalNativePassiveKind.CriticalBonusStun) && primary.Enemy.IsAlive &&
-                    hit.ActualDamage > 0 &&
-                     SourceModelUnitEffects.IsRoundNativePassiveTarget(primary.Kind))
+                var passive = sourceModelUnitEffects.Take(InstanceKey(actor.Id), hit.TargetId);
+                if (passive != null)
                 {
-                    var status = primary.Enemy.Status;
-                    string key = "practice-passive:" + passive.AbilityRawcode;
-                    status.RemoveSource(key);
-                    status.Apply(new CombatEffect(key, CombatEffectType.Stun,
-                        CombatEffectOrigin.TriggeredSkill, 1, passive.NormalStunSeconds));
-                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
-                        InstanceKey(actor.Id), hit.TargetId, passive.Name,
-                        "연습 객체 기절 · " + passive.NormalStunSeconds +
-                        "초 / 원본 실기 저항·면역 미검증", 0));
+                    if (passive.Kind == OriginalNativePassiveKind.Critical ||
+                        passive.Kind == OriginalNativePassiveKind.CriticalStun ||
+                        passive.Kind == OriginalNativePassiveKind.CriticalBonus ||
+                        passive.Kind == OriginalNativePassiveKind.CriticalBonusStun)
+                        events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                            InstanceKey(actor.Id), hit.TargetId, passive.Name,
+                            "연습 객체 크리티컬 · " + passive.CriticalMultiplier + "배 타격에 반영", 0));
+                    if (passive.Kind == OriginalNativePassiveKind.Bonus ||
+                        passive.Kind == OriginalNativePassiveKind.BonusStun ||
+                        passive.Kind == OriginalNativePassiveKind.CriticalBonus ||
+                        passive.Kind == OriginalNativePassiveKind.CriticalBonusStun)
+                        events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                            InstanceKey(actor.Id), hit.TargetId, passive.Name,
+                            "연습 객체 추가 피해 " + passive.BonusDamage + " · 기본 타격에 반영", 0));
+                    if ((passive.Kind == OriginalNativePassiveKind.Stun ||
+                         passive.Kind == OriginalNativePassiveKind.CriticalStun ||
+                         passive.Kind == OriginalNativePassiveKind.BonusStun ||
+                         passive.Kind == OriginalNativePassiveKind.CriticalBonusStun) && primary.Enemy.IsAlive &&
+                        hit.ActualDamage > 0 &&
+                         SourceModelUnitEffects.IsRoundNativePassiveTarget(primary.Kind))
+                    {
+                        var status = primary.Enemy.Status;
+                        string key = "practice-passive:" + passive.AbilityRawcode;
+                        status.RemoveSource(key);
+                        status.Apply(new CombatEffect(key, CombatEffectType.Stun,
+                            CombatEffectOrigin.TriggeredSkill, 1, passive.NormalStunSeconds));
+                        events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                            InstanceKey(actor.Id), hit.TargetId, passive.Name,
+                            "연습 객체 기절 · " + passive.NormalStunSeconds +
+                            "초 / 원본 실기 저항·면역 미검증", 0));
+                    }
                 }
             }
-            if (actor.Catalog.Id != "U-01") return;
-            // Original h00O A07M/Aroc: one normal shot plus at most two
-            // additional enemies within 600 Warcraft units of ROBIN.
-            // Do not give barrage unlimited reach just because the enemy
-            // belongs to the same lane. Mobile has no separate air/ground
-            // classification; keep the existing lane/target policy.
-            const double robinBarrageRadiusSquared = 600d * 600d;
+            ApplySourceModelRobinBarrage(actor, hit);
+        }
+
+        // Pinned Units/UnitAbilities.slk + AbilityData.slk:
+        // h00O/A07M = 3 native targets, h00S/A08A = 4.
+        // Both use Aroc radius 600, no proc chance, and zero weapon damage
+        // loss. UnitWeapons.slk targCount1, not Aroc DataC1, sets the cap.
+        private static int SourceModelRobinBarrageTargetCount(CharacterInstance actor)
+        {
+            if (actor == null || actor.Mapping == null ||
+                actor.Mapping.AttackSpec == null) return 0;
+            string rawcode = actor.Mapping.AttackSpec.UnitRawCode;
+            if (actor.Catalog.Id == "U-01" && rawcode == "h00O") return 3;
+            if (actor.Catalog.Id == "S-04" && rawcode == "h00S") return 4;
+            return 0;
+        }
+
+        private void ApplySourceModelRobinBarrage(CharacterInstance actor,
+            BasicAttackResult hit)
+        {
+            int totalTargets = SourceModelRobinBarrageTargetCount(actor);
+            if (totalTargets == 0 || !hit.BasicHitApplied || sourceModelRules == null)
+                return;
+            // Secondary missiles have the same full native base damage,
+            // independently rolled/defended for each enemy. The primary
+            // already received its basic hit: never hit it twice.
+            const double radiusSquared = 600d * 600d;
             var position = roster.Get(actor.Id);
             var candidates = new List<SpatialCombatEnemy>();
-            foreach (var other in enemies.Values)
+            foreach (var target in enemies.Values)
             {
-                if (other.Id == hit.TargetId || !other.Enemy.IsAlive ||
-                    !CanAttackInThisLane(actor, other))
-                    continue;
-                double dx = other.X - position.X;
-                double dy = other.Y - position.Y;
-                if (dx * dx + dy * dy <= robinBarrageRadiusSquared)
-                    candidates.Add(other);
+                if (target.Id == hit.TargetId || !target.Enemy.IsAlive ||
+                    !CanAttackInThisLane(actor, target)) continue;
+                double dx = target.X - position.X, dy = target.Y - position.Y;
+                if (dx * dx + dy * dy <= radiusSquared)
+                    candidates.Add(target);
             }
-            // Keep existing closest-first/id-tie mobile target policy.
-            // Native barrage projectile ordering remains unverified.
-            candidates.Sort((a,b) => {
-                double da = (a.X-position.X)*(a.X-position.X)+(a.Y-position.Y)*(a.Y-position.Y);
-                double db = (b.X-position.X)*(b.X-position.X)+(b.Y-position.Y)*(b.Y-position.Y);
-                int cmp = da.CompareTo(db); return cmp != 0 ? cmp : StringComparer.Ordinal.Compare(a.Id,b.Id);
+            // Maintain the existing mobile closest-first + ordinal tie
+            // policy; Warcraft native Aroc enumeration order is not proven.
+            candidates.Sort((a, b) => {
+                double da = (a.X-position.X)*(a.X-position.X) +
+                    (a.Y-position.Y)*(a.Y-position.Y);
+                double db = (b.X-position.X)*(b.X-position.X) +
+                    (b.Y-position.Y)*(b.Y-position.Y);
+                int cmp = da.CompareTo(db);
+                return cmp != 0 ? cmp :
+                    StringComparer.Ordinal.Compare(a.Id, b.Id);
             });
-            int count = Math.Min(2, candidates.Count);
-            if (count == 0) return;
+            int additional = Math.Min(totalTargets - 1, candidates.Count);
+            if (additional == 0) return;
+            string attackerId = InstanceKey(actor.Id);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
-                InstanceKey(actor.Id), hit.TargetId, "꽃꽃 열매", "연습 · 3명 동시 공격", count + 1));
-            for (int i=0;i<count;i++)
+                attackerId, hit.TargetId, "꽃꽃 열매",
+                "연습 · " + totalTargets + "명 동시 공격", additional + 1));
+            for (int i = 0; i < additional; i++)
             {
                 var target = candidates[i];
-                var request = new BasicDamageRequest(InstanceKey(actor.Id), actor.Mapping.AttackSpec.UnitRawCode,
-                    actor.Mapping.AttackSpec.BasicAttack, target.Id, unitStatuses[InstanceKey(actor.Id)].Snapshot());
-                long damage = sourceModelRules.ResolveBasicDamage(request, target.Enemy), actual;
-                if (!resolution.TryApplySkillDamage(InstanceKey(actor.Id), target.Id, damage, out actual)) continue;
+                var request = new BasicDamageRequest(attackerId,
+                    actor.Mapping.AttackSpec.UnitRawCode,
+                    actor.Mapping.AttackSpec.BasicAttack, target.Id,
+                    unitStatuses[attackerId].Snapshot());
+                long damage = sourceModelRules.ResolveBasicDamage(request, target.Enemy);
+                long actual;
+                if (!resolution.TryApplySkillDamage(attackerId,
+                        target.Id, damage, out actual)) continue;
                 events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillDamage,
-                    InstanceKey(actor.Id), target.Id, "꽃꽃 열매", "연습 추가 기본 타격", actual));
-                if (!target.Enemy.IsAlive) events.Add(new CharacterCombatEvent(CharacterCombatEventType.EnemyDefeated,
-                    InstanceKey(actor.Id), target.Id, "꽃꽃 열매", "연습 추가 타격으로 처치", 0));
+                    attackerId, target.Id, "꽃꽃 열매",
+                    "연습 추가 기본 타격 · 대상별 독립 방어 계산", actual));
+                if (!target.Enemy.IsAlive)
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.EnemyDefeated,
+                        attackerId, target.Id, "꽃꽃 열매",
+                        "연습 추가 타격으로 처치", 0));
             }
         }
 

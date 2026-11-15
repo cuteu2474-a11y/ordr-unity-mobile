@@ -70,7 +70,10 @@ namespace Ordr.Mobile.Combat
                 (passive.DeclaredLevels > 1 ? " · 연습 1단계 / 강화 미반영" : "") +
                 (passive.BonusDamage > 0 ? " · 객체 추가 피해 " + passive.BonusDamage.ToString("0.####") +
                     " / 연습 계산·원작 면역 미검증" : ""));
-            if (id == "U-01") result.Add("꽃꽃 열매 · 같은 전장 최대 3명 타격 (연습 대상 선택/동시 타격 모델)");
+            if (id == "U-01" && rawcode == "h00O")
+                result.Add("A07M 꽃꽃 열매 Lv.1 · 기본 공격 최대 3명, 반경 600 · 대상별 방어 계산");
+            if (id == "S-04" && rawcode == "h00S")
+                result.Add("A08A 꽃꽃 열매 Lv.2 · 기본 공격 최대 4명, 반경 600 · 추가 피해 감소 없음");
             foreach (var aura in AurasFor(id))
                 if (IsSupportedAura(aura)) result.Add((aura.Type == CombatEffectType.AttackSpeedBuff &&
                     aura.TargetMask == "invulnerable,self" ? "자신의 공격속도 증가(%)" : AuraName(aura.Type)) + " " +

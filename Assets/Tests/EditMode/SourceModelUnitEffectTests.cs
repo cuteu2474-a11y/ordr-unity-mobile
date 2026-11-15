@@ -36,7 +36,8 @@ namespace Ordr.Mobile.Tests
         }
         private static string Data(string file) => File.ReadAllText(Path.Combine(Application.dataPath, "..", "data", file));
         private static Live Create(bool proc = true, bool durableEnemy = false,
-            int lastRound = 10, bool winningGoldRoll = false)
+            int lastRound = 10, bool winningGoldRoll = false,
+            bool withSourceUnitEffects = true)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -49,9 +50,10 @@ namespace Ordr.Mobile.Tests
                 Original323NativeSpeedAuraCatalog.FromJson(audit, map),
                 Original323NativeCommandAuraCatalog.FromJson(audit, map));
             var rules = new SourceModelBasicCombatRules(map, dice);
-            rules.ConfigureUnitEffects(new SourceModelUnitEffects(
-                Original323NativePassiveCatalog.FromJson(Data("original-2323C-native-pure-passives.json"), map),
-                combined, dice, Data("practice-native-inherited-defaults.json")));
+            if (withSourceUnitEffects)
+                rules.ConfigureUnitEffects(new SourceModelUnitEffects(
+                    Original323NativePassiveCatalog.FromJson(Data("original-2323C-native-pure-passives.json"), map),
+                    combined, dice, Data("practice-native-inherited-defaults.json")));
             var combat = new CharacterCombatRuntime(units, skills, rules, rules, dice);
             var economy = new SharedEconomySession(new EconomyWallet(), combat.Roster);
             economy.ApplyVerifiedStart(Original323SoloStartProfile.Create(),
@@ -517,6 +519,72 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(1, events.Count(e => e.Type == CharacterCombatEventType.Attack));
             }
         }
+        [TestCase(true)]
+        [TestCase(false)]
+        public void SpecialRobinA08AAddsThreeDistinctShotsEvenWithoutOptionalPassives(
+            bool withSourceUnitEffects)
+        {
+            using (var game = Create(true, true, 10, false, withSourceUnitEffects))
+            {
+                game.Battle.Advance(2);
+                game.Combat.SpawnCharacter("S-04", -4960, 5400);
+                var events = game.Battle.Advance(.3);
+                var alive = game.Combat.MobileEnemySnapshot();
+                Assert.AreEqual(4, alive.Count, "Four source wave enemies expected");
+                Assert.AreEqual(4, alive.Count(e => e.Health < e.MaxHealth),
+                    "A08A must hit one primary plus exactly three distinct targets");
+                var added = events.Where(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "꽃꽃 열매").ToArray();
+                Assert.AreEqual(3, added.Length);
+                Assert.AreEqual(3, added.Select(e => e.TargetId).Distinct().Count());
+                Assert.AreEqual(1, events.Count(e =>
+                    e.Type == CharacterCombatEventType.Attack));
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "꽃꽃 열매" && e.Amount == 4));
+            }
+        }
+
+        [Test]
+        public void SpecialRobinA08ARespectsSixHundredRangeAndPerTargetArmor()
+        {
+            using (var game = Create(true, true))
+            {
+                game.Battle.Advance(.5);
+                var primary = game.Combat.MobileEnemySnapshot().Single();
+                game.Combat.SpawnEnemyWithDefenses("special-robin-near-a", 1000000,
+                    CharacterEnemyKind.Line, primary.X + 200, primary.Y, 0,
+                    new EnemyDefenseProfile(CharacterEnemyKind.Line, 0, null,
+                        "normal", "TEST_ONLY: A08A extra target low armor"));
+                game.Combat.SpawnEnemyWithDefenses("special-robin-heavy", 1000000,
+                    CharacterEnemyKind.Line, primary.X + 250, primary.Y, 0,
+                    new EnemyDefenseProfile(CharacterEnemyKind.Line, 400, null,
+                        "normal", "TEST_ONLY: A08A extra target high armor"));
+                game.Combat.SpawnEnemyWithDefenses("special-robin-near-b", 1000000,
+                    CharacterEnemyKind.Line, primary.X + 300, primary.Y, 0,
+                    new EnemyDefenseProfile(CharacterEnemyKind.Line, 0, null,
+                        "normal", "TEST_ONLY: A08A extra target low armor"));
+                game.Combat.SpawnEnemyWithDefenses("special-robin-outside", 1000000,
+                    CharacterEnemyKind.Line, primary.X + 601, primary.Y, 0,
+                    new EnemyDefenseProfile(CharacterEnemyKind.Line, 0, null,
+                        "normal", "TEST_ONLY: A08A outside 600"));
+                game.Combat.SpawnCharacter("S-04", primary.X, primary.Y);
+                var events = game.Battle.Advance(.3);
+                var added = events.Where(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "꽃꽃 열매").ToArray();
+                Assert.AreEqual(3, added.Length);
+                Assert.IsFalse(added.Any(e => e.TargetId == "special-robin-outside"));
+                Assert.Greater(
+                    added.Single(e => e.TargetId == "special-robin-near-a").Amount,
+                    added.Single(e => e.TargetId == "special-robin-heavy").Amount,
+                    "Every A08A secondary projectile must use its target's armor");
+                Assert.AreEqual(1000000L, game.Combat.MobileEnemySnapshot()
+                    .Single(e => e.Id == "special-robin-outside").Health);
+            }
+        }
+
         [Test]
         public void RobinAdditionalHitsRespectCasterCenteredSixHundredRange()
         {
