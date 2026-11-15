@@ -165,6 +165,40 @@ namespace Ordr.Mobile.Combat
                         attributes.ReadSatellite(satellite, rawcode, attribute, true);
         }
 
+        // Source form revision is incremented by the SAME form-override
+        // object used for basic attacks. A prior hero-stat SET transfer
+        // becomes invalid after a later transform/reversion, even if the
+        // rawcode happens to return to the same value.
+        public long SourceModelHeroFormRevisionOf(long ownerId)
+        {
+            return sourceModelRules != null && characters.ContainsKey(ownerId)
+                ? sourceModelRules.SourceFormRevisionOf(InstanceKey(ownerId)) : 0;
+        }
+
+        // JASS Bjq/Bxc stat-SET tickets may be used only at the boundary
+        // of an independently authorized original hero replacement.
+        // This does not create a new upgrade action or change its costs.
+        public Original323JassHeroFormTransfer CaptureSourceHeroFormStatTransfer(
+            long ownedId, string targetRawcode)
+        {
+            if (!UsesSourceModelBasicAttacks || processingStep ||
+                pendingStepSeconds != 0 || activeOriginalFusionSwap != null ||
+                !characters.ContainsKey(ownedId) ||
+                sourceOriginalHeroAttributes == null) return null;
+            return sourceOriginalHeroAttributes.CaptureJassSetHeroStats(
+                ownedId, targetRawcode);
+        }
+
+        public bool CommitSourceHeroFormStatTransfer(
+            Original323JassHeroFormTransfer ticket)
+        {
+            return UsesSourceModelBasicAttacks && !processingStep &&
+                pendingStepSeconds == 0 && activeOriginalFusionSwap == null &&
+                ticket != null && characters.ContainsKey(ticket.InstanceId) &&
+                sourceOriginalHeroAttributes != null &&
+                sourceOriginalHeroAttributes.CommitJassSetHeroStats(ticket);
+        }
+
         // A witnessed provider may be attached directly as before. Missing
         // stat observations contribute no scaling; no fabricated native zero.
 

@@ -3,15 +3,10 @@ using System.Collections.Generic;
 
 namespace Ordr.Mobile.Combat
 {
-    // Native hero attributes are not rarity, point value or attack power.
-    // Initial values come from the pinned 2.323[C] UnitBalance.slk.
-    // OpenRealm's typed SLK loader allocates zero-filled numeric rows and
-    // leaves missing STR/INT/AGI cells at zero (sheet.c + g_metadata.c).
-    // That numeric default is source-engine evidence, NOT an arbitrary
-    // hero stat and NOT a verified retail-Warcraft gameplay comparison.
-    // Current bonused GetHeroStatBJ(true) remains unknown until bonuses
-    // are observed; only unbonused GetHeroStatBJ(false) is currently
-    // guaranteed by the input+XP model.
+    // Source 2.323[C] hero attributes: pinned original UnitBalance.slk
+    // + live XP growth + an independently observed native stat source.
+    // Only proven GetHeroStatBJ(true) totals include item/ability/buff
+    // effects; AttackPowerBuff and AttackSpeedBuff are NOT STR/AGI/INT.
     public sealed class Original323HeroAttributeWorld
     {
         public const string OriginalW3xSha256 =
@@ -24,24 +19,37 @@ namespace Ordr.Mobile.Combat
             public int Intelligence;
         }
 
+        private sealed class FormTransfer
+        {
+            public string Rawcode;
+            public long Revision;
+            public long DeltaStrength;
+            public long DeltaAgility;
+            public long DeltaIntelligence;
+        }
+
         private readonly Func<long, Original323HeroLevelState> liveLevels;
+        private readonly Func<long, long> liveFormRevision;
         private readonly Dictionary<string, BaseAttributes> sourceBases =
             new Dictionary<string, BaseAttributes>(StringComparer.Ordinal);
+        private readonly Dictionary<long, FormTransfer> transfers =
+            new Dictionary<long, FormTransfer>();
+        private IOriginal323CurrentNativeHeroAttributeWitness currentNativeStats;
         private Func<long, string, double?> liveHeroBonus;
         private Func<long, string, double?> liveSatelliteBonus;
 
         public Original323HeroAttributeWorld(
-            Func<long, Original323HeroLevelState> witnessedLevels)
+            Func<long, Original323HeroLevelState> witnessedLevels,
+            Func<long, long> witnessedFormRevision = null)
         {
             liveLevels = witnessedLevels ??
                 throw new ArgumentNullException(nameof(witnessedLevels));
+            liveFormRevision = witnessedFormRevision;
         }
 
-        // Of the 70 source H rows, 4 explicitly state STR/AGI/INT; 66
-        // omit all three numeric cells. The latter use the documented
-        // OpenRealm zero-initialized SLK numeric default, separately
-        // recorded from explicit source cells. Never apply to a rawcode
-        // outside this audited source-sheet set.
+        // Four source H rows have literal STR/INT/AGI; the other 66 have
+        // missing numeric cells decoded as zero by OpenRealm's typed SLK
+        // loader. This is not verified Blizzard executable behavior.
         public void RegisterOriginalUnitBalanceRow(string sourceW3xSha256,
             string originalRawcode, int strength, int agility, int intelligence)
         {
@@ -64,9 +72,6 @@ namespace Ordr.Mobile.Combat
             });
         }
 
-        // Imported sparse SLK numeric defaults are the only known zeros.
-        // This dedicated registration rejects a wrong archive/sheet hash;
-        // it is not the generic zero-stat fallback for unmatched heroes.
         internal void RegisterOriginalUnitBalanceSparseNumericDefault(
             string mapSha256, string unitBalanceSlkSha256, string originalRawcode)
         {
@@ -76,9 +81,21 @@ namespace Ordr.Mobile.Combat
             RegisterOriginalUnitBalanceRow(mapSha256, originalRawcode, 0, 0, 0);
         }
 
-        // Native bonus readers MUST report an explicit integer zero when
-        // the original object has no bonuses. A missing reader is UNKNOWN,
-        // not evidence that the native bonus is zero.
+        // Read on every skill evaluation: a different native revision after
+        // equip, unequip, buff expiry, dispel or morph must replace the old
+        // values. A missing native observation is never treated as bonus 0.
+        public void ConnectOriginalCurrentNativeStats(
+            IOriginal323CurrentNativeHeroAttributeWitness witness)
+        {
+            if (currentNativeStats != null || witness == null)
+                throw new InvalidOperationException(
+                    "원본 현재 능력치 관측기는 한 번만 연결합니다.");
+            currentNativeStats = witness;
+        }
+
+        // Legacy per-stat live bonus evidence can still be provided when a
+        // full native snapshot is not available. It must include an explicit
+        // observed zero for 'no bonuses', never a guessed value.
         public void ConnectOriginalNativeBonuses(
             Func<long, string, double?> heroBonuses,
             Func<long, string, double?> satelliteBonuses)
@@ -107,34 +124,89 @@ namespace Ordr.Mobile.Combat
             return null;
         }
 
+        private long FormRevisionOf(long instanceId) =>
+            liveFormRevision == null ? 0 : liveFormRevision(instanceId);
+
+        private Original323NativeHeroAttributeSnapshot CurrentNativeHero(
+            long instanceId, string rawcode, long formRevision)
+        {
+            if (currentNativeStats == null) return null;
+            Original323NativeHeroAttributeSnapshot observation;
+            if (!currentNativeStats.TryReadOwnedHero(instanceId, rawcode,
+                    out observation) || observation == null ||
+                !observation.Matches(instanceId, rawcode, formRevision))
+                return null;
+            return observation;
+        }
+
+        private Original323NativeHeroAttributeSnapshot CurrentNativeSatellite(
+            long instanceId, string rawcode)
+        {
+            if (currentNativeStats == null) return null;
+            Original323NativeHeroAttributeSnapshot observation;
+            if (!currentNativeStats.TryReadPurchasedSatellite(instanceId, rawcode,
+                    out observation) || observation == null ||
+                !observation.Matches(instanceId, rawcode, 0))
+                return null;
+            return observation;
+        }
+
+        private double? ModelUnbonused(long instanceId,
+            Original323HeroLevelState growth, string attribute, long revision)
+        {
+            BaseAttributes source;
+            if (!sourceBases.TryGetValue(growth.SourceRawcode, out source))
+                return null;
+            double? baseline = Baseline(source, attribute);
+            if (!baseline.HasValue) return null;
+            long extra = attribute == "strength" ? growth.AddedStrength :
+                attribute == "agility" ? growth.AddedAgility :
+                growth.AddedIntelligence;
+            FormTransfer transfer;
+            if (transfers.TryGetValue(instanceId, out transfer))
+            {
+                if (transfer.Rawcode != growth.SourceRawcode ||
+                    transfer.Revision != revision)
+                    transfers.Remove(instanceId);
+                else
+                    extra += attribute == "strength" ? transfer.DeltaStrength :
+                        attribute == "agility" ? transfer.DeltaAgility :
+                        transfer.DeltaIntelligence;
+            }
+            double result = baseline.Value + extra;
+            return ValidInteger(result) && result >= 0 ? (double?)result : null;
+        }
+
         public double? ReadHero(long ownedInstanceId, string attribute,
             bool includeBonuses)
         {
-            if (ownedInstanceId <= 0) return null;
-            Original323HeroLevelState growth = liveLevels(ownedInstanceId);
+            if (ownedInstanceId <= 0 ||
+                (attribute != "strength" && attribute != "agility" &&
+                 attribute != "intelligence")) return null;
+            var growth = liveLevels(ownedInstanceId);
             if (growth == null) return null;
-            BaseAttributes source;
-            if (!sourceBases.TryGetValue(growth.SourceRawcode, out source))
-                return null; // No verified native starting attributes.
-            double? initial = Baseline(source, attribute);
-            if (!initial.HasValue) return null;
-            double added = attribute == "strength" ? growth.AddedStrength :
-                attribute == "agility" ? growth.AddedAgility :
-                growth.AddedIntelligence;
-            return ApplyBonus(initial.Value + added,
-                includeBonuses, liveHeroBonus, ownedInstanceId, attribute);
+            long revision = FormRevisionOf(ownedInstanceId);
+            var native = CurrentNativeHero(ownedInstanceId,
+                growth.SourceRawcode, revision);
+            if (native != null) return native.Read(attribute, includeBonuses);
+            double? source = ModelUnbonused(ownedInstanceId, growth,
+                attribute, revision);
+            return source.HasValue ? ApplyBonus(source.Value, includeBonuses,
+                liveHeroBonus, ownedInstanceId, attribute) : null;
         }
 
-        // Satellites are independently purchased hero objects, not the
-        // creator's STR/AGI copied by rawcode. Each individual has its own
-        // bonus witness; their base attribute is that form's original SLK
-        // starting value, and unobserved native XP/traits are not invented.
+        // Satellites are individual purchases. A current native observation
+        // supplies their full XP/items/bonuses. Without one, their initial
+        // unbonused value can be read but full native stats remain UNKNOWN.
         public double? ReadSatellite(long satelliteInstanceId, string rawcode,
             string attribute, bool includeBonuses)
         {
-            if (satelliteInstanceId <= 0) return null;
+            if (satelliteInstanceId <= 0 || string.IsNullOrEmpty(rawcode))
+                return null;
+            var native = CurrentNativeSatellite(satelliteInstanceId, rawcode);
+            if (native != null) return native.Read(attribute, includeBonuses);
             BaseAttributes source;
-            if (!sourceBases.TryGetValue(rawcode ?? "", out source))
+            if (!sourceBases.TryGetValue(rawcode, out source))
                 return null;
             double? initial = Baseline(source, attribute);
             if (!initial.HasValue) return null;
@@ -143,17 +215,108 @@ namespace Ordr.Mobile.Combat
         }
 
         private static double? ApplyBonus(double initial, bool includeBonuses,
-            Func<long, string, double?> nativeBonus,
-            long instanceId, string attribute)
+            Func<long, string, double?> nativeBonus, long instanceId,
+            string attribute)
         {
-            if (double.IsInfinity(initial) || double.IsNaN(initial) ||
-                initial < 0 || initial > int.MaxValue) return null;
+            if (!ValidInteger(initial) || initial < 0) return null;
             if (!includeBonuses) return initial;
             if (nativeBonus == null) return null;
             double? bonus = nativeBonus(instanceId, attribute);
             if (!ValidInteger(bonus)) return null;
             double result = initial + bonus.Value;
-            return result >= 0 && result <= int.MaxValue ? (double?)result : null;
+            return ValidInteger(result) && result >= 0 ? (double?)result : null;
+        }
+
+        // Original JASS Bjq and Bxc: before removing the old hero, capture
+        // GetHeroStatBJ(STR/AGI/INT,false), then SetHeroXP and SET all three
+        // on the new hero. Never use this for arbitrary native morphs.
+        private static string VerifiedSetCallback(string from, string to)
+        {
+            switch (from)
+            {
+                case "H098": return to == "H08E" ? "Bjq" : null;
+                case "H08V": return to == "H08B" ? "Bjq" : null;
+                case "H05N": return to == "H0A5" ? "Bjq" : null;
+                case "H09A": return to == "H0AY" ? "Bjq" : null;
+                case "H096": return to == "H0BN" ? "Bjq" : null;
+                case "H099": return to == "H0C9" ? "Bjq" : null;
+                case "H0BD": return to == "H0BZ" ? "Bjq" : null;
+                case "H08U": return to == "H0C1" ? "Bjq" : null;
+                case "H09F": return to == "H0BT" ? "Bxc" : null;
+                default: return null;
+            }
+        }
+
+        // Call BEFORE a separately approved and committed source replacement.
+        // A ticket never changes roster ownership, spends trait points or
+        // authorizes an upgrade. No implicit preform snapshot from a cache.
+        public Original323JassHeroFormTransfer CaptureJassSetHeroStats(
+            long instanceId, string nextRawcode)
+        {
+            if (instanceId <= 0 || liveFormRevision == null) return null;
+            var growth = liveLevels(instanceId);
+            if (growth == null) return null;
+            string callback = VerifiedSetCallback(growth.SourceRawcode, nextRawcode);
+            if (callback == null) return null;
+            long revision = FormRevisionOf(instanceId);
+            var native = CurrentNativeHero(instanceId, growth.SourceRawcode, revision);
+            double? strength = native == null
+                ? ModelUnbonused(instanceId, growth, "strength", revision)
+                : native.Read("strength", false);
+            double? agility = native == null
+                ? ModelUnbonused(instanceId, growth, "agility", revision)
+                : native.Read("agility", false);
+            double? intelligence = native == null
+                ? ModelUnbonused(instanceId, growth, "intelligence", revision)
+                : native.Read("intelligence", false);
+            if (!ValidInteger(strength) || !ValidInteger(agility) ||
+                !ValidInteger(intelligence) ||
+                strength.Value < 0 || agility.Value < 0 || intelligence.Value < 0)
+                return null;
+            var unchanged = liveLevels(instanceId);
+            if (unchanged == null || unchanged.SourceRawcode != growth.SourceRawcode ||
+                unchanged.Experience != growth.Experience ||
+                FormRevisionOf(instanceId) != revision) return null;
+            return new Original323JassHeroFormTransfer(instanceId,
+                growth.SourceRawcode, nextRawcode, callback,
+                growth.Experience, revision, (int)strength.Value,
+                (int)agility.Value, (int)intelligence.Value);
+        }
+
+        // Call AFTER an independently committed original replacement has
+        // switched the existing mobile owner's source form exactly once.
+        // The correction is to NEW-form initial+growth at transferred XP;
+        // later XP adds only the new form's subsequent growth, never twice.
+        public bool CommitJassSetHeroStats(Original323JassHeroFormTransfer ticket)
+        {
+            if (ticket == null || liveFormRevision == null ||
+                VerifiedSetCallback(ticket.FromRawcode, ticket.ToRawcode) !=
+                    ticket.OriginalJassCallback) return false;
+            var current = liveLevels(ticket.InstanceId);
+            if (current == null || current.SourceRawcode != ticket.ToRawcode ||
+                current.Experience != ticket.Experience ||
+                FormRevisionOf(ticket.InstanceId) !=
+                    ticket.PreviousFormRevision + 1) return false;
+            BaseAttributes to;
+            if (!sourceBases.TryGetValue(ticket.ToRawcode, out to)) return false;
+            transfers[ticket.InstanceId] = new FormTransfer {
+                Rawcode = ticket.ToRawcode,
+                Revision = FormRevisionOf(ticket.InstanceId),
+                DeltaStrength = (long)ticket.Strength - to.Strength -
+                    current.AddedStrength,
+                DeltaAgility = (long)ticket.Agility - to.Agility -
+                    current.AddedAgility,
+                DeltaIntelligence = (long)ticket.Intelligence - to.Intelligence -
+                    current.AddedIntelligence
+            };
+            return true;
+        }
+
+        // A removed/fused actor cannot donate old form-stat observations to
+        // a future actor, even if its native rawcode is reused.
+        public void ForgetOwnedHero(long ownedInstanceId)
+        {
+            transfers.Remove(ownedInstanceId);
         }
     }
 }

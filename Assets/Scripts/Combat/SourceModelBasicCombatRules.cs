@@ -21,6 +21,8 @@ namespace Ordr.Mobile.Combat
             new Dictionary<string, BasicAttackSpec>(StringComparer.Ordinal);
         private readonly Dictionary<string, string> formRawcodes =
             new Dictionary<string, string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, long> formRevisions =
+            new Dictionary<string, long>(StringComparer.Ordinal);
         private readonly Dictionary<string, double> fractions = new Dictionary<string, double>();
         private Func<string, double> sourceModelFlatAttackPower;
         internal void ConfigurePracticeFlatAttackPower(Func<string, double> source)
@@ -188,13 +190,40 @@ namespace Ordr.Mobile.Combat
                 throw new OverflowException("연구소 공격력 보정 범위를 초과했습니다.");
             return (long)Math.Floor(basePower);
         }
+        private void AdvanceSourceFormRevision(string instanceId)
+        {
+            long previous;
+            formRevisions.TryGetValue(instanceId, out previous);
+            formRevisions[instanceId] = checked(previous + 1);
+        }
+        internal long SourceFormRevisionOf(string instanceId)
+        {
+            long revision;
+            return instanceId != null &&
+                formRevisions.TryGetValue(instanceId, out revision) ? revision : 0;
+        }
         internal void SetSourceForm(string instanceId, string rawcode)
         {
-            if (!Enabled || SourceObjectAttack(rawcode) == null)
+            if (!Enabled || SourceObjectAttack(rawcode) == null ||
+                string.IsNullOrEmpty(instanceId))
                 throw new InvalidOperationException("연습 변신 공격 출처가 없습니다.");
+            string previous;
+            if (formRawcodes.TryGetValue(instanceId, out previous) &&
+                previous == rawcode) return;
             formRawcodes[instanceId] = rawcode;
+            AdvanceSourceFormRevision(instanceId);
         }
-        internal void ClearSourceForm(string instanceId) { formRawcodes.Remove(instanceId); }
+        internal void ClearSourceForm(string instanceId)
+        {
+            if (instanceId != null && formRawcodes.Remove(instanceId))
+                AdvanceSourceFormRevision(instanceId);
+        }
+        internal void ForgetSourceFormInstance(string instanceId)
+        {
+            if (instanceId == null) return;
+            formRawcodes.Remove(instanceId);
+            formRevisions.Remove(instanceId);
+        }
         internal string SourceFormRawcodeOf(string instanceId)
         {
             string rawcode;

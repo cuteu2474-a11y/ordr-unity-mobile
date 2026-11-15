@@ -680,8 +680,23 @@ namespace Ordr.Mobile.Unity
         private IOriginalEquippedItemWitness originalEquippedItemWitness;
         private IOriginalEquippedInventorySnapshotWitness originalEquippedInventoryWitness;
         private IOriginalBulletArmadaLevelWitness originalBulletArmadaWitness;
+        private IOriginal323CurrentNativeHeroAttributeWitness originalHeroStatWitness;
         public bool HasOriginalEquippedInventorySnapshotWitness =>
             originalEquippedInventoryWitness != null;
+
+        // A real source adapter can supply all six GetHeroStatBJ true/false
+        // values, including equipment and temporary attribute buffs. The
+        // existing mobile attack/armor/speed item ledger is NOT a hero stat.
+        public void ConfigureOriginalCurrentHeroStatWitness(
+            IOriginal323CurrentNativeHeroAttributeWitness witness)
+        {
+            if (witness == null || originalHeroStatWitness != null ||
+                StoryHeroExperience != null ||
+                (Combat != null && Combat.Game.Phase != SessionPhase.NotStarted))
+                throw new InvalidOperationException(
+                    "원본 현재 영웅 능력치 관측기는 전투 시작 전에 한 번만 등록합니다.");
+            originalHeroStatWitness = witness;
+        }
 
         // Integration ports for a REAL native inventory/equipment purchase,
         // not a button/tooltip or an item issued from the personal missions.
@@ -1010,11 +1025,15 @@ namespace Ordr.Mobile.Unity
                     // 66 missing triples decoded to the engine's sparse
                     // integer default (zero). Bonused stats stay unknown.
                     var originalHeroAttributes =
-                        new Original323HeroAttributeWorld(heroExperience.LevelStateOf);
+                        new Original323HeroAttributeWorld(heroExperience.LevelStateOf,
+                            Combat.SourceModelHeroFormRevisionOf);
                     Original323UnitBalanceHeroInitialAttributes.RegisterVerifiedRows(
                         originalHeroAttributes);
                     Original323UnitBalanceHeroInitialAttributes.RegisterSparseNumericDefaults(
                         originalHeroAttributes);
+                    if (originalHeroStatWitness != null)
+                        originalHeroAttributes.ConnectOriginalCurrentNativeStats(
+                            originalHeroStatWitness);
                     Combat.ConfigureSourceModelOriginalHeroAttributes(
                         originalHeroAttributes);
                     OriginalHeroAttributes = originalHeroAttributes;
