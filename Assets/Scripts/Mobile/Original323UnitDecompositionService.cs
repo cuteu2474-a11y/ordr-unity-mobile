@@ -57,6 +57,13 @@ namespace Ordr.Mobile.Mobile
         private static bool Contains(IReadOnlyList<string> values, string code)
         { foreach (string value in values) if (value == code) return true; return false; }
         public double Remaining(long id) => pending.ContainsKey(id) ? pending[id].Left : 0;
+        public double Progress(long id)
+        {
+            Pending item;
+            if (!pending.TryGetValue(id, out item)) return 0;
+            double duration = item.UnitId == "S-02" ? 5 : 2;
+            return Math.Max(0, Math.Min(1, 1 - item.Left / duration));
+        }
         public bool IsCasting(long id) => pending.ContainsKey(id);
         public ManualActionResult Request(long id)
         {

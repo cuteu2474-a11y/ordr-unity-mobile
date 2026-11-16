@@ -20,6 +20,9 @@ namespace Ordr.Mobile.Mobile
         // A genuine inventory item remains usable after its creator is
         // sold/fused. Do not make unrelated unit skills globally visible.
         public bool IsDetachedItem { get; private set; }
+        public string ActionLabel { get; private set; }
+        public bool IsCompleted { get; private set; }
+        public string CompletedLabel { get; private set; }
         // Read-only, live evidence calculated from the same authoritative
         // resource/clock/state services used by Execute. Never an extra timer.
         public string LiveStatus { get; private set; }
@@ -30,7 +33,8 @@ namespace Ordr.Mobile.Mobile
             long ownerInstanceId = 0, bool requiresAllyTarget = false,
             bool requiresConfirmation = false, string liveStatus = null,
             double cooldownRemainingSeconds = 0,
-            bool isDetachedItem = false)
+            bool isDetachedItem = false, string actionLabel = "사용",
+            bool isCompleted = false, string completedLabel = "사용 완료")
         {
             if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(title) ||
                 string.IsNullOrWhiteSpace(originalCostAndRules) ||
@@ -51,6 +55,9 @@ namespace Ordr.Mobile.Mobile
             RequiresAllyTarget = requiresAllyTarget;
             RequiresConfirmation = requiresConfirmation;
             IsDetachedItem = isDetachedItem;
+            ActionLabel = string.IsNullOrWhiteSpace(actionLabel) ? "사용" : actionLabel;
+            IsCompleted = isCompleted;
+            CompletedLabel = completedLabel ?? "사용 완료";
             LiveStatus = liveStatus ?? "";
             CooldownRemainingSeconds = cooldownRemainingSeconds;
         }
@@ -72,6 +79,12 @@ namespace Ordr.Mobile.Mobile
     {
         ManualActionResult ExecuteForAlly(string offeredSkillId,
             long ownerInstanceId, long targetInstanceId);
+    }
+
+    // A read-only eligibility query. Listing targets must never cast or spend.
+    public interface IOriginalDedicatedSkillTargetQuery
+    {
+        bool CanTarget(string offeredSkillId, long ownerInstanceId, long targetInstanceId);
     }
 
     public sealed class MobileDedicatedSkillActions
@@ -102,6 +115,28 @@ namespace Ordr.Mobile.Mobile
             return own.AsReadOnly();
         }
 
+        public MobileDedicatedSkillOffer Find(string id, long ownerId)
+        {
+            foreach (var skill in Available())
+                if (skill != null && skill.Id == id && skill.OwnerInstanceId == ownerId)
+                    return skill;
+            return null;
+        }
+
+        public IReadOnlyList<long> EligibleTargets(string id, long ownerId,
+            IEnumerable<long> candidateIds)
+        {
+            var result = new List<long>();
+            var offer = Find(id, ownerId);
+            var query = original as IOriginalDedicatedSkillTargetQuery;
+            if (offer == null || !offer.RequiresAllyTarget || !offer.IsUnlocked ||
+                !offer.CanExecute || offer.IsCompleted || query == null || candidateIds == null)
+                return result.AsReadOnly();
+            foreach (long targetId in candidateIds)
+                if (targetId > 0 && query.CanTarget(id, ownerId, targetId)) result.Add(targetId);
+            return result.AsReadOnly();
+        }
+
         private static ManualActionResult Reject(string reason) =>
             new ManualActionResult(ManualActionState.Rejected, reason);
 
@@ -116,7 +151,8 @@ namespace Ordr.Mobile.Mobile
             foreach (var offer in AvailableFor(ownerInstanceId))
             {
                 if (offer.Id != offeredSkillId) continue;
-                if (!offer.RequiresAllyTarget || !offer.IsUnlocked || !offer.CanExecute)
+                if (offer.OwnerInstanceId != ownerInstanceId || !offer.RequiresAllyTarget ||
+                    !offer.IsUnlocked || !offer.CanExecute || offer.IsCompleted)
                     return Reject("대상 선택 스킬이 현재 실행할 수 없는 상태입니다.");
                 var targetPort = original as IOriginalTargetedDedicatedSkillPort;
                 if (targetPort == null)
@@ -141,7 +177,7 @@ namespace Ordr.Mobile.Mobile
                 if (!skill.IsUnlocked)
                     return new ManualActionResult(ManualActionState.Rejected,
                         "원작 전용 스킬 해금 조건이 충족되지 않았습니다.");
-                if (!skill.CanExecute)
+                if (!skill.CanExecute || skill.IsCompleted)
                     return new ManualActionResult(ManualActionState.Rejected,
                         "현재 원작 자원·대상·쿨타임 조건을 충족하지 못했습니다.");
                 if (skill.RequiresAllyTarget)

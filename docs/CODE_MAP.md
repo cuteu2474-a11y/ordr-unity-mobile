@@ -128,3 +128,10 @@ flowchart TD
 | 전체 복원 | CharacterCombatRuntime.SaveState, OrdrCoreCheckpoint, OrdrUnpublishedCombatRestoreGraph, OrdrUnpublishedAuxiliaryRestoreGraph | 공유 출전 복원 거부 조건을 소유권 재결합과 함께 해결 |
 
 개인 토벌 7종은 별도 60초 라인 도전입니다. OriginalPersonalMissionSession 등 배정형 개인미션을 이름만 보고 토벌 엔진으로 사용하지 않습니다.
+
+### 캐릭터 수동 기능 공통 UI
+
+- `OrdrMobileTouchPanel.DrawDedicatedActionCard/DrawDedicatedTargetPicker`: 공통 카드·인라인 확인·적격 아군 목록. `DrawDedicatedSkillMargin`은 같은 오른쪽 패널로 진입, `DrawSelectedDecompositionCard`는 기존 분해 명령 재사용.
+- `MobileDedicatedSkillActions.Find/EligibleTargets`: 실제 제공 목록과 소유자 ID 대조, `IOriginalDedicatedSkillTargetQuery`로 읽기 전용 후보 질의. 실행은 기존 Request/RequestTargeted에서 재검사.
+- `Original323SourceDedicatedSkillPort.CanTarget`: 브륄레/도시락의 기존 전투 자격 함수 연결. Offer의 ActionLabel/IsCompleted/CompletedLabel은 표시 메타데이터이며 별도 게임 상태가 아님.
+- `Original323UnitDecompositionService.Progress`: 기존 남은 시전 시간에서 읽는 표시용 진행률. 별도 시계 없음.

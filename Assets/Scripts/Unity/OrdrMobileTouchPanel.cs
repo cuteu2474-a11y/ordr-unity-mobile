@@ -117,13 +117,12 @@ namespace Ordr.Mobile.Unity
         private string dedicatedNotice;
         // A dedicated cast only has one of these modes active. Both are
         // presentation state, never a pre-debit or pending economy operation.
+        private bool dedicatedInventoryOnly;
+        private long? pendingDedicatedSelection;
         private string pendingDedicatedTargetSkillId;
         private long pendingDedicatedTargetSourceId;
-        private string pendingDedicatedTargetName;
         private string pendingDedicatedConfirmationId;
         private long pendingDedicatedConfirmationSourceId;
-        private string pendingDedicatedConfirmationTitle;
-        private string pendingDedicatedConfirmationCosts;
         private string notice = "";
         // A compact, transient three-line log shared by unit selections,
         // actual gambling results and wisp awards. It never awards anything.
@@ -210,7 +209,7 @@ namespace Ordr.Mobile.Unity
             if (string.IsNullOrEmpty(pendingDedicatedTargetSkillId))
                 return false;
             long sourceId = pendingDedicatedTargetSourceId;
-            if (Combat == null || Combat.Roster.SelectedId != sourceId ||
+            if (Combat == null || Combat.Roster.SelectedId != pendingDedicatedSelection ||
                 controller == null || controller.DedicatedSkills == null)
             {
                 ClearPendingDedicatedSkill();
@@ -229,13 +228,11 @@ namespace Ordr.Mobile.Unity
 
         private void ClearPendingDedicatedSkill()
         {
+            pendingDedicatedSelection = null;
             pendingDedicatedTargetSkillId = null;
             pendingDedicatedTargetSourceId = 0;
-            pendingDedicatedTargetName = null;
             pendingDedicatedConfirmationId = null;
             pendingDedicatedConfirmationSourceId = 0;
-            pendingDedicatedConfirmationTitle = null;
-            pendingDedicatedConfirmationCosts = null;
         }
 
         private void Update()
@@ -320,6 +317,7 @@ namespace Ordr.Mobile.Unity
             // Changing game menus cancels any uncommitted cast. It must
             // never turn a later ordinary map tap into an accidental spend.
             ClearPendingDedicatedSkill();
+            dedicatedInventoryOnly = false;
             if (visible && currentTab == selected)
             {
                 CloseDrawer();
@@ -410,6 +408,7 @@ namespace Ordr.Mobile.Unity
                 // scene shell, story graphics, and formation portraits.
                 GUI.depth = 0;
                 GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
+                ValidateDedicatedSelection();
                 DrawLeftTabs(layout, scale);
                 if (visible)
                     DrawRightDrawer(layout, scale);
@@ -1584,164 +1583,249 @@ namespace Ordr.Mobile.Unity
         // These are facility/unit-specific manual actions (e.g. record
         // instructions or Vivi), not Q/W/R combat buttons.
         // Buttons appear ONLY when a verified original action port supplies them.
-        private void DrawDedicatedSkillMargin(Rect safe, float scale)
+        private void ValidateDedicatedSelection()
         {
-            var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
-            Rect area = MobileMapSkillLayout.Scaled(layout.SkillMargin, scale);
-            // Preserve the latest main behavior: selecting an owned Marco
-            // reveals its F action at the start of the existing skill ribbon.
             long? selected = Combat == null ? null : Combat.Roster.SelectedId;
             if (selected != dedicatedSkillLastSelectedUnit)
             {
                 ClearPendingDedicatedSkill();
                 dedicatedSkillLastSelectedUnit = selected;
-                dedicatedScroll = Vector2.zero;
-                skillScrollGesture.Cancel();
-                skillScrollViewport = new Rect();
+                pendingDecompositionId = null;
+                dedicatedInventoryOnly = false;
             }
-            GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
-            if (!string.IsNullOrEmpty(pendingDedicatedTargetSkillId) ||
-                !string.IsNullOrEmpty(pendingDedicatedConfirmationId))
-            {
-                // The old horizontal ribbon is hidden by the prompt. It
-                // must not keep a stale gesture/hitbox during targeting.
-                skillScrollGesture.Cancel();
-                skillScrollViewport = new Rect();
-                skillScrollMaximum = 0f;
-            }
+            if (controller == null || controller.DedicatedSkills == null) return;
+            string id = pendingDedicatedTargetSkillId ?? pendingDedicatedConfirmationId;
+            long owner = pendingDedicatedTargetSkillId != null ?
+                pendingDedicatedTargetSourceId : pendingDedicatedConfirmationSourceId;
+            if (id != null && controller.DedicatedSkills.Find(id, owner) == null)
+                ClearPendingDedicatedSkill();
+        }
+
+        private void OpenDedicatedSkillPanel(bool inventoryOnly = false)
+        {
+            if (!visible || currentTab != Tab.Units) SelectTab(Tab.Units);
+            dedicatedInventoryOnly = inventoryOnly;
+            scroll = Vector2.zero;
+        }
+
+        // This short strip is a navigation affordance; the vertical cards
+        // and target list use the existing drawer, never cover the map.
+        private void DrawDedicatedSkillMargin(Rect safe, float scale)
+        {
+            skillScrollViewport = new Rect();
+            skillScrollMaximum = 0;
             var actions = controller.DedicatedSkills;
-            long selectedId = selected.GetValueOrDefault();
-            // A confirmation or target prompt occupies the same existing
-            // ribbon. Never open a new overlay over the battle or story map.
-            if (!string.IsNullOrEmpty(pendingDedicatedTargetSkillId))
+            if (Combat == null || actions == null) return;
+            long selected = Combat.Roster.SelectedId.GetValueOrDefault();
+            var available = actions.Available();
+            int ownCount = available.Count(x => x != null &&
+                !x.IsDetachedItem && selected > 0 && x.OwnerInstanceId == selected);
+            int itemCount = available.Count(x => x != null && x.IsDetachedItem);
+            var actor = Combat.MobileUnitSnapshot().FirstOrDefault(x => x.InstanceId == selected);
+            bool decomposition = actor != null &&
+                Original323UnitDecompositionService.Supports(actor.Unit.Id);
+            if (ownCount == 0 && itemCount == 0 && !decomposition) return;
+            var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
+            Rect area = MobileMapSkillLayout.Scaled(layout.SkillMargin, scale);
+            GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
+            GUILayout.BeginHorizontal();
+            if (actor != null)
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("대상 지정 · " + pendingDedicatedTargetName +
-                    "\n전장 또는 유닛 배치 칸에서 아군 터치",
-                    OrdrMobileUiTheme.Overline, GUILayout.ExpandWidth(true),
-                    GUILayout.MinHeight(52f));
-                if (GUILayout.Button("취소", OrdrMobileUiTheme.NavButton,
-                    GUILayout.Width(74f), GUILayout.MinHeight(48f)))
-                    ClearPendingDedicatedSkill();
-                GUILayout.EndHorizontal();
+                DrawCharacterPortrait(actor.Unit.Id, 44f);
+                GUILayout.Label(actor.Unit.Name, OrdrMobileUiTheme.Overline,
+                    GUILayout.MinWidth(0), GUILayout.ExpandWidth(true));
             }
-            else if (!string.IsNullOrEmpty(pendingDedicatedConfirmationId))
+            if ((ownCount > 0 || decomposition) && GUILayout.Button("스킬",
+                OrdrMobileUiTheme.SkillButton, GUILayout.Width(72f), GUILayout.MinHeight(48f)))
+                OpenDedicatedSkillPanel();
+            if (itemCount > 0 && GUILayout.Button("아이템",
+                OrdrMobileUiTheme.NavButton, GUILayout.Width(80f), GUILayout.MinHeight(48f)))
+                OpenDedicatedSkillPanel(true);
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
+        }
+
+        private void BeginDedicatedAction(MobileDedicatedSkillOffer skill)
+        {
+            ClearPendingDedicatedSkill();
+            pendingDecompositionId = null;
+            pendingDedicatedSelection = Combat.Roster.SelectedId;
+            if (skill.RequiresAllyTarget)
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("강화 확인 · " + pendingDedicatedConfirmationTitle +
-                    "\n" + pendingDedicatedConfirmationCosts,
-                    OrdrMobileUiTheme.Overline, GUILayout.ExpandWidth(true),
-                    GUILayout.MinHeight(52f));
-                bool validOwner = selectedId == pendingDedicatedConfirmationSourceId;
-                bool before = GUI.enabled;
-                GUI.enabled = before && validOwner;
-                if (GUILayout.Button("강화 실행", OrdrMobileUiTheme.SkillButton,
-                    GUILayout.Width(95f), GUILayout.MinHeight(48f)))
-                {
-                    ManualActionResult result = actions.Request(pendingDedicatedConfirmationId);
-                    dedicatedNotice = result.Message;
-                    ShowResult(result);
-                    ClearPendingDedicatedSkill();
-                }
-                GUI.enabled = before;
-                if (GUILayout.Button("취소", OrdrMobileUiTheme.NavButton,
-                    GUILayout.Width(64f), GUILayout.MinHeight(48f)))
-                    ClearPendingDedicatedSkill();
-                GUILayout.EndHorizontal();
+                pendingDedicatedTargetSkillId = skill.Id;
+                pendingDedicatedTargetSourceId = skill.OwnerInstanceId;
+                scroll = Vector2.zero;
+            }
+            else if (skill.RequiresConfirmation)
+            {
+                pendingDedicatedConfirmationId = skill.Id;
+                pendingDedicatedConfirmationSourceId = skill.OwnerInstanceId;
             }
             else
+                ExecuteDedicatedAction(skill);
+        }
+
+        private void ExecuteDedicatedAction(MobileDedicatedSkillOffer skill)
+        {
+            // The service re-fetches the offer and checks the authoritative
+            // wallet/owner/clock on every tap; the card is never permission.
+            var result = controller.DedicatedSkills.Request(skill.Id);
+            dedicatedNotice = result.Message;
+            ShowResult(result);
+            ClearPendingDedicatedSkill();
+        }
+
+        private void DrawManualActionHeader(string title, string state, string rules)
+        {
+            GUILayout.Label(title, OrdrMobileUiTheme.Subheading);
+            if (!string.IsNullOrWhiteSpace(state))
+                GUILayout.Label(state, OrdrMobileUiTheme.Overline);
+            if (!string.IsNullOrWhiteSpace(rules))
+                GUILayout.Label(rules, OrdrMobileUiTheme.Explanation);
+        }
+
+        private void DrawDedicatedActionCard(MobileDedicatedSkillOffer skill)
+        {
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            string state = skill.IsCompleted ? skill.CompletedLabel + " · " + skill.LiveStatus :
+                !string.IsNullOrWhiteSpace(skill.LiveStatus) ? skill.LiveStatus :
+                skill.CanExecute ? "사용 가능" : skill.IsUnlocked ? "조건 부족" : "해금 전";
+            DrawManualActionHeader(skill.Title, state, skill.OriginalCostAndRules);
+            bool confirming = pendingDedicatedConfirmationId == skill.Id &&
+                pendingDedicatedConfirmationSourceId == skill.OwnerInstanceId;
+            if (confirming)
+                GUILayout.Label("위 내용을 확인하고 " + skill.ActionLabel + "을 진행합니다.",
+                    OrdrMobileUiTheme.Explanation);
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (confirming && GUILayout.Button("취소", OrdrMobileUiTheme.NavButton,
+                GUILayout.Width(72f), GUILayout.MinHeight(48f)))
+                ClearPendingDedicatedSkill();
+            bool enabled = GUI.enabled;
+            GUI.enabled = enabled && skill.IsUnlocked && skill.CanExecute && !skill.IsCompleted;
+            string label = skill.IsCompleted ? skill.CompletedLabel :
+                skill.CooldownRemainingSeconds > 0 ?
+                    skill.CooldownRemainingSeconds.ToString("0.#") + "초" :
+                confirming ? skill.ActionLabel + " 확정" :
+                skill.RequiresAllyTarget ? "대상 선택" : skill.ActionLabel;
+            if (GUILayout.Button(label, OrdrMobileUiTheme.SkillButton,
+                GUILayout.Width(112f), GUILayout.MinHeight(48f)))
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("선택 유닛\n수동 스킬",
-                    OrdrMobileUiTheme.Overline, GUILayout.Width(67f),
-                    GUILayout.MinHeight(48f));
-                if (Event.current.type == EventType.Repaint)
-                    skillScrollViewport = new Rect();
-                if (!actions.IsConnected)
-                    GUILayout.Label("스킬 연결 준비 중", OrdrMobileUiTheme.Explanation);
-                else
-                {
-                    // Only this character's offers, including original
-                    // Otama/Marco/Roger/Vegapunk special actions. Other
-                    // owners cannot accidentally occupy the skill bar.
-                    var available = actions.AvailableFor(selectedId);
-                    if (available.Count == 0)
-                        GUILayout.Label(selected.HasValue ?
-                            "수동 스킬 없음 · 전투 스킬은 자동 발동" :
-                            "전장의 유닛을 터치해 스킬을 선택하세요",
-                            OrdrMobileUiTheme.Explanation);
-                    else
-                    {
-                        dedicatedScroll = GUILayout.BeginScrollView(
-                            dedicatedScroll, false, false,
-                            GUIStyle.none, GUIStyle.none,
-                            GUILayout.ExpandHeight(true));
-                        GUILayout.BeginHorizontal();
-                        foreach (var skill in available)
-                        {
-                            if (skill == null) continue;
-                            bool before = GUI.enabled;
-                            GUI.enabled = before && skill.IsUnlocked && skill.CanExecute;
-                            // Each card consumes live owner-bound values,
-                            // never an independent UI timer. Full conditions
-                            // remain available in the selected-unit drawer.
-                            string stateText = skill.CooldownRemainingSeconds > 0 ?
-                                "재사용 " + skill.CooldownRemainingSeconds.ToString("0.#") +
-                                "초" : skill.CanExecute ? "사용 가능" :
-                                    skill.IsUnlocked ? "조건 부족" : "해금 전";
-                            string compactText = skill.Title + "\n" + stateText;
-                            bool pressed = GUILayout.Button(compactText,
-                                OrdrMobileUiTheme.SkillButton, GUILayout.Width(220f),
-                                GUILayout.Height(Mathf.Max(48f, area.height - 24f)));
-                            GUI.enabled = before;
-                            if (!pressed) continue;
-                            if (skill.RequiresAllyTarget)
-                            {
-                                pendingDedicatedTargetSkillId = skill.Id;
-                                pendingDedicatedTargetSourceId = skill.OwnerInstanceId;
-                                pendingDedicatedTargetName = skill.Title;
-                                dedicatedNotice = "전장의 대상 아군 유닛을 터치하세요.";
-                            }
-                            else if (skill.RequiresConfirmation)
-                            {
-                                pendingDedicatedConfirmationId = skill.Id;
-                                pendingDedicatedConfirmationSourceId =
-                                    skill.OwnerInstanceId;
-                                pendingDedicatedConfirmationTitle = skill.Title;
-                                pendingDedicatedConfirmationCosts =
-                                    skill.OriginalCostAndRules;
-                            }
-                            else
-                            {
-                                ManualActionResult result = actions.Request(skill.Id);
-                                dedicatedNotice = result.Message;
-                                ShowResult(result);
-                            }
-                        }
-                        GUILayout.EndHorizontal();
-                        Rect content = GUILayoutUtility.GetLastRect();
-                        GUILayout.EndScrollView();
-                        if (Event.current.type == EventType.Repaint)
-                        {
-                            Rect viewport = GUILayoutUtility.GetLastRect();
-                            skillScrollViewport = new Rect(
-                                area.x + viewport.x, area.y + viewport.y,
-                                viewport.width, viewport.height);
-                            skillScrollMaximum = Mathf.Max(
-                                0f, content.width - viewport.width);
-                            dedicatedScroll.x = Mathf.Clamp(
-                                dedicatedScroll.x, 0f, skillScrollMaximum);
-                        }
-                    }
-                }
-                GUILayout.EndHorizontal();
+                if (confirming) ExecuteDedicatedAction(skill);
+                else BeginDedicatedAction(skill);
             }
-            GUILayout.EndArea();
+            GUI.enabled = enabled;
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+        }
+
+        private bool DrawDedicatedTargetPicker()
+        {
+            if (pendingDedicatedTargetSkillId == null) return false;
+            var actions = controller.DedicatedSkills;
+            var skill = actions.Find(pendingDedicatedTargetSkillId, pendingDedicatedTargetSourceId);
+            if (skill == null) { ClearPendingDedicatedSkill(); return false; }
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            DrawManualActionHeader(skill.Title, "대상 선택", skill.OriginalCostAndRules);
+            bool cancel = GUILayout.Button("취소", OrdrMobileUiTheme.NavButton,
+                GUILayout.MinHeight(48f));
+            GUILayout.EndVertical();
+            if (cancel) { ClearPendingDedicatedSkill(); return true; }
+            var owned = Combat.MobileUnitSnapshot();
+            var eligible = new HashSet<long>(actions.EligibleTargets(skill.Id,
+                skill.OwnerInstanceId, owned.Select(x => x.InstanceId)));
+            var targets = owned.Where(x => eligible.Contains(x.InstanceId)).ToArray();
+            if (targets.Length == 0)
+                GUILayout.Label("선택 가능한 유닛이 없습니다.", OrdrMobileUiTheme.Explanation);
+            // Keep precise instances separate: identical portraits can carry
+            // different buffs. No new unit selection is made by this list.
+            for (int i = 0; i < targets.Length; i++)
+            {
+                var target = targets[i];
+                GUILayout.BeginHorizontal(OrdrMobileUiTheme.AccordionBody);
+                DrawCharacterPortrait(target.Unit.Id, 48f);
+                GUILayout.BeginVertical();
+                GUILayout.Label(target.Unit.Name, OrdrMobileUiTheme.Overline);
+                GUILayout.Label(target.Unit.Grade + " · 대상 " + (i + 1),
+                    OrdrMobileUiTheme.Explanation);
+                GUILayout.EndVertical();
+                bool pressed = GUILayout.Button("선택", OrdrMobileUiTheme.SkillButton,
+                    GUILayout.Width(72f), GUILayout.MinHeight(48f));
+                GUILayout.EndHorizontal();
+                if (pressed) { TryCompleteDedicatedSkillTarget(target.InstanceId); break; }
+            }
+            return true;
+        }
+
+        private void DrawDedicatedActionCards(long selectedId)
+        {
+            var actions = controller.DedicatedSkills;
+            DrawSelectedDecompositionCard(selectedId);
+            if (actions == null || !actions.IsConnected) return;
+            var all = actions.Available();
+            foreach (var skill in all)
+                if (skill != null && !skill.IsDetachedItem && selectedId > 0 &&
+                    skill.OwnerInstanceId == selectedId)
+                    DrawDedicatedActionCard(skill);
+            var items = all.Where(x => x != null && x.IsDetachedItem).ToArray();
+            if (items.Length > 0)
+            {
+                GUILayout.Label("보유 아이템", OrdrMobileUiTheme.Subheading);
+                foreach (var item in items) DrawDedicatedActionCard(item);
+            }
+        }
+
+        private void DrawSelectedDecompositionCard(long selectedId)
+        {
+            var actor = Combat.MobileUnitSnapshot().FirstOrDefault(x => x.InstanceId == selectedId);
+            if (actor == null || !Original323UnitDecompositionService.Supports(actor.Unit.Id)) return;
+            var service = controller.UnitDecompositions;
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            bool casting = service != null && service.IsCasting(selectedId);
+            DrawManualActionHeader("분해", casting ?
+                service.Remaining(selectedId).ToString("0.#") + "초 남음" : "완료 시 본체 1기 소비",
+                Original323UnitDecompositionService.Description(actor.Unit.Id));
+            if (casting)
+            {
+                Rect bar = GUILayoutUtility.GetRect(1f, 8f, GUILayout.ExpandWidth(true));
+                GUI.Box(bar, GUIContent.none);
+                Rect filled = bar;
+                filled.width *= (float)service.Progress(selectedId);
+                GUI.Box(filled, GUIContent.none, OrdrMobileUiTheme.SkillButton);
+                if (GUILayout.Button("취소", OrdrMobileUiTheme.NavButton, GUILayout.MinHeight(48f)))
+                    ShowResult(service.Cancel(selectedId));
+            }
+            else if (pendingDecompositionId == selectedId)
+                DrawUnitConfirmations(selectedId);
+            else
+            {
+                bool enabled = GUI.enabled;
+                GUI.enabled = enabled && service != null;
+                if (GUILayout.Button("분해", OrdrMobileUiTheme.SkillButton, GUILayout.MinHeight(48f)))
+                {
+                    pendingDecompositionId = selectedId;
+                    pendingDecompositionName = actor.Unit.Name;
+                    pendingCommonSaleId = null;
+                    ClearPendingDedicatedSkill();
+                }
+                GUI.enabled = enabled;
+            }
+            GUILayout.EndVertical();
         }
 
         // The game UI shows actual owned units only; catalog data remains in the engine.
         private void DrawUnits()
         {
+            if (Combat != null && DrawDedicatedTargetPicker()) return;
+            if (Combat != null && dedicatedInventoryOnly)
+            {
+                if (GUILayout.Button("유닛으로", OrdrMobileUiTheme.NavButton, GUILayout.MinHeight(48f)))
+                    dedicatedInventoryOnly = false;
+                DrawDedicatedActionCards(0);
+                if (!controller.DedicatedSkills.Available().Any(x => x != null && x.IsDetachedItem))
+                    GUILayout.Label("보유 아이템이 없습니다.", OrdrMobileUiTheme.Explanation);
+                return;
+            }
             var definitions = controller.UnitDefinitions;
             if (definitions == null)
             {
@@ -1793,6 +1877,7 @@ namespace Ordr.Mobile.Unity
                 DrawSelectedUnitCard(detail);
                 if (Combat.Roster.SelectedId.HasValue) DrawSelectedUnitReroll(Combat.Roster.SelectedId.Value);
             }
+            if (detail == null && Combat != null) DrawDedicatedActionCards(0);
             DrawOwnedUnitIndex();
             DrawOptionalUnitManagement();
         }
@@ -1905,6 +1990,8 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
             if (Combat != null && Combat.Roster.SelectedId.HasValue)
+                DrawDedicatedActionCards(Combat.Roster.SelectedId.Value);
+            if (Combat != null && Combat.Roster.SelectedId.HasValue)
                 DrawSelectedUnitCombatStats(Combat.Roster.SelectedId.Value);
             if (detail.Unit.Id == "MY-07" && Combat != null &&
                 Combat.UsesSourceModelBasicAttacks &&
@@ -1968,27 +2055,6 @@ namespace Ordr.Mobile.Unity
         private void DrawSelectedUnitLiveSkillStatus(
             UnitImplementationDefinition detail, long instanceId)
         {
-            var actions = controller.DedicatedSkills;
-            if (actions != null && actions.IsConnected)
-            {
-                var active = actions.AvailableFor(instanceId);
-                if (active.Count > 0)
-                {
-                    GUILayout.Label("수동 스킬 상태", OrdrMobileUiTheme.Subheading);
-                    foreach (var skill in active)
-                    {
-                        string state = skill.CooldownRemainingSeconds > 0 ?
-                            "대기 " + skill.CooldownRemainingSeconds.ToString("0.#") + "초" :
-                            skill.CanExecute ? "사용 가능" : "조건 미충족";
-                        GUILayout.Label(skill.Title + " · " + state,
-                            OrdrMobileUiTheme.Overline);
-                        if (!string.IsNullOrWhiteSpace(skill.LiveStatus))
-                            GUILayout.Label(skill.LiveStatus, OrdrMobileUiTheme.Explanation);
-                        GUILayout.Label(skill.OriginalCostAndRules,
-                            OrdrMobileUiTheme.Explanation);
-                    }
-                }
-            }
             var effects = Combat.SourceModelActiveUnitEffectsOf(instanceId);
             if (effects.Count > 0)
             {
@@ -2870,7 +2936,8 @@ namespace Ordr.Mobile.Unity
                     else if (!controller.ManualActions.HasOriginalCommonSaleService)
                         GUILayout.Label("판매 연결 대기");
                 }
-                if (Original323UnitDecompositionService.Supports(entry.Unit.Id))
+                if (Original323UnitDecompositionService.Supports(entry.Unit.Id) &&
+                    Combat.Roster.SelectedId != entry.InstanceId)
                 {
                     var service = controller.UnitDecompositions;
                     if (service != null && service.IsCasting(entry.InstanceId))
@@ -2890,7 +2957,7 @@ namespace Ordr.Mobile.Unity
                         }
                     }
                 }
-                    DrawUnitConfirmations(entry.InstanceId);
+                    DrawUnitConfirmations(entry.InstanceId, Combat.Roster.SelectedId != entry.InstanceId);
                     GUILayout.EndVertical();
                 }
                 if (group.Count > 1)
@@ -2903,7 +2970,7 @@ namespace Ordr.Mobile.Unity
             DrawPager(ownedPage, pages, next => ownedPage = next);
         }
 
-        private void DrawUnitConfirmations(long instanceId)
+        private void DrawUnitConfirmations(long instanceId, bool includeDecomposition = true)
         {
             if (pendingCommonSaleId == instanceId)
             {
@@ -2925,7 +2992,7 @@ namespace Ordr.Mobile.Unity
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
-            if (pendingDecompositionId == instanceId)
+            if (includeDecomposition && pendingDecompositionId == instanceId)
             {
                 GUILayout.BeginVertical(OrdrMobileUiTheme.ConfirmationPanel);
                 GUILayout.Label(pendingDecompositionName + " 분해를 시작할까요? 완료하면 원래 유닛이 사라집니다.");

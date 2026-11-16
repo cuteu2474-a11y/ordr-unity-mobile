@@ -54,7 +54,8 @@ namespace Ordr.Mobile.Mobile
     }
 
     public sealed class Original323SourceDedicatedSkillPort :
-        IOriginalDedicatedSkillPort, IOriginalTargetedDedicatedSkillPort
+        IOriginalDedicatedSkillPort, IOriginalTargetedDedicatedSkillPort,
+        IOriginalDedicatedSkillTargetQuery
     {
         private readonly CharacterCombatRuntime combat;
         private readonly EconomyWallet wallet;
@@ -92,11 +93,17 @@ namespace Ordr.Mobile.Mobile
                                 unit.InstanceId, chance) &&
                             wallet.Balance("wood") >= 2 &&
                             wallet.Balance(WispResourceIds.Random) >= 3,
-                            unit.InstanceId, requiresConfirmation: true,
+                            unit.InstanceId, requiresConfirmation: true, actionLabel: "강화",
                             liveStatus: "Lv." + level + "/10 · 성공 " + chance +
                                 "% · 목재 " + wallet.Balance("wood") +
                                 "/2 · 위습 " + wallet.Balance(WispResourceIds.Random) +
                                 "/3 · 타격당 최대 HP +" + (level * .5).ToString("0.#") + "%"));
+                    else
+                        actions.Add(new MobileDedicatedSkillOffer(
+                            Original323SourceNativeActionKeys.ViviUpgrade(unit.InstanceId),
+                            "비비 · 알라바스타 강화", "추가 재료 소모 없음", true, false,
+                            unit.InstanceId, liveStatus: "Lv.10/10 · 최대 단계",
+                            actionLabel: "강화", isCompleted: true, completedLabel: "최대 단계"));
                 }
                 if (unit.Unit.Id == "L-14")
                 {
@@ -109,7 +116,7 @@ namespace Ordr.Mobile.Mobile
                     actions.Add(new MobileDedicatedSkillOffer(
                         Original323SourceNativeActionKeys.BruleeCopy(unit.InstanceId, 0),
                         "브륄레 · 미러미러열매",
-                        "전장 유닛 터치로 복사 대상 지정 · 특성포인트 1 · 공속 -5%",
+                        "전설 아군 복사 · 특성포인트 1 · 복사체 공속 -5%",
                         true, canCopy, unit.InstanceId, requiresAllyTarget: true,
                         liveStatus: "특성포인트 " + wallet.Balance(
                             SourceModelNativeCharacterRules.TraitPointsResourceId) +
@@ -124,9 +131,15 @@ namespace Ordr.Mobile.Mobile
                         actions.Add(new MobileDedicatedSkillOffer(
                             Original323SourceNativeActionKeys.HibariCreate(unit.InstanceId),
                             "히바리 · 사랑의 도시락 제작",
-                            "A0HL · h0CN 도시락 생성 · 시전자당 1회",
+                            "도시락 1개 제작 · 캐릭터당 1회",
                             true, combat.CanCreateSourceModelHibariBento(
-                                unit.InstanceId, wallet), unit.InstanceId));
+                                unit.InstanceId, wallet), unit.InstanceId, actionLabel: "제작"));
+                    else
+                        actions.Add(new MobileDedicatedSkillOffer(
+                            Original323SourceNativeActionKeys.HibariCreate(unit.InstanceId),
+                            "히바리 · 사랑의 도시락 제작", "캐릭터당 1회", true, false,
+                            unit.InstanceId, liveStatus: "제작 완료 · 남은 도시락은 보유 아이템에서 사용",
+                            actionLabel: "제작", isCompleted: true, completedLabel: "제작 완료"));
                     if (stock > 0)
                     {
                         bool eligible = false;
@@ -137,15 +150,16 @@ namespace Ordr.Mobile.Mobile
                         actions.Add(new MobileDedicatedSkillOffer(
                             Original323SourceNativeActionKeys.HibariBento(unit.InstanceId, 0),
                             "사랑의 도시락 사용",
-                            "h0CN/A0HN · 전설 이상 대상 터치 · 공속 12%, 코비 초월 20%",
+                            "도시락 1개 소비 · 전설 이상 공속 +12%, 코비 초월 +20%",
                             true, eligible, unit.InstanceId, requiresAllyTarget: true,
-                            liveStatus: "도시락 " + stock + "개 보유"));
+                            liveStatus: "도시락 " + stock + "개 보유", isDetachedItem: true));
                         actions.Add(new MobileDedicatedSkillOffer(
                             Original323SourceNativeActionKeys.HibariSell(unit.InstanceId),
                             "사랑의 도시락 판매",
-                            "h0CN/A0HM · 도시락 1개 → 선택위습 1개",
-                            true, true, unit.InstanceId,
-                            liveStatus: "도시락 " + stock + "개 보유"));
+                            "도시락 1개 → 흔함선택위습 1개",
+                            true, true, unit.InstanceId, requiresConfirmation: true,
+                            liveStatus: "도시락 " + stock + "개 보유",
+                            isDetachedItem: true, actionLabel: "판매"));
                     }
                 }
                 if (unit.Unit.Id == "D-01")
@@ -165,7 +179,7 @@ namespace Ordr.Mobile.Mobile
                         liveStatus: remain > 0 ?
                             "현재 " + combat.SourceModelMariaCurrentModeName(unit.InstanceId) +
                             " · 대기 중" : "다음 형태 사용 가능",
-                        cooldownRemainingSeconds: remain));
+                        cooldownRemainingSeconds: remain, actionLabel: "전환"));
                 }
                 if (unit.Unit.Id == "LI-03")
                 {
@@ -185,7 +199,7 @@ namespace Ordr.Mobile.Mobile
                         true, combat.CanToggleSourceModelMarcoForm(id), id,
                         liveStatus: "현재 " + (phoenix ? "불사조형" : "인간형") +
                             (remaining > 0 ? " · 전환 대기" : " · 전환 가능"),
-                        cooldownRemainingSeconds: remaining);
+                        cooldownRemainingSeconds: remaining, actionLabel: phoenix ? "복귀" : "변신");
                     // When the player selects a Marco, keep F in the visible
                     // leftmost slot of the existing battle/story skill ribbon.
                     if (combat.Roster.SelectedId.HasValue &&
@@ -209,20 +223,20 @@ namespace Ordr.Mobile.Mobile
                         actions.Add(new MobileDedicatedSkillOffer(
                             Original323SourceNativeActionKeys.CastAction(unit.InstanceId),
                             "로저 · 인페르노 시전",
-                            "A202 / 보스·스토리 대상 / 재사용 대기 150초 · 범위 800",
+                            "보스·스토리 대상 · 재사용 150초 · 범위 800",
                             true, combat.CanCastSourceModelRogerInferno(unit.InstanceId),
                             unit.InstanceId, liveStatus: "보스·스토리 대상 필요",
                             cooldownRemainingSeconds:
                                 combat.SourceModelRogerInfernoCooldownRemaining(
-                                    unit.InstanceId)));
+                                    unit.InstanceId), actionLabel: "시전"));
                     else
                         actions.Add(new MobileDedicatedSkillOffer(
                             Original323SourceNativeActionKeys.UnlockAction(unit.InstanceId),
                             "로저 · 인페르노 해금",
-                            "원본 B8Z / 특성포인트 4점 영구 소모 · 유닛당 1회",
+                            "특성포인트 4 소비 · 캐릭터당 1회",
                             true, combat.Game.Phase == SessionPhase.Running &&
                             wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) >= 4,
-                            unit.InstanceId));
+                            unit.InstanceId, requiresConfirmation: true, actionLabel: "해금"));
                 }
                 if (unit.Unit.Id == "E-09" &&
                     wallet.Balance(Original323FusionNativeFollowupLedger.UtaSongId) > 0 &&
@@ -232,10 +246,10 @@ namespace Ordr.Mobile.Mobile
                     actions.Add(new MobileDedicatedSkillOffer(
                         Original323SourceNativeActionKeys.UtaUnlockAction(unit.InstanceId),
                         "우타 · 신세계 변신 해금",
-                        "원본 B6n/A0D2 · 특성포인트 4점 영구 소모 · 유닛당 1회",
+                        "특성포인트 4 소비 · 캐릭터당 1회",
                         true, combat.Game.Phase == SessionPhase.Running &&
                         wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) >= 4,
-                        unit.InstanceId));
+                        unit.InstanceId, requiresConfirmation: true, actionLabel: "해금"));
                 }
             }
             // JASS Bux creates h0CN as a separate controllable item.
@@ -268,28 +282,37 @@ namespace Ordr.Mobile.Mobile
                 actions.Add(new MobileDedicatedSkillOffer(
                     Original323SourceNativeActionKeys.HibariBento(originalOwner, 0),
                     "보유 도시락 · 아군 사용",
-                    "h0CN/A0HN · 대상 아군 터치 · 1회 소모",
+                    "도시락 1개 소비 · 전설 이상 공속 +12%, 코비 초월 +20%",
                     true, canBuff, originalOwner, requiresAllyTarget: true,
                     liveStatus: "제작자 판매 후에도 남은 도시락 1개",
                     isDetachedItem: true));
                 actions.Add(new MobileDedicatedSkillOffer(
                     Original323SourceNativeActionKeys.HibariSell(originalOwner),
                     "보유 도시락 · 판매",
-                    "h0CN/A0HM · 도시락 소모 → 선택위습 1개",
-                    true, true, originalOwner, isDetachedItem: true));
+                    "도시락 1개 → 흔함선택위습 1개",
+                    true, true, originalOwner, requiresConfirmation: true,
+                    isDetachedItem: true, actionLabel: "판매"));
             }
             if (firstOtamaId != 0 &&
                 wallet.Balance(Original323SourceNativeActionKeys.ResearchResource) == 0)
                 actions.Add(new MobileDedicatedSkillOffer(
                     Original323SourceNativeActionKeys.ResearchAction,
                     "오타마 · 연구 등록",
-                    "원본 CH8 / 오타마 지역 진입을 수동으로 대체 / 소모 없음 · 1회",
+                    "조합 이동속도 연구 등록 · 소모 없음 · 1회",
                     true, combat.Game.Phase == SessionPhase.Running,
-                    firstOtamaId));
+                    firstOtamaId, actionLabel: "등록"));
             if (firstVegapunkId == 0) return actions.AsReadOnly();
             foreach (var rawcode in new[] { "H0AB", "H0AE", "H0AM" })
             {
-                if (combat.HasPracticeSatellite(rawcode)) continue;
+                if (combat.HasPracticeSatellite(rawcode))
+                {
+                    actions.Add(new MobileDedicatedSkillOffer(
+                        SourceModelNativeCharacterRules.SatelliteActionId(rawcode),
+                        "베가펑크 · " + SourceModelNativeCharacterRules.SatelliteName(rawcode),
+                        "중복 구매 불가", true, false, firstVegapunkId,
+                        liveStatus: "보유 중", actionLabel: "구매", isCompleted: true, completedLabel: "보유 중"));
+                    continue;
+                }
                 long points, wood;
                 if (!SourceModelNativeCharacterRules.TryPlanSatelliteCost(
                     rawcode, combat.PracticeSatelliteCorePurchases(),
@@ -301,10 +324,10 @@ namespace Ordr.Mobile.Mobile
                 actions.Add(new MobileDedicatedSkillOffer(
                     SourceModelNativeCharacterRules.SatelliteActionId(rawcode),
                     "베가펑크 · " + SourceModelNativeCharacterRules.SatelliteName(rawcode),
-                    "원본 특성포인트 " + points + " / 목재 " + wood +
+                    "특성포인트 " + points + " / 목재 " + wood +
                     " (스토리·미션 보상 획득 후 구매 가능)",
                     true, combat.Game.Phase == SessionPhase.Running && affordable,
-                    firstVegapunkId, liveStatus: "위성 " +
+                    firstVegapunkId, requiresConfirmation: true, actionLabel: "구매", liveStatus: "위성 " +
                         combat.PracticeSatellites().Count + "/3 · 특성 " +
                         wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) +
                         "/" + points + " · 목재 " +
@@ -312,6 +335,17 @@ namespace Ordr.Mobile.Mobile
                         "/" + wood));
             }
             return actions.AsReadOnly();
+        }
+
+        public bool CanTarget(string offeredSkillId, long ownerInstanceId, long targetInstanceId)
+        {
+            if (ownerInstanceId <= 0 || targetInstanceId <= 0) return false;
+            if (offeredSkillId == Original323SourceNativeActionKeys.BruleeCopy(ownerInstanceId, 0))
+                return wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) >= 1 &&
+                    combat.CanSourceModelBruleeCopy(ownerInstanceId, targetInstanceId);
+            if (offeredSkillId == Original323SourceNativeActionKeys.HibariBento(ownerInstanceId, 0))
+                return combat.CanUseSourceModelHibariBento(ownerInstanceId, targetInstanceId, wallet);
+            return false;
         }
 
         public ManualActionResult ExecuteForAlly(string offeredSkillId,

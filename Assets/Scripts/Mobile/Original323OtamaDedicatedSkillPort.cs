@@ -32,7 +32,7 @@ namespace Ordr.Mobile.Mobile
                     "오타마 경단", "목재 +16 · 유닛당 1회",
                     true, unused && combat.Game.Phase == SessionPhase.Running,
                     owned.InstanceId, liveStatus: unused ? "1회 보상 수령 가능" :
-                        "이미 수령 완료"));
+                        "이미 수령 완료", isCompleted: !unused));
             }
             return result.AsReadOnly();
         }
