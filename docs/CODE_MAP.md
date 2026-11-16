@@ -105,3 +105,18 @@ flowchart TD
 
 관련 게임 규칙·원본 근거·검사 안내는 **[문서 목차](README.md)**에서 찾아보세요. 이 파일은 수정 대상 **코드 위치와 공통 엔진 역할만** 관리합니다.
 
+
+## 크립 외 부가 목표 연결 진입점
+
+[부가 목표 구현 명세](부가목표-구현명세.md)의 F04·M03 작업용 지도입니다. 아래는 기존 API이며 정식 공급자 연결 완료를 뜻하지 않습니다.
+
+| 책임 | 기존 진입점 | 연결할 작업 |
+|---|---|---|
+| 구성/생성/격파 | OrdrCharacterCombatController.ConfigureOriginal323SharedObjectiveWitness, ConfigureOriginal323SharedMissionFollowUps, ObserveOriginal323SharedObjectiveSpawn/Defeat | 시작 전 공급자 연결, 실제 로컬 사건 전달 |
+| 목표 생명주기 | Original323SharedObjectiveWorld.ObserveSpawn, TrySettleDefeat, TryObserveAppliedAdmiralBuff | 정의 검증, 중복 사건, 생성/버프 의무 복구 |
+| 출전/복귀 | 컨트롤러 RequestSharedObjectiveDispatch/Recall → CharacterCombatRuntime.TryDispatchToSharedObjective/TryRecallFromSharedObjective | 자격 검사와 실제 개체 귀속, 예약 공격/지원 전장 격리 |
+| 지급 | Original323SharedMissionRewardWorld.TrySettleDefeatedObjective, TryRecordRealGateAdmiralSpawn, TryRecordRealAdmiralBuff | 기존 지갑 영수증, 보류 추첨, 지급 후 미션 기록 실패 복구 |
+| 공유 완료/해금 | Original323PoneglyphSession 및 SaveState | 서로 다른 공유 8종 집계, 목표 장부와 교차 검증 |
+| 전체 복원 | CharacterCombatRuntime.SaveState, OrdrCoreCheckpoint, OrdrUnpublishedCombatRestoreGraph, OrdrUnpublishedAuxiliaryRestoreGraph | 공유 출전 복원 거부 조건을 소유권 재결합과 함께 해결 |
+
+개인 토벌 7종은 별도 60초 라인 도전입니다. OriginalPersonalMissionSession 등 배정형 개인미션을 이름만 보고 토벌 엔진으로 사용하지 않습니다.
