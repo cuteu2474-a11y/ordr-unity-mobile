@@ -428,8 +428,27 @@ namespace Ordr.Mobile.Combat
                     pending.StoryLane, primary, 500, scaled,
                     pending.AttackType, pending.Name);
             if (pending.PrimaryFixedBonus > 0 && primary.Enemy.IsAlive)
-                ApplySourceModelFixedPrimaryPacket(InstanceKey(actor.Id),
-                    primary, pending.PrimaryFixedBonus, pending.Name);
+            {
+                // Percentage-derived fixed bonuses remain doubles until the
+                // committed hit. The shared fixed-packet API requires integer
+                // damage; quantize only here, after checking the long boundary.
+                double bonus = pending.PrimaryFixedBonus;
+                if (double.IsNaN(bonus) || double.IsInfinity(bonus) ||
+                    bonus >= long.MaxValue)
+                {
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EffectDeferred, InstanceKey(actor.Id),
+                        pending.TargetId, pending.Name,
+                        "원본 단일 추가 피해 계산 범위 초과: 임의 피해량으로 대체하지 않음", 0));
+                }
+                else
+                {
+                    long fixedDamage = (long)Math.Floor(bonus);
+                    if (fixedDamage > 0)
+                        ApplySourceModelFixedPrimaryPacket(InstanceKey(actor.Id),
+                            primary, fixedDamage, pending.Name);
+                }
+            }
         }
 
         private void ExecuteKaidoSecondSpecialModelPacket(CharacterInstance actor,

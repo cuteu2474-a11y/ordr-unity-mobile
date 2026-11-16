@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Core;
+using Ordr.Mobile.Data;
 using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
