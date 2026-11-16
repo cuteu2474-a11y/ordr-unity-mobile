@@ -178,6 +178,53 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void DeferredBasicDamageDoesNotSuppressIndependentWeatherPeriodic()
+        {
+            // TR-02's existing, source-model-only weather packet is periodic
+            // and does not require its ordinary basic hit to succeed. Model
+            // a deferred BASIC formula without approving any new ability.
+            using (var game = Create())
+            {
+                long nami = game.Combat.SpawnCharacter("TR-02", -4900, 5400);
+                var characters = (System.Collections.IDictionary)typeof(CharacterCombatRuntime)
+                    .GetField("characters", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .GetValue(game.Combat);
+                object actor = characters[nami];
+                Assert.IsNotNull(actor);
+                actor.GetType().GetField("AttackBlockedByMissingFormula")
+                    .SetValue(actor, true);
+                actor.GetType().GetField("DeferredAttackReason")
+                    .SetValue(actor, "TEST_ONLY: independent basic formula deferred");
+                Assert.AreEqual(BasicAttackReadinessKind.FormulaDeferred,
+                    game.Combat.InspectBasicAttack(nami).Kind);
+
+                var before = game.Battle.Advance(3.8);
+                Assert.IsFalse(before.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "날씨조작술"),
+                    "The independent 3.5-second period must not fire early.");
+                Assert.IsFalse(before.Any(e =>
+                    e.Type == CharacterCombatEventType.Attack &&
+                    e.ActorId == nami.ToString()),
+                    "A deferred basic hit remains blocked.");
+
+                var after = game.Battle.Advance(.8);
+                Assert.IsTrue(after.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "날씨조작술" && e.ActorId == nami.ToString() &&
+                    e.Amount > 0),
+                    "The independent periodic should survive a basic formula block.");
+                Assert.IsFalse(after.Any(e =>
+                    e.Type == CharacterCombatEventType.Attack &&
+                    e.ActorId == nami.ToString()));
+                Assert.AreEqual(BasicAttackReadinessKind.FormulaDeferred,
+                    game.Combat.InspectBasicAttack(nami).Kind);
+                Assert.Greater(game.Battle.CaptureCombatPressure()
+                    .ObservedWaveHpDamageSinceAttach, 0);
+            }
+        }
+
+        [Test]
         public void CombatPressureReadOnlySamplesDoNotAdvanceDamageOrAttackClocks()
         {
             using (var game = Create(5, 65, "C-01", mobileLane: true))

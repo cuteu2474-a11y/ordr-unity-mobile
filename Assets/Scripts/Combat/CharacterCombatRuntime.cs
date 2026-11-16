@@ -2912,8 +2912,12 @@ namespace Ordr.Mobile.Combat
                 ? NextSourceIndependentAttackAt() : null;
             foreach (var unit in characters.Values)
             {
-                if (!unit.AttackReady || IsAttackFormulaBlocked(unit) ||
-                    unit.Mapping == null) continue;
+                if (!unit.AttackReady || unit.Mapping == null) continue;
+                // A deferred BASIC damage formula must never suppress an
+                // independently implemented periodic skill. The latter owns
+                // its own evidence, clock and damage resolver. Keep the basic
+                // attack blocked, without clearing genuine missing evidence.
+                bool basicFormulaBlocked = IsAttackFormulaBlocked(unit);
                 double castFinish;
                 if (UsesSourceModelBasicAttacks &&
                     sourceFormCastFinishes.TryGetValue(unit.Id, out castFinish))
@@ -2921,14 +2925,17 @@ namespace Ordr.Mobile.Combat
                     if (!next.HasValue || castFinish < next.Value) next = castFinish;
                     continue;
                 }
-                double? at = attackPipeline.NextAttackAt(InstanceKey(unit.Id));
-                var candidates = BuildBasicAttackCandidates(unit);
-                if (!attackPipeline.HasUnresolvedNativeAttackSpeed(
-                        InstanceKey(unit.Id)) &&
-                    attackPipeline.SelectDefaultTarget(InstanceKey(unit.Id),
-                        candidates, TargetPriority.Nearest) != null &&
-                    at.HasValue && (!next.HasValue || at.Value < next.Value))
-                    next = at;
+                if (!basicFormulaBlocked)
+                {
+                    double? at = attackPipeline.NextAttackAt(InstanceKey(unit.Id));
+                    var candidates = BuildBasicAttackCandidates(unit);
+                    if (!attackPipeline.HasUnresolvedNativeAttackSpeed(
+                            InstanceKey(unit.Id)) &&
+                        attackPipeline.SelectDefaultTarget(InstanceKey(unit.Id),
+                            candidates, TargetPriority.Nearest) != null &&
+                        at.HasValue && (!next.HasValue || at.Value < next.Value))
+                        next = at;
+                }
                 // A separately verified periodic skill may target an enemy
                 // whose native basic-attack armor has not been established.
                 if (BuildTargetCandidates(unit).Count == 0) continue;
@@ -3131,7 +3138,10 @@ namespace Ordr.Mobile.Combat
             {
                 if (processed >= budget) break;
                 var unit = characters[id];
-                if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
+                // Periodic ability evidence is independent of the BASIC
+                // attack damage formula. A blocked normal hit must not block
+                // a previously wired periodic packet or its own cooldown.
+                if (!unit.AttackReady ||
                     unit.Mapping == null || unit.Profile == null) continue;
                 var candidates = BuildTargetCandidates(unit);
                 var primaryId = attackPipeline.SelectDefaultTarget(
