@@ -1,0 +1,75 @@
+name: 요청형 1라운드 6유닛 Unity 시뮬레이션
+
+# Explicit one-shot CI; normal source pushes do not run this workflow.
+# It does not build an APK and never cancels running checks.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/ordr-first-round-simulation-request.txt'
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: ordr-six-unit-first-round-explicit
+  cancel-in-progress: false
+
+jobs:
+  first-round:
+    name: 하찌 루피 조로 우솝 상디 총병 1라운드 실제 계측
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unity 라이선스 입력 확인
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: |
+          test -n "$UNITY_LICENSE"
+          test -n "$UNITY_EMAIL"
+          test -n "$UNITY_PASSWORD"
+
+      - name: Unity 테스트 실행 디스크 확보
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: 실제 56초 Unity EditMode 계측 실행
+        id: simulation
+        uses: game-ci/unity-test-runner@v4.3.2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          testMode: EditMode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          customParameters: -testFilter Ordr.Mobile.Tests.OrdrFirstRoundSixUnitSimulationTests.SixUnitRoundOneProducesObservedBattlefieldCounters
+
+      - name: Unity 원본 테스트 결과 보관
+        if: ${{ always() && steps.simulation.outputs.artifactsPath != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-first-round-six-unit-results
+          path: ${{ steps.simulation.outputs.artifactsPath }}
+          if-no-files-found: ignore
+
+      - name: 1라운드 전장 수치 보관
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ordr-first-round-six-unit-telemetry
+          path: sim-results/first-round-six-units.txt
+          if-no-files-found: warn
