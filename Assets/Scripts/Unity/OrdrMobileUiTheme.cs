@@ -163,19 +163,12 @@ namespace Ordr.Mobile.Unity
             Texture2D drawerBackground = Flat(new Color(.035f,.055f,.085f,1f));
             Background(borderlessPanel, drawerBackground, drawerBackground, Text);
             borderlessPanel.border = new RectOffset(0,0,0,0);
-            // The approved blue-and-gold ImportedArt panel is the backing
-            // for the right-side game drawer. Nine-slice the frame so its
-            // border stays legible on different landscape screen sizes.
-            // If the Resource is unavailable the original flat UI remains.
+            // The imported panel is an ENTIRE source sheet, not a nine-slice
+            // panel frame. Scaling it as the drawer background left leftover
+            // image/text ornaments and translucent bleed across frames.
+            // Keep the opaque, borderless app drawer surface on every Repaint.
             importedPanel = new GUIStyle(borderlessPanel);
-            Texture2D importedPanelTexture = OrdrImportedArtAtlas.PanelBackground;
-            if (importedPanelTexture != null)
-            {
-                Background(importedPanel, importedPanelTexture,
-                    importedPanelTexture, Text);
-                importedPanel.border = new RectOffset(30, 30, 30, 30);
-                importedPanel.padding = new RectOffset(15, 15, 15, 15);
-            }
+            importedPanel.padding = new RectOffset(12, 12, 12, 12);
             navButton = new GUIStyle(themedSkin.button);
             navButton.alignment = TextAnchor.MiddleCenter;
             navButton.padding = new RectOffset(8,8,7,7);
@@ -263,7 +256,7 @@ namespace Ordr.Mobile.Unity
             fusionSelectedCard.border = new RectOffset(9,9,9,9);
             fusionSelectedCard.padding = new RectOffset(9,9,7,7);
             fusionIngredientName = new GUIStyle(themedSkin.label);
-            fusionIngredientName.fontSize = 17;
+            fusionIngredientName.fontSize = 15;
             fusionIngredientName.fontStyle = FontStyle.Bold;
             fusionIngredientName.wordWrap = true;
             fusionIngredientName.alignment = TextAnchor.MiddleCenter;
@@ -271,7 +264,7 @@ namespace Ordr.Mobile.Unity
             fusionListName = new GUIStyle(navButton);
             fusionListName.fontSize = 20;
             fusionListName.fontStyle = FontStyle.Bold;
-            fusionListName.alignment = TextAnchor.MiddleLeft;
+            fusionListName.alignment = TextAnchor.MiddleCenter;
             fusionListName.padding = new RectOffset(12,8,4,4);
             fusionListName.clipping = TextClipping.Clip;
             wispCountCaption = new GUIStyle(accordionMeta);
@@ -449,18 +442,6 @@ namespace Ordr.Mobile.Unity
                 Mathf.Max(0f,area.width-24f),2f),accent);
         }
 
-        // Decorative navigation marks only. The real button retains its full
-        // rectangular hit area and existing selection/toggle semantics.
-        internal static void DrawNavigationMark(Rect area, Color tint, bool selected)
-        {
-            if (area.width < 90f || area.height < 28f) return;
-            Stroke(new Rect(area.x+3f,area.y+8f,3f,area.height-16f),tint);
-            Stroke(new Rect(area.x+11f,area.center.y-3f,6f,6f),tint);
-            if (selected)
-                Stroke(new Rect(area.xMax-15f,area.center.y-2f,7f,4f),
-                    new Color(1f,1f,1f,.85f));
-        }
-
         // Large, read-only battle metrics without a decorative section title.
         internal static void DrawScoreHeroCard(string label, string value,
             string footer, Color tint, float height = 112f)
@@ -618,45 +599,37 @@ namespace Ordr.Mobile.Unity
             return result;
         }
 
-        // Upgrade-only typography. The old hold/tap target and stock cartoon
-        // face stay untouched; the CURRENT level now has its own large number.
-        // This is deliberately not used for research, shop, or gambling.
+        // Upgrade rows keep NAME · PRICE · LEVEL on ONE line even on a
+        // landscape phone. Cost/level are always visible; a longer title
+        // uses the remaining width with a bounded adaptive font.
+        // Hold for effects and prerequisites; tap still purchases once.
         private static void DrawUpgradeLevelRowFace(Rect area, string title,
             string meta, string stage, Color tint)
         {
-            Stroke(new Rect(area.x + 5f, area.y + 12f, 4f,
-                Mathf.Max(0f, area.height - 24f)), tint);
-            float stageWidth = Mathf.Min(132f,
-                Mathf.Max(88f, area.width * .34f));
-            float leftWidth = Mathf.Max(52f, area.width - stageWidth - 36f);
-            var nameStyle = FitRowText(accordionTitle, title,
-                leftWidth, 35f, 16, true);
-            nameStyle.fontStyle = FontStyle.Bold;
-            var infoStyle = new GUIStyle(accordionMeta)
-            {
-                fontSize = 16,
-                alignment = TextAnchor.MiddleLeft,
-                clipping = TextClipping.Clip,
-                wordWrap = false
-            };
-            infoStyle.normal.textColor = Color.white;
-            var levelStyle = new GUIStyle(statusValue)
-            {
-                fontSize = 27,
-                fontStyle = FontStyle.Bold,
-                alignment = TextAnchor.MiddleCenter,
-                clipping = TextClipping.Clip,
-                wordWrap = false
-            };
-            levelStyle.normal.textColor = Gold;
-            // Keep the two-line price/availability text, but make current
-            // stage numerals the most legible item on every upgrade row.
-            GUI.Label(new Rect(area.x + 16f, area.y + 7f, leftWidth, 34f),
-                EllipsizeRowText(nameStyle, title, leftWidth, 34f), nameStyle);
-            GUI.Label(new Rect(area.x + 16f, area.y + 44f, leftWidth,
-                Mathf.Max(24f, area.height - 49f)), meta, infoStyle);
-            GUI.Label(new Rect(area.xMax - stageWidth - 10f, area.y + 9f,
-                stageWidth, area.height - 18f), stage, levelStyle);
+            Stroke(new Rect(area.x + 5f, area.y + 10f, 4f,
+                Mathf.Max(0f, area.height - 20f)), tint);
+            float width = Mathf.Max(0f, area.width - 31f);
+            float stageWidth = Mathf.Clamp(width * .19f, 48f, 80f);
+            float priceWidth = Mathf.Clamp(width * .34f, 87f, 140f);
+            float nameWidth = Mathf.Max(38f, width - stageWidth - priceWidth - 12f);
+            float y = area.y + 5f;
+            float h = Mathf.Max(20f, area.height - 10f);
+            var name = FitRowText(accordionTitle, title, nameWidth, h, 10, false);
+            name.alignment = TextAnchor.MiddleLeft;
+            name.fontStyle = FontStyle.Bold;
+            var cost = FitRowText(accordionMeta, meta, priceWidth, h, 10, false);
+            cost.fontStyle = FontStyle.Bold;
+            cost.alignment = TextAnchor.MiddleCenter;
+            cost.normal.textColor = Color.white;
+            var level = FitRowText(statusValue, stage, stageWidth, h, 13, false);
+            level.alignment = TextAnchor.MiddleRight;
+            level.normal.textColor = Gold;
+            GUI.Label(new Rect(area.x + 16f, y, nameWidth, h),
+                EllipsizeRowText(name, title, nameWidth, h), name);
+            GUI.Label(new Rect(area.x + 20f + nameWidth, y, priceWidth, h),
+                EllipsizeRowText(cost, meta, priceWidth, h), cost);
+            GUI.Label(new Rect(area.xMax - stageWidth - 12f, y, stageWidth, h),
+                EllipsizeRowText(level, stage, stageWidth, h), level);
         }
 
         // One large touch target: short tap executes once, long press reveals

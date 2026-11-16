@@ -195,19 +195,19 @@ namespace Ordr.Mobile.Unity
                         cue.Target == alive.EnemyId ? (float)(combat.Time - cue.At) : 100;
                     float action = Fade(age, .34f);
                     float thrust = Mathf.Sin(Mathf.Clamp01(age / .34f) * Mathf.PI) * 5f * scale;
-                    Rect card = new Rect(x + (action > 0 ? thrust : 0), ground - size, size, size);
+                    // Animation must not make a card or photo overhang the
+                    // small story pane or collide with the building image.
+                    float cardX = Mathf.Clamp(x + (action > 0 ? thrust : 0),
+                        8f, Mathf.Max(8f, rowWidth - size));
+                    Rect card = new Rect(cardX, ground - size, size, size);
                     bool selected = combat.Roster.SelectedId == unit.InstanceId;
                     Fill(new Rect(card.x - 2, card.y - 2, size + 4, size + 4),
                         selected ? OrdrMobileUiTheme.Gold : new Color(.25f, .55f, .65f));
                     Fill(card, new Color(.12f, .22f, .29f));
                     var portrait = OrdrCharacterPortraits.Find(unit.Unit.Id);
                     if (portrait != null)
-                    {
-                        Rect uv = portrait.rect;
-                        GUI.DrawTextureWithTexCoords(card, portrait.texture,
-                            new Rect(uv.x / portrait.texture.width, uv.y / portrait.texture.height,
-                                uv.width / portrait.texture.width, uv.height / portrait.texture.height));
-                    }
+                        MobileSpritePortraitDisplay.DrawSprite(portrait,
+                            MobileSpritePortraitDisplay.Inset(card, 2f));
                     else GUI.Label(card, unit.Unit.Name, tiny);
                     if (GUI.Button(card, new GUIContent("", unit.Unit.Name), GUIStyle.none) &&
                         combat.IsStoryDeployed(unit.InstanceId))

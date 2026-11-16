@@ -36,10 +36,12 @@ namespace Ordr.Mobile.Unity
             {
                 portrait = Resources.Load<Sprite>(ResourcesPrefix + catalogUnitId);
                 if (portrait == null) portrait = LoadCachedFile(catalogUnitId);
-                // Approved bundled sheet portraits precede network requests,
-                // but can never override explicitly installed/cached art.
-                if (portrait == null)
-                    portrait = OrdrImportedArtAtlas.FindUnitPortrait(catalogUnitId);
+                // The user chose to roll back every imported shared-sheet
+                // character asset. Only true per-unit local/cached photos
+                // satisfy the portrait request; an unverified atlas cell must
+                // never short-circuit the existing original-photo downloader.
+                // Until a real portrait arrives, callers use the authored
+                // neutral square marker rather than the shared-sheet art.
                 if (portrait != null)
                 {
                     Cache[catalogUnitId] = portrait;

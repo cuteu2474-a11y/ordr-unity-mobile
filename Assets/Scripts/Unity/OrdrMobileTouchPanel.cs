@@ -53,12 +53,8 @@ namespace Ordr.Mobile.Unity
         private int storyGreenBloodPage;
         private const int StoryGreenBloodPageSize = 6;
         private bool showStoryDispatch = true;
-        private bool showStoryRewards;
         private bool showStoryCreeps;
-        private bool showStoryStageHistory;
-        private bool showStoryNativeRewards;
         private bool confirmStoryRecallAll;
-        private int selectedStoryRewardStage;
         private int storyRosterPage;
         private MobileStoryRosterFilter storyRosterFilter = MobileStoryRosterFilter.All;
         private bool showOriginalAudit;
@@ -406,9 +402,13 @@ namespace Ordr.Mobile.Unity
                 ref dedicatedScroll, true, scale);
             HandlePanelScroll(scale);
             Matrix4x4 previous = GUI.matrix;
+            int previousDepth = GUI.depth;
             GUISkin previousSkin = OrdrMobileUiTheme.Activate();
             try
             {
+                // Consistent IMGUI layering: UI panels are always above the
+                // scene shell, story graphics, and formation portraits.
+                GUI.depth = 0;
                 GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
                 DrawLeftTabs(layout, scale);
                 if (visible)
@@ -425,6 +425,7 @@ namespace Ordr.Mobile.Unity
             finally
             {
                 GUI.matrix = previous;
+                GUI.depth = previousDepth;
                 GUI.skin = previousSkin;
             }
         }
@@ -751,33 +752,21 @@ namespace Ordr.Mobile.Unity
         private void DrawGameplaySpeedControls()
         {
             GUILayout.Space(7f);
-            GUILayout.Label("게임 배속 · " + controller.GameplaySpeedMultiplier + "배",
-                OrdrMobileUiTheme.Overline);
-            GUILayout.BeginHorizontal();
-            DrawGameplaySpeedButton(1);
-            DrawGameplaySpeedButton(2);
-            DrawGameplaySpeedButton(4);
-            GUILayout.EndHorizontal();
-        }
-
-        private void DrawGameplaySpeedButton(int speed)
-        {
-            var active = controller.GameplaySpeedMultiplier == speed;
-            var style = active ? OrdrMobileUiTheme.SelectedTab :
-                OrdrMobileUiTheme.NavButton;
-            if (GUILayout.Button(speed + "배", style,
-                GUILayout.MinHeight(46f), GUILayout.ExpandWidth(true)))
+            // One persistent speed control: 1 → 2 → 4 → 1 on every tap.
+            // The existing single clock service still owns actual timing.
+            int current = controller.GameplaySpeedMultiplier;
+            if (GUILayout.Button("배속 " + current + "배  ↻",
+                OrdrMobileUiTheme.NavButton, GUILayout.MinHeight(48f),
+                GUILayout.ExpandWidth(true)))
             {
+                int next = MobileGameSpeedClock.NextMultiplier(current);
                 try
                 {
-                    controller.SetGameplaySpeed(speed);
-                    notice = "게임 배속 " + speed + "배" +
+                    controller.SetGameplaySpeed(next);
+                    notice = "게임 배속 " + next + "배" +
                         (controller.IsGameplayPaused ? " · 일시정지 중" : " · 진행 중");
                 }
-                catch (Exception ex)
-                {
-                    notice = ex.Message;
-                }
+                catch (Exception ex) { notice = ex.Message; }
             }
         }
 
@@ -792,29 +781,8 @@ namespace Ordr.Mobile.Unity
             {
                 SelectTab(tab, true);
             }
-            if (Event.current.type == EventType.Repaint)
-            {
-                Color tint = GetFacilityTabTint(tab);
-                OrdrMobileUiTheme.DrawNavigationMark(GUILayoutUtility.GetLastRect(),
-                    tint, chosen);
-            }
-        }
-
-        // The seven source-backed building tabs keep distinct navigation
-        // accents, without introductory slogans or decorative header plates.
-        private static Color GetFacilityTabTint(Tab tab)
-        {
-            switch (tab)
-            {
-                case Tab.Gambling: return new Color(1f, .68f, .35f);
-                case Tab.UpgradeOne: return new Color(1f, .69f, .38f);
-                case Tab.UpgradeTwo: return new Color(1f, .77f, .42f);
-                case Tab.Helper: return new Color(.41f, .9f, .76f);
-                case Tab.Missions: return new Color(.43f, .78f, 1f);
-                case Tab.Research: return new Color(.44f, .88f, .96f);
-                case Tab.LogPose: return new Color(.76f, .67f, 1f);
-                default: return OrdrMobileUiTheme.Aqua;
-            }
+            // Remove decorative T-shaped line, dot and active underline.
+            // Text-only left rail buttons keep their original tap action.
         }
 
         private void DrawRightDrawer(MobileMapSkillLayout layout, float scale)
@@ -1043,12 +1011,13 @@ namespace Ordr.Mobile.Unity
                 string title = upgrade.Name.Replace(" 업그레이드", "");
                 string stage = currentLevel + " / " + upgrade.MaximumLevel;
                 string caption = UpgradeStatusText(quote);
-                if (quote?.NextCost != null) caption = UpgradePriceText(quote.NextCost) + "\n" + caption;
-                if (quote?.Status == Original323UpgradePurchaseStatus.InsufficientResources)
-                    caption = UpgradePriceText(quote.NextCost) + "\n" + UpgradeShortageText(quote.NextCost);
+                // NAME | exact price | current level always in one row.
+                // Other conditions remain available by holding the row.
+                if (quote?.NextCost != null)
+                    caption = UpgradePriceText(quote.NextCost);
                 string key = "upgrade:" + upgrade.Rawcode;
                 MobileLongPressResult press = OrdrMobileUiTheme.DrawHoldActionRow(
-                    key, title, caption, tint, upgradePressGesture, 88f,
+                    key, title, caption, tint, upgradePressGesture, 68f,
                     levelText: stage);
                 if (press == MobileLongPressResult.Tap)
                 {
@@ -3244,191 +3213,85 @@ namespace Ordr.Mobile.Unity
 
             DrawStoryDispatchPanel();
 
-            string rewardSummary = "골드 " + scenario.AwardedGold +
-                " · 목재 " + scenario.AwardedWood;
-            if (controller.PendingAllStoryTranscendWisps > 0)
-                rewardSummary += " · 초월위습 " + controller.PendingAllStoryTranscendWisps;
-            if (controller.SharedEconomy != null)
+            DrawStoryGreenBloodAction();
+        }
+
+        // Story reward/history accordions were removed at the player's
+        // request. Green Blood is an actual manual action (not a history
+        // pane), so keep its existing transactional target picker here.
+        private void DrawStoryGreenBloodAction()
+        {
+            if (controller.SharedEconomy != null && controller.Combat != null &&
+                controller.SharedEconomy.Wallet.Balance(
+                    Original323StoryMobileProgression.GreenBloodUseResourceId) > 0)
             {
-                long greenBlood = controller.SharedEconomy.Wallet.Balance(
+                long remaining = controller.SharedEconomy.Wallet.Balance(
                     Original323StoryMobileProgression.GreenBloodUseResourceId);
-                if (greenBlood > 0) rewardSummary += " · 그린블러드 " + greenBlood;
-            }
-            if (scenario.NativeRewards.PendingCount > 0)
-                rewardSummary += " · 지급 대기 " + scenario.NativeRewards.PendingCount;
-            if (OrdrMobileUiTheme.DrawAccordionHeader("획득 보상", rewardSummary,
-                showStoryRewards, OrdrMobileUiTheme.Gold))
-                showStoryRewards = !showStoryRewards;
-            if (showStoryRewards)
-            {
-                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                OrdrMobileUiTheme.DrawStatusRow("스토리 획득",
-                    "골드 " + scenario.AwardedGold + " · 목재 " + scenario.AwardedWood,
+                OrdrMobileUiTheme.DrawStatusRow("14단계 그린블러드",
+                    "사용권 " + remaining + "회 · 자신의 대상 유닛을 눌러 즉시 적용",
                     OrdrMobileUiTheme.Gold);
-                var progression = controller.StoryProgression;
-                if (progression != null)
-                    OrdrMobileUiTheme.DrawStatusRow("연구·유닛 도박",
-                        "연구 " + progression.Researches.Count + "개 · 남은 도박 충전 " +
-                        progression.GamblingCharges + "회", OrdrMobileUiTheme.Aqua);
-                if (controller.StoryHeroExperience != null &&
-                    scenario.HighestDestroyedStage >= 13)
-                    OrdrMobileUiTheme.DrawStatusRow("스토리 영웅 경험치",
-                        "13·14단계 격파 시 원본 A07O 영웅 그룹에 +300 XP" +
-                        " · 영웅 레벨/스탯에 반영",
-                        OrdrMobileUiTheme.Aqua);
-                if (!string.IsNullOrEmpty(scenario.LastUniqueItemAward))
-                    OrdrMobileUiTheme.DrawStatusRow("스토리 고유 아이템",
-                        scenario.LastUniqueItemAward + " 획득 · 원본 5% 추첨 보상",
-                        OrdrMobileUiTheme.Gold);
-                OrdrMobileUiTheme.DrawStatusRow("원본 추가 보상",
-                    "실제 적용 대기 " + scenario.NativeRewards.PendingCount + "건",
-                    OrdrMobileUiTheme.Aqua);
-                if (controller.PendingAllStoryTranscendWisps > 0)
+                if (OrdrMobileUiTheme.DrawAccordionHeader(
+                    "그린블러드 대상 선택", "세라핌 변환 또는 전설·히든 강화",
+                    showStoryGreenBloodTargets, OrdrMobileUiTheme.Gold))
                 {
-                    OrdrMobileUiTheme.DrawStatusRow("10단계 초월위습",
-                        "남은 선택 " + controller.PendingAllStoryTranscendWisps + "회",
-                        OrdrMobileUiTheme.Gold);
-                    DrawOriginalTranscendWispChoiceButtons();
+                    showStoryGreenBloodTargets = !showStoryGreenBloodTargets;
+                    storyGreenBloodPage = 0;
                 }
-                if (controller.SharedEconomy != null && controller.Combat != null &&
-                    controller.SharedEconomy.Wallet.Balance(
-                        Original323StoryMobileProgression.GreenBloodUseResourceId) > 0)
+                if (showStoryGreenBloodTargets)
                 {
-                    long remaining = controller.SharedEconomy.Wallet.Balance(
-                        Original323StoryMobileProgression.GreenBloodUseResourceId);
-                    OrdrMobileUiTheme.DrawStatusRow("14단계 그린블러드",
-                        "사용권 " + remaining + "회 · 자신의 대상 유닛을 눌러 즉시 적용",
-                        OrdrMobileUiTheme.Gold);
-                    if (OrdrMobileUiTheme.DrawAccordionHeader(
-                        "그린블러드 대상 선택", "세라핌 변환 또는 전설·히든 강화",
-                        showStoryGreenBloodTargets, OrdrMobileUiTheme.Gold))
+                    var eligible = new List<MobileUnitSnapshot>();
+                    foreach (var unit in controller.Combat.MobileUnitSnapshot())
                     {
-                        showStoryGreenBloodTargets = !showStoryGreenBloodTargets;
-                        storyGreenBloodPage = 0;
+                        Original323GreenBloodPlan plan;
+                        string unitName;
+                        if (controller.TryPlanOriginalStoryGreenBlood(
+                            unit.InstanceId, out plan, out unitName) &&
+                            (plan.Kind == Original323GreenBloodActionKind.Transform ||
+                             !controller.Combat.HasOriginal323GreenBloodEnhancement(
+                                 unit.InstanceId)))
+                            eligible.Add(unit);
                     }
-                    if (showStoryGreenBloodTargets)
+                    if (eligible.Count == 0)
+                        GUILayout.Label("현재 사용 가능한 전설·히든 유닛이 없습니다.",
+                            OrdrMobileUiTheme.Explanation);
+                    else
                     {
-                        var eligible = new List<MobileUnitSnapshot>();
-                        foreach (var unit in controller.Combat.MobileUnitSnapshot())
+                        int pages = (eligible.Count + StoryGreenBloodPageSize - 1) /
+                            StoryGreenBloodPageSize;
+                        storyGreenBloodPage = Math.Max(0,
+                            Math.Min(storyGreenBloodPage, pages - 1));
+                        int begin = storyGreenBloodPage * StoryGreenBloodPageSize;
+                        for (int index = begin;
+                             index < Math.Min(begin + StoryGreenBloodPageSize, eligible.Count);
+                             index++)
                         {
+                            var unit = eligible[index];
                             Original323GreenBloodPlan plan;
                             string unitName;
-                            if (controller.TryPlanOriginalStoryGreenBlood(
-                                unit.InstanceId, out plan, out unitName) &&
-                                (plan.Kind == Original323GreenBloodActionKind.Transform ||
-                                 !controller.Combat.HasOriginal323GreenBloodEnhancement(
-                                     unit.InstanceId)))
-                                eligible.Add(unit);
+                            if (!controller.TryPlanOriginalStoryGreenBlood(
+                                    unit.InstanceId, out plan, out unitName)) continue;
+                            string action = plan.Kind == Original323GreenBloodActionKind.Transform
+                                ? " → " + GreenBloodSeraphimName(plan.ReplacementRawcode)
+                                : " · 공속 +30% 및 주위 피해";
+                            if (GUILayout.Button(unitName + " #" + unit.InstanceId + action,
+                                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
+                                ShowResult(controller.RequestOriginalStoryGreenBlood(
+                                    unit.InstanceId));
                         }
-                        if (eligible.Count == 0)
-                            GUILayout.Label("현재 사용 가능한 전설·히든 유닛이 없습니다.",
-                                OrdrMobileUiTheme.Explanation);
-                        else
+                        if (pages > 1)
                         {
-                            int pages = (eligible.Count + StoryGreenBloodPageSize - 1) /
-                                StoryGreenBloodPageSize;
-                            storyGreenBloodPage = Math.Max(0,
-                                Math.Min(storyGreenBloodPage, pages - 1));
-                            int begin = storyGreenBloodPage * StoryGreenBloodPageSize;
-                            for (int index = begin;
-                                 index < Math.Min(begin + StoryGreenBloodPageSize, eligible.Count);
-                                 index++)
-                            {
-                                var unit = eligible[index];
-                                Original323GreenBloodPlan plan;
-                                string unitName;
-                                if (!controller.TryPlanOriginalStoryGreenBlood(
-                                        unit.InstanceId, out plan, out unitName)) continue;
-                                string action = plan.Kind == Original323GreenBloodActionKind.Transform
-                                    ? " → " + GreenBloodSeraphimName(plan.ReplacementRawcode)
-                                    : " · 공속 +30% 및 주위 피해";
-                                if (GUILayout.Button(unitName + " #" + unit.InstanceId + action,
-                                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
-                                    ShowResult(controller.RequestOriginalStoryGreenBlood(
-                                        unit.InstanceId));
-                            }
-                            if (pages > 1)
-                            {
-                                GUILayout.BeginHorizontal();
-                                if (GUILayout.Button("이전", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(52)) &&
-                                    storyGreenBloodPage > 0) storyGreenBloodPage--;
-                                GUILayout.Label((storyGreenBloodPage + 1) + " / " + pages,
-                                    OrdrMobileUiTheme.Explanation);
-                                if (GUILayout.Button("다음", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(52)) &&
-                                    storyGreenBloodPage + 1 < pages) storyGreenBloodPage++;
-                                GUILayout.EndHorizontal();
-                            }
+                            GUILayout.BeginHorizontal();
+                            if (GUILayout.Button("이전", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(52)) &&
+                                storyGreenBloodPage > 0) storyGreenBloodPage--;
+                            GUILayout.Label((storyGreenBloodPage + 1) + " / " + pages,
+                                OrdrMobileUiTheme.Explanation);
+                            if (GUILayout.Button("다음", OrdrMobileUiTheme.SmallButton, GUILayout.Width(68f), GUILayout.MinHeight(52)) &&
+                                storyGreenBloodPage + 1 < pages) storyGreenBloodPage++;
+                            GUILayout.EndHorizontal();
                         }
                     }
                 }
-                if (OrdrMobileUiTheme.DrawAccordionHeader("추가 보상 적용 상태",
-                    scenario.NativeRewards.PendingCount + "건 대기",
-                    showStoryNativeRewards, OrdrMobileUiTheme.Gold))
-                    showStoryNativeRewards = !showStoryNativeRewards;
-                if (showStoryNativeRewards)
-                {
-                    GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                    if (scenario.NativeRewards.Awards.Count == 0)
-                        GUILayout.Label("아직 격파로 발생한 원본 추가 보상이 없습니다.");
-                    foreach (var award in scenario.NativeRewards.Awards)
-                    {
-                        string kind = award.Kind == Original323StoryNativeRewardKind.Research ?
-                            "연구 해금" :
-                            award.Kind == Original323StoryNativeRewardKind.TraitPoints ?
-                            "특성포인트" :
-                            award.Kind == Original323StoryNativeRewardKind.GamblingCharges ?
-                            "유닛 도박 충전" :
-                            award.Kind == Original323StoryNativeRewardKind.AncientShip ?
-                            "고대의 배" :
-                            award.Kind == Original323StoryNativeRewardKind.HeroExperience ?
-                            "영웅 경험치" : "그린블러드";
-                        OrdrMobileUiTheme.DrawStatusRow(award.Stage + "단계 · " + kind,
-                            award.Applied ? "실제 적용 완료" : "대상 연결·적용 대기",
-                            award.Applied ? OrdrMobileUiTheme.Aqua : OrdrMobileUiTheme.Gold);
-                    }
-                    GUILayout.EndVertical();
-                }
-                GUILayout.EndVertical();
             }
-
-            if (OrdrMobileUiTheme.DrawAccordionHeader("건물별 보상",
-                "격파 " + cleared + " / 14 · 건물별 보상 보기",
-                showStoryStageHistory, OrdrMobileUiTheme.Aqua))
-                showStoryStageHistory = !showStoryStageHistory;
-            if (!showStoryStageHistory) return;
-            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-            for (int stage = 1; stage <= Original323StoryUnlockRules.FinalStage; stage++)
-            {
-                var building = catalog.Find(stage);
-                if (building == null) continue;
-                Original323StoryBuildingEncounter encountered = null;
-                foreach (var entry in world.Encounters)
-                    if (entry.Building.Stage == stage) encountered = entry;
-                bool alive = encountered != null &&
-                    encountered.State == Original323StoryBuildingState.Alive;
-                bool modelCleared = stage <= cleared;
-                string state = encountered != null && encountered.SourceSettlementConfirmed ?
-                    "원본 정산 확인" : modelCleared ? "격파 완료" :
-                    alive ? "공격 중" :
-                    stage == 14 && scenario.EggheadWaitRemaining > 0 ? "등장 대기" :
-                    "미등장";
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button(stage.ToString("00") + "  " + building.Name +
-                    " · " + state +
-                    (selectedStoryRewardStage == stage ? " ✓" : ""),
-                    GUILayout.MinHeight(58)))
-                    selectedStoryRewardStage = selectedStoryRewardStage == stage ? 0 : stage;
-                if (controller.CanRequestOriginalStoryBuilding && !alive &&
-                    (encountered == null || !encountered.SourceSettlementConfirmed) &&
-                    GUILayout.Button("원본 출현 확인",
-                        GUILayout.Width(112), GUILayout.MinHeight(58)))
-                    ShowResult(controller.RequestOriginalStoryBuilding(stage));
-                GUILayout.EndHorizontal();
-                if (selectedStoryRewardStage == stage)
-                    GUILayout.Label(Original323SoloStoryScenario.BaseRewardSummary(stage),
-                        OrdrMobileUiTheme.Explanation);
-            }
-            GUILayout.EndVertical();
         }
 
         private void DrawStoryDispatchPanel()
@@ -3739,7 +3602,7 @@ namespace Ordr.Mobile.Unity
             GUILayout.BeginHorizontal();
             DrawFusionResultPortrait(offer, 54f);
             GUILayout.BeginVertical(GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
-            GUILayout.Label(FusionDisplayName(offer), OrdrMobileUiTheme.Subheading,
+            GUILayout.Label(FusionNameWithGrade(offer), OrdrMobileUiTheme.Subheading,
                 GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true),
                 GUILayout.MinHeight(29f));
             GUILayout.Label(FusionStatus(offer),
@@ -3810,15 +3673,29 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Box("◆", GUILayout.Width(44f), GUILayout.Height(44f));
             string name = ingredient.Name;
             int gradeSuffix = name.IndexOf(" · ", StringComparison.Ordinal);
-            if (gradeSuffix > 0) name = name.Substring(0, gradeSuffix);
+            if (gradeSuffix > 0)
+                name = name.Substring(0, gradeSuffix) + " (" +
+                    name.Substring(gradeSuffix + 3) + ")";
             GUILayout.Label(name + " ×" + ingredient.RequiredCount,
                 OrdrMobileUiTheme.FusionIngredientName, GUILayout.Height(46f),
                 GUILayout.Width(107f));
-            GUILayout.Label("보유 " + ingredient.OwnedCount,
+            // Single-line material ownership: always include numerator
+            // and denominator, never let the chip wrap into a clipped row.
+            string countText = "보유 " + ingredient.OwnedCount + "/" +
+                ingredient.RequiredCount;
+            var countStyle = new GUIStyle(
                 ingredient.OwnedCount >= ingredient.RequiredCount ?
                     OrdrMobileUiTheme.FusionReadyChip :
-                    OrdrMobileUiTheme.FusionMissingChip,
-                GUILayout.Height(29f), GUILayout.Width(107f));
+                    OrdrMobileUiTheme.FusionMissingChip);
+            countStyle.alignment = TextAnchor.MiddleCenter;
+            countStyle.wordWrap = false;
+            countStyle.clipping = TextClipping.Clip;
+            countStyle.fontSize = 15;
+            while (countStyle.fontSize > 10 &&
+                countStyle.CalcSize(new GUIContent(countText)).x > 104f)
+                countStyle.fontSize--;
+            GUILayout.Label(countText, countStyle,
+                GUILayout.Height(30f), GUILayout.Width(107f));
             GUILayout.EndVertical();
         }
 
@@ -3893,6 +3770,16 @@ namespace Ordr.Mobile.Unity
             return label;
         }
 
+        private static string FusionNameWithGrade(MobileFusionPreview offer)
+        {
+            string name = FusionDisplayName(offer);
+            string grade = offer.ResultGrade;
+            if (string.IsNullOrWhiteSpace(grade)) return name;
+            string suffix = " (" + grade + ")";
+            return name.EndsWith(suffix, StringComparison.Ordinal) ?
+                name : name + suffix;
+        }
+
         private void DrawFusionResultPortrait(MobileFusionPreview offer, float size)
         {
             string unitId = null;
@@ -3926,9 +3813,13 @@ namespace Ordr.Mobile.Unity
             GUILayout.BeginHorizontal(selected ? OrdrMobileUiTheme.FusionSelectedCard :
                 GUI.skin.box);
             DrawFusionResultPortrait(offer, 48f);
-            if (GUILayout.Button(FusionDisplayName(offer),
-                selected ? OrdrMobileUiTheme.SelectedTab :
-                OrdrMobileUiTheme.FusionListName,
+            var fusionName = new GUIStyle(selected ?
+                OrdrMobileUiTheme.SelectedTab : OrdrMobileUiTheme.FusionListName);
+            fusionName.alignment = TextAnchor.MiddleCenter;
+            fusionName.wordWrap = true;
+            fusionName.clipping = TextClipping.Clip;
+            fusionName.fontSize = 17;
+            if (GUILayout.Button(FusionNameWithGrade(offer), fusionName,
                 GUILayout.MinHeight(54f), GUILayout.MinWidth(0f),
                 GUILayout.ExpandWidth(true)))
             {
@@ -3944,7 +3835,7 @@ namespace Ordr.Mobile.Unity
             GUILayout.Label(FusionStatus(offer),
                 CanCraftFusion(offer) ? OrdrMobileUiTheme.FusionReadyChip :
                 OrdrMobileUiTheme.FusionMissingChip,
-                GUILayout.Width(98f), GUILayout.MinHeight(52f));
+                GUILayout.Width(82f), GUILayout.MinHeight(52f));
             if (GUILayout.Button(fusionBookmarks.Contains(offer.RecipeId) ? "★" : "☆",
                 OrdrMobileUiTheme.SmallButton, GUILayout.Width(46f),
                 GUILayout.MinHeight(54f)))
@@ -4030,12 +3921,8 @@ namespace Ordr.Mobile.Unity
                     for (int j = i; j < Math.Min(i + 3, targets.Count); j++)
                     {
                         var target = targets[j];
-                        string catalogId =
-                            Original323SourceCommonWispWorld.CommonCatalogIdForRawcode(
-                                target.Rawcode);
-                        GUILayout.BeginVertical(GUILayout.MinWidth(0),
-                            GUILayout.ExpandWidth(true));
-                        DrawCharacterPortrait(catalogId, 44f);
+                        // Text-only nine-common picker. The shared photo
+                        // atlas is not used and every cell remains one tap.
                         bool chosen = selectedChoiceWispRawcode == target.Rawcode;
                         if (GUILayout.Button(target.Name,
                             chosen ? OrdrMobileUiTheme.SelectedTab :
@@ -4043,7 +3930,6 @@ namespace Ordr.Mobile.Unity
                             GUILayout.MinHeight(55f), GUILayout.MinWidth(0),
                             GUILayout.ExpandWidth(true)))
                             selectedChoiceWispRawcode = target.Rawcode;
-                        GUILayout.EndVertical();
                     }
                     GUILayout.EndHorizontal();
                 }

@@ -69,6 +69,8 @@ namespace Ordr.Mobile.Unity
             if (safe.width < 180f || safe.height < 160f || safe.width <= safe.height) return;
             float scale = MobileMapSkillLayout.UiScale(safe, Screen.dpi);
             GUISkin previous = OrdrMobileUiTheme.Activate();
+            int previousDepth = GUI.depth;
+            GUI.depth = IsStartScreenVisible ? -300 : 160;
             try
             {
                 if (IsStartScreenVisible)
@@ -77,6 +79,11 @@ namespace Ordr.Mobile.Unity
                     return;
                 }
                 var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
+                // The world camera intentionally covers ONLY the central
+                // battlefield. Without an opaque clear in the surrounding
+                // viewport, stale start-screen/menu pixels can survive as
+                // phantom text and images when the scene changes.
+                DrawOpaqueGameplayMargins(layout.Battle);
                 OrdrMobileUiTheme.DrawMapCorners(layout.Battle, new Color(.28f, .43f, .46f, .65f));
                 var combat = controller == null ? null : controller.Combat;
                 Rect hud = new Rect(layout.Battle.x + 5f * scale,
@@ -171,7 +178,32 @@ namespace Ordr.Mobile.Unity
                     }
                 }
             }
-            finally { GUI.skin = previous; }
+            finally { GUI.depth = previousDepth; GUI.skin = previous; }
+        }
+
+        private static void DrawOpaqueGameplayMargins(Rect battle)
+        {
+            if (Event.current == null || Event.current.type != EventType.Repaint)
+                return;
+            Color previous = GUI.color;
+            try
+            {
+                GUI.color = new Color(.018f, .032f, .052f, 1f);
+                if (battle.yMin > 0f)
+                    GUI.DrawTexture(new Rect(0, 0, Screen.width, battle.yMin),
+                        Texture2D.whiteTexture);
+                if (battle.yMax < Screen.height)
+                    GUI.DrawTexture(new Rect(0, battle.yMax, Screen.width,
+                        Screen.height - battle.yMax), Texture2D.whiteTexture);
+                if (battle.xMin > 0f)
+                    GUI.DrawTexture(new Rect(0, battle.yMin, battle.xMin,
+                        battle.height), Texture2D.whiteTexture);
+                if (battle.xMax < Screen.width)
+                    GUI.DrawTexture(new Rect(battle.xMax, battle.yMin,
+                        Screen.width - battle.xMax, battle.height),
+                        Texture2D.whiteTexture);
+            }
+            finally { GUI.color = previous; }
         }
 
         private void DrawStartScreen(Rect safe, float scale)

@@ -1202,6 +1202,8 @@ namespace Ordr.Mobile.Unity
             if (controller == null || controller.Combat == null || formationLayout == null ||
                 Screen.safeArea.width <= Screen.safeArea.height) return;
             GUISkin old = OrdrMobileUiTheme.Activate();
+            int previousDepth = GUI.depth;
+            GUI.depth = 75;
             try
             {
                 float scale = MobileMapSkillLayout.UiScale(Screen.safeArea, Screen.dpi);
@@ -1293,7 +1295,7 @@ namespace Ordr.Mobile.Unity
                         (formationPage + 1) + "/" + formationLayout.Pages, pageStyle);
                 }
             }
-            finally { GUI.skin = old; }
+            finally { GUI.depth = previousDepth; GUI.skin = old; }
         }
 
         private void ReadWorldSelection(CharacterCombatRuntime combat)

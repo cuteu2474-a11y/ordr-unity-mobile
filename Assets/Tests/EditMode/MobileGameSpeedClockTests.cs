@@ -21,6 +21,16 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OneButtonCyclesOneTwoFourOneOnly()
+        {
+            Assert.AreEqual(2, MobileGameSpeedClock.NextMultiplier(1));
+            Assert.AreEqual(4, MobileGameSpeedClock.NextMultiplier(2));
+            Assert.AreEqual(1, MobileGameSpeedClock.NextMultiplier(4));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                MobileGameSpeedClock.NextMultiplier(0));
+        }
+
+        [Test]
         public void PauseAndBackgroundNeverAccrueMissedSimulationSeconds()
         {
             var clock = new MobileGameSpeedClock();

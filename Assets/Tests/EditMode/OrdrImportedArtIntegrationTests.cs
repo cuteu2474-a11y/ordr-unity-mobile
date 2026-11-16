@@ -51,6 +51,22 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void ImportedUnitSheetNeverOverridesTruePerUnitPortraits()
+        {
+            // These seven supplied cells remain as archived reference assets,
+            // not a live substitute for original character photos.
+            foreach (var id in new[] { "LI-06", "C-02", "X-01",
+                "C-07", "S-27", "U-12", "S-16" })
+            {
+                var atlas = OrdrImportedArtAtlas.FindUnitPortrait(id);
+                Assert.IsNotNull(atlas);
+                var actual = OrdrCharacterPortraits.Find(id);
+                Assert.AreNotSame(atlas, actual, id +
+                    " must resolve an actual local/cached character photo or none.");
+            }
+        }
+
+        [Test]
         public void StoryBuildingsUseFourteenDistinctCellsInStageOrder()
         {
             var sheet = AssertTexture("ImportedArt/buildings-sheet", 1254, 1254);

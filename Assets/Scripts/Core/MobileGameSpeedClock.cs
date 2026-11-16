@@ -23,6 +23,18 @@ namespace Ordr.Mobile.Core
             Multiplier = value;
         }
 
+        // UI's one-button cycle; never invent arbitrary multipliers.
+        public static int NextMultiplier(int current)
+        {
+            switch (current)
+            {
+                case 1: return 2;
+                case 2: return 4;
+                case 4: return 1;
+                default: throw new ArgumentOutOfRangeException(nameof(current));
+            }
+        }
+
         public double Scale(double unscaledDeltaSeconds, bool canAdvance)
         {
             if (double.IsNaN(unscaledDeltaSeconds) ||
