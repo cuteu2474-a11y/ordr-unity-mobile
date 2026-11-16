@@ -158,7 +158,8 @@ namespace Ordr.Mobile.Unity
                 float flash = combat != null && displayed != null && hitTarget == displayed.EnemyId
                     ? Fade(combat.Time - hitAt, .24f) : 0;
                 DrawBuilding(new Rect(buildingX, header + 10f * scale, buildingWidth,
-                    Mathf.Max(10, ground - header - 10f * scale)), hasTarget, flash);
+                    Mathf.Max(10, ground - header - 10f * scale)), hasTarget, flash,
+                    displayed == null ? 0 : displayed.Building.Stage);
                 if (hasTarget)
                 {
                     float ratio = Mathf.Clamp01((float)((double)enemy.Health / enemy.MaxHealth));
@@ -250,7 +251,7 @@ namespace Ordr.Mobile.Unity
         private static float Fade(double age, float duration) =>
             age < 0 || age >= duration ? 0 : 1f - (float)age / duration;
 
-        private static void DrawBuilding(Rect r, bool alive, float hit)
+        private static void DrawBuilding(Rect r, bool alive, float hit, int stage)
         {
             Color wall = Color.Lerp(new Color(.32f, .43f, .53f), Color.white, hit);
             if (!alive)
@@ -264,15 +265,22 @@ namespace Ordr.Mobile.Unity
             float shake = Mathf.Sin(hit * 25f) * hit * 3f;
             r.x += shake;
             Fill(new Rect(r.x, r.yMax - 3, r.width, 3), new Color(.12f, .18f, .23f));
-            Texture2D texture = OrdrBattlefieldArt.StoryFortressTexture;
+            // Match the 14 authored drawings to the actual current story
+            // stage, never render the full 4x4 source sheet as one building.
+            Sprite stageArt = OrdrImportedArtAtlas.StoryBuilding(stage);
+            Texture2D texture = stageArt != null ? stageArt.texture :
+                OrdrBattlefieldArt.StoryFortressTexture;
+            Rect uv = stageArt != null ? OrdrImportedArtAtlas.TextureUv(stageArt) :
+                OrdrBattlefieldArt.StoryFortressUv;
             if (texture != null)
             {
-                Rect image = OrdrBattlefieldArt.FitTexture(r, texture, OrdrBattlefieldArt.StoryFortressUv);
+                Rect image = OrdrBattlefieldArt.FitTexture(r, texture, uv);
                 Color before = GUI.color;
                 try
                 {
-                    GUI.color = Color.Lerp(Color.white, new Color(1f,.65f,.42f,1f), hit * .65f);
-                    GUI.DrawTextureWithTexCoords(image, texture, OrdrBattlefieldArt.StoryFortressUv);
+                    GUI.color = Color.Lerp(Color.white,
+                        new Color(1f,.65f,.42f,1f), hit * .65f);
+                    GUI.DrawTextureWithTexCoords(image, texture, uv);
                 }
                 finally { GUI.color = before; }
             }

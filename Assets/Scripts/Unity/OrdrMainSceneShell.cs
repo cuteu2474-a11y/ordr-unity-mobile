@@ -123,7 +123,9 @@ namespace Ordr.Mobile.Unity
                 Color groundColor = GUI.color;
                 try
                 {
-                    GUI.color = new Color(.94f, .88f, .76f, 1f);
+                    // Keep the approved blue-green imported stone texture
+                    // in its authored colors; the old beige tint altered it.
+                    GUI.color = Color.white;
                     GUI.DrawTexture(layout.Story, OrdrBattlefieldArt.StoryTexture,
                         ScaleMode.ScaleAndCrop);
                 }

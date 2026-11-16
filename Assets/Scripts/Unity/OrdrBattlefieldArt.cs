@@ -96,16 +96,21 @@ namespace Ordr.Mobile.Unity
         public static Sprite GradeFrame => gradeFrame ?? (gradeFrame = MakeSprite(FrameTexture(), 96));
         public static Sprite EnemySprite(bool isBoss)
         {
-            if (isBoss) return boss ?? (boss = MakeSprite(HazardTexture(true), 80));
-            if (enemy == null)
+            // The approved pirate illustration is the common enemy body,
+            // including enraged monsters and moving bosses. Bosses retain
+            // their larger visual scale and gold halo in the world presenter.
+            // Keep distinct procedural placeholders if the PNG is absent.
+            var imported = LoadOnce(ref importedEnemy, ref importedEnemyLoaded,
+                ImportedEnemyResource);
+            if (imported != null)
             {
-                var imported = LoadOnce(ref importedEnemy, ref importedEnemyLoaded,
-                    ImportedEnemyResource);
-                enemy = imported != null
-                    ? MakeSprite(imported, Mathf.Max(imported.width, imported.height))
-                    : MakeSprite(HazardTexture(false), 80);
+                if (enemy == null)
+                    enemy = MakeSprite(imported,
+                        Mathf.Max(imported.width, imported.height));
+                return enemy;
             }
-            return enemy;
+            if (isBoss) return boss ?? (boss = MakeSprite(HazardTexture(true), 80));
+            return enemy ?? (enemy = MakeSprite(HazardTexture(false), 80));
         }
         public static Sprite EnemyHaloSprite =>
             enemyHalo ?? (enemyHalo = MakeSprite(MakeTexture(96, 96, (x, y) =>

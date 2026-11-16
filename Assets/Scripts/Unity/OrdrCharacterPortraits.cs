@@ -36,6 +36,10 @@ namespace Ordr.Mobile.Unity
             {
                 portrait = Resources.Load<Sprite>(ResourcesPrefix + catalogUnitId);
                 if (portrait == null) portrait = LoadCachedFile(catalogUnitId);
+                // Approved bundled sheet portraits precede network requests,
+                // but can never override explicitly installed/cached art.
+                if (portrait == null)
+                    portrait = OrdrImportedArtAtlas.FindUnitPortrait(catalogUnitId);
                 if (portrait != null)
                 {
                     Cache[catalogUnitId] = portrait;

@@ -696,7 +696,7 @@ namespace Ordr.Mobile.Unity
         private void DrawRightDrawer(MobileMapSkillLayout layout, float scale)
         {
             Rect area = MobileMapSkillLayout.Scaled(layout.RightDrawer, scale);
-            GUILayout.BeginArea(area, OrdrMobileUiTheme.BorderlessPanel);
+            GUILayout.BeginArea(area, OrdrMobileUiTheme.ImportedPanel);
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             // The chat scoreboard uses its own page selector; a second large
@@ -786,7 +786,7 @@ namespace Ordr.Mobile.Unity
         private void DrawStandbyDashboard(MobileMapSkillLayout layout,float scale)
         {
             Rect area = MobileMapSkillLayout.Scaled(layout.RightDrawer, scale);
-            GUILayout.BeginArea(area, OrdrMobileUiTheme.BorderlessPanel);
+            GUILayout.BeginArea(area, OrdrMobileUiTheme.ImportedPanel);
             dashboardScroll = BeginPanelScroll(dashboardScroll);
             if (Combat == null)
                 GUILayout.Label("전투 대기");

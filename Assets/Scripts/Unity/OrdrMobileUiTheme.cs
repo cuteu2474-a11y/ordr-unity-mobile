@@ -16,6 +16,7 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle currencyText;
         private static GUIStyle panel;
         private static GUIStyle borderlessPanel;
+        private static GUIStyle importedPanel;
         private static GUIStyle closeButton;
         private static GUIStyle navButton;
         private static GUIStyle overline;
@@ -55,6 +56,7 @@ namespace Ordr.Mobile.Unity
         internal static GUIStyle CurrencyText { get { return currencyText; } }
         internal static GUIStyle Panel { get { return panel; } }
         internal static GUIStyle BorderlessPanel { get { return borderlessPanel; } }
+        internal static GUIStyle ImportedPanel { get { return importedPanel; } }
         internal static GUIStyle CloseButton { get { return closeButton; } }
         internal static GUIStyle NavButton { get { return navButton; } }
         internal static GUIStyle Overline { get { return overline; } }
@@ -161,6 +163,19 @@ namespace Ordr.Mobile.Unity
             Texture2D drawerBackground = Flat(new Color(.035f,.055f,.085f,1f));
             Background(borderlessPanel, drawerBackground, drawerBackground, Text);
             borderlessPanel.border = new RectOffset(0,0,0,0);
+            // The approved blue-and-gold ImportedArt panel is the backing
+            // for the right-side game drawer. Nine-slice the frame so its
+            // border stays legible on different landscape screen sizes.
+            // If the Resource is unavailable the original flat UI remains.
+            importedPanel = new GUIStyle(borderlessPanel);
+            Texture2D importedPanelTexture = OrdrImportedArtAtlas.PanelBackground;
+            if (importedPanelTexture != null)
+            {
+                Background(importedPanel, importedPanelTexture,
+                    importedPanelTexture, Text);
+                importedPanel.border = new RectOffset(30, 30, 30, 30);
+                importedPanel.padding = new RectOffset(15, 15, 15, 15);
+            }
             navButton = new GUIStyle(themedSkin.button);
             navButton.alignment = TextAnchor.MiddleCenter;
             navButton.padding = new RectOffset(8,8,7,7);
