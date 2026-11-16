@@ -28,3 +28,5 @@ request: rerun integrated Unity tests and create Android development APK if they
 2026-11-16: User-reported APK run 43824637345 failed 6/2428 Unity EditMode tests (PNG NPOT import dimensions and stale shared boss sprite assertion). Repair imported art texture import metadata plus consistent art tests; request ONE retest and development APK build from current main.
 
 2026-11-16: User-requested Android development APK for latest main 26569eb0a78e8d9d593b2bf8e097fd539219cb36, including restored portrait photos, UI frame containment, unified speed control, fusion and story layouts. Run grouped Unity validation once, then build APK.
+
+2026-11-16: Retry failed run 43836312220 after auditing 342 Python source checks: update compact portrait row and story dispatch assertions, and repair stale Unity EditMode left navigation tint/mark assertion removed by text-only UI redesign. Build development APK from latest main after one grouped CI pass.

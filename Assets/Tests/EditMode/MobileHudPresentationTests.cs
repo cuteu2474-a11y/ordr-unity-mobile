@@ -60,26 +60,17 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void FacilityNavigationKeepsDistinctAccentColorsWithoutDecorativeIntroductions()
+        public void FacilityNavigationUsesTextOnlyButtonsWithoutDecorativeOverlays()
         {
             var panel = typeof(OrdrMobileTouchPanel);
-            var tabType = panel.GetNestedType("Tab", BindingFlags.NonPublic);
-            var tint = panel.GetMethod("GetFacilityTabTint",
-                BindingFlags.Static | BindingFlags.NonPublic);
-            Assert.IsNotNull(tint);
+            Assert.IsNotNull(panel.GetMethod("DrawLeftTab",
+                BindingFlags.Instance | BindingFlags.NonPublic),
+                "All seven facilities must remain accessible from the left rail.");
+            Assert.IsNull(panel.GetMethod("GetFacilityTabTint",
+                BindingFlags.Static | BindingFlags.NonPublic),
+                "The retired accent-mark overlay must not be reintroduced.");
             Assert.IsNull(panel.GetNestedType("FacilityVisual", BindingFlags.NonPublic),
-                "Decorative facility slogans and banner metadata must stay removed.");
-            var tabs = new[] {
-                "Gambling", "UpgradeOne", "UpgradeTwo", "Helper",
-                "Missions", "Research", "LogPose",
-            };
-            var colors = new HashSet<Color>();
-            foreach (string name in tabs)
-            {
-                Color color = (Color)tint.Invoke(null,
-                    new[] { Enum.Parse(tabType, name) });
-                Assert.IsTrue(colors.Add(color), name);
-            }
+                "Decorative facility slogans and banners must stay removed.");
         }
 
         [Test]

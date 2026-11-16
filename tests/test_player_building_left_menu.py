@@ -88,9 +88,12 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
             ("DrawPersonalMissions", "private static string MissionRewardText(",
              "DrawAccordionHeader(", "TryReroll(slot.Index)"),
             ("DrawOwnedUnitIndex", "private void DrawUnitConfirmations(",
-             "DrawActionRow(group.Name +", "DrawUnitConfirmations(entry.InstanceId)"),
-            ("DrawStory", "private void DrawFusion(",
-             'DrawStatusRow("현재 목표"', "RequestOriginalStoryBuilding(stage)"),
+             "DrawPortraitActionRow(", "DrawUnitConfirmations(entry.InstanceId)"),
+            ("DrawStory", "private void DrawStoryGreenBloodAction(",
+             'DrawStatusRow("현재 목표"', "DrawStoryDispatchPanel();"),
+            ("DrawStoryDispatchPanel", "private void DrawFusion(",
+             'DrawAccordionHeader("파견 / 복귀"',
+             "manual.RequestStoryDispatch(actor.InstanceId)"),
             ("DrawFusion", "private void DrawFusionConfirmation(",
              "DrawFusionRecipeCard(offer)", "pendingFusion = offer"),
             ("DrawTreasureGacha", "private void DrawAutomaticWispStatus(",
@@ -108,6 +111,25 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
                 page = panel.split(begin, 1)[1].split(following, 1)[0]
                 self.assertIn(affordance, page)
                 self.assertIn(preserved_action, page)
+
+        # Keep the interactive photo within the owning unit row.
+        # Choosing a row selects its actual unit; sales remain confirmed.
+        owned = panel.split("private void DrawOwnedUnitIndex(", 1)[1].split(
+            "private void DrawUnitConfirmations(", 1)[0]
+        self.assertIn("OrdrCharacterPortraits.Find(group.UnitId)", owned)
+        self.assertIn("OrdrBattlefieldArt.UnitSprite(group.UnitId)", owned)
+        self.assertIn("Combat.Roster.Select(next)", owned)
+
+        # The current story page exposes live progress and dispatch; the
+        # retired stage-reward history is not a manual building request.
+        story = panel.split("private void DrawStory(", 1)[1].split(
+            "private void DrawStoryGreenBloodAction(", 1)[0]
+        self.assertIn("DrawStoryHealth(", story)
+        self.assertIn("DrawStoryGreenBloodAction();", story)
+        self.assertNotIn("RequestOriginalStoryBuilding(stage)", story)
+        dispatch = panel.split("private void DrawStoryDispatchPanel(", 1)[1].split(
+            "private void DrawFusion(", 1)[0]
+        self.assertIn("manual.RequestStoryRecall(actor.InstanceId)", dispatch)
 
         self.assertIn("expandedMissionSlots", panel)
         self.assertNotIn("expandedStoryStages", panel)
