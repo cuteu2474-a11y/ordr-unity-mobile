@@ -21,8 +21,14 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1f, OrdrBattlefieldArt.UnitSprite("C-01").bounds.size.x, 0.0001f);
             Assert.IsNotNull(OrdrBattlefieldArt.GradeFrame);
             Assert.IsNotNull(OrdrBattlefieldArt.EnemySprite(true));
-            Assert.AreNotSame(OrdrBattlefieldArt.EnemySprite(true),
+            // The current authored pirate sprite is intentionally shared
+            // across line, enraged and boss bodies. The presenter retains
+            // the boss-only size and gold halo (not a separate body sprite).
+            Assert.AreSame(OrdrBattlefieldArt.EnemySprite(true),
                 OrdrBattlefieldArt.EnemySprite(false));
+            Assert.AreSame(
+                Resources.Load<Texture2D>(OrdrBattlefieldArt.ImportedEnemyResource),
+                OrdrBattlefieldArt.EnemySprite(true).texture);
             Assert.IsNotNull(OrdrBattlefieldArt.EnemyHaloSprite);
             Assert.IsNotNull(OrdrBattlefieldArt.SkillRingSprite);
             Assert.IsNotNull(OrdrBattlefieldArt.SkillSparkSprite);
