@@ -11,10 +11,20 @@ namespace Ordr.Mobile.Combat
         public const string SourceJassSha256 = SourceModelScriptAttackCatalog.SourceJassSha256;
 
         private static SourceScriptHit Hit(SourceScriptHitShape shape,
-            double damage, double radius = 0, double length = 0)
+            double damage, double radius = 0, double length = 0,
+            SourceScriptDamageType damageType = SourceScriptDamageType.ModelDefault)
         {
             return new SourceScriptHit(shape, radius, length, damage, 1, 1,
-                Ordr323AttackType.Spells);
+                Ordr323AttackType.Spells, damageType: damageType);
+        }
+
+        // Bn4 adds native A08O/Apxf to a short-lived h0C5 proxy.
+        // The proxy is rendered as timed attacks, never as a persistent unit.
+        public static SourceScriptHit BonClayPhoenixFireTick()
+        {
+            return new SourceScriptHit(SourceScriptHitShape.Direct, 0, 0,
+                250, 1, 1, Ordr323AttackType.Spells,
+                damageType: SourceScriptDamageType.Magical);
         }
 
         // Build the mobile cone from the pinned W3X e0KD/A086 (ANfl) facts,
@@ -37,7 +47,8 @@ namespace Ordr.Mobile.Combat
                 Ordr323AttackType.Spells,
                 endRadius: ability.DataD1,
                 maxTargets: ability.MaxNativeTargets.Value,
-                castRange: ability.CastRange1);
+                castRange: ability.CastRange1,
+                 damageType: SourceScriptDamageType.Magical);
         }
 
         // Source W3X: Bn0/e0KD/A08L (AEfk). DataA1=1500,
@@ -69,7 +80,8 @@ namespace Ordr.Mobile.Combat
                 "A086 원본 범위·4명 모바일 모델 / 네이티브 대상 열거·면역·최종 HP 별도 미인증"),
             // BoE casts e0KG/A0ES (AUcs) toward attacked unit.
             new SourceScriptAttackSpec("S-19", "h01J", "BoE", 100, 14,
-                null, new[] { Hit(SourceScriptHitShape.ProjectileLine, 850, 215, 1700) },
+                null, new[] { Hit(SourceScriptHitShape.ProjectileLine, 850, 215, 1700,
+                    SourceScriptDamageType.Magical) },
                 "A0ES carrionswarm 투사체 비행·너비·피격 수·면역 미검증"),
             // BoI: two cosmetic e00T, and synchronous Bcb at the target.
             new SourceScriptAttackSpec("S-22", "h00W", "BoI", 100, 15,

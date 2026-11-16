@@ -675,8 +675,7 @@ namespace Ordr.Mobile.Combat
                         var closest = NearestSourceModelTarget(actor, spawn.X, spawn.Y, 800);
                         if (closest == null) return;
                         ApplySourceScriptHits(actor, closest, script, new[] {
-                            new SourceScriptHit(SourceScriptHitShape.Direct, 0, 0,
-                                250, 1, 1, Ordr323AttackType.Spells) });
+                            SourceModelNextAttackCatalog.BonClayPhoenixFireTick() });
                     });
             }
         }
@@ -718,16 +717,15 @@ namespace Ordr.Mobile.Combat
                     // enemy that happens to stand inside its 500-radius AoE.
                     if (hit.StoryOnly && target.Kind != CharacterEnemyKind.Story)
                         continue;
-                    Ordr323ArmorType armor;
-                    if ((hit.UsesArmorRating &&
-                         !target.Enemy.Defenses.BaseArmor.HasValue) ||
-                        !Ordr323OriginalDamageRules.TryReadArmorType(
-                            target.Enemy.Defenses.WarcraftArmorType, out armor))
+                    SourceModelScriptDamageFactors factors;
+                    string damageBlocker;
+                    if (!SourceModelScriptDamageTypeRules.TryPrepare(
+                            hit, target.Enemy, out factors, out damageBlocker))
                     {
                         events.Add(new CharacterCombatEvent(
                             CharacterCombatEventType.EffectDeferred,
                             attackerId, target.Id, actor.Catalog.Name + " 공격 기술",
-                            "MODEL_ONLY 대상 방어 자료 부족: 피해 보류", 0));
+                            "MODEL_ONLY 스킬 피해 보류: " + damageBlocker, 0));
                         continue;
                     }
                     double uniform = hit.Minimum == hit.Maximum ? 0 :
@@ -761,23 +759,15 @@ namespace Ordr.Mobile.Combat
                             hit.EnragedMaxHealthPercent / 100.0;
                     double sourceDamage = Ordr323MapDamageMath.ScriptDamageBeforeDefense(
                         raw, hit.Minimum, hit.Maximum, uniform);
-                    // Original Warcraft attack type controls the map-specific
-                    // armor table, whereas DAMAGE_TYPE_UNIVERSAL bypasses
-                    // numeric armor rating and magic immunity independently.
-                    // Keep all other scripted packets on their existing
-                    // model default until their JASS damage type is pinned.
-                    double armorRating = hit.UsesArmorRating
-                        ? target.Enemy.Defenses.BaseArmor.Value -
-                            SourceModelUnitEffects.ResolvePracticeArmorReduction(
-                                target.Enemy.Status.Snapshot())
-                        : 0;
-                    double modeled = Ordr323MapDamageMath.ApplyVerifiedFactors(
+                    // Attack type chooses the original DamageBonus* row;
+                    // damage type independently chooses physical armor,
+                    // A04Q spell resistance, or Universal bypass.
+                    // Unpinned JASS packets remain on the legacy model path.
+                    double modeled = factors.Apply(
                         sourceDamage,
                         target.Kind == CharacterEnemyKind.Line &&
                         hit.LineAttackOverride.HasValue
-                            ? hit.LineAttackOverride.Value : hit.Attack,
-                        armor, true, hit.UsesArmorRating,
-                        armorRating, false, 0, 1);
+                            ? hit.LineAttackOverride.Value : hit.Attack);
                     if (modeled >= long.MaxValue)
                         throw new OverflowException("모델 공격 스킬 피해 범위 초과");
                     long planned = (long)Math.Floor(modeled);

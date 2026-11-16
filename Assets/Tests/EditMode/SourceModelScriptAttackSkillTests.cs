@@ -407,8 +407,16 @@ namespace Ordr.Mobile.Tests
                     e.Detail.Contains(source.JassFunction)), unitId);
                 Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.EffectDeferred &&
                     e.Detail.Contains(source.DeferredNativeEffect)), unitId);
-                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
-                    e.Detail.Contains(source.JassFunction)), unitId);
+                // The 20R legacy fixture has no source-confirmed A04Q level.
+                // Newly typed native spells must defer, never assume 0% MR.
+                if (unitId == "S-12" || unitId == "S-18" || unitId == "S-19")
+                    Assert.IsTrue(events.Any(e => e.Type ==
+                        CharacterCombatEventType.EffectDeferred &&
+                        e.Detail.Contains("스킬 피해 보류")), unitId);
+                else
+                    Assert.IsTrue(events.Any(e => e.Type ==
+                        CharacterCombatEventType.SkillDamage &&
+                        e.Detail.Contains(source.JassFunction)), unitId);
             }
         }
 

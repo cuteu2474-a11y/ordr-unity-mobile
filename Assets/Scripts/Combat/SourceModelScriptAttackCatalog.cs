@@ -10,7 +10,10 @@ namespace Ordr.Mobile.Combat
 
     // Attack type and JASS damage type are separate Warcraft parameters.
     // Retain the old model behavior for skills without a pinned damage type.
-    public enum SourceScriptDamageType { ModelDefault, Universal }
+    // Attack type selects the map armor-class row; damage type independently
+    // controls numeric armor, native spell resistance and immunity eligibility.
+    // Preserve 0/1 identities of existing model/default and Universal packets.
+    public enum SourceScriptDamageType { ModelDefault, Universal, Physical, Magical }
 
     public sealed class SourceScriptHit
     {
@@ -27,7 +30,9 @@ namespace Ordr.Mobile.Combat
         public double Maximum { get; private set; }
         public Ordr323AttackType Attack { get; private set; }
         public SourceScriptDamageType DamageType { get; private set; }
-        public bool UsesArmorRating => DamageType != SourceScriptDamageType.Universal;
+        public bool UsesArmorRating => DamageType == SourceScriptDamageType.ModelDefault ||
+            DamageType == SourceScriptDamageType.Physical;
+        public bool UsesMagicResistance => DamageType == SourceScriptDamageType.Magical;
         // JASS Bcb uses target HP at damage time for some attacks. These
         // alternative branches are source-callback inputs, not extra hits.
         public double BossCurrentHealthPercent { get; private set; }
@@ -129,7 +134,7 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentOutOfRangeException(nameof(damage));
             return new SourceScriptHit(SourceScriptHitShape.RankyakuLine,
                 200, 800, damage, 1, 1, Ordr323AttackType.Spells,
-                endRadius: 250);
+                endRadius: 250, damageType: SourceScriptDamageType.Magical);
         }
 
         public static bool Contains(SourceScriptHit wave, double originX,
