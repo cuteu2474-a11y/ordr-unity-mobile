@@ -469,12 +469,12 @@ namespace Ordr.Mobile.Tests
                 var events = game.Battle.Advance(.3);
                 var hits = events.Where(e =>
                     e.Type == CharacterCombatEventType.Attack &&
-                    e.ActorId == attacker.ToString() && e.TargetId == targetId)
+                    e.ActorId == attacker.ToString() && e.EnemyId == targetId)
                     .ToArray();
                 Assert.AreEqual(1, hits.Length, unitId + " " + kind);
                 bool stunEvent = events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
-                    e.ActorId == attacker.ToString() && e.TargetId == targetId &&
+                    e.ActorId == attacker.ToString() && e.EnemyId == targetId &&
                     e.Detail.Contains("기절"));
                 Assert.AreEqual(proc, stunEvent, unitId + " " + kind);
                 var status = game.Combat.StatusOf(targetId);
@@ -489,7 +489,7 @@ namespace Ordr.Mobile.Tests
                 }
                 bool bonusEvent = events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
-                    e.ActorId == attacker.ToString() && e.TargetId == targetId &&
+                    e.ActorId == attacker.ToString() && e.EnemyId == targetId &&
                     e.Detail.Contains("추가 피해"));
                 Assert.AreEqual(proc && bonusDamage, bonusEvent,
                     unitId + " " + kind);
@@ -537,7 +537,7 @@ namespace Ordr.Mobile.Tests
                     e.Type == CharacterCombatEventType.SkillDamage &&
                     e.SkillName == "꽃꽃 열매").ToArray();
                 Assert.AreEqual(3, added.Length);
-                Assert.AreEqual(3, added.Select(e => e.TargetId).Distinct().Count());
+                Assert.AreEqual(3, added.Select(e => e.EnemyId).Distinct().Count());
                 Assert.AreEqual(1, events.Count(e =>
                     e.Type == CharacterCombatEventType.Attack));
                 Assert.IsTrue(events.Any(e =>
@@ -575,10 +575,10 @@ namespace Ordr.Mobile.Tests
                     e.Type == CharacterCombatEventType.SkillDamage &&
                     e.SkillName == "꽃꽃 열매").ToArray();
                 Assert.AreEqual(3, added.Length);
-                Assert.IsFalse(added.Any(e => e.TargetId == "special-robin-outside"));
+                Assert.IsFalse(added.Any(e => e.EnemyId == "special-robin-outside"));
                 Assert.Greater(
-                    added.Single(e => e.TargetId == "special-robin-near-a").Amount,
-                    added.Single(e => e.TargetId == "special-robin-heavy").Amount,
+                    added.Single(e => e.EnemyId == "special-robin-near-a").Amount,
+                    added.Single(e => e.EnemyId == "special-robin-heavy").Amount,
                     "Every A08A secondary projectile must use its target's armor");
                 Assert.AreEqual(1000000L, game.Combat.MobileEnemySnapshot()
                     .Single(e => e.Id == "special-robin-outside").Health);
@@ -607,10 +607,10 @@ namespace Ordr.Mobile.Tests
                 var events = game.Battle.Advance(.3);
                 Assert.AreEqual(1, events.Count(e =>
                     e.Type == CharacterCombatEventType.SkillDamage &&
-                    e.TargetId == "robin-edge" && e.SkillName == "꽃꽃 열매"));
+                    e.EnemyId == "robin-edge" && e.SkillName == "꽃꽃 열매"));
                 Assert.IsFalse(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillDamage &&
-                    e.TargetId == "robin-outside"));
+                    e.EnemyId == "robin-outside"));
                 var all = game.Combat.MobileEnemySnapshot();
                 Assert.Less(all.Single(e => e.Id == "robin-edge").Health, 1000000L);
                 Assert.AreEqual(1000000L,

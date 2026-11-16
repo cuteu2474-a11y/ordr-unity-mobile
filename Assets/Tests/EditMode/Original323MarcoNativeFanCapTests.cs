@@ -106,9 +106,9 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(7, fanHits.Length,
                     "A08L DataC1=7 is the maximum total victim count");
                 Assert.AreEqual(7,
-                    fanHits.Select(e => e.TargetId).Distinct().Count());
+                    fanHits.Select(e => e.EnemyId).Distinct().Count());
                 Assert.IsFalse(fanHits.Any(e =>
-                    e.TargetId == "marco-fan-outside"));
+                    e.EnemyId == "marco-fan-outside"));
                 Assert.AreEqual(1000000L, combat.MobileEnemySnapshot()
                     .Single(e => e.Id == "marco-fan-outside").Health);
             }
