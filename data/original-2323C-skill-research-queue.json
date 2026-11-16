@@ -7,7 +7,7 @@
     "catalogCharacters": 277,
     "tooltipProfiles": 200,
     "unitsWithoutTooltipProfile": 77,
-    "unitsWithConnectedModelEffects": 194,
+    "unitsWithConnectedModelEffects": 195,
     "skillEntries": 554,
     "passiveEntries": 300,
     "skillEntriesOnMappedUnits": 548,
@@ -14747,7 +14747,7 @@
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
       "connectedModelEffects": [
-        "꽃꽃 열매 · 같은 전장 최대 3명 타격 (연습 대상 선택/동시 타격 모델)"
+        "A07M 꽃꽃 열매 Lv.1 · 기본 공격 최대 3명, 반경 600 · 대상별 방어 계산"
       ],
       "connectedManualFunctions": [],
       "remainingWork": [
@@ -15127,7 +15127,7 @@
       "documentedPassiveCount": null,
       "connectedModelEffects": [
         "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증",
-        "A089 크리마텍트 · 소환 위치 반경 450 적 이동속도 -5% 오라 모델 · 소환물 수명/중첩 미검증"
+        "A089 크리마텍트 · 발동 위치 반경 450 적 이동속도 -5% / 여진 3초(도감) · A088/B010 공유 버프 중첩 미검증"
       ],
       "connectedManualFunctions": [],
       "remainingWork": [
@@ -15150,7 +15150,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "A08A 꽃꽃 열매 Lv.2 · 기본 공격 최대 4명, 반경 600 · 추가 피해 감소 없음"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -15198,7 +15200,8 @@
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
       "connectedModelEffects": [
-        "루치 · 크리티컬 · 객체 확률 15%"
+        "루치 · 크리티컬 · 객체 확률 15%",
+        "Bnw/A08D 람각 · 공격 시 10%, 600 마법 피해, 시전자 방향 직선 800, 폭 200→250 · e0KE 1초 객체 효과"
       ],
       "connectedManualFunctions": [],
       "remainingWork": [
@@ -15272,7 +15275,7 @@
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
       "connectedModelEffects": [
-        "A087 블랙 애로우 · 일반 적 처치 시 h00H 좀비 1기 / 10초 · 연습 소환 모델, 원본 조건 미검증"
+        "A087 블랙 애로우 · 라인 적에게 양수 피해 기여 후 처치 시 h00H 공격 효과 / 10초 · 막타 무관, 투사체 모델"
       ],
       "connectedManualFunctions": [],
       "remainingWork": [
