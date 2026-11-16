@@ -1176,9 +1176,12 @@ namespace Ordr.Mobile.Unity
                     if (!visuals.TryGetValue(id, out visual)) continue;
                     visual.Root.transform.position = position;
                     visual.Root.transform.localScale = new Vector3(size, size, 1f);
-                    visual.Icon.enabled = id == representative;
+                    // Landscape formation portraits are screen-space clipped
+                    // card art. Keep world-space roots for combat effects,
+                    // but disable the free-floating icon/frame sprites.
+                    visual.Icon.enabled = false;
                     if (visual.PortraitFrame != null)
-                        visual.PortraitFrame.enabled = id == representative;
+                        visual.PortraitFrame.enabled = false;
                 }
             }
         }
@@ -1229,6 +1232,15 @@ namespace Ordr.Mobile.Unity
                     var group = formationGroups[formationLayout.Start + i];
                     Rect cell = formationLayout.Cells[i];
                     bool chosen = group.Contains(selected);
+                    long representative = chosen ? selected.Value : group.InstanceIds[0];
+                    Visual visual;
+                    if (visuals.TryGetValue(representative, out visual) &&
+                        visual.Icon != null && visual.Icon.sprite != null)
+                        MobileSpritePortraitDisplay.DrawFramedSprite(
+                            visual.Icon.sprite,
+                            MobileOwnedFormationLayout.PortraitRect(cell, scale),
+                            chosen ? new Color(1f, .95f, .35f, 1f)
+                                : ColorForGrade(visual.Grade));
                     Rect label = MobileOwnedFormationLayout.NameRect(cell, scale);
                     Rect count = MobileOwnedFormationLayout.QuantityRect(cell, scale);
                     Color before = GUI.color;

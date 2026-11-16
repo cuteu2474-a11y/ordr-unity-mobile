@@ -164,6 +164,40 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [TestCase(100f, 50f)]
+        [TestCase(50f, 100f)]
+        [TestCase(2000f, 800f)]
+        [TestCase(72f, 72f)]
+        public void EveryPortraitAspectFitsInsideBothMainFormationAndMenuRow(
+            float sourceWidth, float sourceHeight)
+        {
+            var cell = new Rect(36f, 40f, 130f, 130f);
+            var frame = MobileOwnedFormationLayout.PortraitRect(cell, 1f);
+            var inside = MobileSpritePortraitDisplay.Inset(frame, 4f);
+            var image = MobileSpritePortraitDisplay.FitInside(
+                inside, new Vector2(sourceWidth, sourceHeight));
+            Assert.Greater(image.width, 0f);
+            Assert.Greater(image.height, 0f);
+            Assert.GreaterOrEqual(image.xMin, frame.xMin);
+            Assert.GreaterOrEqual(image.yMin, frame.yMin);
+            Assert.LessOrEqual(image.xMax, frame.xMax);
+            Assert.LessOrEqual(image.yMax, frame.yMax);
+            Assert.LessOrEqual(image.yMax,
+                MobileOwnedFormationLayout.NameRect(cell, 1f).yMin);
+            Assert.That(image.width / image.height,
+                Is.EqualTo(sourceWidth / sourceHeight).Within(.001f));
+
+            var button = new Rect(635f, 190f, 310f, 72f);
+            var thumb = new Rect(button.x + 7f, button.y + 10f, 52f, 52f);
+            var listPortrait = MobileSpritePortraitDisplay.FitInside(
+                MobileSpritePortraitDisplay.Inset(thumb, 3f),
+                new Vector2(sourceWidth, sourceHeight));
+            Assert.GreaterOrEqual(listPortrait.xMin, button.xMin);
+            Assert.LessOrEqual(listPortrait.xMax, button.xMax);
+            Assert.GreaterOrEqual(listPortrait.yMin, button.yMin);
+            Assert.LessOrEqual(listPortrait.yMax, button.yMax);
+        }
+
         [Test]
         public void EmptyOrShrinkingRosterClampsItsPageWithoutInventingCharacters()
         {

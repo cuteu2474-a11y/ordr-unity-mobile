@@ -26,15 +26,18 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void EnemyPirateIsUsedForLineEnragedAndBossWithoutChangingRole()
+        public void RetiredPirateImageIsNotUsedForEveryLiveEnemyAndBoss()
         {
             var image = AssertTexture("ImportedArt/enemy-pirate", 1254, 1254);
             var normal = OrdrBattlefieldArt.EnemySprite(false);
             var boss = OrdrBattlefieldArt.EnemySprite(true);
             Assert.IsNotNull(normal);
-            Assert.AreSame(normal, boss,
-                "The shared pirate illustration is reused; boss size/halo remain elsewhere.");
-            Assert.AreSame(image, normal.texture);
+            Assert.IsNotNull(boss);
+            Assert.AreNotSame(normal, boss);
+            Assert.AreNotSame(image, normal.texture);
+            Assert.AreNotSame(image, boss.texture);
+            Assert.AreSame(normal, OrdrBattlefieldArt.EnemySprite(false));
+            Assert.AreSame(boss, OrdrBattlefieldArt.EnemySprite(true));
         }
 
         [Test]

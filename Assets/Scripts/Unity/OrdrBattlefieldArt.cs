@@ -18,8 +18,8 @@ namespace Ordr.Mobile.Unity
         public const string ImportedPanelSheetResource = "ImportedArt/ui-panel";
         public const string QuantityResource = "OrdrArt/QuantityButton";
         public const string FortressResource = "OrdrArt/StoryFortress";
-        private static Texture2D sharedGround, quantity, fortress, importedGround, importedEnemy;
-        private static bool groundLoaded, quantityLoaded, fortressLoaded, importedGroundLoaded, importedEnemyLoaded;
+        private static Texture2D sharedGround, quantity, fortress, importedGround;
+        private static bool groundLoaded, quantityLoaded, fortressLoaded, importedGroundLoaded;
         private static Sprite board;
         private static Sprite gradeFrame;
         private static Sprite enemy;
@@ -96,19 +96,9 @@ namespace Ordr.Mobile.Unity
         public static Sprite GradeFrame => gradeFrame ?? (gradeFrame = MakeSprite(FrameTexture(), 96));
         public static Sprite EnemySprite(bool isBoss)
         {
-            // The approved pirate illustration is the common enemy body,
-            // including enraged monsters and moving bosses. Bosses retain
-            // their larger visual scale and gold halo in the world presenter.
-            // Keep distinct procedural placeholders if the PNG is absent.
-            var imported = LoadOnce(ref importedEnemy, ref importedEnemyLoaded,
-                ImportedEnemyResource);
-            if (imported != null)
-            {
-                if (enemy == null)
-                    enemy = MakeSprite(imported,
-                        Mathf.Max(imported.width, imported.height));
-                return enemy;
-            }
+            // Roll back the single imported pirate body that presented a huge
+            // Buggy-like character as every enemy. Enemy roles and gameplay
+            // are unchanged; normal and boss keep distinct compact icons.
             if (isBoss) return boss ?? (boss = MakeSprite(HazardTexture(true), 80));
             return enemy ?? (enemy = MakeSprite(HazardTexture(false), 80));
         }

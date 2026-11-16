@@ -564,6 +564,28 @@ namespace Ordr.Mobile.Unity
             return pressed;
         }
 
+        // One framed, one-tap row. Thumbnail is no longer a separate GUI
+        // element hanging to the left of its own clickable button.
+        internal static bool DrawPortraitActionRow(string title, string meta,
+            Color tint, Sprite portrait, float height = 72f)
+        {
+            Rect area = GUILayoutUtility.GetRect(0f, height,
+                GUILayout.ExpandWidth(true));
+            bool pressed = GUI.Button(area, GUIContent.none, accordionClosed);
+            if (Event.current.type == EventType.Repaint)
+            {
+                float size = Mathf.Min(52f, Mathf.Max(20f, height - 16f));
+                Rect image = new Rect(area.x + 7f,
+                    area.center.y - size * .5f, size, size);
+                MobileSpritePortraitDisplay.DrawFramedSprite(portrait, image, tint);
+                float inset = size + 10f;
+                DrawActionRowFace(new Rect(area.x + inset, area.y,
+                    Mathf.Max(0f, area.width - inset), area.height),
+                    title, meta, tint, false);
+            }
+            return pressed;
+        }
+
         internal static MobileLongPressResult DrawHoldActionRow(string key,
             string title, string meta, Color tint, MobileLongPressGesture gesture,
             float height = 72f, bool compact = false, string levelText = null)

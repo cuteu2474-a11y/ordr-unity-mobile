@@ -2793,9 +2793,13 @@ namespace Ordr.Mobile.Unity
                 string meta = group.Grade + " · " + group.Count + "기" +
                     (isSelected ? " · #" + Combat.Roster.SelectedId.Value + " 선택" : "");
                 GUILayout.BeginHorizontal();
-                DrawCharacterPortrait(group.UnitId, 58f);
-                if (OrdrMobileUiTheme.DrawActionRow(group.Name + " ×" + group.Count,
-                    meta, OrdrMobileUiTheme.Aqua, 72f))
+                Sprite rowPortrait = OrdrCharacterPortraits.Find(group.UnitId);
+                if (rowPortrait == null)
+                    rowPortrait = OrdrBattlefieldArt.UnitSprite(group.UnitId);
+                // Keep the portrait inside the clickable row's own frame.
+                if (OrdrMobileUiTheme.DrawPortraitActionRow(
+                    group.Name + " ×" + group.Count,
+                    meta, OrdrMobileUiTheme.Aqua, rowPortrait, 72f))
                 {
                     // The grouped card selects a representative; the
                     // instance list below selects a precise copy.
@@ -2980,21 +2984,13 @@ namespace Ordr.Mobile.Unity
                 DrawSpritePortrait(portrait, size);
         }
 
-        // Sprite.texture can be an atlas; drawing the whole texture makes the
-        // wrong character art appear. Always crop by the source sprite rect.
-        // Shared by owned units, fusion result and fusion ingredients.
+        // Shared with the formation renderer: private/network/atlas source
+        // cells always fit inside their allotted square with no overhang.
         private static void DrawSpritePortrait(Sprite portrait, float size)
         {
             Rect area = GUILayoutUtility.GetRect(size, size,
                 GUILayout.Width(size), GUILayout.Height(size));
-            if (portrait == null || Event.current.type != EventType.Repaint)
-                return;
-            Rect part = portrait.rect;
-            Texture texture = portrait.texture;
-            if (texture == null) return;
-            GUI.DrawTextureWithTexCoords(area, texture, new Rect(
-                part.x / texture.width, part.y / texture.height,
-                part.width / texture.width, part.height / texture.height));
+            MobileSpritePortraitDisplay.DrawSprite(portrait, area);
         }
 
         private void DrawPager(int page, int pages, Action<int> changePage)
