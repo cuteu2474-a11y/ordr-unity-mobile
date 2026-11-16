@@ -440,6 +440,57 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [Test]
+        public void KumaSpecialPhoenixFireUsesPinnedNativeApxfFieldsAndRestorableClock()
+        {
+            var raw = Original323KumaPhoenixFireRules.PhoenixFire;
+            Assert.AreEqual("h017", raw.OwnerRawcode);
+            Assert.AreEqual("A0EA", raw.AbilityRawcode);
+            Assert.AreEqual("Apxf", raw.BaseAbilityRawcode);
+            Assert.AreEqual(.2d, raw.CooldownSeconds);
+            Assert.AreEqual(600d, raw.AcquisitionRadius);
+            Assert.AreEqual(150d, raw.InitialDamage);
+            Assert.AreEqual(0d, raw.DamagePerSecond,
+                "The original DataB1=0 must never invent a burn tick.");
+            Assert.AreEqual(.01d, raw.NormalDuration);
+            Assert.AreEqual(.01d, raw.HeroDuration);
+            Assert.AreEqual("ground,air,enemy", raw.TargetMask);
+            Assert.IsTrue(raw.Contains(0, 0, 600, 0));
+            Assert.IsFalse(raw.Contains(0, 0, 600.01, 0));
+
+            var evidence = OrdrJson.Object(OrdrJson.Parse(
+                Data("original-2323C-kuma-special-source-ability.json")), "root");
+            Assert.AreEqual(Original323KumaPhoenixFireRules.SourceW3xSha256,
+                OrdrJson.String(evidence, "sourceMapSha256"));
+            Assert.AreEqual(Original323KumaPhoenixFireRules.SourceAbilityDataSha256,
+                OrdrJson.String(evidence, "abilityDataSlkSha256"));
+            Assert.AreEqual(Original323KumaPhoenixFireRules.SourceUnitAbilitiesSha256,
+                OrdrJson.String(evidence, "unitAbilitiesSlkSha256"));
+            Assert.AreEqual(Original323KumaPhoenixFireRules.SourceW3aSha256,
+                OrdrJson.String(evidence, "w3aSha256"));
+
+            // The independent native cooldown must be in the checkpoint
+            // queue. A recurring anonymous Action would disable saving.
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var rules = new SourceModelBasicCombatRules(map, new Dice(false));
+            var combat = new CharacterCombatRuntime(units,
+                CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json")),
+                rules, rules, new Dice(false));
+            combat.Start();
+            rules.Enable();
+            combat.ConfigureSourceModelBasicAttacks(rules);
+            long kuma = combat.SpawnCharacter("S-28", -4900, 5400);
+            var draft = combat.CaptureRuntimeDraft();
+            Assert.IsTrue(draft.Timed.Pending.Any(p =>
+                p.CasterId == kuma.ToString() &&
+                p.TargetId == "practice-kuma-phoenix:" + kuma &&
+                p.Kind == "source-kuma-autofire-v1" &&
+                p.Payload == "S-28:h017:A0EA" &&
+                Math.Abs(p.At - .2) < 1e-8));
+        }
+
         [TestCase("S-05", "언홀리 프렌지")]
         [TestCase("S-20", "리퀴드 파이어")]
         [TestCase("S-28", "피닉스 파이어")]

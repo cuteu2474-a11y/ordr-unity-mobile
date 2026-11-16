@@ -17,11 +17,20 @@ namespace Ordr.Mobile.Combat
                     0, 0, 150, 1, 1, Ordr323AttackType.Spells) },
                 "Aliq 틱 위상·원본 방어 처리 미검증");
 
+        // Native A0EA/Apxf is an independent auto-missile, NOT a proc from
+        // the h017 weapon. Original AbilityData.slk has DataA=150,
+        // DataB=0, cooldown .2, area 600, duration .01; no invented burn.
+        private static readonly Original323NativeAutoMissile KumaNative =
+            Original323KumaPhoenixFireRules.PhoenixFire;
+        private const string KumaAutoMissileQueueKind = "source-kuma-autofire-v1";
+        private const string KumaAutoMissileQueuePayload = "S-28:h017:A0EA";
+
         private static readonly SourceScriptAttackSpec KumaPhoenixModel =
             new SourceScriptAttackSpec("S-28", "h017", "A0EA", 1, 1,
                 null, new[] { new SourceScriptHit(SourceScriptHitShape.Direct,
-                    0, 0, 150, 1, 1, Ordr323AttackType.Spells) },
-                "Apxf 자동 발사 첫 시점·발사체·면역 미검증");
+                    0, 0, KumaNative.InitialDamage, 1, 1,
+                    Ordr323AttackType.Spells) },
+                "Apxf 미사일 비행·타깃 판정의 워크래프트 엔진 동등성 미검증");
 
         private void StartSourceModelKumaPhoenixFire(long actorId)
         {
@@ -32,29 +41,62 @@ namespace Ordr.Mobile.Combat
             ScheduleSourceModelKumaPhoenixFire(actor);
         }
 
+        // The native autonomous cadence is serialized by kind and owner ID.
+        // Unlike an anonymous repeating Action, save/restore cannot silently
+        // lose the next A0EA missile or reset its timer to 0.2 seconds.
+        private Action RestoreSourceModelKumaPhoenixFire(string kind,
+            string payload, string casterId, string targetId)
+        {
+            if (kind != KumaAutoMissileQueueKind ||
+                payload != KumaAutoMissileQueuePayload ||
+                targetId != "practice-kuma-phoenix:" + casterId ||
+                !UsesSourceModelBasicAttacks) return null;
+            long actorId;
+            CharacterInstance actor;
+            if (!long.TryParse(casterId, out actorId) ||
+                !characters.TryGetValue(actorId, out actor) ||
+                actor.Catalog.Id != "S-28") return null;
+            return () => FireSourceModelKumaPhoenixFire(actorId);
+        }
+
         private void ScheduleSourceModelKumaPhoenixFire(CharacterInstance actor)
         {
-            string actorKey = InstanceKey(actor.Id);
-            effectExecutor.SchedulePracticeSourceAttack(actorKey,
-                "practice-kuma-phoenix:" + actorKey, .2, () => {
-                    if (!characters.ContainsKey(actor.Id) ||
-                        game.Phase != SessionPhase.Running) return;
-                    var position = roster.Get(actor.Id);
-                    // A0EA/Apxf: 150 at every .2s, 600 acquisition radius.
-                    // Target choice and initial tick remain mobile policy.
-                    var target = NearestSourceModelTarget(actor,
-                        position.X, position.Y, 600);
-                    if (target != null)
-                    {
-                        events.Add(new CharacterCombatEvent(
-                            CharacterCombatEventType.SkillActivated, actorKey,
-                            target.Id, "쿠마 · 피닉스 파이어",
-                            "MODEL_ONLY A0EA: 150 / 0.2초, 사거리 600 자동 화염", 0));
-                        ApplySourceScriptHits(actor, target, KumaPhoenixModel,
-                            KumaPhoenixModel.OnProc);
-                    }
-                    ScheduleSourceModelKumaPhoenixFire(actor);
-                });
+            string key = InstanceKey(actor.Id);
+            effectExecutor.ScheduleRestorableSourceAttack(key,
+                "practice-kuma-phoenix:" + key,
+                KumaNative.CooldownSeconds,
+                KumaAutoMissileQueueKind, KumaAutoMissileQueuePayload,
+                () => FireSourceModelKumaPhoenixFire(actor.Id));
+        }
+
+        private void FireSourceModelKumaPhoenixFire(long actorId)
+        {
+            CharacterInstance actor;
+            if (!UsesSourceModelBasicAttacks ||
+                !characters.TryGetValue(actorId, out actor) ||
+                actor.Catalog.Id != "S-28") return;
+            if (game.Phase == SessionPhase.Running)
+            {
+                var position = roster.Get(actor.Id);
+                var target = NearestSourceModelTarget(actor,
+                    position.X, position.Y, KumaNative.AcquisitionRadius);
+                if (target != null &&
+                    KumaNative.Contains(position.X, position.Y, target.X, target.Y))
+                {
+                    // One automatically acquired enemy per cooldown.
+                    // The projectile presentation is a receipt; this mobile
+                    // damage model resolves at acquisition until native
+                    // missile impact timing is supported by the renderer.
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.SkillActivated,
+                        InstanceKey(actor.Id), target.Id,
+                        "쿠마 · 피닉스 파이어",
+                        "A0EA/Apxf 미사일 발사: 150 최초 마법 피해, 0.2초 발사, 반경 600, 지속피해 0", 0));
+                    ApplySourceScriptHits(actor, target, KumaPhoenixModel,
+                        KumaPhoenixModel.OnProc);
+                }
+            }
+            ScheduleSourceModelKumaPhoenixFire(actor);
         }
 
         private void ScheduleSourceModelLiquidFire(CharacterInstance actor,

@@ -579,7 +579,7 @@ namespace Ordr.Mobile.Combat
                 }, enemyId => {
                     SpatialCombatEnemy live;
                     return enemies.TryGetValue(enemyId, out live) ? live : null;
-                });
+                }, RestoreSourceModelKumaPhoenixFire);
             if (scheduler.Time != state.Time || effectExecutor.Time != state.Time ||
                 triggers.Time != state.Time)
                 throw new FormatException("복원된 평타·스킬·효과 시계가 맞지 않습니다.");

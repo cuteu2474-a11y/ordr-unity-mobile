@@ -175,15 +175,18 @@ namespace Ordr.Mobile.Combat
         // not a silently discarded pending damage event.
         public void RestoreTimedState(CombatTimedEffectQueueState state,
             Func<string, CharacterSkillProfile> resolveCasterProfile,
-            Func<string, SpatialCombatEnemy> resolveEnemy)
+            Func<string, SpatialCombatEnemy> resolveEnemy,
+            Func<string, string, string, string, Action> restoreSource = null)
         {
             if (resolveCasterProfile == null || resolveEnemy == null)
                 throw new ArgumentNullException(
                     "복원된 공격자 프로필과 살아 있는 적 조회가 필요합니다.");
             timedEffects.RestoreState(state, (kind, payload, casterId, targetId) =>
             {
-                if (kind != "verified-hit-pulse-v1" ||
-                    string.IsNullOrWhiteSpace(payload)) return null;
+                if (kind != "verified-hit-pulse-v1")
+                    return restoreSource == null ? null :
+                        restoreSource(kind, payload, casterId, targetId);
+                if (string.IsNullOrWhiteSpace(payload)) return null;
                 CombatVerifiedHitPulseState record;
                 try { record = JsonUtility.FromJson<CombatVerifiedHitPulseState>(payload); }
                 catch (ArgumentException) { return null; }
@@ -256,6 +259,16 @@ namespace Ordr.Mobile.Combat
             string targetId, double delaySeconds, Action callback)
         {
             timedEffects.Schedule(attackerId, targetId, delaySeconds, callback);
+        }
+
+        // Source-backed autonomous natives have a reconstructable callback,
+        // while unidentified script closures continue to fail closed on save.
+        internal void ScheduleRestorableSourceAttack(string attackerId,
+            string targetId, double delaySeconds, string kind,
+            string payload, Action callback)
+        {
+            timedEffects.ScheduleRestorable(attackerId, targetId,
+                delaySeconds, kind, payload, callback);
         }
 
         public void CancelCaster(string id) { timedEffects.CancelCaster(id); }
