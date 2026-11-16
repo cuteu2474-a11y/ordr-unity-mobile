@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
 
@@ -12,7 +13,8 @@ namespace Ordr.Mobile.Combat
     // This does not claim to reproduce an unknown Warcraft native seed.
     public sealed class Original323SourceCommonWispWorld :
         IOriginal323CommonWispRecruitmentWorld,
-        IOriginal323CommonWispRecruitmentAvailability
+        IOriginal323CommonWispRecruitmentAvailability,
+        IVerifiedChoiceWispMergeWorld
     {
         private sealed class PendingDraw
         {
@@ -93,6 +95,54 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        // Choice Wisp uses the same pinned nine common identities, but does
+        // NOT run the random Wisp BIU/BIR/BIS rolls or advance its counters.
+        // This source-model selection adapter is a mobile UI contract, not
+        // proof of the original e018 Merge's undocumented extra conditions.
+        private sealed class ChoiceTransaction : IChoiceWispMergeTransaction
+        {
+            private readonly Original323SourceCommonWispWorld owner;
+            private readonly int index;
+            private long createdId;
+            private bool committed;
+            private bool disposed;
+
+            internal ChoiceTransaction(Original323SourceCommonWispWorld world, int selectedIndex)
+            {
+                owner = world;
+                index = selectedIndex;
+            }
+
+            public bool TryApply()
+            {
+                if (disposed || createdId != 0 || !owner.inFlight)
+                    throw new InvalidOperationException("선택위습 거래가 이미 종료되었거나 중복 실행되었습니다.");
+                createdId = owner.combat.SpawnVerifiedOriginalPositionCharacter(
+                    owner.catalogIds[index], OriginalCommonSpawnX(index),
+                    OriginalCommonSpawnY);
+                return createdId > 0;
+            }
+
+            public void Commit()
+            {
+                if (disposed || committed || createdId <= 0)
+                    throw new InvalidOperationException("확정할 흔함 선택 소환이 없습니다.");
+                committed = true;
+            }
+
+            public void Dispose()
+            {
+                if (disposed) return;
+                disposed = true;
+                try
+                {
+                    if (!committed && createdId > 0)
+                        owner.combat.RollbackUncommittedSpawn(createdId);
+                }
+                finally { owner.inFlight = false; }
+            }
+        }
+
         public const string PinnedWar3mapJSha256 =
             Original323MonsterWaveIdentityCatalog.OriginalWar3mapJSha256;
         public const string PirateShipRawcode = "h060";
@@ -108,6 +158,7 @@ namespace Ordr.Mobile.Combat
         private readonly CharacterCombatRuntime combat;
         private readonly IOriginalWispRandom originalDrawRandom;
         private readonly string[] catalogIds = new string[9];
+        private readonly string[] catalogNames = new string[9];
         private readonly int[] counts = new int[9];
         private PendingDraw pending;
         private int normalDrawCount;
@@ -180,7 +231,41 @@ namespace Ordr.Mobile.Combat
                     throw new InvalidOperationException(
                         "원본 랜덤위습 흔함 추첨 목록과 실제 캐릭터 데이터가 다릅니다: " + id);
                 catalogIds[i] = id;
+                catalogNames[i] = unit.Name;
             }
+        }
+
+        public IReadOnlyList<VerifiedChoiceWispTarget> AvailableTargets()
+        {
+            var items = new VerifiedChoiceWispTarget[Rawcodes.Length];
+            for (int i = 0; i < Rawcodes.Length; i++)
+            {
+                // The identity and grade were checked when this source-world
+                // was constructed. No UI-supplied unit name/id is trusted.
+                items[i] = new VerifiedChoiceWispTarget(
+                    Rawcodes[i], catalogNames[i], "선택위습 1개");
+            }
+            return Array.AsReadOnly(items);
+        }
+
+        public static string CommonCatalogIdForRawcode(string rawcode)
+        {
+            for (int i = 0; i < Rawcodes.Length; i++)
+                if (Rawcodes[i] == rawcode)
+                    return "C-" + (i + 1).ToString("D2");
+            return null;
+        }
+
+        public IChoiceWispMergeTransaction Begin(string selectedUnitRawcode)
+        {
+            if (inFlight)
+                throw new InvalidOperationException("위습 거래가 이미 진행 중입니다.");
+            int index = Array.IndexOf(Rawcodes, selectedUnitRawcode);
+            if (index < 0)
+                throw new ArgumentException("흔함 9종에 해당하지 않는 선택위습 대상입니다.",
+                    nameof(selectedUnitRawcode));
+            inFlight = true;
+            return new ChoiceTransaction(this, index);
         }
 
         public IOriginal323CommonWispRecruitmentTransaction Begin()

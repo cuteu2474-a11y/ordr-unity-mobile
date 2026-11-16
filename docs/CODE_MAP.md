@@ -14,6 +14,8 @@
 
 - **선택 유닛 현재 전투 수치:** `OrdrMobileTouchPanel.DrawSelectedUnitCombatStats` → `CharacterCombatRuntime.SourceModelUnitAttackOf` → `SourceModelBasicCombatRules.PreviewBasicAttackPower`와 `CombatAttackPipeline.InspectCurrentAttackInterval`. 원본 객체 주사위·강화/폼/연구/오라·영웅 공속 공급을 실제 평타/공격 스케줄러와 공유하며 UI는 공격/난수/시간을 진행하지 않습니다. 결과는 대상 방어·스킬·치명타 전 평타 범위이며 네이티브 실기 확정 피해가 아닙니다.
 
+- **선택위습:** `OrdrMobileTouchPanel.DrawFusion` 상단 → `DrawChoiceWispMerge` 흔함 9종 선택/확정 → `OrdrCharacterCombatController.RequestChoiceWispMerge` → `MobileWispService.MergeChoice` → `Original323SourceCommonWispWorld.Begin(string)`의 원본 흔함 9종 매핑 및 트랜잭션. 원자 지갑/로스터, 실패 시 생성 롤백, 랜덤위습 BFi/카운터 불변. 외부 원본 승인 월드는 별도. 실기 검증 전.
+
 ## 원본 확인 스킬 진입점
 
 - `SourceModelUnitEffects.IsRoundNativePassiveTarget` 및 `CharacterCombatRuntime.SourceModelEffects.cs:CompleteSourceModelHit`: 브룩 `U-03/A07P`·타시기 `U-09/A07Q`가 일반/광폭화/보스 모두에서 동일한 발동 가능 대상 조건을 사용합니다. 추가 피해는 기존 기본 공격 피해 패킷에 1회, 기절은 생존 대상에 0.3/0.7초. `SourceModelUnitEffectTests.cs`에 발동·불발·피해 회귀 테스트 소스 작성(미실행); 네이티브 저항과 실기 검증 별도.

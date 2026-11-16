@@ -3717,6 +3717,11 @@ namespace Ordr.Mobile.Unity
                     Combat, SharedEconomy, MapBaseStats, originalDrawWorld);
                 commonWispAvailability = originalDrawWorld;
                 commonWispUsesBuiltInSource = true;
+                // The default mobile session had an empty choiceMerge port.
+                // Reuse the same verified nine-common source identities and
+                // live roster; later explicit original worlds may replace it.
+                if (choiceWispWorld == null)
+                    choiceWispWorld = originalDrawWorld;
             }
             if (MapBaseStats != null)
             {

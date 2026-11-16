@@ -371,6 +371,77 @@ namespace Ordr.Mobile.Tests
             random.AssertCalls("1..10000", "0..8");
         }
 
+        private sealed class UnusedAutoRoller : IVerifiedWispRoller
+        {
+            public bool IsVerified(string wispId) => false;
+            public WispReward Roll(string wispId) =>
+                throw new InvalidOperationException("선택위습은 자동 추첨을 사용하지 않습니다.");
+        }
+        private sealed class UnusedAutoRewardWorld : IWispRewardWorld
+        {
+            public IWispRewardTransaction Begin() =>
+                throw new InvalidOperationException("선택위습은 자동 보상 거래를 사용하지 않습니다.");
+        }
+
+        [Test]
+        public void ChoiceWispOffersNineCommonPortraitIdsAndSpawnsOnlyConfirmedChoice()
+        {
+            var game = Create(0);
+            game.Economy.Wallet.Grant(new ResourceBundle().Add(WispResourceIds.Choice, 2));
+            var bfi = new FixedSourceBfi();
+            var source = new Original323SourceCommonWispWorld(
+                game.Combat, game.Units, game.Objects, bfi);
+            var choices = source.AvailableTargets();
+            Assert.AreEqual(9, choices.Count);
+            var expected = new[] {
+                "h003", "h002", "h001", "h007", "h004",
+                "h008", "h005", "h009", "h006"
+            };
+            for (int i = 0; i < 9; i++)
+            {
+                Assert.AreEqual(expected[i], choices[i].Rawcode);
+                Assert.AreEqual("C-" + (i + 1).ToString("D2"),
+                    Original323SourceCommonWispWorld.CommonCatalogIdForRawcode(
+                        choices[i].Rawcode));
+                Assert.AreEqual("선택위습 1개", choices[i].OriginalRequirements);
+            }
+            var wisps = new MobileWispService(game.Economy.Wallet,
+                new UnusedAutoRoller(), new UnusedAutoRewardWorld());
+            Assert.IsFalse(wisps.MergeChoice("hXYZ", source));
+            Assert.IsTrue(wisps.MergeChoice("h004", source));
+            Assert.AreEqual("C-05", game.Combat.MobileUnitSnapshot()[0].Unit.Id);
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(WispResourceIds.Choice));
+            Assert.AreEqual(0, source.ConfirmedCommonDraws,
+                "Choosing a common must not fabricate a random draw.");
+            Assert.AreEqual(0, source.ConfirmedCountForOriginal("h004"));
+            Assert.IsTrue(wisps.MergeChoice("h003", source));
+            Assert.AreEqual(2, game.Combat.CharacterCount);
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(WispResourceIds.Choice));
+            Assert.IsFalse(wisps.MergeChoice("h003", source));
+            bfi.AssertCalls();
+        }
+
+        [Test]
+        public void AbortedChoiceWispTransactionRollsBackOnlyTentativeRosterUnit()
+        {
+            var game = Create(0);
+            var source = new Original323SourceCommonWispWorld(
+                game.Combat, game.Units, game.Objects, new FixedSourceBfi());
+            using (var choice = source.Begin("h002"))
+            {
+                Assert.IsTrue(choice.TryApply());
+                Assert.AreEqual(1, game.Combat.CharacterCount);
+                Assert.IsFalse(source.CanDraw);
+                Assert.Throws<InvalidOperationException>(() => source.Begin());
+            }
+            Assert.IsTrue(source.CanDraw);
+            Assert.AreEqual(0, game.Combat.CharacterCount);
+            Assert.AreEqual(0, source.ConfirmedCommonDraws);
+            Assert.IsNull(
+                Original323SourceCommonWispWorld.CommonCatalogIdForRawcode("h060"));
+            Assert.Throws<ArgumentException>(() => source.Begin("h060"));
+        }
+
         [Test]
         public void InvalidPoolIndexAndUnknownCounterRawcodeFailClosed()
         {

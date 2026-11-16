@@ -32,6 +32,7 @@ namespace Ordr.Mobile.Unity
         private int expandedOwnedGroupPage;
         private string expandedRecipeId;
         private bool showChoiceWisp;
+        private string selectedChoiceWispRawcode;
         private bool showRandomWispActions = true;
         private bool showTranscendBoxChoices;
         private bool showTranscendBoxItemChoices;
@@ -3427,6 +3428,10 @@ namespace Ordr.Mobile.Unity
         // rows are ordinary buttons; neither can swallow the battle swipe.
         private void DrawFusion()
         {
+            // The choice is a primary fusion action, not the final item below
+            // multiple pages of recipes. Tapping opens the common picker.
+            DrawChoiceWispMerge();
+            GUILayout.Space(8f);
             GUILayout.BeginHorizontal();
             DrawFusionCategoryButton(FusionListCategory.Ready, "가능");
             DrawFusionCategoryButton(FusionListCategory.Owned, "보유");
@@ -3499,7 +3504,6 @@ namespace Ordr.Mobile.Unity
 
             if (pages > 1)
                 DrawPager(resolved, pages, page => fusionPage = page);
-            DrawChoiceWispMerge();
             if (GUILayout.Button(showOriginalAudit ? "원본 닫기" : "원본 조합식",
                 OrdrMobileUiTheme.NavButton, GUILayout.MinHeight(48f)))
                 showOriginalAudit = !showOriginalAudit;
@@ -3871,28 +3875,86 @@ namespace Ordr.Mobile.Unity
 
         private void DrawChoiceWispMerge()
         {
-            if (OrdrMobileUiTheme.DrawAccordionHeader("선택위습 사용",
-                controller.WispBalance(WispResourceIds.Choice) + "개",
-                showChoiceWisp, OrdrMobileUiTheme.Aqua))
-                showChoiceWisp = !showChoiceWisp;
-            if (!showChoiceWisp) return;
-            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-            var targets = controller.ChoiceWispTargets;
-            if (targets.Count == 0)
-                GUILayout.Label("선택 대상 준비 중", OrdrMobileUiTheme.Overline);
-            else if (controller.WispBalance(WispResourceIds.Choice) > 0)
+            long balance = controller.WispBalance(WispResourceIds.Choice);
+            if (OrdrMobileUiTheme.DrawAccordionHeader("선택위습 · 흔함 선택",
+                balance + "개", showChoiceWisp, OrdrMobileUiTheme.Aqua))
             {
-                foreach (var target in targets)
+                showChoiceWisp = !showChoiceWisp;
+                if (!showChoiceWisp) selectedChoiceWispRawcode = null;
+            }
+            if (!showChoiceWisp) return;
+
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            var sourceTargets = controller.ChoiceWispTargets;
+            var targets = new List<VerifiedChoiceWispTarget>();
+            foreach (var target in sourceTargets)
+                if (target != null &&
+                    Original323SourceCommonWispWorld.CommonCatalogIdForRawcode(
+                        target.Rawcode) != null)
+                    targets.Add(target);
+
+            if (targets.Count == 0)
+            {
+                selectedChoiceWispRawcode = null;
+                GUILayout.Label("흔함 선택 소환 기능을 사용할 수 없습니다.",
+                    OrdrMobileUiTheme.Explanation);
+            }
+            else
+            {
+                GUILayout.Label("원하는 흔함을 선택해 주세요.",
+                    OrdrMobileUiTheme.Explanation);
+                // Exactly three cards per row; no oversized one-column list
+                // and no additional nested scrolling on landscape phones.
+                for (int i = 0; i < targets.Count; i += 3)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(target.Name + " · " + target.OriginalRequirements,
-                        GUILayout.ExpandWidth(true));
-                    if (GUILayout.Button("바로 사용", GUILayout.Width(102),
-                        GUILayout.MinHeight(64)))
-                        RunWispDirect("선택위습 · " + target.Name,
-                            () => controller.RequestChoiceWispMerge(target.Rawcode));
+                    for (int j = i; j < Math.Min(i + 3, targets.Count); j++)
+                    {
+                        var target = targets[j];
+                        string catalogId =
+                            Original323SourceCommonWispWorld.CommonCatalogIdForRawcode(
+                                target.Rawcode);
+                        GUILayout.BeginVertical(GUILayout.MinWidth(0),
+                            GUILayout.ExpandWidth(true));
+                        DrawCharacterPortrait(catalogId, 44f);
+                        bool chosen = selectedChoiceWispRawcode == target.Rawcode;
+                        if (GUILayout.Button(target.Name,
+                            chosen ? OrdrMobileUiTheme.SelectedTab :
+                                OrdrMobileUiTheme.NavButton,
+                            GUILayout.MinHeight(55f), GUILayout.MinWidth(0),
+                            GUILayout.ExpandWidth(true)))
+                            selectedChoiceWispRawcode = target.Rawcode;
+                        GUILayout.EndVertical();
+                    }
                     GUILayout.EndHorizontal();
                 }
+                VerifiedChoiceWispTarget selected = null;
+                foreach (var target in targets)
+                    if (target.Rawcode == selectedChoiceWispRawcode)
+                        selected = target;
+                if (selected != null)
+                {
+                    GUILayout.Label("선택: " + selected.Name +
+                        " · 선택위습 1개 소비", OrdrMobileUiTheme.Explanation);
+                    bool enabled = GUI.enabled;
+                    GUI.enabled = enabled && balance > 0;
+                    if (GUILayout.Button(selected.Name + " 소환 확정",
+                        OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64f)))
+                    {
+                        string chosen = selected.Rawcode;
+                        RunWispDirect("선택위습 · " + selected.Name, () =>
+                        {
+                            var result = controller.RequestChoiceWispMerge(chosen);
+                            if (result.State == ManualActionState.Succeeded)
+                                selectedChoiceWispRawcode = null;
+                            return result;
+                        });
+                    }
+                    GUI.enabled = enabled;
+                }
+                if (balance == 0)
+                    GUILayout.Label("선택위습을 보유하고 있지 않습니다.",
+                        OrdrMobileUiTheme.Explanation);
             }
             GUILayout.EndVertical();
         }
