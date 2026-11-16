@@ -1730,6 +1730,56 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
         }
 
+        // Above the skills, show current source-model attack values for this
+        // actual roster instance. These are not the old static catalog stats.
+        private void DrawSelectedUnitCombatStats(long instanceId)
+        {
+            var stats = Combat.SourceModelUnitAttackOf(instanceId);
+            GUILayout.Label("현재 전투 능력치", OrdrMobileUiTheme.Subheading);
+            if (stats == null)
+            {
+                OrdrMobileUiTheme.DrawStatusRow("평타 수치",
+                    "전투 연결 대기", OrdrMobileUiTheme.Aqua, 48f);
+                return;
+            }
+            string power = stats.MinimumPower.HasValue && stats.MaximumPower.HasValue
+                ? stats.MinimumPower.Value.ToString("0.##") + " ~ " +
+                    stats.MaximumPower.Value.ToString("0.##")
+                : "공식 미연결";
+            OrdrMobileUiTheme.DrawStatusRow("공격력 · 방어 전",
+                power, OrdrMobileUiTheme.Gold, 50f);
+            if (stats.CurrentIntervalSeconds.HasValue)
+            {
+                double seconds = stats.CurrentIntervalSeconds.Value;
+                OrdrMobileUiTheme.DrawStatusRow("공격 주기",
+                    seconds.ToString("0.###") + "초", OrdrMobileUiTheme.Aqua, 48f);
+                OrdrMobileUiTheme.DrawStatusRow("공격속도",
+                    (1.0 / seconds).ToString("0.##") + "회/초",
+                    OrdrMobileUiTheme.Aqua, 48f);
+            }
+            else
+                OrdrMobileUiTheme.DrawStatusRow("공격속도",
+                    "원본 공식 미확인", OrdrMobileUiTheme.Aqua, 48f);
+            OrdrMobileUiTheme.DrawStatusRow("평타 사거리",
+                stats.Range > 0 ? stats.Range.ToString("0.#") : "미확인",
+                OrdrMobileUiTheme.Aqua, 48f);
+            if (stats.MinimumPower.HasValue)
+            {
+                string bonus = "강화 +" + stats.UpgradeBonus.ToString("0.##");
+                if (stats.OtherFlatBonus != 0)
+                    bonus += " · 추가 고정 +" + stats.OtherFlatBonus.ToString("0.##");
+                if (stats.BuffPercent != 0)
+                    bonus += " · 공격 버프 +" + stats.BuffPercent.ToString("0.##") + "%";
+                if (stats.ResearchBonusActive)
+                    bonus += " · 연구소 +12%";
+                GUILayout.Label(bonus, OrdrMobileUiTheme.Explanation);
+            }
+            if (!string.IsNullOrWhiteSpace(stats.BlockReason))
+                GUILayout.Label(stats.BlockReason, OrdrMobileUiTheme.Explanation);
+            GUILayout.Label("치명타·스킬·대상 방어력 적용 전 평타 수치",
+                OrdrMobileUiTheme.Explanation);
+        }
+
         private void DrawSelectedUnitCard(UnitImplementationDefinition detail)
         {
             GUILayout.BeginVertical(GUI.skin.box);
@@ -1761,6 +1811,8 @@ namespace Ordr.Mobile.Unity
             }
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
+            if (Combat != null && Combat.Roster.SelectedId.HasValue)
+                DrawSelectedUnitCombatStats(Combat.Roster.SelectedId.Value);
             if (detail.Unit.Id == "MY-07" && Combat != null &&
                 Combat.UsesSourceModelBasicAttacks &&
                 Combat.Roster.SelectedId.HasValue)

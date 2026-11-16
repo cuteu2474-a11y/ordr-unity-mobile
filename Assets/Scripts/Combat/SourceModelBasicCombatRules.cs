@@ -16,6 +16,31 @@ namespace Ordr.Mobile.Combat
         }
     }
 
+    // Damage interval shown in the selected-unit HUD. This is the actual
+    // source-model ATTACKER packet before native procs, enemy armor, damage
+    // quantization and additional multi-target effects. It is never a
+    // promise of final target HP reduction or retail Warcraft parity.
+    internal sealed class SourceModelBasicAttackPowerPreview
+    {
+        internal double Minimum { get; private set; }
+        internal double Maximum { get; private set; }
+        internal double UpgradeBonus { get; private set; }
+        internal double OtherFlatBonus { get; private set; }
+        internal double BuffPercent { get; private set; }
+        internal bool ResearchBonusActive { get; private set; }
+
+        internal SourceModelBasicAttackPowerPreview(double minimum, double maximum,
+            double upgrade, double otherFlat, double buff, bool research)
+        {
+            Minimum = minimum;
+            Maximum = maximum;
+            UpgradeBonus = upgrade;
+            OtherFlatBonus = otherFlat;
+            BuffPercent = buff;
+            ResearchBonusActive = research;
+        }
+    }
+
     // Explicit development model. Does NOT implement a native-hit witness,
     // live monster approval, retail quantizer, or verified skill resolver.
     // The runtime's legacy damage interface is reused without granting retail
@@ -299,6 +324,65 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
+        private sealed class BasicAttackPowerAdjustment
+        {
+            internal double Upgrade;
+            internal double FormFlat;
+            internal double SourceFlat;
+            internal double OtherFlat => FormFlat + SourceFlat;
+            internal double BuffPercent;
+            internal bool Research;
+            internal double Apply(double objectDamage)
+            {
+                // Preserve the original sequence: dice + form + upgrade,
+                // then flat hero/ability state, then multiplicative buffs.
+                double result = objectDamage + FormFlat + Upgrade;
+                result += SourceFlat;
+                result *= 1 + BuffPercent / 100.0;
+                if (Research) result *= 1.12;
+                return result;
+            }
+        }
+
+        // Shared by actual attacks and the read-only selected-unit HUD.
+        // In particular, the HUD must never roll dice or read a mock target.
+        private BasicAttackPowerAdjustment CurrentBasicAttackPowerAdjustment(
+            string attackerId, string rawcode, IReadOnlyList<CombatEffect> effects)
+        {
+            foreach (var effect in effects)
+                if (!AllowsPracticeAttackerEffect(effect))
+                    throw new UnsupportedPracticeAttackerStatusException(effect?.SourceId);
+            double flat = sourceModelFlatAttackPower == null
+                ? 0 : sourceModelFlatAttackPower(attackerId);
+            if (flat < 0 || double.IsNaN(flat) || double.IsInfinity(flat))
+                throw new NotSupportedException("연습 공격력 증가량이 올바르지 않습니다.");
+            return new BasicAttackPowerAdjustment {
+                FormFlat = SourceModelTemporarySkillCatalog.FlatFormPower(effects),
+                Upgrade = PlayerUpgrades?.AttackBonus(rawcode) ?? 0,
+                SourceFlat = flat,
+                BuffPercent = SourceModelUnitEffects.ResolvePracticeAttackPower(effects),
+                Research = PlayerResearch?.HasStarted("Rhra") == true
+            };
+        }
+
+        internal SourceModelBasicAttackPowerPreview PreviewBasicAttackPower(
+            string attackerId, string registeredRawcode, IReadOnlyList<CombatEffect> effects)
+        {
+            if (!Enabled || string.IsNullOrWhiteSpace(attackerId) ||
+                string.IsNullOrWhiteSpace(registeredRawcode) || effects == null)
+                return null;
+            string rawcode = SourceFormRawcodeOf(attackerId) ?? registeredRawcode;
+            OriginalMapCommonNativeAttackEvidence evidence;
+            if (!byRawcode.TryGetValue(rawcode, out evidence)) return null;
+            var adjustment = CurrentBasicAttackPowerAdjustment(attackerId, rawcode, effects);
+            double minimum = evidence.BaseDamagePlus + (long)evidence.DiceCount;
+            double maximum = evidence.BaseDamagePlus + (long)evidence.DiceCount * evidence.DiceSides;
+            return new SourceModelBasicAttackPowerPreview(
+                adjustment.Apply(minimum), adjustment.Apply(maximum),
+                adjustment.Upgrade, adjustment.OtherFlat,
+                adjustment.BuffPercent, adjustment.Research);
+        }
+
         public long ResolveBasicDamage(BasicDamageRequest request, CombatEnemy target)
         {
             if (!Enabled) throw new NotSupportedException("연습 전투가 시작되지 않았습니다.");
@@ -313,25 +397,11 @@ namespace Ordr.Mobile.Combat
                 !target.Defenses.BaseArmor.HasValue ||
                 !Ordr323OriginalDamageRules.TryReadArmorType(target.Defenses.WarcraftArmorType, out armor))
                 throw new NotSupportedException("출처가 있는 공격·적 방어 자료가 필요합니다.");
-            foreach (var effect in request.AttackerEffects)
-                if (!AllowsPracticeAttackerEffect(effect))
-                    throw new UnsupportedPracticeAttackerStatusException(effect?.SourceId);
-            double rawDamage = attack.RollObjectBaseDamage(random) +
-                SourceModelTemporarySkillCatalog.FlatFormPower(request.AttackerEffects) +
-                (PlayerUpgrades?.AttackBonus(rawcode) ?? 0);
-            if (sourceModelFlatAttackPower != null)
-            {
-                double flat = sourceModelFlatAttackPower(request.UnitInstanceId);
-                if (flat < 0 || double.IsNaN(flat) || double.IsInfinity(flat))
-                    throw new NotSupportedException("연습 공격력 증가량이 올바르지 않습니다.");
-                rawDamage += flat;
-            }
-            double power = SourceModelUnitEffects.ResolvePracticeAttackPower(request.AttackerEffects);
-            rawDamage *= 1 + power / 100.0;
-            // Source h06S/Rhra starts A0P8 at RESEARCH_START (ACac +12%).
-            // Player-owned basic attacks gain it once; no extra skill packet.
-            if (PlayerResearch?.HasStarted("Rhra") == true)
-                rawDamage *= 1.12;
+            // Identical source-model attacker adjustments are used in the
+            // read-only HUD preview. Target armor/passive procs remain hit-only.
+            var adjustment = CurrentBasicAttackPowerAdjustment(
+                request.UnitInstanceId, rawcode, request.AttackerEffects);
+            double rawDamage = adjustment.Apply(attack.RollObjectBaseDamage(random));
             if (UnitEffects != null) rawDamage = UnitEffects.BeforeBasicHit(request, target, rawDamage);
             double reduction = SourceModelUnitEffects.ResolvePracticeArmorReduction(target.Status.Snapshot());
             double damage = Ordr323MapDamageMath.ApplyVerifiedFactors(

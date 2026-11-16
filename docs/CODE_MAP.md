@@ -12,6 +12,8 @@
 - `SourceModelBasicCombatRules.cs`는 폼 변경 리비전을 추적; `CharacterCombatRuntime.SourceModelCompositeEffects.cs`는 원본 `Bjq/Bxc` 교체의 이전 `STR/AGI/INT,false` 캡처/새 폼 SET 확정 분리. 실제 영웅 교체의 독립 비용/자격/실물 이동은 해당 기능 소유자가 처리해야 하며, 티켓만으로 변신을 실행하지 않음. `OrdrCharacterCombatController.ConfigureOriginalCurrentHeroStatWitness`를 통해 실측 공급자를 전투 시작 전에 연결.
 - `Original323UnitBalanceHeroInitialAttributes.cs` / `data/original-2323C-hero-initial-attributes.json`: 고정 W3X `UnitBalance.slk` 70개 H행 **명시적 4개(H05N/H0A5 STR10·AGI11·INT1, H0BX/H0BY 각1) + 빈 숫자 66개 엔진 기본값 0**을 별도 출처로 등록. 근거는 `cuteu2474-a11y/open-realm`의 `games/warcraft-3/sheet/sheet.c` `FS_LoadSheetTyped`(calloc/셀 누락 시 쓰기 없음) 및 `game/g_metadata.c` `STB_SLK_INT` 스키마. 단순 임의 스탯 0 주입과 구분. 원본 Blizzard 실행, `ModifyHeroStat SET` 폼 승계, 장비/보너스 포함 `GetHeroStatBJ(true)`·위성 개체별 XP는 여전히 미검증. `SourceModelFifteenthSkills.cs` 타시기 `TR-27:skill:2`는 `STR,false`, 도플라밍고는 `STR,true` 분리.
 
+- **선택 유닛 현재 전투 수치:** `OrdrMobileTouchPanel.DrawSelectedUnitCombatStats` → `CharacterCombatRuntime.SourceModelUnitAttackOf` → `SourceModelBasicCombatRules.PreviewBasicAttackPower`와 `CombatAttackPipeline.InspectCurrentAttackInterval`. 원본 객체 주사위·강화/폼/연구/오라·영웅 공속 공급을 실제 평타/공격 스케줄러와 공유하며 UI는 공격/난수/시간을 진행하지 않습니다. 결과는 대상 방어·스킬·치명타 전 평타 범위이며 네이티브 실기 확정 피해가 아닙니다.
+
 ## 원본 확인 스킬 진입점
 
 - `SourceModelUnitEffects.IsRoundNativePassiveTarget` 및 `CharacterCombatRuntime.SourceModelEffects.cs:CompleteSourceModelHit`: 브룩 `U-03/A07P`·타시기 `U-09/A07Q`가 일반/광폭화/보스 모두에서 동일한 발동 가능 대상 조건을 사용합니다. 추가 피해는 기존 기본 공격 피해 패킷에 1회, 기절은 생존 대상에 0.3/0.7초. `SourceModelUnitEffectTests.cs`에 발동·불발·피해 회귀 테스트 소스 작성(미실행); 네이티브 저항과 실기 검증 별도.

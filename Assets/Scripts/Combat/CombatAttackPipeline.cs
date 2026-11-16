@@ -504,6 +504,82 @@ namespace Ordr.Mobile.Combat
                 SkillTriggerKind.Periodic, ++unit.NextEventSequence);
         }
 
+        // Live cadence preview calls the same resolver as committed attacks.
+        // It neither advances the clock nor commits an attack or rolls RNG.
+        public double? InspectCurrentAttackInterval(string instanceId)
+        {
+            if (string.IsNullOrWhiteSpace(instanceId) || !units.ContainsKey(instanceId))
+                return null;
+            var effects = getAttackerEffects == null
+                ? (IReadOnlyList<CombatEffect>)Array.Empty<CombatEffect>()
+                : getAttackerEffects(instanceId);
+            if (effects == null)
+                throw new InvalidOperationException("공격자 활성 상태효과를 읽을 수 없습니다.");
+            double interval;
+            return TryResolveNextAttackInterval(
+                instanceId, EffectiveAttack(instanceId), effects, out interval)
+                ? (double?)interval : null;
+        }
+
+        private bool TryResolveNextAttackInterval(string attackerInstanceId,
+            BasicAttackSpec effective, IReadOnlyList<CombatEffect> attackerEffects,
+            out double nextAttackInterval)
+        {
+            nextAttackInterval = effective.IntervalSeconds;
+            bool hasNativeSpeedBuff = false;
+            foreach (var effect in attackerEffects)
+                if (effect.Type == CombatEffectType.AttackSpeedBuff)
+                    hasNativeSpeedBuff = true;
+            double heroAgilitySpeed = practiceAttackCadence != null &&
+                practiceHeroAgilitySpeed != null
+                ? practiceHeroAgilitySpeed(attackerInstanceId) : 0;
+            if (double.IsNaN(heroAgilitySpeed) ||
+                double.IsInfinity(heroAgilitySpeed) || heroAgilitySpeed < 0)
+                throw new InvalidOperationException("원본 영웅 공속 증가량이 올바르지 않습니다.");
+            if (hasNativeSpeedBuff || heroAgilitySpeed > 0)
+            {
+                if (practiceAttackCadence != null)
+                {
+                    nextAttackInterval = practiceAttackCadence(
+                        effective, attackerEffects, heroAgilitySpeed);
+                    if (double.IsNaN(nextAttackInterval) ||
+                        double.IsInfinity(nextAttackInterval) || nextAttackInterval <= 0)
+                        throw new InvalidOperationException("연습 공격 간격 오류");
+                }
+                else
+                {
+                    double nativeFactor;
+                    if (verifiedNativeCadence == null &&
+                        TryStandaloneGreenBloodCadence(attackerEffects, out nativeFactor))
+                        nextAttackInterval = effective.IntervalSeconds / nativeFactor;
+                    else
+                    {
+                        string timingEvidence;
+                        double verifiedNext;
+                        if (verifiedNativeCadence == null ||
+                            !verifiedNativeCadence.TryResolveNextInterval(
+                                attackerInstanceId, effective, attackerEffects,
+                                scheduler.Time, out verifiedNext, out timingEvidence) ||
+                            string.IsNullOrWhiteSpace(timingEvidence))
+                            return false;
+                        if (double.IsNaN(verifiedNext) ||
+                            double.IsInfinity(verifiedNext) || verifiedNext <= 0 ||
+                            double.IsInfinity(scheduler.Time + verifiedNext))
+                            throw new InvalidOperationException(
+                                "검증된 워크래프트 공격 간격이 유효하지 않습니다.");
+                        nextAttackInterval = verifiedNext;
+                    }
+                }
+            }
+            // Brulee origin uniquely reduces actual cadence by five percent.
+            foreach (var effect in attackerEffects)
+                if (effect.Type == CombatEffectType.AttackSpeedPenalty &&
+                    effect.SourceId.StartsWith("practice-brulee:", StringComparison.Ordinal) &&
+                    effect.Amount == 5)
+                    nextAttackInterval /= .95;
+            return true;
+        }
+
         public double? NextAttackAt(string instanceId)
         {
             if (string.IsNullOrWhiteSpace(instanceId))
@@ -591,63 +667,10 @@ namespace Ordr.Mobile.Combat
             if (attackerEffects == null)
                 throw new InvalidOperationException(
                     "공격자 활성 상태효과를 읽을 수 없습니다.");
-            double nextAttackInterval = effective.IntervalSeconds;
-            bool hasNativeSpeedBuff = false;
-            foreach (var effect in attackerEffects)
-                if (effect.Type == CombatEffectType.AttackSpeedBuff)
-                    hasNativeSpeedBuff = true;
-            double heroAgilitySpeed = practiceAttackCadence != null &&
-                practiceHeroAgilitySpeed != null
-                ? practiceHeroAgilitySpeed(attackerInstanceId) : 0;
-            if (double.IsNaN(heroAgilitySpeed) ||
-                double.IsInfinity(heroAgilitySpeed) || heroAgilitySpeed < 0)
-                throw new InvalidOperationException("원본 영웅 공속 증가량이 올바르지 않습니다.");
-            if (hasNativeSpeedBuff || heroAgilitySpeed > 0)
-            {
-                if (practiceAttackCadence != null)
-                {
-                    nextAttackInterval = practiceAttackCadence(
-                        effective, attackerEffects, heroAgilitySpeed);
-                    if (double.IsNaN(nextAttackInterval) || double.IsInfinity(nextAttackInterval) || nextAttackInterval <= 0)
-                        throw new InvalidOperationException("연습 공격 간격 오류");
-                }
-                else
-                {
-                    double nativeFactor;
-                    if (verifiedNativeCadence == null &&
-                        TryStandaloneGreenBloodCadence(attackerEffects, out nativeFactor))
-                    {
-                        // Only the isolated A13C 30% native stat is modeled.
-                        nextAttackInterval = effective.IntervalSeconds / nativeFactor;
-                    }
-                    else
-                    {
-                        string timingEvidence;
-                        double verifiedNext;
-                        if (verifiedNativeCadence == null ||
-                            !verifiedNativeCadence.TryResolveNextInterval(
-                                attackerInstanceId, effective, attackerEffects,
-                                scheduler.Time, out verifiedNext, out timingEvidence) ||
-                            string.IsNullOrWhiteSpace(timingEvidence))
-                            return false;
-                        if (double.IsNaN(verifiedNext) ||
-                            double.IsInfinity(verifiedNext) || verifiedNext <= 0 ||
-                            double.IsInfinity(scheduler.Time + verifiedNext))
-                            throw new InvalidOperationException(
-                                "검증된 워크래프트 공격 간격이 유효하지 않습니다.");
-                        nextAttackInterval = verifiedNext;
-                    }
-                }
-            }
-
-            // Brulee copies are 5% slower than their unmodified template.
-            // Only this origin is permitted; do not alter generic native
-            // speed stacking or treat an enemy slow as an ally penalty.
-            foreach (var effect in attackerEffects)
-                if (effect.Type == CombatEffectType.AttackSpeedPenalty &&
-                    effect.SourceId.StartsWith("practice-brulee:", StringComparison.Ordinal) &&
-                    effect.Amount == 5)
-                    nextAttackInterval /= .95;
+            double nextAttackInterval;
+            if (!TryResolveNextAttackInterval(
+                    attackerInstanceId, effective, attackerEffects, out nextAttackInterval))
+                return false;
 
             // Read-only target preflight while the enemy is still alive,
             // before a potentially lethal committed basic attack. Rolls occur

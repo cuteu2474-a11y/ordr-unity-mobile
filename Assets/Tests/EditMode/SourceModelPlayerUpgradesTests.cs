@@ -266,6 +266,66 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        private sealed class CountingDice : ICombatProcRandom
+        {
+            public int Calls;
+            public int Next(int bound) { Calls++; return bound - 1; }
+        }
+
+        [Test]
+        public void SelectedUnitHudUsesCurrentCombatPowerAndCadenceWithoutAttacking()
+        {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var model = Model();
+            var dice = new CountingDice();
+            var rules = new SourceModelBasicCombatRules(map, dice);
+            rules.ConfigurePlayerUpgrades(model);
+            var combat = new CharacterCombatRuntime(units, skills, rules, rules, dice);
+            combat.Start();
+            rules.Enable();
+            combat.ConfigureSourceModelBasicAttacks(rules);
+            long actor = combat.SpawnCharacter("C-01", 0, 0);
+
+            double timeBefore = combat.Time;
+            int rngBefore = dice.Calls;
+            var initial = combat.SourceModelUnitAttackOf(actor);
+            Assert.IsNotNull(initial);
+            Assert.AreEqual(29, initial.MinimumPower.Value, 1e-9);
+            Assert.AreEqual(31, initial.MaximumPower.Value, 1e-9);
+            Assert.AreEqual(1.02, initial.BaseIntervalSeconds, 1e-9);
+            Assert.AreEqual(1.02, initial.CurrentIntervalSeconds.Value, 1e-9);
+            Assert.AreEqual(420, initial.Range, 1e-9);
+            Assert.AreEqual(0, initial.UpgradeBonus, 1e-9);
+
+            var wallet = new EconomyWallet();
+            wallet.Grant(new ResourceBundle().Add("gold", 3));
+            Assert.AreEqual(Original323UpgradePurchaseStatus.Succeeded,
+                Service(model, wallet).Purchase("R00F"));
+            var upgraded = combat.SourceModelUnitAttackOf(actor);
+            Assert.AreEqual(32, upgraded.MinimumPower.Value, 1e-9);
+            Assert.AreEqual(34, upgraded.MaximumPower.Value, 1e-9);
+            Assert.AreEqual(3, upgraded.UpgradeBonus, 1e-9);
+            Assert.AreEqual(1.02, upgraded.CurrentIntervalSeconds.Value, 1e-9);
+
+            combat.UnitStatusOf(actor).Apply(new CombatEffect(
+                "practice-aura:ui-power", CombatEffectType.AttackPowerBuff,
+                CombatEffectOrigin.Aura, 15, 0));
+            combat.UnitStatusOf(actor).Apply(new CombatEffect(
+                "practice-aura:ui-speed", CombatEffectType.AttackSpeedBuff,
+                CombatEffectOrigin.Aura, 20, 0));
+            var buffed = combat.SourceModelUnitAttackOf(actor);
+            Assert.AreEqual(36.8, buffed.MinimumPower.Value, 1e-8);
+            Assert.AreEqual(39.1, buffed.MaximumPower.Value, 1e-8);
+            Assert.AreEqual(15, buffed.BuffPercent, 1e-9);
+            Assert.AreEqual(1.02 / 1.2, buffed.CurrentIntervalSeconds.Value, 1e-9);
+            Assert.AreEqual(timeBefore, combat.Time, 1e-9);
+            Assert.AreEqual(rngBefore, dice.Calls,
+                "Opening the unit card must never roll damage/skill RNG.");
+        }
+
         [Test]
         public void InitialRareSpeedReachesActualAttackScheduler()
         {

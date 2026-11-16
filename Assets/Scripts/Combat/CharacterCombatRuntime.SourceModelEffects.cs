@@ -4,6 +4,38 @@ using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Combat
 {
+    // Selected unit HUD only. Damage is the current ATTACKER packet range
+    // before target armor, crit/proc RNG, splash and integer HP application.
+    // Unregistered or unsupported combat formulas must never show fake stats.
+    public sealed class SourceModelUnitAttackSnapshot
+    {
+        public double? MinimumPower { get; private set; }
+        public double? MaximumPower { get; private set; }
+        public double BaseIntervalSeconds { get; private set; }
+        public double? CurrentIntervalSeconds { get; private set; }
+        public double Range { get; private set; }
+        public double UpgradeBonus { get; private set; }
+        public double OtherFlatBonus { get; private set; }
+        public double BuffPercent { get; private set; }
+        public bool ResearchBonusActive { get; private set; }
+        public string BlockReason { get; private set; }
+
+        internal SourceModelUnitAttackSnapshot(SourceModelBasicAttackPowerPreview attack,
+            double baseInterval, double? currentInterval, double range, string blocked)
+        {
+            MinimumPower = attack?.Minimum;
+            MaximumPower = attack?.Maximum;
+            BaseIntervalSeconds = baseInterval;
+            CurrentIntervalSeconds = currentInterval;
+            Range = range;
+            UpgradeBonus = attack?.UpgradeBonus ?? 0;
+            OtherFlatBonus = attack?.OtherFlatBonus ?? 0;
+            BuffPercent = attack?.BuffPercent ?? 0;
+            ResearchBonusActive = attack != null && attack.ResearchBonusActive;
+            BlockReason = blocked;
+        }
+    }
+
     public sealed partial class CharacterCombatRuntime
     {
         internal event Action<double> SourceModelTimeAdvancing;
@@ -121,6 +153,39 @@ namespace Ordr.Mobile.Combat
                     SourceModelTemporarySkillCatalog.FormIntervalReduction(effects));
             });
         }
+        // The UI reads combat's actual object dice and current buff/upgrade
+        // sources, not a duplicate tooltip or historic web-catalog value.
+        // This is an observational snapshot: no simulated attack, RNG or
+        // cooldown mutation occurs when a portrait is selected.
+        public SourceModelUnitAttackSnapshot SourceModelUnitAttackOf(long instanceId)
+        {
+            CharacterInstance actor;
+            if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
+                !characters.TryGetValue(instanceId, out actor) ||
+                !actor.AttackReady || actor.Mapping == null)
+                return null;
+            string key = InstanceKey(instanceId);
+            var effects = unitStatuses[key].Snapshot();
+            var effective = attackPipeline.EffectiveAttack(key);
+            SourceModelBasicAttackPowerPreview power = null;
+            string block = actor.AttackBlockedByMissingFormula
+                ? (actor.DeferredAttackReason ?? "평타 피해 공식 보류") : null;
+            try
+            {
+                power = sourceModelRules.PreviewBasicAttackPower(
+                    key, actor.Mapping.AttackSpec.UnitRawCode, effects);
+                if (power == null)
+                    block = "원본 객체 기본 공격 자료 미연결";
+            }
+            catch (NotSupportedException ex)
+            {
+                block = "현재 공격력 공식 보류: " + ex.Message;
+            }
+            double? interval = attackPipeline.InspectCurrentAttackInterval(key);
+            return new SourceModelUnitAttackSnapshot(power,
+                effective.IntervalSeconds, interval, effective.Range, block);
+        }
+
         private double SourceModelUpgradeAttackBonus(long actorId) =>
             sourceModelRules?.PlayerUpgrades?.AttackBonus(SourceUpgradeRawcodeOf(InstanceKey(actorId))) ?? 0;
 
