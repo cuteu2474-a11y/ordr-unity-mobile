@@ -279,6 +279,17 @@ namespace Ordr.Mobile.Combat
         public int DamageEvents { get; internal set; }
     }
 
+    // A wave can remain alive during many following rounds. These metrics
+    // use actual spawn ownership, not the current wave or an enemy name.
+    public sealed class SourceModelPracticeOriginWavePressure
+    {
+        public int SpawnWave { get; internal set; }
+        public int AliveEnemies { get; internal set; }
+        public long AppliedHpDamageThisRound { get; internal set; }
+        public int DamageEventsThisRound { get; internal set; }
+        public int DefeatedThisRound { get; internal set; }
+    }
+
     public sealed class SourceModelPracticeCombatPressure
     {
         public int Wave { get; internal set; }
@@ -300,6 +311,10 @@ namespace Ordr.Mobile.Combat
         public int ObservedDamagingActorsThisRound { get; internal set; }
         public IReadOnlyList<SourceModelPracticeActorDamage> ActorDamageThisRound
         { get; internal set; }
+        public IReadOnlyList<SourceModelPracticeOriginWavePressure> OriginWaves
+        { get; internal set; }
+        public int TrackedWaveAliveEnemies { get; internal set; }
+        public int UntrackedMainLaneEnemies { get; internal set; }
         public bool ObservationIncludesRoundStart { get; internal set; }
     }
 
@@ -373,6 +388,8 @@ namespace Ordr.Mobile.Combat
         // balance state: reset on each round, and mark restore as partial.
         private readonly Dictionary<string, SourceModelPracticeActorDamage> roundDamageByActor =
             new Dictionary<string, SourceModelPracticeActorDamage>(StringComparer.Ordinal);
+        private readonly Dictionary<int, SourceModelPracticeOriginWavePressure> roundOriginWaves =
+            new Dictionary<int, SourceModelPracticeOriginWavePressure>();
         private long observedRoundWaveHpDamage;
         private long observedWaveHpDamageSinceAttach;
         private int observedRoundDamageEvents;
@@ -438,6 +455,42 @@ namespace Ordr.Mobile.Combat
                 });
             damageRows.Sort((a, b) => string.CompareOrdinal(a.ActorId, b.ActorId));
             report.ActorDamageThisRound = damageRows.AsReadOnly();
+
+            // Inspect live enemies only on explicit diagnostics, never every
+            // game frame. Old-wave survivors retain their original ownership.
+            var byOrigin = new SortedDictionary<int, SourceModelPracticeOriginWavePressure>();
+            foreach (var pair in roundOriginWaves)
+                byOrigin.Add(pair.Key, new SourceModelPracticeOriginWavePressure {
+                    SpawnWave = pair.Key,
+                    AppliedHpDamageThisRound = pair.Value.AppliedHpDamageThisRound,
+                    DamageEventsThisRound = pair.Value.DamageEventsThisRound,
+                    DefeatedThisRound = pair.Value.DefeatedThisRound
+                });
+            foreach (var enemy in combat.MobileEnemySnapshot())
+            {
+                if (enemy.Health <= 0 ||
+                    (enemy.Kind != CharacterEnemyKind.Line &&
+                     enemy.Kind != CharacterEnemyKind.Boss &&
+                     enemy.Kind != CharacterEnemyKind.Enraged)) continue;
+                int origin;
+                if (!waves.TryGetLivingMonsterSpawnWave(enemy.Id, out origin))
+                {
+                    if (report.UntrackedMainLaneEnemies < int.MaxValue)
+                        report.UntrackedMainLaneEnemies++;
+                    continue;
+                }
+                SourceModelPracticeOriginWavePressure row;
+                if (!byOrigin.TryGetValue(origin, out row))
+                {
+                    row = new SourceModelPracticeOriginWavePressure { SpawnWave = origin };
+                    byOrigin.Add(origin, row);
+                }
+                if (row.AliveEnemies < int.MaxValue) row.AliveEnemies++;
+                if (report.TrackedWaveAliveEnemies < int.MaxValue)
+                    report.TrackedWaveAliveEnemies++;
+            }
+            report.OriginWaves = new List<SourceModelPracticeOriginWavePressure>(
+                byOrigin.Values).AsReadOnly();
             foreach (var actor in actors)
                 switch (actor.Kind)
                 {
@@ -463,6 +516,11 @@ namespace Ordr.Mobile.Combat
             if (!Started || actualDamage <= 0 ||
                 !waves.TryGetLivingMonsterSpawnWave(enemyId, out spawnWave))
                 return;
+            var originRow = ObserveOriginWave(spawnWave);
+            originRow.AppliedHpDamageThisRound = SaturatingDamageAdd(
+                originRow.AppliedHpDamageThisRound, actualDamage);
+            if (originRow.DamageEventsThisRound < int.MaxValue)
+                originRow.DamageEventsThisRound++;
             observedRoundWaveHpDamage = SaturatingDamageAdd(
                 observedRoundWaveHpDamage, actualDamage);
             observedWaveHpDamageSinceAttach = SaturatingDamageAdd(
@@ -483,6 +541,17 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        private SourceModelPracticeOriginWavePressure ObserveOriginWave(int spawnWave)
+        {
+            SourceModelPracticeOriginWavePressure row;
+            if (!roundOriginWaves.TryGetValue(spawnWave, out row))
+            {
+                row = new SourceModelPracticeOriginWavePressure { SpawnWave = spawnWave };
+                roundOriginWaves.Add(spawnWave, row);
+            }
+            return row;
+        }
+
         private static long SaturatingDamageAdd(long existing, long damage) =>
             damage > long.MaxValue - existing ? long.MaxValue : existing + damage;
 
@@ -491,6 +560,7 @@ namespace Ordr.Mobile.Combat
             observedRoundWaveHpDamage = 0;
             observedRoundDamageEvents = 0;
             roundDamageByActor.Clear();
+            roundOriginWaves.Clear();
             observationIncludesRoundStart = includesRoundStart;
         }
 
@@ -831,6 +901,9 @@ namespace Ordr.Mobile.Combat
         private void RewardActualDeath(int spawnWave, string id)
         {
             if (!rewarded.Add(id)) return;
+            var originRow = ObserveOriginWave(spawnWave);
+            if (originRow.DefeatedThisRound < int.MaxValue)
+                originRow.DefeatedThisRound++;
             string defeatedBossRawcode;
             int bossPoints;
             if (waves.TryGetDefeatedBossRawcode(spawnWave, id, out defeatedBossRawcode))

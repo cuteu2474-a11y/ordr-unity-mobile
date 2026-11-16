@@ -1196,7 +1196,7 @@ namespace Ordr.Mobile.Combat
         {
             CharacterInstance unit;
             if (!characters.TryGetValue(instanceId, out unit) || !unit.AttackReady ||
-                unit.AttackBlockedByMissingFormula || unit.Mapping == null) return null;
+                HasActiveAttackFormulaBlock(unit) || unit.Mapping == null) return null;
             var candidates = BuildBasicAttackCandidates(unit);
             return ChooseApprovedBossTarget(unit, candidates) ??
                 attackPipeline.SelectDefaultTarget(InstanceKey(instanceId), candidates,
@@ -2051,7 +2051,7 @@ namespace Ordr.Mobile.Combat
                     BasicAttackReadinessKind.FormulaDeferred,
                     "현재 공속 오라의 원본 네이티브 공격 간격 계산/중첩 근거 미확인",
                     attackPipeline.NextAttackAt(InstanceKey(instanceId)));
-            if (unit.AttackBlockedByMissingFormula)
+            if (HasActiveAttackFormulaBlock(unit))
                 return new BasicAttackReadiness(instanceId, id,
                     BasicAttackReadinessKind.FormulaDeferred,
                     unit.DeferredAttackReason ?? "최종 피해 공식 미확인",
@@ -2886,11 +2886,10 @@ namespace Ordr.Mobile.Combat
             return candidates;
         }
 
-        // 현재 표적을 가진 유닛 중 가장 빠른 공격 시점을 찾는다.
-        // An unsupported temporary buff may expire or be dispelled. Do not
-        // leave its owner permanently disabled; do not auto-approve missing
-        // source attack formulas while their blocking condition still exists.
-        private bool IsAttackFormulaBlocked(CharacterInstance unit)
+        // Pure source-aware query shared by combat scheduling and HUD.
+        // A discarded/expired transient status is no longer an attack block.
+        // Unknown status state and independent formula failures stay blocked.
+        private bool HasActiveAttackFormulaBlock(CharacterInstance unit)
         {
             if (!unit.AttackBlockedByMissingFormula) return false;
             if (string.IsNullOrEmpty(unit.AttackBlockedStatusSourceId)) return true;
@@ -2900,6 +2899,15 @@ namespace Ordr.Mobile.Combat
             foreach (var effect in status.Snapshot())
                 if (effect.SourceId == unit.AttackBlockedStatusSourceId)
                     return true;
+            return false;
+        }
+
+        // The mutable combat path also clears stale transient evidence. HUD
+        // inspection may query the same predicate but must not mutate it.
+        private bool IsAttackFormulaBlocked(CharacterInstance unit)
+        {
+            if (!unit.AttackBlockedByMissingFormula) return false;
+            if (HasActiveAttackFormulaBlock(unit)) return true;
             unit.AttackBlockedByMissingFormula = false;
             unit.AttackBlockedStatusSourceId = null;
             unit.DeferredAttackReason = null;

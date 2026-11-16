@@ -143,6 +143,11 @@ namespace Ordr.Mobile.Tests
                         pressure.UnverifiedSource + pressure.UnverifiedTarget +
                         pressure.OutOfRange + pressure.FormulaDeferred +
                         pressure.NoBattlefieldTarget);
+                    Assert.AreEqual(pressure.ObservedWaveHpDamageThisRound,
+                        pressure.OriginWaves.Sum(x => x.AppliedHpDamageThisRound),
+                        "HP damage must remain attributed to its spawn wave.");
+                    Assert.AreEqual(pressure.ObservedDamageEventsThisRound,
+                        pressure.OriginWaves.Sum(x => x.DamageEventsThisRound));
                     Assert.GreaterOrEqual(pressure.ObservedWaveHpDamageSinceAttach,
                         lastObservedDamage, "Damage observation must be monotonic.");
                     lastObservedDamage = pressure.ObservedWaveHpDamageSinceAttach;
@@ -165,7 +170,12 @@ namespace Ordr.Mobile.Tests
                             " damagingActors=" + pressure.ObservedDamagingActorsThisRound +
                             " actorDamage=" + string.Join(",",
                                 pressure.ActorDamageThisRound.Select(x =>
-                                    x.ActorId + ":" + x.AppliedHpDamage).ToArray()));
+                                    x.ActorId + ":" + x.AppliedHpDamage).ToArray()) +
+                            " origin=" + string.Join(",",
+                                pressure.OriginWaves.Select(x =>
+                                    x.SpawnWave + ":alive=" + x.AliveEnemies +
+                                    "/hp=" + x.AppliedHpDamageThisRound +
+                                    "/kills=" + x.DefeatedThisRound).ToArray()));
                     previousWave = pressure.Wave;
                     if (pressure.Wave >= 5) break;
                 }
@@ -174,6 +184,95 @@ namespace Ordr.Mobile.Tests
                     "Early waves must produce actual HP damage, not merely Ready labels.");
                 // The trace must not fabricate a source-parity result from
                 // the number of test units or the model-only monster stats.
+            }
+        }
+
+        [Test]
+        public void CombatPressureAttributesOldSurvivorDamageToItsActualSpawnWave()
+        {
+            // A past-round survivor cannot be counted as a new-round hit.
+            // Direct damage in this fixture tests the existing resolution
+            // observer and is NOT a shortcut enabled in normal gameplay.
+            using (var game = Create(0, 65, mobileLane: true))
+            {
+                game.Battle.Advance(56.1); // R1 lead-in 21s + 35s.
+                Assert.AreEqual(2, game.Combat.Game.CurrentWave);
+                var before = game.Battle.CaptureCombatPressure();
+                Assert.AreEqual(35, before.TrackedWaveAliveEnemies);
+                Assert.AreEqual(0, before.UntrackedMainLaneEnemies);
+                Assert.AreEqual(1, before.OriginWaves.Single().SpawnWave);
+                Assert.AreEqual(35, before.OriginWaves.Single().AliveEnemies);
+                Assert.AreEqual(0, before.OriginWaves.Single().AppliedHpDamageThisRound);
+
+                long actor = game.Combat.SpawnCharacter("C-01", 0, 0);
+                var first = game.Combat.MobileEnemySnapshot()
+                    .First(x => x.Kind == CharacterEnemyKind.Line);
+                Assert.AreEqual(10, DealModelDamage(game.Combat, actor, first.Id, 10));
+                var damaged = game.Battle.CaptureCombatPressure();
+                Assert.AreEqual(2, damaged.Wave);
+                var old = damaged.OriginWaves.Single(x => x.SpawnWave == 1);
+                Assert.AreEqual(10, old.AppliedHpDamageThisRound);
+                Assert.AreEqual(1, old.DamageEventsThisRound);
+                Assert.AreEqual(0, old.DefeatedThisRound);
+                Assert.AreEqual(10,
+                    damaged.ActorDamageThisRound.Single().AppliedHpDamage);
+
+                Assert.AreEqual(first.Health - 10,
+                    DealModelDamage(game.Combat, actor, first.Id, first.Health - 10));
+                var killed = game.Battle.CaptureCombatPressure();
+                old = killed.OriginWaves.Single(x => x.SpawnWave == 1);
+                Assert.AreEqual(1, old.DefeatedThisRound);
+                Assert.AreEqual(34, old.AliveEnemies);
+                Assert.AreEqual(first.Health, old.AppliedHpDamageThisRound);
+                Assert.AreEqual(0, killed.UntrackedMainLaneEnemies);
+                Assert.AreEqual(killed.ObservedWaveHpDamageThisRound,
+                    killed.OriginWaves.Sum(x => x.AppliedHpDamageThisRound));
+
+                game.Battle.Advance(.5);
+                var mixed = game.Battle.CaptureCombatPressure();
+                Assert.AreEqual(34,
+                    mixed.OriginWaves.Single(x => x.SpawnWave == 1).AliveEnemies);
+                Assert.GreaterOrEqual(
+                    mixed.OriginWaves.Single(x => x.SpawnWave == 2).AliveEnemies, 1);
+            }
+        }
+
+        [Test]
+        public void ExpiredTemporaryAttackFormulaBlockDoesNotMisleadHudOrTargetQuery()
+        {
+            using (var game = Create(0, 65, mobileLane: true))
+            {
+                long id = game.Combat.SpawnCharacter("C-01", 0, 0);
+                var actor = game.Combat.MobileUnitSnapshot().Single();
+                game.Combat.SpawnEnemy("diagnostic-reachable", 10000,
+                    CharacterEnemyKind.Line, actor.Position.X + 1,
+                    actor.Position.Y, 0);
+                Assert.AreNotEqual(BasicAttackReadinessKind.UnverifiedSource,
+                    game.Combat.InspectBasicAttack(id).Kind);
+
+                var characters = (System.Collections.IDictionary)
+                    typeof(CharacterCombatRuntime).GetField(
+                        "characters", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .GetValue(game.Combat);
+                object instance = characters[id];
+                var type = instance.GetType();
+                type.GetField("AttackBlockedByMissingFormula").SetValue(instance, true);
+                type.GetField("AttackBlockedStatusSourceId").SetValue(
+                    instance, "TEST_ONLY_EXPIRED_FORMULA_STATUS");
+                type.GetField("DeferredAttackReason").SetValue(
+                    instance, "TEST_ONLY expired temporary effect");
+                Assert.AreNotEqual(BasicAttackReadinessKind.FormulaDeferred,
+                    game.Combat.InspectBasicAttack(id).Kind);
+                Assert.AreEqual("diagnostic-reachable",
+                    game.Combat.CurrentAttackTargetOf(id));
+                Assert.IsTrue((bool)type.GetField("AttackBlockedByMissingFormula")
+                    .GetValue(instance), "Reading the diagnostic must not clear combat state.");
+
+                type.GetField("AttackBlockedStatusSourceId").SetValue(instance, null);
+                Assert.AreEqual(BasicAttackReadinessKind.FormulaDeferred,
+                    game.Combat.InspectBasicAttack(id).Kind,
+                    "A missing formula without an expiring status remains blocked.");
+                Assert.IsNull(game.Combat.CurrentAttackTargetOf(id));
             }
         }
 
@@ -315,6 +414,9 @@ namespace Ordr.Mobile.Tests
                 Assert.Greater(actual.ObservedWaveHpDamageSinceAttach, 0);
                 Assert.Greater(actual.ObservedDamageEventsThisRound, 0);
                 Assert.Greater(actual.ObservedDamagingActorsThisRound, 0);
+                Assert.AreEqual(actual.ObservedWaveHpDamageThisRound,
+                    actual.OriginWaves.Sum(x => x.AppliedHpDamageThisRound));
+                Assert.Greater(actual.OriginWaves.Sum(x => x.DefeatedThisRound), 0);
                 Assert.AreEqual(actual.ObservedDamagingActorsThisRound,
                     actual.ActorDamageThisRound.Count);
                 Assert.AreEqual(actual.ObservedWaveHpDamageThisRound,
