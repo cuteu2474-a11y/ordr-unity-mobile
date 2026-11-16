@@ -440,8 +440,14 @@ namespace Ordr.Mobile.Core
                         "공유 목표 파견 대상이 실제 전장에 없습니다.");
             }
             if (state.Practice != null)
+            {
                 SourceModelPracticeBattle.ValidateState(state.Practice, 65,
                     state.Game.CurrentWave, state.LogicalTime);
+                if (state.Practice.DeathCountActive &&
+                    state.Game.AliveEnemies < 70)
+                    throw new FormatException(
+                        "데스카운트가 실행 중인데 실제 몬스터 수는 제한 미만입니다.");
+            }
         }
 
         // Build ONLY the core dependency graph for a future complete

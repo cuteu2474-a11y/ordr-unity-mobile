@@ -468,7 +468,8 @@ namespace Ordr.Mobile.Tests
             {
                 game.Battle.Advance(100);
                 Assert.AreEqual(SessionPhase.Lost, game.Combat.Game.Phase);
-                Assert.AreEqual(70, game.Combat.Game.AliveEnemies);
+                Assert.GreaterOrEqual(game.Combat.Game.AliveEnemies, 70,
+                    "More waves can spawn during the 20-second grace period.");
                 Assert.AreEqual(0, game.Combat.Game.LeakedEnemies);
                 Assert.AreEqual(0, game.Combat.Game.DefeatedEnemies);
                 Assert.AreEqual(60, game.Economy.Wallet.Balance("gold"));
@@ -476,6 +477,87 @@ namespace Ordr.Mobile.Tests
                 long gold = game.Economy.Wallet.Balance("gold");
                 game.Battle.Advance(100);
                 Assert.AreEqual(gold, game.Economy.Wallet.Balance("gold"));
+            }
+        }
+
+        [Test]
+        public void DeathCountdownWaitsTwentyActualCombatSecondsBeforeLosing()
+        {
+            using (var game = Create())
+            {
+                game.Battle.Advance(52.6);
+                Assert.AreEqual(70, game.Combat.Game.AliveEnemies);
+                Assert.AreEqual(SessionPhase.Running, game.Combat.Game.Phase);
+                Assert.IsTrue(game.Battle.IsDeathCountdownActive);
+                Assert.Greater(game.Battle.DeathCountdownSecondsRemaining, 19.8);
+                game.Battle.Advance(19.0);
+                Assert.AreEqual(SessionPhase.Running, game.Combat.Game.Phase);
+                Assert.IsTrue(game.Battle.IsDeathCountdownActive);
+                game.Battle.Advance(1.2);
+                Assert.AreEqual(SessionPhase.Lost, game.Combat.Game.Phase);
+                Assert.GreaterOrEqual(game.Combat.Game.AliveEnemies, 70,
+                    "More waves can spawn during the 20-second grace period.");
+                Assert.AreEqual(0, game.Combat.Game.LeakedEnemies);
+                StringAssert.Contains("20초", game.Battle.ResultMessage);
+                Assert.AreEqual(0, game.Battle.DeathCountdownSecondsRemaining, 1e-7);
+            }
+        }
+
+        [Test]
+        public void DeathCountdownCancelsBelowLimitAndStartsFreshOnNextBreach()
+        {
+            using (var game = Create())
+            {
+                game.Battle.Advance(53);
+                Assert.IsTrue(game.Battle.IsDeathCountdownActive);
+                var enemy = game.Combat.MobileEnemySnapshot().First();
+                Assert.IsTrue(game.Combat.LeakEnemy(enemy.Id));
+                game.Battle.Advance(.1);
+                Assert.AreEqual(69, game.Combat.Game.AliveEnemies);
+                Assert.IsFalse(game.Battle.IsDeathCountdownActive);
+                Assert.AreEqual(0d, game.Battle.DeathCountdownSecondsRemaining);
+                game.Battle.Advance(17.6); // Third round starts, one more spawn.
+                Assert.AreEqual(SessionPhase.Running, game.Combat.Game.Phase);
+                Assert.GreaterOrEqual(game.Combat.Game.AliveEnemies, 70);
+                Assert.IsTrue(game.Battle.IsDeathCountdownActive);
+                Assert.Greater(game.Battle.DeathCountdownSecondsRemaining, 19d);
+            }
+        }
+
+        [Test]
+        public void DeathCountdownUsesCombatClockAndPreservesCheckpointState()
+        {
+            var timer = new MonsterCountDeathCountdown(70);
+            Assert.IsFalse(timer.Observe(70, 100));
+            Assert.IsTrue(timer.IsActive);
+            Assert.AreEqual(20d, timer.RemainingSeconds(100), 1e-9);
+            Assert.IsFalse(timer.Observe(70, 105));
+            Assert.AreEqual(15d, timer.RemainingSeconds(105), 1e-9);
+            var restored = new MonsterCountDeathCountdown(70);
+            restored.Restore(true, timer.StartedAt, 70, 108);
+            Assert.AreEqual(12d, restored.RemainingSeconds(108), 1e-9);
+            Assert.IsFalse(restored.Observe(69, 108));
+            Assert.IsFalse(restored.IsActive);
+            Assert.IsFalse(restored.Observe(70, 109));
+            Assert.AreEqual(20d, restored.RemainingSeconds(109), 1e-9);
+            Assert.IsFalse(restored.Observe(70, 128.9));
+            Assert.IsTrue(restored.Observe(70, 129));
+            Assert.Throws<FormatException>(() => restored.Restore(true, 0, 69, 20));
+            Assert.Throws<FormatException>(() => restored.Restore(true, 500, 70, 20));
+            Assert.Throws<FormatException>(() => restored.Restore(true, 1, 70, 22));
+
+            using (var game = Create())
+            {
+                game.Battle.Advance(53);
+                var snapshot = game.Battle.CaptureState();
+                Assert.IsTrue(snapshot.DeathCountActive);
+                Assert.AreEqual(20d, game.Battle.DeathCountdownGraceSeconds);
+                SourceModelPracticeBattle.ValidateState(snapshot, 10,
+                    game.Combat.Game.CurrentWave, game.Combat.Time);
+                snapshot.DeathCountStartedAt = game.Combat.Time + 1;
+                Assert.Throws<FormatException>(() =>
+                    SourceModelPracticeBattle.ValidateState(snapshot, 10,
+                        game.Combat.Game.CurrentWave, game.Combat.Time));
             }
         }
 

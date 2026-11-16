@@ -126,6 +126,27 @@ namespace Ordr.Mobile.Unity
                     hudStyle.fontSize--;
                 GUI.Label(metricsRect, metrics, hudStyle);
 
+                // Count-based defeat is not instantaneous. Show the ongoing
+                // 20s grace directly on the battlefield even if score tabs
+                // are closed. It uses logical combat time (pause/speed safe).
+                if (practice != null && practice.IsDeathCountdownActive &&
+                    combat != null && combat.Game.Phase == SessionPhase.Running)
+                {
+                    var deathRect = new Rect(hud.x + 8f * scale,
+                        hud.yMax + 4f * scale, hud.width - 16f * scale, 30f * scale);
+                    GUI.DrawTexture(deathRect, OrdrBattlefieldArt.HeaderTexture,
+                        ScaleMode.StretchToFill);
+                    var deathStyle = new GUIStyle(hudStyle) {
+                        alignment = TextAnchor.MiddleCenter,
+                        fontSize = Mathf.RoundToInt(17f * scale) };
+                    deathStyle.normal.textColor = new Color(1f, .53f, .40f);
+                    GUI.Label(deathRect, "데스카운트 " +
+                        TimeSpan.FromSeconds(Math.Ceiling(
+                            practice.DeathCountdownSecondsRemaining)).ToString(@"mm\:ss") +
+                        " · 몬스터 " + combat.Game.AliveEnemies + "/" +
+                        practice.EnemyLimit, deathStyle);
+                }
+
                 // Story remains a smaller, visually separate battlefield.
                 Color groundColor = GUI.color;
                 try

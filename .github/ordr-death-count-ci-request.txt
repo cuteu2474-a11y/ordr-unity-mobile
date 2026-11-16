@@ -1,0 +1,1 @@
+2026-11-17 explicit single integration validation for 70-monster / 20s death countdown; check reset, model round transitions, save validation, no APK.

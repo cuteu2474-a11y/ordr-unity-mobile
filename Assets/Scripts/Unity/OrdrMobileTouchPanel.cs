@@ -890,6 +890,11 @@ namespace Ordr.Mobile.Unity
                     Combat.CharacterCount + "기", OrdrMobileUiTheme.Aqua);
                 OrdrMobileUiTheme.DrawStatusRow("남은 적",
                     game.AliveEnemies + "기", new Color(1f,.56f,.47f));
+                if (controller.PracticeBattle != null &&
+                    controller.PracticeBattle.IsDeathCountdownActive)
+                    OrdrMobileUiTheme.DrawStatusRow("데스카운트",
+                        Math.Ceiling(controller.PracticeBattle.DeathCountdownSecondsRemaining) +
+                        "초", new Color(1f,.56f,.47f));
                 if (controller.OriginalTreasureHunt != null)
                     OrdrMobileUiTheme.DrawStatusRow("남은 보물",
                         controller.OriginalTreasureHunt.UncollectedCount + "개",
@@ -1212,6 +1217,10 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndHorizontal();
             GUILayout.Space(7f);
 
+            if (practice != null && practice.IsDeathCountdownActive)
+                DrawScoreMetric("데스카운트",
+                    Math.Ceiling(practice.DeathCountdownSecondsRemaining) +
+                    "초", new Color(1f, .56f, .47f));
             DrawScoreMetric("적 처치", game.DefeatedEnemies + "기", OrdrMobileUiTheme.Gold);
             DrawScoreMetric("보유 전투 유닛", Combat.CharacterCount + "기",
                 OrdrMobileUiTheme.Aqua);

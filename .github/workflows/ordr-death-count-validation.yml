@@ -1,0 +1,66 @@
+name: 요청형 몬스터 데스카운트 Unity 통합 검증
+
+# Trigger exactly once from an explicit marker change. Never build an APK.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/ordr-death-count-ci-request.txt'
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: ordr-death-count-explicit
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Unity 데스카운트 20초·취소·복원·전투 회귀
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unity 라이선스 설정 확인
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: |
+          test -n "$UNITY_LICENSE"
+          test -n "$UNITY_EMAIL"
+          test -n "$UNITY_PASSWORD"
+
+      - name: Unity 테스트용 디스크 여유 확보
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: 20초 데스카운트 전투 통합 시험
+        id: tests
+        uses: game-ci/unity-test-runner@v4.3.2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          testMode: EditMode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          customParameters: -testFilter Ordr.Mobile.Tests.SourceModelPracticeBattleTests
+
+      - name: Unity 테스트 결과 파일 첨부
+        if: ${{ always() && steps.tests.outputs.artifactsPath != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-death-count-results
+          path: ${{ steps.tests.outputs.artifactsPath }}
+          if-no-files-found: ignore

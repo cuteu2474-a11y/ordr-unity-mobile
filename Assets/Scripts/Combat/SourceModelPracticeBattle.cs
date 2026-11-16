@@ -300,6 +300,9 @@ namespace Ordr.Mobile.Combat
         public bool MobileMainLane;
         public double RoundStartTime;
         public double RoundLeadInSeconds;
+        // Optional v1 fields: old checkpoints without these fields are inactive.
+        public bool DeathCountActive;
+        public double DeathCountStartedAt = -1d;
         public int RoundStartingDefeated;
         public long RoundStartingGold;
         public int RoundStartingBossScore;
@@ -326,6 +329,7 @@ namespace Ordr.Mobile.Combat
         private readonly IOriginalWispRandom scriptRandom;
         private readonly Action roundStarted;
         private readonly bool mobileMainLaneEnabled;
+        private readonly MonsterCountDeathCountdown deathCount;
         public bool MobileMainLaneEnabled => mobileMainLaneEnabled;
         private readonly List<VerifiedWavePlan> plans = new List<VerifiedWavePlan>();
         private readonly Dictionary<string, double> bornAt = new Dictionary<string, double>();
@@ -361,6 +365,10 @@ namespace Ordr.Mobile.Combat
         public IReadOnlyList<CombatPathPoint> RouteCorners => catalog.RouteCorners;
         public int LastRound => catalog.LastRound;
         public int EnemyLimit => catalog.EnemyLimit;
+        public bool IsDeathCountdownActive => deathCount.IsActive;
+        public double DeathCountdownSecondsRemaining =>
+            deathCount.RemainingSeconds(combat.Time);
+        public double DeathCountdownGraceSeconds => deathCount.GraceSeconds;
         public SourceModelPracticeBattleState CaptureState()
         {
             if (!Started || combat.PendingSimulationSeconds != 0)
@@ -372,6 +380,8 @@ namespace Ordr.Mobile.Combat
                 Started = Started, MobileMainLane = mobileMainLaneEnabled,
                 RoundStartTime = roundStart,
                 RoundLeadInSeconds = roundLeadInSeconds,
+                DeathCountActive = deathCount.IsActive,
+                DeathCountStartedAt = deathCount.StartedAt,
                 RoundStartingDefeated = roundStartingDefeated,
                 RoundStartingGold = roundStartingGold,
                 RoundStartingBossScore = roundStartingBossScore,
@@ -420,6 +430,12 @@ namespace Ordr.Mobile.Combat
                 double.IsNaN(state.RoundLeadInSeconds) ||
                 double.IsInfinity(state.RoundLeadInSeconds) ||
                 state.RoundLeadInSeconds < 0 ||
+                (state.DeathCountActive && (double.IsNaN(state.DeathCountStartedAt) ||
+                    double.IsInfinity(state.DeathCountStartedAt) ||
+                    state.DeathCountStartedAt < 0 ||
+                    state.DeathCountStartedAt > logicalTime + 1e-8 ||
+                    logicalTime - state.DeathCountStartedAt >=
+                        MonsterCountDeathCountdown.DefaultGraceSeconds + 1e-8)) ||
                 state.RoundStartingDefeated < 0 || state.RoundStartingGold < 0 ||
                 state.RoundStartingBossScore < 0 || state.GoldAwarded < 0 ||
                 state.BossScoreAwarded < 0 || state.RoundWispsAwarded < 0 ||
@@ -472,6 +488,8 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("복원된 65R 전투/웨이브 월드를 먼저 연결해야 합니다.");
             roundStart = state.RoundStartTime;
             roundLeadInSeconds = state.RoundLeadInSeconds;
+            deathCount.Restore(state.DeathCountActive, state.DeathCountStartedAt,
+                combat.Game.AliveEnemies, combat.Time);
             roundStartingDefeated = state.RoundStartingDefeated;
             roundStartingGold = state.RoundStartingGold;
             roundStartingBossScore = state.RoundStartingBossScore;
@@ -524,6 +542,7 @@ namespace Ordr.Mobile.Combat
                     "모바일 전장 배치는 독립 65라운드 모드에서만 사용합니다.",
                     nameof(mobileMainLane));
             mobileMainLaneEnabled = mobileMainLane;
+            deathCount = new MonsterCountDeathCountdown(catalog.EnemyLimit);
             if (!ReferenceEquals(world.Roster, shared.Units)) throw new ArgumentException("공유 세션 불일치");
             // Validate every selected source identity before mutating the session.
             for (int wave = 1; wave <= catalog.LastRound; wave++)
@@ -587,13 +606,26 @@ namespace Ordr.Mobile.Combat
             while (left > 0 && combat.Game.Phase == SessionPhase.Running)
             {
                 if (TryEndOrAdvance()) break;
-                double step = Math.Min(left, SecondsRemaining > 0 ? Math.Min(0.1, SecondsRemaining) : 0.1);
+                // Use one logical clock for waves, attacks and the death timer.
+                // Pausing/backgrounding and game-speed multipliers remain
+                // controlled by the owner of Advance(), not wall time.
+                if (deathCount.Observe(combat.Game.AliveEnemies, combat.Time))
+                {
+                    Finish(false, "몬스터가 " + catalog.EnemyLimit +
+                        "마리 이상인 상태로 20초가 지나 패배했습니다.");
+                    break;
+                }
+                double step = Math.Min(left,
+                    SecondsRemaining > 0 ? Math.Min(0.1, SecondsRemaining) : 0.1);
+                if (deathCount.IsActive && deathCount.RemainingSeconds(combat.Time) > 1e-8)
+                    step = Math.Min(step, deathCount.RemainingSeconds(combat.Time));
                 if (step <= 0) throw new InvalidOperationException("연습 라운드 시간이 진행되지 않습니다.");
                 events.AddRange(waves.Step(combat, step));
                 left = Math.Max(0, left - step);
-                if (combat.Game.AliveEnemies >= catalog.EnemyLimit)
+                if (deathCount.Observe(combat.Game.AliveEnemies, combat.Time))
                 {
-                    Finish(false, "몬스터가 " + catalog.EnemyLimit + "마리에 도달했습니다.");
+                    Finish(false, "몬스터가 " + catalog.EnemyLimit +
+                        "마리 이상인 상태로 20초가 지나 패배했습니다.");
                     break;
                 }
                 if (TryEndOrAdvance()) break;
