@@ -1,11 +1,52 @@
 using System;
 using NUnit.Framework;
 using Ordr.Mobile.Mobile;
+using Ordr.Mobile.Unity;
+using UnityEngine;
 
 namespace Ordr.Mobile.Tests
 {
     public sealed class MobileWispActionJournalTests
     {
+        [Test]
+        public void UnusedWispIndicatorsUseWalletVisibilityAndStayInsideMainBattle()
+        {
+            Assert.IsFalse(MobileUnspentWispOverlay.ShouldShow(0));
+            Assert.IsFalse(MobileUnspentWispOverlay.ShouldShow(-1));
+            Assert.IsTrue(MobileUnspentWispOverlay.ShouldShow(1));
+            Assert.IsTrue(MobileUnspentWispOverlay.ShouldShow(5));
+            Rect[] fields = {
+                new Rect(160, 60, 350, 160),
+                new Rect(160, 60, 180, 120),
+                new Rect(160, 60, 140, 100)
+            };
+            foreach (var field in fields)
+            {
+                for (int count = 1; count <= 3; count++)
+                    for (int i = 0; i < count; i++)
+                    {
+                        Rect start = MobileUnspentWispOverlay.MarkerRect(
+                            field, 1f, i, count, 0);
+                        Rect bob = MobileUnspentWispOverlay.MarkerRect(
+                            field, 1f, i, count, 1.2f);
+                        Assert.IsTrue(field.Contains(start.min), "marker top-left");
+                        Assert.IsTrue(field.Contains(start.max), "marker bottom-right");
+                        Assert.IsTrue(field.Contains(bob.min));
+                        Assert.IsTrue(field.Contains(bob.max));
+                        Assert.Greater(start.width, 0);
+                        Assert.Greater(start.height, 0);
+                    }
+            }
+            // GUI coordinates and hit-test coordinates must use the same
+            // scale and hover phase, including when the drawer is open.
+            Rect physical = new Rect(240, 80, 420, 170);
+            Rect marker = MobileUnspentWispOverlay.MarkerRect(
+                physical, 1.5f, 0, 2, 2.8f);
+            Assert.IsTrue(marker.Contains(marker.center));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                MobileUnspentWispOverlay.MarkerRect(physical, 1, 2, 2, 0));
+        }
+
         [Test]
         public void DirectUseOnlyCallsOriginalTransactionOnce()
         {

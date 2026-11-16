@@ -16,6 +16,14 @@ namespace Ordr.Mobile.Unity
     {
         private enum Tab { Play, Units, Story, Fusion, Gambling, Wisp, LogPose, Helper, Alchemy, Missions, UpgradeOne, UpgradeTwo, Research }
         private enum ScoreboardPage { Summary, Commons, Utility }
+        private enum IdleWispKind { Random, Choice, Transcend }
+        private struct IdleWispMarker
+        {
+            public IdleWispKind Kind;
+            public string Title;
+            public long Count;
+            public Color Tint;
+        }
         private enum FusionListCategory { All, Ready, Owned, Bookmarked }
 
         [SerializeField] private OrdrCharacterCombatController controller;
@@ -291,9 +299,17 @@ namespace Ordr.Mobile.Unity
             float scale = MobileMapSkillLayout.UiScale(safe, Screen.dpi);
             // World taps are physical pixels; the toast is laid out in
             // GUI.matrix-scaled logical pixels.
-            return layout.BlocksWorldTap(onGui, visible) ||
+            if (layout.BlocksWorldTap(onGui, visible) ||
                 (RewardToastVisible && RewardToastRect(layout, scale)
-                    .Contains(onGui / scale));
+                    .Contains(onGui / scale))) return true;
+            // A hovering Wisp is a real navigational touch target. Never
+            // forward its tap to a battlefield unit/skill underneath it.
+            var reminders = CurrentIdleWispMarkers();
+            for (int i = 0; i < reminders.Count; i++)
+                if (MobileUnspentWispOverlay.MarkerRect(
+                    layout.Battle, scale, i, reminders.Count, Time.unscaledTime)
+                    .Contains(onGui / scale)) return true;
+            return false;
         }
 
         private Ordr.Mobile.Combat.CharacterCombatRuntime Combat
@@ -403,6 +419,7 @@ namespace Ordr.Mobile.Unity
                 // Leave the central map render and world taps untouched.
                 DrawDedicatedSkillMargin(safe, scale);
                 DrawEconomyStatus(layout, scale);
+                DrawUnusedWispMarkers(layout, scale);
                 DrawRewardToast(layout, scale);
             }
             finally
@@ -504,6 +521,128 @@ namespace Ordr.Mobile.Unity
         private void OnApplicationPause(bool paused)
         {
             if (paused) CancelScrollGestures();
+        }
+
+        // Original e0IX/e018 are physical wisps. The mobile remake keeps
+        // them in the shared wallet; these hovering field markers restore
+        // persistent visual presence without creating extra owned units.
+        // Only player-spendable/choice rewards appear: auto-grant wisps do not
+        // nag when the player has no manual action available.
+        private List<IdleWispMarker> CurrentIdleWispMarkers()
+        {
+            var reminders = new List<IdleWispMarker>(3);
+            if (controller == null || controller.SharedEconomy == null ||
+                Combat == null || Combat.Game.Phase != SessionPhase.Running)
+                return reminders;
+            var wallet = controller.SharedEconomy.Wallet;
+            long random = wallet.Balance(WispResourceIds.Random);
+            if (MobileUnspentWispOverlay.ShouldShow(random))
+                reminders.Add(new IdleWispMarker {
+                    Kind = IdleWispKind.Random,
+                    Title = "랜덤위습",
+                    Count = random,
+                    Tint = new Color(.79f, .61f, 1f, 1f)
+                });
+            long choice = wallet.Balance(WispResourceIds.Choice);
+            if (MobileUnspentWispOverlay.ShouldShow(choice))
+                reminders.Add(new IdleWispMarker {
+                    Kind = IdleWispKind.Choice,
+                    Title = "선택위습",
+                    Count = choice,
+                    Tint = new Color(.50f, .87f, 1f, 1f)
+                });
+            long transcend = controller.PendingAllStoryTranscendWisps;
+            if (MobileUnspentWispOverlay.ShouldShow(transcend))
+                reminders.Add(new IdleWispMarker {
+                    Kind = IdleWispKind.Transcend,
+                    Title = "초월선택",
+                    Count = transcend,
+                    Tint = OrdrMobileUiTheme.Gold
+                });
+            return reminders;
+        }
+
+        // Bright, bobbing and persistent like an unspent map Wisp, but with a
+        // bounded map-edge hitbox and no effect on combat/camera coordinates.
+        private void DrawUnusedWispMarkers(MobileMapSkillLayout layout, float scale)
+        {
+            var reminders = CurrentIdleWispMarkers();
+            for (int i = 0; i < reminders.Count; i++)
+            {
+                var reminder = reminders[i];
+                Rect area = MobileUnspentWispOverlay.MarkerRect(
+                    layout.Battle, scale, i, reminders.Count, Time.unscaledTime);
+                bool pressed = GUI.Button(area, GUIContent.none, OrdrMobileUiTheme.NavButton);
+                if (Event.current.type == EventType.Repaint)
+                {
+                    Color previous = GUI.color;
+                    float pulse = .68f + .32f *
+                        (Mathf.Sin(Time.unscaledTime * 4.2f + i) * .5f + .5f);
+                    var tint = reminder.Tint;
+                    tint.a = pulse;
+                    GUI.color = tint;
+                    var spark = OrdrBattlefieldArt.SkillSparkSprite;
+                    if (spark != null && spark.texture != null)
+                    {
+                        Rect source = spark.rect;
+                        Texture texture = spark.texture;
+                        float orb = area.width < 110f
+                            ? Mathf.Min(32f, area.height * .54f)
+                            : Mathf.Min(area.height - 9f, 46f);
+                        GUI.DrawTextureWithTexCoords(
+                            new Rect(area.width < 110f
+                                    ? area.center.x - orb * .5f : area.x + 5f,
+                                area.width < 110f
+                                    ? area.y + 3f : area.center.y - orb * .5f,
+                                orb, orb),
+                            texture, new Rect(source.x / texture.width,
+                                source.y / texture.height,
+                                source.width / texture.width,
+                                source.height / texture.height));
+                    }
+                    GUI.color = previous;
+                    if (area.width < 110f)
+                    {
+                        // Two-line compact arrangement for smaller landscapes.
+                        // The count and short type label stay legible even
+                        // when three unused types share the narrow battlefield.
+                        string shortName = reminder.Kind == IdleWispKind.Random ? "랜덤" :
+                            reminder.Kind == IdleWispKind.Choice ? "선택" : "초월";
+                        var compact = new GUIStyle(OrdrMobileUiTheme.Explanation);
+                        compact.alignment = TextAnchor.MiddleCenter;
+                        compact.fontStyle = FontStyle.Bold;
+                        GUI.Label(new Rect(area.x + 2f,
+                            area.y + area.height * .59f, area.width - 4f,
+                            area.height * .38f),
+                            shortName + " " + reminder.Count, compact);
+                    }
+                    else
+                    {
+                        float offset = Mathf.Min(area.height, 46f) + 7f;
+                        GUI.Label(new Rect(area.x + offset, area.y + 2f,
+                            Mathf.Max(0, area.width - offset - 3f), area.height * .49f),
+                            reminder.Count + "개", OrdrMobileUiTheme.Subheading);
+                        GUI.Label(new Rect(area.x + offset, area.y + area.height * .46f,
+                            Mathf.Max(0, area.width - offset - 3f), area.height * .49f),
+                            reminder.Title, OrdrMobileUiTheme.Explanation);
+                    }
+                }
+                if (!pressed) continue;
+                if (reminder.Kind == IdleWispKind.Choice)
+                {
+                    if (!visible || currentTab != Tab.Fusion)
+                        SelectTab(Tab.Fusion);
+                    showChoiceWisp = true;
+                    scroll = Vector2.zero;
+                }
+                else
+                {
+                    if (!visible || currentTab != Tab.Wisp)
+                        SelectTab(Tab.Wisp);
+                    if (reminder.Kind == IdleWispKind.Transcend)
+                        showTranscendBoxChoices = true;
+                }
+            }
         }
 
         private void DrawEconomyStatus(MobileMapSkillLayout layout, float scale)

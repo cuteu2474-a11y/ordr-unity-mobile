@@ -128,6 +128,40 @@ namespace Ordr.Mobile.Unity
         }
     }
 
+    // Read-only layout for hovering unused-Wisp reminders. Units and pathing
+    // remain unchanged: these are screen-space decorations over the main field.
+    // Single source for both rendering and tap blocking.
+    public static class MobileUnspentWispOverlay
+    {
+        public static bool ShouldShow(long balance) { return balance > 0; }
+
+        public static Rect MarkerRect(Rect physicalBattle, float scale,
+            int index, int count, float unscaledSeconds)
+        {
+            if (scale <= 0 || float.IsNaN(scale) || float.IsInfinity(scale) ||
+                float.IsNaN(unscaledSeconds) || float.IsInfinity(unscaledSeconds) ||
+                physicalBattle.width <= 0 || physicalBattle.height <= 0 ||
+                count < 1 || count > 3 || index < 0 || index >= count)
+                throw new ArgumentOutOfRangeException(nameof(index),
+                    "미사용 위습의 배치 입력이 올바르지 않습니다.");
+            Rect battle = MobileMapSkillLayout.Scaled(physicalBattle, scale);
+            float inset = 6f;
+            float gap = 6f;
+            int columns = count == 3 && battle.width < 285f ? 2 : count;
+            float width = Mathf.Min(142f,
+                (battle.width - 2f * inset - gap * (columns - 1)) / columns);
+            float height = Mathf.Min(62f, Mathf.Max(36f, battle.height * .34f));
+            int col = index % columns;
+            int row = index / columns;
+            float bob = Mathf.Sin(unscaledSeconds * 2.6f + index * 1.65f) * 5f;
+            float x = battle.xMin + inset + col * (width + gap);
+            float y = battle.yMin + inset + row * (height + gap) + bob;
+            y = Mathf.Clamp(y, battle.yMin + inset,
+                battle.yMax - height - inset);
+            return new Rect(x, y, width, height);
+        }
+    }
+
     // Presentation-only framing for the actual Warcraft map coordinates.
     // No combat distance, targeting range or movement coordinates are changed.
     public static class MobileBattlefieldCameraFraming

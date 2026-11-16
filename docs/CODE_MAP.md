@@ -16,6 +16,8 @@
 
 - **선택위습:** `OrdrMobileTouchPanel.DrawFusion` 상단 → `DrawChoiceWispMerge` 흔함 9종 선택/확정 → `OrdrCharacterCombatController.RequestChoiceWispMerge` → `MobileWispService.MergeChoice` → `Original323SourceCommonWispWorld.Begin(string)`의 원본 흔함 9종 매핑 및 트랜잭션. 원자 지갑/로스터, 실패 시 생성 롤백, 랜덤위습 BFi/카운터 불변. 외부 원본 승인 월드는 별도. 실기 검증 전.
 
+- **미사용 위습 부유 표시:** `OrdrMobileTouchPanel.CurrentIdleWispMarkers/DrawUnusedWispMarkers`는 공유 지갑의 랜덤/선택위습과 실제 스토리 초월 보상 미사용 횟수만 읽습니다. `MobileUnspentWispOverlay.MarkerRect`가 애니메이션 화면 위치/전장 히트박스를 공통 계산하고, `BlocksWorldTap`이 같은 사각형에서 전장 터치를 차단합니다. 마커 터치는 `SelectTab`만 수행하며 위습 소모/보상 지급은 기존 수동 명령으로 유지합니다.
+
 ## 원본 확인 스킬 진입점
 
 - `SourceModelUnitEffects.IsRoundNativePassiveTarget` 및 `CharacterCombatRuntime.SourceModelEffects.cs:CompleteSourceModelHit`: 브룩 `U-03/A07P`·타시기 `U-09/A07Q`가 일반/광폭화/보스 모두에서 동일한 발동 가능 대상 조건을 사용합니다. 추가 피해는 기존 기본 공격 피해 패킷에 1회, 기절은 생존 대상에 0.3/0.7초. `SourceModelUnitEffectTests.cs`에 발동·불발·피해 회귀 테스트 소스 작성(미실행); 네이티브 저항과 실기 검증 별도.
