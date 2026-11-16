@@ -186,6 +186,37 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void BinaryCheckpointPreservesLargeIdentifiersAndUnsignedRandomState()
+        {
+            string folder = Path.Combine(Path.GetTempPath(),
+                "ordr-binary-save-test-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                var snapshot = Example();
+                // JSON numeric paths may silently round to IEEE-754 precision.
+                // Persist the exact next roster ID and entire 32-bit RNG state.
+                snapshot.Roster.NextInstanceId = 9007199254741003L;
+                snapshot.MissionGameplay.MobileRandomState = uint.MaxValue - 5;
+                var store = new OrdrCoreCheckpointStore(folder);
+                store.WriteCore(snapshot);
+                string file = File.ReadAllText(
+                    Path.Combine(folder, "ordr-core-draft-v1-0.json"));
+                StringAssert.StartsWith("ORDR-CORE-BIN-v3\n", file);
+                var restored = store.LoadCore();
+                Assert.AreEqual(9007199254741003L, restored.Roster.NextInstanceId);
+                Assert.AreEqual(uint.MaxValue - 5,
+                    restored.MissionGameplay.MobileRandomState);
+                Assert.AreEqual("test-session-1", restored.SessionId);
+                Assert.AreEqual(2, restored.Roster.SelectedInstanceId);
+                Assert.AreEqual(8.125d, restored.LogicalTime);
+            }
+            finally
+            {
+                if (Directory.Exists(folder)) Directory.Delete(folder, true);
+            }
+        }
+
+        [Test]
         public void InvalidStateNeverClobbersExistingValidSlot()
         {
             string folder = Path.Combine(Path.GetTempPath(),

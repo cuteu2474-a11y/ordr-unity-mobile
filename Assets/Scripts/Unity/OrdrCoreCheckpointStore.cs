@@ -32,6 +32,7 @@ namespace Ordr.Mobile.Unity
         // v2 stores the signed payload as raw JSON, not JSON embedded inside
         // another JSON string. ReadSlot still accepts legacy v1 envelopes.
         private const string RawSlotHeader = "ORDR-CORE-RAW-v2\n";
+        private const string BinarySlotHeader = "ORDR-CORE-BIN-v3\n";
         private readonly string folder;
         public OrdrCoreCheckpointStore(string directory)
         {
@@ -78,11 +79,12 @@ namespace Ordr.Mobile.Unity
 
             int target = latest == null ? 0 : 1 - latest.Index;
             long generation = latest == null ? 1 : latest.Generation + 1;
-            string payload = JsonUtility.ToJson(state);
-            // Escaping a complete checkpoint JSON as the string field of
-            // another JsonUtility object is lossy on some Unity runtimes.
-            // An unambiguous 3-line prefix preserves exact payload bytes.
-            string content = RawSlotHeader +
+            // Write only a snapshot that survives a complete binary
+            // serialization round trip. Unity's JSON serializer can silently
+            // omit nested/unsupported fields while still producing valid JSON.
+            string payload = OrdrCheckpointBinaryCodec.Encode(state);
+            OrdrCoreCheckpoint.Validate(OrdrCheckpointBinaryCodec.Decode(payload));
+            string content = BinarySlotHeader +
                 generation.ToString(CultureInfo.InvariantCulture) + "\n" +
                 Digest(generation, payload) + "\n" + payload;
             Directory.CreateDirectory(folder);
@@ -123,13 +125,17 @@ namespace Ordr.Mobile.Unity
                 string content = File.ReadAllText(path, Encoding.UTF8);
                 long generation;
                 string payload, checksum;
-                if (content.StartsWith(RawSlotHeader, StringComparison.Ordinal))
+                bool isBinary = content.StartsWith(BinarySlotHeader,
+                    StringComparison.Ordinal);
+                if (isBinary || content.StartsWith(RawSlotHeader,
+                    StringComparison.Ordinal))
                 {
-                    int second = content.IndexOf('\n', RawSlotHeader.Length);
+                    string header = isBinary ? BinarySlotHeader : RawSlotHeader;
+                    int second = content.IndexOf('\n', header.Length);
                     int third = second < 0 ? -1 : content.IndexOf('\n', second + 1);
                     if (second < 0 || third < 0 ||
-                        !long.TryParse(content.Substring(RawSlotHeader.Length,
-                            second - RawSlotHeader.Length),
+                        !long.TryParse(content.Substring(header.Length,
+                            second - header.Length),
                             NumberStyles.None, CultureInfo.InvariantCulture,
                             out generation)) return null;
                     checksum = content.Substring(second + 1, third - second - 1);
@@ -148,7 +154,9 @@ namespace Ordr.Mobile.Unity
                     !string.Equals(checksum, Digest(generation, payload),
                         StringComparison.OrdinalIgnoreCase))
                     return null;
-                var state = JsonUtility.FromJson<OrdrCoreCheckpointState>(payload);
+                var state = isBinary
+                    ? OrdrCheckpointBinaryCodec.Decode(payload)
+                    : JsonUtility.FromJson<OrdrCoreCheckpointState>(payload);
                 OrdrCoreCheckpoint.Validate(state);
                 return new ValidSlot {
                     Index = i, Generation = generation, State = state
