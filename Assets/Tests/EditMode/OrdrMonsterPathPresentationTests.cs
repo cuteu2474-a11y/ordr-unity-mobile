@@ -77,6 +77,60 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void WiderLaneAndMarkersKeepOriginalMovementCenterline()
+        {
+            var root = new GameObject("test enlarged route");
+            try
+            {
+                var visual = root.AddComponent<OrdrMonsterPathPresenter>();
+                visual.ShowPracticeRoute(new[] {
+                    new CombatPathPoint(0, 0),
+                    new CombatPathPoint(600, 0),
+                    new CombatPathPoint(600, 600),
+                    new CombatPathPoint(0, 600)
+                });
+                var lane = root.transform.Find("ORDR monster lane");
+                var border = root.transform.Find("ORDR route border");
+                var shoulder = root.transform.Find("ORDR path shoulder");
+                var arrow = root.transform.Find("ORDR monster route arrow");
+                var spawn = root.transform.Find("ORDR monster spawn loop origin");
+                Assert.IsNotNull(lane);
+                Assert.IsNotNull(border);
+                Assert.IsNotNull(shoulder);
+                Assert.IsNotNull(arrow);
+                Assert.IsNotNull(spawn);
+                Assert.AreEqual(159.5f, lane.localScale.y, .0001f);
+                Assert.AreEqual(169.65f, border.localScale.y, .0001f);
+                Assert.AreEqual(188.5f, shoulder.localScale.y, .0001f);
+                Assert.AreEqual(75.4f, arrow.localScale.x, .0001f);
+                Assert.AreEqual(166.75f, spawn.localScale.x, .0001f);
+                Assert.AreEqual(600f, lane.localScale.x, .0001f);
+                Assert.AreEqual(300f, lane.position.x, .0001f);
+                Assert.AreEqual(0f, lane.position.y, .0001f);
+                Assert.AreEqual(4, visual.SegmentCount);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
+        }
+
+        [Test]
+        public void EnlargedEnemiesRetainBossDistinctionAndBonneyVisualShrink()
+        {
+            float regular = OrdrBattlefieldVisualSizing.EnemyDiameter(
+                52f, CharacterEnemyKind.Line, false);
+            float enraged = OrdrBattlefieldVisualSizing.EnemyDiameter(
+                52f, CharacterEnemyKind.Enraged, false);
+            float boss = OrdrBattlefieldVisualSizing.EnemyDiameter(
+                52f, CharacterEnemyKind.Boss, false);
+            float shrunken = OrdrBattlefieldVisualSizing.EnemyDiameter(
+                52f, CharacterEnemyKind.Boss, true);
+            Assert.AreEqual(52f * 1.03f * 1.45f, regular, .0001f);
+            Assert.AreEqual(regular, enraged, .0001f);
+            Assert.AreEqual(52f * 1.32f * 1.45f, boss, .0001f);
+            Assert.Greater(boss, regular);
+            Assert.AreEqual(boss * .60f, shrunken, .0001f);
+        }
+
+        [Test]
         public void PathAssetsReuseOneSharedSpritePerKind()
         {
             Assert.AreSame(OrdrBattlefieldArt.PathFillSprite, OrdrBattlefieldArt.PathFillSprite);

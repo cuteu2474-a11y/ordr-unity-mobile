@@ -15,7 +15,6 @@ namespace Ordr.Mobile.Unity
         private static readonly Color Brass = new Color(.53f, .42f, .23f, .93f);
         private static readonly Color Lane = new Color(.19f, .35f, .39f, .95f);
         private static readonly Color Dashed = new Color(.70f, .76f, .58f, .74f);
-        private const float PathWidth = 110f;
         private const float ArrowSpacing = 320f;
         private readonly List<GameObject> generated = new List<GameObject>();
         private IReadOnlyList<CombatPathPoint> source;
@@ -34,9 +33,12 @@ namespace Ordr.Mobile.Unity
             {
                 foreach (var segment in geometry.Segments)
                 {
-                    AddRoad(segment, PathWidth + 20f, Shoulder, -94, "path shoulder");
-                    AddRoad(segment, PathWidth + 7f, Brass, -93, "route border");
-                    AddRoad(segment, PathWidth, Lane, -92, "monster lane");
+                    AddRoad(segment, OrdrBattlefieldVisualSizing.ShoulderWidth,
+                        Shoulder, -94, "path shoulder");
+                    AddRoad(segment, OrdrBattlefieldVisualSizing.BorderWidth,
+                        Brass, -93, "route border");
+                    AddRoad(segment, OrdrBattlefieldVisualSizing.LaneWidth,
+                        Lane, -92, "monster lane");
                     int marks = Mathf.Min(24,
                         Mathf.Max(1, Mathf.FloorToInt(segment.Length / ArrowSpacing)));
                     for (int i = 0; i < marks; i++)
@@ -48,12 +50,14 @@ namespace Ordr.Mobile.Unity
                 }
                 // Rounded elbows cover cracks without changing path geometry.
                 for (int i = 0; i < geometry.Segments.Count; i++)
-                    AddCircle(geometry.Segments[i].Start, PathWidth, -91,
+                    AddCircle(geometry.Segments[i].Start,
+                        OrdrBattlefieldVisualSizing.LaneWidth, -91,
                         Lane, "path turn");
                 // Practice routes loop back to their spawn. There is NO fake
                 // destination/escape marker on a looping monster lane.
                 AddMarker(geometry.Start, OrdrBattlefieldArt.PathSpawnSprite,
-                    115f, -88, "monster spawn / loop origin");
+                    OrdrBattlefieldVisualSizing.SpawnMarkerDiameter,
+                    -88, "monster spawn loop origin");
             }
             catch
             {
@@ -105,7 +109,8 @@ namespace Ordr.Mobile.Unity
             var go = Create("monster route arrow");
             go.transform.position = new Vector3(position.x, position.y, 0f);
             go.transform.rotation = Quaternion.Euler(0f, 0f, angle);
-            go.transform.localScale = Vector3.one * 52f;
+            go.transform.localScale = Vector3.one *
+                OrdrBattlefieldVisualSizing.ArrowDiameter;
             var sprite = go.AddComponent<SpriteRenderer>();
             sprite.sprite = OrdrBattlefieldArt.PathArrowSprite;
             sprite.color = Dashed;

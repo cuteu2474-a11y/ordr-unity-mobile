@@ -743,9 +743,9 @@ namespace Ordr.Mobile.Unity
                 enemy.Root.transform.position = position;
                 bool boss = entry.Kind == CharacterEnemyKind.Boss;
                 enemy.Root.transform.localScale = Vector3.one *
-                    Mathf.Max(1f, markerDiameterWorldUnits) *
-                    (boss ? 1.32f : 1.03f) *
-                    (combat.PracticeBonneyScaleReduced(entry.Id) ? 0.60f : 1f);
+                    OrdrBattlefieldVisualSizing.EnemyDiameter(
+                        markerDiameterWorldUnits, entry.Kind,
+                        combat.PracticeBonneyScaleReduced(entry.Id));
                 // MaxHealth is from the live CombatEnemy, never from a
                 // display-only estimated damage or a preview attack event.
                 float ratio = Mathf.Clamp01((float)((double)entry.Health / entry.MaxHealth));
