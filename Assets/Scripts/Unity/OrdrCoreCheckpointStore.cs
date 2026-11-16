@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using Ordr.Mobile.Core;
@@ -28,6 +29,9 @@ namespace Ordr.Mobile.Unity
             public OrdrCoreCheckpointState State;
         }
 
+        // v2 stores the signed payload as raw JSON, not JSON embedded inside
+        // another JSON string. ReadSlot still accepts legacy v1 envelopes.
+        private const string RawSlotHeader = "ORDR-CORE-RAW-v2\n";
         private readonly string folder;
         public OrdrCoreCheckpointStore(string directory)
         {
@@ -75,11 +79,12 @@ namespace Ordr.Mobile.Unity
             int target = latest == null ? 0 : 1 - latest.Index;
             long generation = latest == null ? 1 : latest.Generation + 1;
             string payload = JsonUtility.ToJson(state);
-            var envelope = new SlotEnvelope {
-                Generation = generation, Payload = payload,
-                Sha256 = Digest(generation, payload)
-            };
-            string content = JsonUtility.ToJson(envelope);
+            // Escaping a complete checkpoint JSON as the string field of
+            // another JsonUtility object is lossy on some Unity runtimes.
+            // An unambiguous 3-line prefix preserves exact payload bytes.
+            string content = RawSlotHeader +
+                generation.ToString(CultureInfo.InvariantCulture) + "\n" +
+                Digest(generation, payload) + "\n" + payload;
             Directory.CreateDirectory(folder);
             string temp = Path.Combine(folder,
                 "ordr-core-draft-" + Guid.NewGuid().ToString("N") + ".tmp");
@@ -116,19 +121,37 @@ namespace Ordr.Mobile.Unity
             try
             {
                 string content = File.ReadAllText(path, Encoding.UTF8);
-                var envelope = JsonUtility.FromJson<SlotEnvelope>(content);
-                if (envelope == null || envelope.Version != 1 ||
-                    envelope.Generation < 1 ||
-                    string.IsNullOrWhiteSpace(envelope.Payload) ||
-                    !string.Equals(envelope.Sha256,
-                        Digest(envelope.Generation, envelope.Payload),
+                long generation;
+                string payload, checksum;
+                if (content.StartsWith(RawSlotHeader, StringComparison.Ordinal))
+                {
+                    int second = content.IndexOf('\n', RawSlotHeader.Length);
+                    int third = second < 0 ? -1 : content.IndexOf('\n', second + 1);
+                    if (second < 0 || third < 0 ||
+                        !long.TryParse(content.Substring(RawSlotHeader.Length,
+                            second - RawSlotHeader.Length),
+                            NumberStyles.None, CultureInfo.InvariantCulture,
+                            out generation)) return null;
+                    checksum = content.Substring(second + 1, third - second - 1);
+                    payload = content.Substring(third + 1);
+                }
+                else
+                {
+                    // Backward compatible with the original JSON envelope.
+                    var legacy = JsonUtility.FromJson<SlotEnvelope>(content);
+                    if (legacy == null || legacy.Version != 1) return null;
+                    generation = legacy.Generation;
+                    payload = legacy.Payload;
+                    checksum = legacy.Sha256;
+                }
+                if (generation < 1 || string.IsNullOrWhiteSpace(payload) ||
+                    !string.Equals(checksum, Digest(generation, payload),
                         StringComparison.OrdinalIgnoreCase))
                     return null;
-                var state = JsonUtility.FromJson<OrdrCoreCheckpointState>(
-                    envelope.Payload);
+                var state = JsonUtility.FromJson<OrdrCoreCheckpointState>(payload);
                 OrdrCoreCheckpoint.Validate(state);
                 return new ValidSlot {
-                    Index = i, Generation = envelope.Generation, State = state
+                    Index = i, Generation = generation, State = state
                 };
             }
             catch (Exception e) when (

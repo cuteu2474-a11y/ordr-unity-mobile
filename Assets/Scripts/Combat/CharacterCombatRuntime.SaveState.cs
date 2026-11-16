@@ -726,11 +726,22 @@ namespace Ordr.Mobile.Combat
                     NativePassiveTargetRevision = live.Enemy.NativePassiveTargetRevision
                 });
             }
-            // The core roster can contain only real actors, never detached
-            // phantom material IDs, when taking a consistent checkpoint.
-            if (draft.Actors.Count != roster.Count)
+            // e0HP is the original evolution world's SINGLE non-combat
+            // starter, registered in the shared roster but not characters.
+            // Never conflate it with a playable attacker or a phantom fusion
+            // material; the core checkpoint validates its evolution receipt.
+            int externalEvolution = 0;
+            foreach (var entry in roster.CaptureState().Units)
+                if (!characters.ContainsKey(entry.InstanceId))
+                {
+                    if (entry.UnitId != Original323SoloStartProfile.EvolutionRawcode ||
+                        ++externalEvolution > 1)
+                        throw new InvalidOperationException(
+                            "공통 유닛 명단에 전투 엔진에 없는 실물이 존재합니다.");
+                }
+            if (draft.Actors.Count + externalEvolution != roster.Count)
                 throw new InvalidOperationException(
-                    "공통 유닛 명단에 전투 엔진에 없는 실물이 존재합니다.");
+                    "공통 유닛 명단과 전투 엔진의 실물 수가 다릅니다.");
             return draft;
         }
     }

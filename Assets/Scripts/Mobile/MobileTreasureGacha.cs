@@ -37,7 +37,9 @@ namespace Ordr.Mobile.Mobile
             if(string.IsNullOrWhiteSpace(id)||id.Length>128 ||
                 string.IsNullOrWhiteSpace(sourceHash) || wave<1||wave>65 ||
                 !Original323TreasureRules.Finite(internalX) ||
-                !Original323TreasureRules.Finite(internalY))
+                !Original323TreasureRules.Finite(internalY) ||
+                // Nami's dream enhancement only exists when Gaimon is active.
+                (nami && !gaimon))
                 throw new ArgumentException("원본 보물 탐색의 검증된 기회·상태가 필요합니다.");
             Id=id;OriginalW3xSha256=sourceHash;Round=wave;
             InternalX=internalX;InternalY=internalY;

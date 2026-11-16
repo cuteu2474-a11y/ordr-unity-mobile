@@ -329,13 +329,18 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(1, controller.EditorPreviewSpeed);
                 controller.SetEditorPreviewSpeed(4);
                 Assert.AreEqual(4, controller.EditorPreviewSpeed);
-                Assert.AreEqual(4f, Time.timeScale);
+                // Simulation speed is now applied at the shared game clock;
+                // Unity's global physics/UI timeScale must remain unchanged.
+                Assert.AreEqual(originalScale, Time.timeScale);
+                Assert.AreEqual(1d, controller.GameDeltaFromUnscaled(.25d), 1e-9);
                 controller.SetEditorPreviewSpeed(2);
-                Assert.AreEqual(2f, Time.timeScale);
+                Assert.AreEqual(originalScale, Time.timeScale);
+                Assert.AreEqual(.5d, controller.GameDeltaFromUnscaled(.25d), 1e-9);
                 controller.SetManualGameplayPause(true);
                 Assert.IsTrue(controller.IsGameplayPaused);
                 controller.SetEditorPreviewSpeed(1);
-                Assert.AreEqual(1f, Time.timeScale);
+                Assert.AreEqual(originalScale, Time.timeScale);
+                Assert.AreEqual(0d, controller.GameDeltaFromUnscaled(.25d));
                 Assert.IsTrue(controller.IsGameplayPaused,
                     "Fast forward must not bypass the manual pause.");
             }

@@ -2400,7 +2400,7 @@ namespace Ordr.Mobile.Tests
                     e.SkillName == "인간형 열 번째 공격" && e.Amount > 0));
                 Assert.IsTrue(events.Any(e =>
                     e.Type == CharacterCombatEventType.EffectDeferred &&
-                    e.Detail.Contains("평타 비례 추가피해")));
+                    e.Detail.Contains("평타 비례·단일 고정 추가 피해")));
                 Assert.IsFalse(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == "카이도 변신"));

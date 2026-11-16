@@ -378,12 +378,25 @@ namespace Ordr.Mobile.Core
                     throw new FormatException("소환수 공격 ID가 중복됐습니다.");
             if (!expectedAttackers.SetEquals(registered))
                 throw new FormatException("소환수·캐릭터와 실제 공격 시계의 ID가 다릅니다.");
-            if (allUnits.Count != state.Roster.Units.Count)
-                throw new FormatException("공통 로스터와 전투 유닛 수가 다릅니다.");
+            // The source e0HP evolution marker is owned by the evolution
+            // service, not by the combat character registry. Accept only a
+            // matching, validated evolution receipt for that ONE extra entry.
+            if (state.Evolution != null)
+                Original323EvolutionProgress.ValidateState(
+                    state.Evolution, state.LogicalTime);
+            int externalEvolution = 0;
             foreach (var unit in state.Roster.Units)
             {
-                if (!allUnits.Contains(unit.InstanceId)) 
-                    throw new FormatException("전투 로스터와 저장 유닛이 다릅니다.");
+                if (!allUnits.Contains(unit.InstanceId))
+                {
+                    if (state.Evolution == null ||
+                        unit.InstanceId != state.Evolution.ActorId ||
+                        unit.UnitId != Original323SoloStartProfile.EvolutionRawcode ||
+                        ++externalEvolution > 1 ||
+                        !allUnits.Add(unit.InstanceId))
+                        throw new FormatException("전투 로스터와 저장 유닛이 다릅니다.");
+                    continue;
+                }
                 bool match = false;
                 foreach (var actor in world.Actors)
                     if (actor.InstanceId == unit.InstanceId)
@@ -394,6 +407,8 @@ namespace Ordr.Mobile.Core
                 if (!match) throw new FormatException(
                     "전투 로스터의 원본 유닛이 다릅니다.");
             }
+            if (allUnits.Count != state.Roster.Units.Count)
+                throw new FormatException("공통 로스터와 전투 유닛 수가 다릅니다.");
             var enemies = new HashSet<string>(StringComparer.Ordinal);
             int waveEnemies = 0;
             foreach (var enemy in world.Enemies)
