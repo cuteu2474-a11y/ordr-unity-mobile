@@ -80,6 +80,37 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void MobileFirstFiveCommonAttackersUseCentralRallyAndCanAcquireLaneTarget()
+        {
+            // Production-style 65R mobile lane, not the permissive legacy
+            // practice fixture. Characters are created before lane activation.
+            using (var mobile = Create(5, 65, "C-01", mobileLane: true))
+            {
+                var lane = new SourceModelMainLaneGeometry(mobile.Battle.RouteCorners);
+                var actors = mobile.Combat.MobileUnitSnapshot();
+                Assert.AreEqual(5, actors.Count);
+                foreach (var actor in actors)
+                {
+                    var expected = lane.UnitPosition(actor.InstanceId);
+                    Assert.AreEqual(expected.X, actor.Position.X, 1e-9);
+                    Assert.AreEqual(expected.Y, actor.Position.Y, 1e-9);
+                    Assert.LessOrEqual(Math.Abs(actor.Position.Y - lane.RallyPoint.Y), 64d);
+                }
+
+                mobile.Combat.SpawnEnemy("rally-lane-target", 10000,
+                    CharacterEnemyKind.Line, lane.LeftX, lane.RallyPoint.Y, 0);
+                foreach (var actor in actors)
+                {
+                    var readiness = mobile.Combat.InspectBasicAttack(actor.InstanceId);
+                    Assert.AreNotEqual(BasicAttackReadinessKind.UnverifiedSource,
+                        readiness.Kind);
+                    Assert.AreNotEqual(BasicAttackReadinessKind.UnverifiedTarget,
+                        readiness.Kind, "A valid first-round lane target must be in source range.");
+                }
+            }
+        }
+
+        [Test]
         public void MobileBossPatrolIsExplicitAndDoesNotChangeLegacyPracticeWavePlans()
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));

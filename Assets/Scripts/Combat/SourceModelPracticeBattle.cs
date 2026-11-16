@@ -48,15 +48,36 @@ namespace Ordr.Mobile.Combat
             return (distance % (2d * Height)) / (2d * Height);
         }
 
+        // One left-middle rally anchor. Physical markers occupy compact nearby
+        // positions; targeting still uses each actor's real finite source range.
+        public CombatPathPoint RallyPoint =>
+            new CombatPathPoint(LeftX - 120d, BottomY + Height / 2d);
+
+        private static readonly int[] CenterOutRows =
+            { 0, -1, 1, -2, 2, -3, 3, -4, 4 };
+
         public CombatPathPoint UnitPosition(long instanceId)
         {
             if (instanceId <= 0) throw new ArgumentOutOfRangeException(nameof(instanceId));
-            // Twelve rows and three short columns on the OUTER left side:
-            // no unit-follow controls, and never alter original attack reach.
-            int slot = (int)((instanceId - 1) % 36);
-            int column = slot / 12, row = slot % 12;
-            return new CombatPathPoint(LeftX - 120d - column * 90d,
-                BottomY + Height * (row + .5d) / 12d);
+            // Fill the center of one shared rally first, rather than placing
+            // early recruits along the full 2,176-unit-high left boundary.
+            // Two columns per band, nine center-out rows, two bands = 36 slots.
+            long ordinal = instanceId - 1;
+            int slot = (int)(ordinal % 36);
+            int column = (slot / 18) * 2 + slot % 2;
+            int row = CenterOutRows[(slot % 18) / 2];
+            double spacing = Math.Min(64d, Height / 12d);
+            long layer = ordinal / 36;
+            // Extra actors share the same rally cluster with small, stable
+            // offsets. No expanding rows can push later recruits out of range.
+            double staggerX = layer == 0 ? 0 :
+                spacing * (1 + (layer - 1) % 3) / 10d;
+            double staggerY = layer == 0 ? 0 :
+                spacing * (1 + ((layer - 1) / 3) % 3) / 8d *
+                (layer % 2 == 0 ? -1d : 1d);
+            var rally = RallyPoint;
+            return new CombatPathPoint(rally.X - column * spacing - staggerX,
+                rally.Y + row * spacing + staggerY);
         }
     }
 

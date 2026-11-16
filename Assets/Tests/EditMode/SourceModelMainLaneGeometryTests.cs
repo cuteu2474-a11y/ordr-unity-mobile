@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Ordr.Mobile.Combat;
 
@@ -42,6 +43,45 @@ namespace Ordr.Mobile.Tests
                 Assert.Less(slot.Y, lane.TopY);
                 Assert.AreEqual(slot.X, lane.UnitPosition(id).X);
                 Assert.AreEqual(slot.Y, lane.UnitPosition(id).Y);
+            }
+        }
+
+        [Test]
+        public void FirstFiveRecruitsConvergeOnOneMiddleLeftRally()
+        {
+            var lane = MakeLane();
+            var rally = lane.RallyPoint;
+            Assert.AreEqual(-5112d, rally.X);
+            Assert.AreEqual(4544d, rally.Y);
+            // First owned combat characters follow the non-combat start actor.
+            for (long id = 2; id <= 6; id++)
+            {
+                var position = lane.UnitPosition(id);
+                Assert.LessOrEqual(Math.Abs(position.Y - rally.Y), 64d);
+                double dx = position.X - lane.LeftX;
+                double dy = position.Y - rally.Y;
+                Assert.Less(dx * dx + dy * dy, 500d * 500d,
+                    "All five early attackers must reach the middle-left lane at original 500 range.");
+            }
+        }
+
+        [Test]
+        public void FullCompactFormationAndOverflowRemainDistinctAndInFiniteReach()
+        {
+            var lane = MakeLane();
+            var rally = lane.RallyPoint;
+            var unique = new HashSet<Tuple<double, double>>();
+            for (long id = 1; id <= 288; id++)
+            {
+                var position = lane.UnitPosition(id);
+                Assert.IsTrue(unique.Add(Tuple.Create(position.X, position.Y)),
+                    "Compact rally slots must not repeat for the supported stacked roster.");
+                Assert.Less(position.X, lane.LeftX);
+                Assert.Greater(position.Y, lane.BottomY);
+                Assert.Less(position.Y, lane.TopY);
+                double dx = position.X - lane.LeftX;
+                double dy = position.Y - rally.Y;
+                Assert.Less(dx * dx + dy * dy, 500d * 500d);
             }
         }
 
