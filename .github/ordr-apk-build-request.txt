@@ -30,3 +30,5 @@ request: rerun integrated Unity tests and create Android development APK if they
 2026-11-16: User-requested Android development APK for latest main 26569eb0a78e8d9d593b2bf8e097fd539219cb36, including restored portrait photos, UI frame containment, unified speed control, fusion and story layouts. Run grouped Unity validation once, then build APK.
 
 2026-11-16: Retry failed run 43836312220 after auditing 342 Python source checks: update compact portrait row and story dispatch assertions, and repair stale Unity EditMode left navigation tint/mark assertion removed by text-only UI redesign. Build development APK from latest main after one grouped CI pass.
+
+2026-11-16: Retry run 43837435241 failed before EditMode due to CS1513 in MobileSpritePortraitDisplay.cs: missing final namespace brace. Fix structural closure, add inexpensive source-scope regression check, then perform one grouped Unity validation and Android APK build.
