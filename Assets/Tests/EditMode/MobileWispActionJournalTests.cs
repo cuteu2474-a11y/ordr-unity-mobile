@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using Ordr.Mobile.Mobile;
+using Ordr.Mobile.Core;
 using Ordr.Mobile.Unity;
 using UnityEngine;
 
@@ -15,6 +16,15 @@ namespace Ordr.Mobile.Tests
             Assert.IsFalse(MobileUnspentWispOverlay.ShouldShow(-1));
             Assert.IsTrue(MobileUnspentWispOverlay.ShouldShow(1));
             Assert.IsTrue(MobileUnspentWispOverlay.ShouldShow(5));
+            Assert.IsTrue(MobileUnspentWispOverlay.ShouldShowWispResource(
+                WispResourceIds.Random, 5));
+            Assert.IsFalse(MobileUnspentWispOverlay.ShouldShowWispResource(
+                WispResourceIds.Random, 0));
+            Assert.IsFalse(MobileUnspentWispOverlay.ShouldShowWispResource(
+                WispResourceIds.Choice, 5),
+                "Choice Wisps must remain in the Fusion panel and never hover.");
+            Assert.IsFalse(MobileUnspentWispOverlay.ShouldShowWispResource(
+                WispResourceIds.Uncommon, 5));
             Rect[] fields = {
                 new Rect(160, 60, 350, 160),
                 new Rect(160, 60, 180, 120),
@@ -22,7 +32,7 @@ namespace Ordr.Mobile.Tests
             };
             foreach (var field in fields)
             {
-                for (int count = 1; count <= 3; count++)
+                for (int count = 1; count <= 2; count++)
                     for (int i = 0; i < count; i++)
                     {
                         Rect start = MobileUnspentWispOverlay.MarkerRect(

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ordr.Mobile.Core;
 using UnityEngine;
 
 namespace Ordr.Mobile.Unity
@@ -134,6 +135,14 @@ namespace Ordr.Mobile.Unity
     public static class MobileUnspentWispOverlay
     {
         public static bool ShouldShow(long balance) { return balance > 0; }
+
+        // Keep the source of truth explicit: e018 Choice Wisps stay out
+        // of the battlefield reminder even when their balance is positive.
+        // Story transcend choices have their own pending-reward counter.
+        public static bool ShouldShowWispResource(string resourceId, long balance)
+        {
+            return resourceId == WispResourceIds.Random && ShouldShow(balance);
+        }
 
         public static Rect MarkerRect(Rect physicalBattle, float scale,
             int index, int count, float unscaledSeconds)

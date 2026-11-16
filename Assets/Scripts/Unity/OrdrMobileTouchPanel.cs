@@ -16,7 +16,7 @@ namespace Ordr.Mobile.Unity
     {
         private enum Tab { Play, Units, Story, Fusion, Gambling, Wisp, LogPose, Helper, Alchemy, Missions, UpgradeOne, UpgradeTwo, Research }
         private enum ScoreboardPage { Summary, Commons, Utility }
-        private enum IdleWispKind { Random, Choice, Transcend }
+        private enum IdleWispKind { Random, Transcend }
         private struct IdleWispMarker
         {
             public IdleWispKind Kind;
@@ -526,30 +526,24 @@ namespace Ordr.Mobile.Unity
         // Original e0IX/e018 are physical wisps. The mobile remake keeps
         // them in the shared wallet; these hovering field markers restore
         // persistent visual presence without creating extra owned units.
-        // Only player-spendable/choice rewards appear: auto-grant wisps do not
-        // nag when the player has no manual action available.
+        // Only random Wisps and pending story transcend choices float.
+        // Ordinary choice Wisps remain in the Fusion menu/status strip, not
+        // on the battlefield. Automatic reward wisps never float.
         private List<IdleWispMarker> CurrentIdleWispMarkers()
         {
-            var reminders = new List<IdleWispMarker>(3);
+            var reminders = new List<IdleWispMarker>(2);
             if (controller == null || controller.SharedEconomy == null ||
                 Combat == null || Combat.Game.Phase != SessionPhase.Running)
                 return reminders;
             var wallet = controller.SharedEconomy.Wallet;
             long random = wallet.Balance(WispResourceIds.Random);
-            if (MobileUnspentWispOverlay.ShouldShow(random))
+            if (MobileUnspentWispOverlay.ShouldShowWispResource(
+                    WispResourceIds.Random, random))
                 reminders.Add(new IdleWispMarker {
                     Kind = IdleWispKind.Random,
                     Title = "랜덤위습",
                     Count = random,
                     Tint = new Color(.79f, .61f, 1f, 1f)
-                });
-            long choice = wallet.Balance(WispResourceIds.Choice);
-            if (MobileUnspentWispOverlay.ShouldShow(choice))
-                reminders.Add(new IdleWispMarker {
-                    Kind = IdleWispKind.Choice,
-                    Title = "선택위습",
-                    Count = choice,
-                    Tint = new Color(.50f, .87f, 1f, 1f)
                 });
             long transcend = controller.PendingAllStoryTranscendWisps;
             if (MobileUnspentWispOverlay.ShouldShow(transcend))
@@ -606,8 +600,8 @@ namespace Ordr.Mobile.Unity
                         // Two-line compact arrangement for smaller landscapes.
                         // The count and short type label stay legible even
                         // when three unused types share the narrow battlefield.
-                        string shortName = reminder.Kind == IdleWispKind.Random ? "랜덤" :
-                            reminder.Kind == IdleWispKind.Choice ? "선택" : "초월";
+                        string shortName = reminder.Kind == IdleWispKind.Random ?
+                            "랜덤" : "초월";
                         var compact = new GUIStyle(OrdrMobileUiTheme.Explanation);
                         compact.alignment = TextAnchor.MiddleCenter;
                         compact.fontStyle = FontStyle.Bold;
@@ -628,20 +622,10 @@ namespace Ordr.Mobile.Unity
                     }
                 }
                 if (!pressed) continue;
-                if (reminder.Kind == IdleWispKind.Choice)
-                {
-                    if (!visible || currentTab != Tab.Fusion)
-                        SelectTab(Tab.Fusion);
-                    showChoiceWisp = true;
-                    scroll = Vector2.zero;
-                }
-                else
-                {
-                    if (!visible || currentTab != Tab.Wisp)
-                        SelectTab(Tab.Wisp);
-                    if (reminder.Kind == IdleWispKind.Transcend)
-                        showTranscendBoxChoices = true;
-                }
+                if (!visible || currentTab != Tab.Wisp)
+                    SelectTab(Tab.Wisp);
+                if (reminder.Kind == IdleWispKind.Transcend)
+                    showTranscendBoxChoices = true;
             }
         }
 
