@@ -269,9 +269,16 @@ namespace Ordr.Mobile.Combat
         public int BossScoreAwarded { get; internal set; }
     }
 
-    // Instant read-only explanation of why the WHOLE roster can or cannot
-    // attempt a basic hit. This is not a DPS estimate, damage receipt,
-    // attack event or a claim of source parity.
+    // Instant read-only roster readiness and separately observed COMMITTED
+    // wave-HP damage. The damage witness comes from the shared resolution
+    // event, not GUI events, estimates, attack previews or synthetic kills.
+    public sealed class SourceModelPracticeActorDamage
+    {
+        public string ActorId { get; internal set; }
+        public long AppliedHpDamage { get; internal set; }
+        public int DamageEvents { get; internal set; }
+    }
+
     public sealed class SourceModelPracticeCombatPressure
     {
         public int Wave { get; internal set; }
@@ -281,9 +288,19 @@ namespace Ordr.Mobile.Combat
         public int Cooldown { get; internal set; }
         public int UnverifiedSource { get; internal set; }
         public int UnverifiedTarget { get; internal set; }
+        public int OutOfRange { get; internal set; }
         public int FormulaDeferred { get; internal set; }
         public int NoBattlefieldTarget { get; internal set; }
         public int EligibleToAttack => Ready + Cooldown;
+        // Observational counters only; a restored checkpoint starts an
+        // explicitly incomplete observation and never replays old damage.
+        public long ObservedWaveHpDamageThisRound { get; internal set; }
+        public long ObservedWaveHpDamageSinceAttach { get; internal set; }
+        public int ObservedDamageEventsThisRound { get; internal set; }
+        public int ObservedDamagingActorsThisRound { get; internal set; }
+        public IReadOnlyList<SourceModelPracticeActorDamage> ActorDamageThisRound
+        { get; internal set; }
+        public bool ObservationIncludesRoundStart { get; internal set; }
     }
 
     // Drives the existing combat runtime/director/wallet. No parallel damage
@@ -352,6 +369,14 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, double> bornAt = new Dictionary<string, double>();
         private readonly Dictionary<string, double> distanceTravelled = new Dictionary<string, double>();
         private readonly HashSet<string> rewarded = new HashSet<string>();
+        // Bounded by actual damage sources in one round. No saved/gameplay
+        // balance state: reset on each round, and mark restore as partial.
+        private readonly Dictionary<string, SourceModelPracticeActorDamage> roundDamageByActor =
+            new Dictionary<string, SourceModelPracticeActorDamage>(StringComparer.Ordinal);
+        private long observedRoundWaveHpDamage;
+        private long observedWaveHpDamageSinceAttach;
+        private int observedRoundDamageEvents;
+        private bool observationIncludesRoundStart;
         private double roundStart;
         private double roundLeadInSeconds;
         private int roundStartingDefeated;
@@ -397,8 +422,22 @@ namespace Ordr.Mobile.Combat
             var report = new SourceModelPracticeCombatPressure {
                 Wave = combat.Game.CurrentWave,
                 AliveEnemies = combat.Game.AliveEnemies,
-                Units = actors
+                Units = actors,
+                ObservedWaveHpDamageThisRound = observedRoundWaveHpDamage,
+                ObservedWaveHpDamageSinceAttach = observedWaveHpDamageSinceAttach,
+                ObservedDamageEventsThisRound = observedRoundDamageEvents,
+                ObservedDamagingActorsThisRound = roundDamageByActor.Count,
+                ObservationIncludesRoundStart = observationIncludesRoundStart
             };
+            var damageRows = new List<SourceModelPracticeActorDamage>();
+            foreach (var pair in roundDamageByActor)
+                damageRows.Add(new SourceModelPracticeActorDamage {
+                    ActorId = pair.Key,
+                    AppliedHpDamage = pair.Value.AppliedHpDamage,
+                    DamageEvents = pair.Value.DamageEvents
+                });
+            damageRows.Sort((a, b) => string.CompareOrdinal(a.ActorId, b.ActorId));
+            report.ActorDamageThisRound = damageRows.AsReadOnly();
             foreach (var actor in actors)
                 switch (actor.Kind)
                 {
@@ -406,12 +445,55 @@ namespace Ordr.Mobile.Combat
                     case BasicAttackReadinessKind.Cooldown: report.Cooldown++; break;
                     case BasicAttackReadinessKind.UnverifiedSource: report.UnverifiedSource++; break;
                     case BasicAttackReadinessKind.UnverifiedTarget: report.UnverifiedTarget++; break;
+                    case BasicAttackReadinessKind.OutOfRange: report.OutOfRange++; break;
                     case BasicAttackReadinessKind.FormulaDeferred: report.FormulaDeferred++; break;
                     case BasicAttackReadinessKind.NoBattlefieldTarget: report.NoBattlefieldTarget++; break;
                     default: throw new InvalidOperationException("알 수 없는 평타 진단 상태입니다.");
                 }
             return report;
         }
+        // Observes real post-armor, post-resistance HP damage while wave
+        // ownership is still registered (death cleanup happens afterwards).
+        // Story/creep/challenge hits, missing hits and non-damage defeats are
+        // deliberately excluded. Telemetry must never throw/alter combat.
+        private void ObserveActualWaveDamage(string actorId, string enemyId,
+            long actualDamage, bool killed)
+        {
+            int spawnWave;
+            if (!Started || actualDamage <= 0 ||
+                !waves.TryGetLivingMonsterSpawnWave(enemyId, out spawnWave))
+                return;
+            observedRoundWaveHpDamage = SaturatingDamageAdd(
+                observedRoundWaveHpDamage, actualDamage);
+            observedWaveHpDamageSinceAttach = SaturatingDamageAdd(
+                observedWaveHpDamageSinceAttach, actualDamage);
+            if (observedRoundDamageEvents < int.MaxValue)
+                observedRoundDamageEvents++;
+            if (!string.IsNullOrWhiteSpace(actorId))
+            {
+                SourceModelPracticeActorDamage row;
+                if (!roundDamageByActor.TryGetValue(actorId, out row))
+                {
+                    row = new SourceModelPracticeActorDamage { ActorId = actorId };
+                    roundDamageByActor.Add(actorId, row);
+                }
+                row.AppliedHpDamage = SaturatingDamageAdd(
+                    row.AppliedHpDamage, actualDamage);
+                if (row.DamageEvents < int.MaxValue) row.DamageEvents++;
+            }
+        }
+
+        private static long SaturatingDamageAdd(long existing, long damage) =>
+            damage > long.MaxValue - existing ? long.MaxValue : existing + damage;
+
+        private void ResetRoundDamageObservation(bool includesRoundStart)
+        {
+            observedRoundWaveHpDamage = 0;
+            observedRoundDamageEvents = 0;
+            roundDamageByActor.Clear();
+            observationIncludesRoundStart = includesRoundStart;
+        }
+
         public SourceModelPracticeBattleState CaptureState()
         {
             if (!Started || combat.PendingSimulationSeconds != 0)
@@ -554,6 +636,9 @@ namespace Ordr.Mobile.Combat
                 });
             waves.VerifiedMonsterDefeated += RewardActualDeath;
             combat.SourceModelTimeAdvancing += MoveLivingMonsters;
+            combat.ActualEnemyDamage += ObserveActualWaveDamage;
+            // Previous HP damage is not reconstructed from restored enemies.
+            ResetRoundDamageObservation(false);
             Started = true;
         }
 
@@ -605,12 +690,14 @@ namespace Ordr.Mobile.Combat
                 combat.ConfigureSourceModelMobileMainLane(catalog.MainLane);
             waves.VerifiedMonsterDefeated += RewardActualDeath;
             combat.SourceModelTimeAdvancing += MoveLivingMonsters;
+            combat.ActualEnemyDamage += ObserveActualWaveDamage;
             Started = true;
             BeginRound(1);
         }
         private void BeginRound(int wave)
         {
             if (Started && combat.Game.CurrentWave > 0) RecordRound();
+            ResetRoundDamageObservation(true);
             roundStart = combat.Time;
             roundStartingDefeated = combat.Game.DefeatedEnemies;
             roundStartingGold = GoldAwarded;
@@ -788,6 +875,7 @@ namespace Ordr.Mobile.Combat
         {
             waves.VerifiedMonsterDefeated -= RewardActualDeath;
             combat.SourceModelTimeAdvancing -= MoveLivingMonsters;
+            combat.ActualEnemyDamage -= ObserveActualWaveDamage;
             MoneyGamblingBossDefeated = null;
         }
     }

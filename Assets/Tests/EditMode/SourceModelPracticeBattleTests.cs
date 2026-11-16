@@ -71,11 +71,13 @@ namespace Ordr.Mobile.Tests
                 mobile.Combat.SpawnEnemy("test-distant", 10000,
                     CharacterEnemyKind.Line, 0, 0, 0);
                 var far = mobile.Combat.InspectBasicAttack(actor.InstanceId);
-                Assert.AreEqual(BasicAttackReadinessKind.UnverifiedTarget, far.Kind);
+                Assert.AreEqual(BasicAttackReadinessKind.OutOfRange, far.Kind,
+                    "Out-of-range is not an unverified monster target.");
                 mobile.Combat.SpawnEnemy("test-adjacent", 10000,
                     CharacterEnemyKind.Line, actor.Position.X + 1, actor.Position.Y, 0);
                 var near = mobile.Combat.InspectBasicAttack(actor.InstanceId);
                 Assert.AreNotEqual(BasicAttackReadinessKind.UnverifiedTarget, near.Kind);
+                Assert.AreNotEqual(BasicAttackReadinessKind.OutOfRange, near.Kind);
             }
         }
 
@@ -126,6 +128,7 @@ namespace Ordr.Mobile.Tests
                 CollectionAssert.AreEquivalent(lineup,
                     atStart.Units.Select(x => x.CatalogId).ToArray());
                 int previousWave = game.Combat.Game.CurrentWave;
+                long lastObservedDamage = 0;
                 for (int tick = 0; tick < 360 &&
                      game.Combat.Game.Phase == SessionPhase.Running; tick++)
                 {
@@ -138,7 +141,11 @@ namespace Ordr.Mobile.Tests
                     Assert.AreEqual(lineup.Length,
                         pressure.Ready + pressure.Cooldown +
                         pressure.UnverifiedSource + pressure.UnverifiedTarget +
-                        pressure.FormulaDeferred + pressure.NoBattlefieldTarget);
+                        pressure.OutOfRange + pressure.FormulaDeferred +
+                        pressure.NoBattlefieldTarget);
+                    Assert.GreaterOrEqual(pressure.ObservedWaveHpDamageSinceAttach,
+                        lastObservedDamage, "Damage observation must be monotonic.");
+                    lastObservedDamage = pressure.ObservedWaveHpDamageSinceAttach;
                     if (tick % 20 == 0 || pressure.Wave != previousWave)
                         TestContext.WriteLine(
                             "t=" + game.Combat.Time.ToString("F1") +
@@ -148,15 +155,47 @@ namespace Ordr.Mobile.Tests
                             " ready=" + pressure.Ready +
                             " cooling=" + pressure.Cooldown +
                             " noTarget=" + pressure.NoBattlefieldTarget +
+                            " outOfRange=" + pressure.OutOfRange +
                             " rejected=" + pressure.UnverifiedTarget +
                             " unknown=" + pressure.UnverifiedSource +
-                            " formula=" + pressure.FormulaDeferred);
+                            " formula=" + pressure.FormulaDeferred +
+                            " hpDamage=" + pressure.ObservedWaveHpDamageSinceAttach +
+                            " thisRoundDamage=" + pressure.ObservedWaveHpDamageThisRound +
+                            " hitEvents=" + pressure.ObservedDamageEventsThisRound +
+                            " damagingActors=" + pressure.ObservedDamagingActorsThisRound +
+                            " actorDamage=" + string.Join(",",
+                                pressure.ActorDamageThisRound.Select(x =>
+                                    x.ActorId + ":" + x.AppliedHpDamage).ToArray()));
                     previousWave = pressure.Wave;
                     if (pressure.Wave >= 5) break;
                 }
                 Assert.GreaterOrEqual(game.Combat.Game.CurrentWave, 1);
+                Assert.Greater(lastObservedDamage, 0,
+                    "Early waves must produce actual HP damage, not merely Ready labels.");
                 // The trace must not fabricate a source-parity result from
                 // the number of test units or the model-only monster stats.
+            }
+        }
+
+        [Test]
+        public void CombatPressureReadOnlySamplesDoNotAdvanceDamageOrAttackClocks()
+        {
+            using (var game = Create(5, 65, "C-01", mobileLane: true))
+            {
+                game.Battle.Advance(26);
+                var before = game.Battle.CaptureCombatPressure();
+                var time = game.Combat.Time;
+                var wallet = game.Economy.Wallet.Balance("gold");
+                var again = game.Battle.CaptureCombatPressure();
+                Assert.AreEqual(before.ObservedWaveHpDamageSinceAttach,
+                    again.ObservedWaveHpDamageSinceAttach);
+                Assert.AreEqual(before.ObservedDamageEventsThisRound,
+                    again.ObservedDamageEventsThisRound);
+                Assert.AreEqual(time, game.Combat.Time);
+                Assert.AreEqual(wallet, game.Economy.Wallet.Balance("gold"));
+                Assert.AreEqual(before.OutOfRange, again.OutOfRange);
+                Assert.AreEqual(before.Ready, again.Ready);
+                Assert.AreEqual(before.Cooldown, again.Cooldown);
             }
         }
 
@@ -190,6 +229,15 @@ namespace Ordr.Mobile.Tests
                 var events = game.Battle.Advance(10);
                 Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack));
                 Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.EnemyDefeated));
+                var actual = game.Battle.CaptureCombatPressure();
+                Assert.Greater(actual.ObservedWaveHpDamageSinceAttach, 0);
+                Assert.Greater(actual.ObservedDamageEventsThisRound, 0);
+                Assert.Greater(actual.ObservedDamagingActorsThisRound, 0);
+                Assert.AreEqual(actual.ObservedDamagingActorsThisRound,
+                    actual.ActorDamageThisRound.Count);
+                Assert.AreEqual(actual.ObservedWaveHpDamageThisRound,
+                    actual.ActorDamageThisRound.Sum(x => x.AppliedHpDamage));
+                Assert.IsTrue(actual.ObservationIncludesRoundStart);
                 Assert.Greater(game.Combat.Game.DefeatedEnemies, 0);
                 Assert.Greater(game.Battle.GoldAwarded, 0);
                 Assert.AreEqual(60 + game.Battle.GoldAwarded, game.Economy.Wallet.Balance("gold"));

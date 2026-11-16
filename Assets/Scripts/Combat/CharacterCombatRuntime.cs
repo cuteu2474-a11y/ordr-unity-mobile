@@ -12,7 +12,9 @@ namespace Ordr.Mobile.Combat
     public enum BasicAttackReadinessKind
     {
         UnverifiedSource, UnverifiedTarget, FormulaDeferred,
-        NoBattlefieldTarget, Cooldown, Ready
+        NoBattlefieldTarget, Cooldown, Ready,
+        // Target evidence was accepted, but the real finite range cannot reach it.
+        OutOfRange
     }
 
     public sealed class BasicAttackReadiness
@@ -2073,9 +2075,15 @@ namespace Ordr.Mobile.Combat
             double? next = attackPipeline.NextAttackAt(InstanceKey(instanceId));
             if (attackPipeline.SelectDefaultTarget(InstanceKey(instanceId),
                 eligible, TargetPriority.Nearest) == null)
+            {
+                double range = attackPipeline.ReachForRuleEvaluation(
+                    InstanceKey(instanceId));
                 return new BasicAttackReadiness(instanceId, id,
-                    BasicAttackReadinessKind.UnverifiedTarget,
-                    "메인 전장 원본 사거리 밖 또는 사거리 자료 없음", next);
+                    range <= 0 ? BasicAttackReadinessKind.UnverifiedSource :
+                        BasicAttackReadinessKind.OutOfRange,
+                    range <= 0 ? "원본 평타 사거리 자료 미등록" :
+                        "원본 평타 사거리 밖: 현재 도달 가능한 적 없음", next);
+            }
             return next.HasValue && !CombatScheduler.HasReached(scheduler.Time, next.Value)
                 ? new BasicAttackReadiness(instanceId, id,
                     BasicAttackReadinessKind.Cooldown, "검증된 평타 공격 시점 대기", next)
