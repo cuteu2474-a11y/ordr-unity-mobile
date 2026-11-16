@@ -2906,6 +2906,18 @@ namespace Ordr.Mobile.Combat
             return false;
         }
 
+        // All existing periodic executors select their primary using the
+        // pipeline's current finite-reach policy, not mere same-lane presence.
+        // Share that predicate with event scheduling: a non-executable
+        // overdue periodic must not keep waking the combat loop.
+        private string SelectRunnablePeriodicTarget(CharacterInstance unit,
+            IEnumerable<TargetCandidate> candidates) =>
+            attackPipeline.SelectDefaultTarget(InstanceKey(unit.Id),
+                candidates, TargetPriority.Nearest);
+
+        private string SelectRunnablePeriodicTarget(CharacterInstance unit) =>
+            SelectRunnablePeriodicTarget(unit, BuildTargetCandidates(unit));
+
         private double? NextEligibleAttackAt()
         {
             double? next = UsesSourceModelBasicAttacks
@@ -2936,13 +2948,36 @@ namespace Ordr.Mobile.Combat
                         at.HasValue && (!next.HasValue || at.Value < next.Value))
                         next = at;
                 }
-                // A separately verified periodic skill may target an enemy
-                // whose native basic-attack armor has not been established.
-                if (BuildTargetCandidates(unit).Count == 0) continue;
-                double? bulkAdditional = NextBulkAutoPeriodicAt(unit);
-                if (bulkAdditional.HasValue &&
-                    (!next.HasValue || bulkAdditional.Value < next.Value))
-                    next = bulkAdditional.Value;
+                // Do not rescan all living enemies for the vast majority of
+                // units without a periodic handler (especially source-model
+                // maps whose ordinary skill mappings are intentionally empty).
+                bool hasPeriodicHandler = UsesSourceModelBasicAttacks &&
+                    (HasAdditionalAutomaticPeriodic(unit.Catalog.Id) ||
+                     unit.Catalog.Id == "L-22" || unit.Catalog.Id == "MY-08");
+                if (!hasPeriodicHandler)
+                    foreach (var entry in unit.Mapping.ActivatedSkills)
+                        if (entry.Value.Trigger == "periodic")
+                        {
+                            hasPeriodicHandler = true;
+                            break;
+                        }
+                if (!hasPeriodicHandler) continue;
+                // Basic armor evidence is independent of periodic damage.
+                // Periodic TARGET reach must match the executor; otherwise an
+                // already-due packet can wake the loop without any usable hit.
+                // MY-08 family photo targets its owner, not a primary enemy.
+                var sameLane = BuildTargetCandidates(unit);
+                if (sameLane.Count == 0) continue;
+                string periodicPrimary = SelectRunnablePeriodicTarget(unit, sameLane);
+                if (periodicPrimary != null ||
+                    (UsesSourceModelBasicAttacks && unit.Catalog.Id == "MY-08"))
+                {
+                    double? bulkAdditional = NextBulkAutoPeriodicAt(unit);
+                    if (bulkAdditional.HasValue &&
+                        (!next.HasValue || bulkAdditional.Value < next.Value))
+                        next = bulkAdditional.Value;
+                }
+                if (periodicPrimary == null) continue;
                 double? additional = NextAdditionalAutoPeriodicAt(unit);
                 if (additional.HasValue &&
                     (!next.HasValue || additional.Value < next.Value))
@@ -3141,11 +3176,12 @@ namespace Ordr.Mobile.Combat
                 // Periodic ability evidence is independent of the BASIC
                 // attack damage formula. A blocked normal hit must not block
                 // a previously wired periodic packet or its own cooldown.
-                if (!unit.AttackReady ||
-                    unit.Mapping == null || unit.Profile == null) continue;
-                var candidates = BuildTargetCandidates(unit);
-                var primaryId = attackPipeline.SelectDefaultTarget(
-                    InstanceKey(unit.Id), candidates, TargetPriority.Nearest);
+                if (!unit.AttackReady || unit.Mapping == null ||
+                    unit.Profile == null ||
+                    unit.Mapping.ActivatedSkills.Count == 0) continue;
+                // Source-model periodics live in the separate additional/bulk
+                // executors. Do not scan every enemy for their empty mapping.
+                var primaryId = SelectRunnablePeriodicTarget(unit);
                 if (primaryId == null) continue;
                 var skills = new List<string>(unit.Mapping.ActivatedSkills.Keys);
                 skills.Sort(StringComparer.Ordinal);

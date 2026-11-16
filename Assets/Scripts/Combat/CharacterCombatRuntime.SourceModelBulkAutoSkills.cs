@@ -1400,6 +1400,18 @@ namespace Ordr.Mobile.Combat
             {
                 if (count >= budget) break;
                 var actor = characters[id];
+                if (actor.Catalog.Id != "L-22" &&
+                    actor.Catalog.Id != "MY-08") continue;
+                // The self-only family-photo packet does not need a primary.
+                // All other bulk periodic packets do; never consume a cooldown
+                // because another actor woke the scheduler out of range.
+                SpatialCombatEnemy primary = null;
+                if (actor.Catalog.Id != "MY-08")
+                {
+                    string chosen = SelectRunnablePeriodicTarget(actor);
+                    if (chosen == null || !enemies.TryGetValue(chosen, out primary) ||
+                        !primary.Enemy.IsAlive) continue;
+                }
                 double? due = NextBulkAutoPeriodicAt(actor);
                 if (!due.HasValue || !CombatScheduler.HasReached(Time, due.Value))
                     continue;
@@ -1416,12 +1428,6 @@ namespace Ordr.Mobile.Combat
                     BulkActivateAnyaFamilyPhoto(actor, skill);
                     continue;
                 }
-                var candidates = BuildTargetCandidates(actor);
-                string chosen = attackPipeline.SelectDefaultTarget(
-                    InstanceKey(actor.Id), candidates, TargetPriority.Nearest);
-                SpatialCombatEnemy primary;
-                if (chosen == null || !enemies.TryGetValue(chosen, out primary) ||
-                    !primary.Enemy.IsAlive) continue;
                 // The tooltip omits damage school. Do not invent magic
                 // damage and accidentally bypass the original armor type.
                 ReportSourceModelNextThirtyDeferred(InstanceKey(actor.Id),

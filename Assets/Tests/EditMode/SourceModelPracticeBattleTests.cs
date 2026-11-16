@@ -225,6 +225,41 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OutOfRangePeriodicDoesNotRegisterOrSpendSlotsWhenOtherUnitsAttack()
+        {
+            // In the 65R finite-range mode, same-lane enemies can exist
+            // while this periodic owner cannot hit any of them. Ordinary
+            // attackers must not silently consume that owner's 3.5s timer.
+            using (var game = Create(0, 65, mobileLane: true))
+            {
+                long periodicOwner = game.Combat.SpawnCharacter("TR-02", 0, 0);
+                game.Combat.MoveCharacter(periodicOwner, 10000, 10000);
+                game.Combat.SpawnCharacter("C-01", 0, 0);
+                var events = game.Battle.Advance(26);
+                Assert.IsTrue(game.Combat.Game.AliveEnemies > 0);
+                Assert.IsFalse(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.ActorId == periodicOwner.ToString() &&
+                    e.SkillName == "날씨조작술"));
+                var privateField = typeof(CharacterCombatRuntime).GetField(
+                    "additionalAutoReadyAt", BindingFlags.Instance | BindingFlags.NonPublic);
+                Assert.IsNotNull(privateField);
+                var ready = (System.Collections.IDictionary)privateField.GetValue(game.Combat);
+                string key = periodicOwner + ":TR-02:skill:0";
+                Assert.IsFalse(ready.Contains(key),
+                    "An out-of-range periodic must not schedule or burn its clock.");
+
+                var slot = new SourceModelMainLaneGeometry(game.Battle.RouteCorners)
+                    .UnitPosition(periodicOwner);
+                game.Combat.MoveCharacter(periodicOwner, slot.X, slot.Y);
+                game.Battle.Advance(.1);
+                Assert.IsTrue(ready.Contains(key),
+                    "The same live owner must start scheduling when a target enters reach.");
+                Assert.Greater((double)ready[key], game.Combat.Time);
+            }
+        }
+
+        [Test]
         public void CombatPressureReadOnlySamplesDoNotAdvanceDamageOrAttackClocks()
         {
             using (var game = Create(5, 65, "C-01", mobileLane: true))

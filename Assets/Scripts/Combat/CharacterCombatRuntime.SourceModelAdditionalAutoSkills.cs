@@ -470,8 +470,16 @@ namespace Ordr.Mobile.Combat
                     "TR-02:skill:0" : actor.Catalog.Id == "D-06" ?
                     "D-06:skill:1" : "MY-05:skill:1";
                 var skill = AdditionalAutoSkill(actor, skillId);
+                if (skill == null) continue;
+                // Do not initialize or spend a periodic slot when its actual
+                // executor cannot reach a target. Another unit's attack can
+                // wake this loop while the periodic owner is out of range.
+                string target = SelectRunnablePeriodicTarget(actor);
+                SpatialCombatEnemy primary;
+                if (target == null || !enemies.TryGetValue(target, out primary) ||
+                    !primary.Enemy.IsAlive) continue;
                 double? due = NextAdditionalAutoPeriodicAt(actor);
-                if (skill == null || !due.HasValue ||
+                if (!due.HasValue ||
                     !CombatScheduler.HasReached(Time, due.Value)) continue;
                 double period = (skill.Number("intervalSeconds") ??
                     skill.Number("periodSeconds")).Value;
@@ -480,12 +488,6 @@ namespace Ordr.Mobile.Combat
                 if (actor.Catalog.Id == "D-06")
                     ResetSourceModelBurgessElbowReduction(actor.Id);
                 count++;
-                var candidates = BuildTargetCandidates(actor);
-                string target = attackPipeline.SelectDefaultTarget(
-                    InstanceKey(actor.Id), candidates, TargetPriority.Nearest);
-                SpatialCombatEnemy primary;
-                if (target == null || !enemies.TryGetValue(target, out primary) ||
-                    !primary.Enemy.IsAlive) continue;
                 var targets = AdditionalAutoCircle(actor, primary,
                     skill.Number("radius").Value,
                     actor.Catalog.Id == "MY-05");
