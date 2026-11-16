@@ -269,6 +269,23 @@ namespace Ordr.Mobile.Combat
         public int BossScoreAwarded { get; internal set; }
     }
 
+    // Instant read-only explanation of why the WHOLE roster can or cannot
+    // attempt a basic hit. This is not a DPS estimate, damage receipt,
+    // attack event or a claim of source parity.
+    public sealed class SourceModelPracticeCombatPressure
+    {
+        public int Wave { get; internal set; }
+        public int AliveEnemies { get; internal set; }
+        public IReadOnlyList<BasicAttackReadiness> Units { get; internal set; }
+        public int Ready { get; internal set; }
+        public int Cooldown { get; internal set; }
+        public int UnverifiedSource { get; internal set; }
+        public int UnverifiedTarget { get; internal set; }
+        public int FormulaDeferred { get; internal set; }
+        public int NoBattlefieldTarget { get; internal set; }
+        public int EligibleToAttack => Ready + Cooldown;
+    }
+
     // Drives the existing combat runtime/director/wallet. No parallel damage
     // engine, forged native observer, fake live approval or free unit spawns.
     [Serializable]
@@ -369,6 +386,32 @@ namespace Ordr.Mobile.Combat
         public double DeathCountdownSecondsRemaining =>
             deathCount.RemainingSeconds(combat.Time);
         public double DeathCountdownGraceSeconds => deathCount.GraceSeconds;
+
+        // On-demand only: never scan all enemies/units in OnGUI or on every
+        // combat substep. Includes off-screen roster pages; neither changes
+        // attack schedules nor consumes the shared game RNG.
+        public SourceModelPracticeCombatPressure CaptureCombatPressure()
+        {
+            if (!Started) throw new InvalidOperationException("전투 시작 전 압박도는 조회할 수 없습니다.");
+            var actors = combat.CaptureBasicAttackDiagnostics();
+            var report = new SourceModelPracticeCombatPressure {
+                Wave = combat.Game.CurrentWave,
+                AliveEnemies = combat.Game.AliveEnemies,
+                Units = actors
+            };
+            foreach (var actor in actors)
+                switch (actor.Kind)
+                {
+                    case BasicAttackReadinessKind.Ready: report.Ready++; break;
+                    case BasicAttackReadinessKind.Cooldown: report.Cooldown++; break;
+                    case BasicAttackReadinessKind.UnverifiedSource: report.UnverifiedSource++; break;
+                    case BasicAttackReadinessKind.UnverifiedTarget: report.UnverifiedTarget++; break;
+                    case BasicAttackReadinessKind.FormulaDeferred: report.FormulaDeferred++; break;
+                    case BasicAttackReadinessKind.NoBattlefieldTarget: report.NoBattlefieldTarget++; break;
+                    default: throw new InvalidOperationException("알 수 없는 평타 진단 상태입니다.");
+                }
+            return report;
+        }
         public SourceModelPracticeBattleState CaptureState()
         {
             if (!Started || combat.PendingSimulationSeconds != 0)

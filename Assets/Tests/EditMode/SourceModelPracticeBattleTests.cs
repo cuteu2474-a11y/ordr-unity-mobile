@@ -111,6 +111,56 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void FullMixedOpeningRosterProducesFirstFourRoundPressureTrace()
+        {
+            // Regression fixture for the user-reported early loss:
+            // Hachi + five named common units in the real finite-range 65R
+            // layout, independent of the currently visible roster page.
+            // Direct test spawns do not represent paid Wisp recruitment.
+            using (var game = Create(0, 65, mobileLane: true))
+            {
+                string[] lineup = { "U-12", "C-01", "C-02", "C-04", "C-05", "C-08" };
+                foreach (string id in lineup) game.Combat.SpawnCharacter(id, 0, 0);
+                var atStart = game.Battle.CaptureCombatPressure();
+                Assert.AreEqual(lineup.Length, atStart.Units.Count);
+                CollectionAssert.AreEquivalent(lineup,
+                    atStart.Units.Select(x => x.CatalogId).ToArray());
+                int previousWave = game.Combat.Game.CurrentWave;
+                for (int tick = 0; tick < 360 &&
+                     game.Combat.Game.Phase == SessionPhase.Running; tick++)
+                {
+                    // The production director itself integrates its 0.1s
+                    // spawn/attack/movement slices; no mocked damage.
+                    game.Battle.Advance(.5);
+                    var pressure = game.Battle.CaptureCombatPressure();
+                    Assert.AreEqual(lineup.Length, pressure.Units.Count,
+                        "A roster page or wave transition must not hide attackers.");
+                    Assert.AreEqual(lineup.Length,
+                        pressure.Ready + pressure.Cooldown +
+                        pressure.UnverifiedSource + pressure.UnverifiedTarget +
+                        pressure.FormulaDeferred + pressure.NoBattlefieldTarget);
+                    if (tick % 20 == 0 || pressure.Wave != previousWave)
+                        TestContext.WriteLine(
+                            "t=" + game.Combat.Time.ToString("F1") +
+                            " R=" + pressure.Wave +
+                            " alive=" + pressure.AliveEnemies +
+                            " kills=" + game.Combat.Game.DefeatedEnemies +
+                            " ready=" + pressure.Ready +
+                            " cooling=" + pressure.Cooldown +
+                            " noTarget=" + pressure.NoBattlefieldTarget +
+                            " rejected=" + pressure.UnverifiedTarget +
+                            " unknown=" + pressure.UnverifiedSource +
+                            " formula=" + pressure.FormulaDeferred);
+                    previousWave = pressure.Wave;
+                    if (pressure.Wave >= 5) break;
+                }
+                Assert.GreaterOrEqual(game.Combat.Game.CurrentWave, 1);
+                // The trace must not fabricate a source-parity result from
+                // the number of test units or the model-only monster stats.
+            }
+        }
+
+        [Test]
         public void MobileBossPatrolIsExplicitAndDoesNotChangeLegacyPracticeWavePlans()
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
