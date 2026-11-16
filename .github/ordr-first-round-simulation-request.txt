@@ -1,1 +1,1 @@
-2026-11-17 requested: actual Unity 65R source-model first-round simulation, U-12 C-01 C-02 C-04 C-05 C-08, one each, no APK.
+2026-11-17 requested: ONE existing Unity EditMode six-unit 1-4R real source-model simulation (U-12 C-01 C-02 C-04 C-05 C-08), record per-spawn-wave alive/HP damage/kills, per-actor committed HP, 20s death timer, no APK or artificial balance changes.

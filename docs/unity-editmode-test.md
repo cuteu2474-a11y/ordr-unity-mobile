@@ -46,6 +46,10 @@ ZIP에는 APK, `.build.json` 패킹 증빙, `.apk.sha256` 체크섬, `.verificat
 
 이 입력은 [`Assets/Editor/OrdrFirstWavePreview.cs`](../Assets/Editor/OrdrFirstWavePreview.cs)에만 있으며 **보통의 Unity Play·APK 빌드에서는 자동 연결되지 않습니다.** Editor 전용 경고가 화면에 표시됩니다. 원본 전투의 최종 HP·마법 면역·글로벌 난수·마법 피해 소수점·스토리/상점/조합·전체 스킬·65라운드와 기기 동작은 이 체험으로 검증되지 않습니다. 메뉴가 보이지 않으면 Unity Console 오류를 확인합니다. CI 컴파일 성공도 실제 Editor 조작 성공을 의미하지 않습니다.
 
+## 요청형 1~4라운드 6유닛 계측
+
+기존 `.github/workflows/ordr-six-unit-first-round-simulation.yml`는 명시적으로 `.github/ordr-first-round-simulation-request.txt`가 변경된 main 푸시에서만 실행됩니다. 6명의 유닛을 **검사 전용으로 직접 생성**하여 실제 독립 65R Unity 컨트롤러를 1~4라운드 또는 데스카운트 패배까지 진행합니다. `OrdrFirstRoundSixUnitSimulationTests.SixUnitFirstFourRoundsProduceObservedWavePressureTrace`가 출현 라운드별 생존/피해/처치, 실제 적용 HP 피해 유닛별 합계, 타깃·사거리·공식 보류 시간, 70마리/20초 데스카운트를 기록합니다. `sim-results/first-four-round-six-units.txt`와 Unity 검사 결과 아티팩트가 제공되며 **APK를 빌드하지 않습니다**. 이 검사 결과는 원본 WC3 실측이나 5위습 정상 구매와 다르므로 원작 동등성 판정에 사용하지 않습니다. 실제 Actions 결과는 별도 확인 전까지 미검증입니다.
+
 ## GitHub 검사와 제작 조건
 
 | 조건 | 동작 |

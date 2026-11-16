@@ -1,6 +1,6 @@
-name: 요청형 1라운드 6유닛 Unity 시뮬레이션
+name: 요청형 1~4라운드 6유닛 Unity 시뮬레이션
 
-# Explicit one-shot CI; normal source pushes do not run this workflow.
+# Explicit one-shot 1-4R Unity CI; ordinary source pushes do not run it.
 # It does not build an APK and never cancels running checks.
 on:
   push:
@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   first-round:
-    name: 하찌 루피 조로 우솝 상디 총병 1라운드 실제 계측
+    name: 하찌 루피 조로 우솝 상디 총병 1~4라운드 실제 계측
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
           docker-images: true
           swap-storage: true
 
-      - name: 실제 56초 Unity EditMode 계측 실행
+      - name: 실제 1~4라운드 Unity EditMode 계측 실행
         id: simulation
         uses: game-ci/unity-test-runner@v4.3.2
         env:
@@ -56,20 +56,20 @@ jobs:
           projectPath: .
           testMode: EditMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          customParameters: -testFilter Ordr.Mobile.Tests.OrdrFirstRoundSixUnitSimulationTests.SixUnitRoundOneProducesObservedBattlefieldCounters
+          customParameters: -testFilter Ordr.Mobile.Tests.OrdrFirstRoundSixUnitSimulationTests.SixUnitFirstFourRoundsProduceObservedWavePressureTrace
 
       - name: Unity 원본 테스트 결과 보관
         if: ${{ always() && steps.simulation.outputs.artifactsPath != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: unity-first-round-six-unit-results
+          name: unity-first-four-round-six-unit-results
           path: ${{ steps.simulation.outputs.artifactsPath }}
           if-no-files-found: ignore
 
-      - name: 1라운드 전장 수치 보관
+      - name: 1~4라운드 전장 수치 보관
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ordr-first-round-six-unit-telemetry
-          path: sim-results/first-round-six-units.txt
+          name: ordr-first-four-round-six-unit-telemetry
+          path: sim-results/first-four-round-six-units.txt
           if-no-files-found: warn
