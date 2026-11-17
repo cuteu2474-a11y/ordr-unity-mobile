@@ -44,6 +44,64 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        private sealed class TestOnlyConditionalCreepAuthority :
+            IOriginal323CreepConditionalDispatchAuthority
+        {
+            public int DirectStage;
+            public int PreparedStage = 1;
+            public bool Available = true;
+            public bool Began;
+            public bool BeganRejected;
+            public bool Finished;
+            public bool Failed;
+            public int BeginCalls;
+            public int ObserveCalls;
+            public string CatalogWitness = "C-01";
+            public bool ForgeWrongCatalogId;
+            public bool ForgeWrongEnemyId;
+            public bool TryResolveAttackPlacement(long id,
+                Original323CreepEncounter target, out double x, out double y)
+            {
+                x = target.X + 1;
+                y = target.Y;
+                return Available && target.OriginalObject.Stage == DirectStage;
+            }
+
+            public bool TryPreviewPreparation(long id, string catalogId,
+                Original323CreepEncounter target,
+                out Original323CreepPreparationPlan plan)
+            {
+                plan = null;
+                if (!Available || catalogId != CatalogWitness ||
+                    target.OriginalObject.Stage != PreparedStage)
+                    return false;
+                plan = new Original323CreepPreparationPlan(id,
+                    ForgeWrongCatalogId ? "C-02" : catalogId,
+                    ForgeWrongEnemyId ? "nonexistent-creep" : target.EnemyId,
+                    target.OriginalObject.Stage,
+                    "FAKE", Original323CreepPreparationKind.MovementSkill,
+                    "source-provided-fixture:complete-cast");
+                return true;
+            }
+
+            public bool TryBeginPreparation(Original323CreepPreparationPlan plan)
+            {
+                BeginCalls++;
+                if (BeganRejected) return false;
+                Began = true;
+                return true;
+            }
+
+            public Original323CreepPreparationProgress ObservePreparation(
+                Original323CreepPreparationPlan plan)
+            {
+                ObserveCalls++;
+                return Failed ? Original323CreepPreparationProgress.Failed :
+                    Finished ? Original323CreepPreparationProgress.Completed :
+                    Original323CreepPreparationProgress.Pending;
+            }
+        }
+
         // Inspects the SAME private lane predicate used by basic attacks,
         // skill targeting and native enemy auras. No damage is fabricated.
         private static bool CanAttackLane(CharacterCombatRuntime combat,
@@ -310,6 +368,252 @@ namespace Ordr.Mobile.Tests
                 Assert.IsNull(combat.CreepTargetOf(id));
                 Assert.AreEqual(0, combat.CharacterCount);
                 Assert.AreEqual(0, combat.CreepDeployedCount);
+            }
+        }
+
+        [Test]
+        public void ConditionalAuthorizationMustBindExactUnitAndExactLivingEnemy()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("C-01", 30, 50);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                creeps.SpawnPracticeStage(1, -100, 200);
+                var authority = new TestOnlyConditionalCreepAuthority {
+                    ForgeWrongCatalogId = true
+                };
+                combat.ConfigureVerifiedCreepDispatch(creeps, authority);
+                Assert.IsFalse(combat.CanDispatchToCreep(id, 1));
+                Assert.IsFalse(combat.TryDispatchToCreep(id, 1));
+                authority.ForgeWrongCatalogId = false;
+                authority.ForgeWrongEnemyId = true;
+                Assert.IsFalse(combat.CanDispatchToCreep(id, 1));
+                Assert.IsFalse(combat.TryDispatchToCreep(id, 1));
+                Assert.AreEqual(0, authority.BeginCalls);
+                Assert.AreEqual(0, combat.CreepPreparationCount);
+                Assert.AreEqual(0, combat.CreepDeployedCount);
+                Assert.AreEqual(30, combat.Roster.Get(id).X);
+            }
+        }
+
+        [Test]
+        public void ConditionalCreepDispatchStartsExactlyOneOriginalCastAndWaitsForCompletion()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("C-01", 30, 50);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var enemy = creeps.SpawnPracticeStage(1, -100, 200);
+                var authority = new TestOnlyConditionalCreepAuthority();
+                combat.ConfigureVerifiedCreepDispatch(creeps, authority);
+                Assert.IsTrue(combat.CanDispatchToCreep(id, 1));
+                Assert.AreEqual(0, authority.BeginCalls,
+                    "Read-only candidate rendering must not spend the original ability.");
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                Assert.IsTrue(combat.IsPreparingCreepDispatch(id));
+                Assert.IsFalse(combat.IsCreepDeployed(id));
+                Assert.AreEqual(1, combat.CreepPreparationCount);
+                Assert.AreEqual(1, authority.BeginCalls);
+                Assert.AreEqual(30, combat.Roster.Get(id).X);
+                Assert.IsFalse(combat.CanDispatchToCreep(id, 1));
+                Assert.IsFalse(combat.TryDispatchToCreep(id, 1));
+                Assert.IsTrue(combat.IsLockedFromRosterTransactions(id));
+                Assert.IsTrue(combat.IsLockedFromOwnedUnitConsumption(id));
+                Assert.Throws<InvalidOperationException>(() =>
+                    combat.BeginOriginalUnitRemoval(id),
+                    "An unfinished movement cast must not be consumed mid-spell.");
+                combat.AdvancePendingCreepPreparations();
+                Assert.AreEqual(1, authority.ObserveCalls);
+                Assert.AreEqual(1, combat.CreepPreparationCount);
+                Assert.AreEqual(1, authority.BeginCalls);
+                authority.DirectStage = 1;
+                authority.Finished = true;
+                combat.AdvancePendingCreepPreparations();
+                Assert.AreEqual(0, combat.CreepPreparationCount);
+                Assert.AreEqual(1, authority.BeginCalls);
+                Assert.AreEqual(enemy.EnemyId, combat.CreepTargetOf(id));
+                Assert.IsTrue(combat.IsCreepDeployed(id));
+                Assert.IsTrue(CanAttackLane(combat, id, enemy.EnemyId));
+                Assert.IsFalse(combat.IsLockedFromOwnedUnitConsumption(id));
+                Assert.IsTrue(combat.TryRecallFromCreep(id));
+                Assert.AreEqual(30, combat.Roster.Get(id).X);
+                Assert.AreEqual(50, combat.Roster.Get(id).Y);
+            }
+        }
+
+        [Test]
+        public void InvalidOrInterruptedCreepPreparationCannotGrantMovementOrFreeRefund()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("C-01", 30, 50);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var enemy = creeps.SpawnPracticeStage(1, -100, 200);
+                var authority = new TestOnlyConditionalCreepAuthority { BeganRejected = true };
+                combat.ConfigureVerifiedCreepDispatch(creeps, authority);
+                Assert.IsFalse(combat.TryDispatchToCreep(id, 1));
+                Assert.AreEqual(0, combat.CreepPreparationCount);
+                Assert.AreEqual(1, authority.BeginCalls);
+                authority.BeganRejected = false;
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                authority.Failed = true;
+                combat.AdvancePendingCreepPreparations();
+                Assert.IsFalse(combat.IsCreepDeployed(id));
+                Assert.IsFalse(combat.IsPreparingCreepDispatch(id));
+                Assert.AreEqual(30, combat.Roster.Get(id).X);
+                Assert.AreEqual(50, combat.Roster.Get(id).Y);
+                Assert.IsNull(combat.CreepTargetOf(id));
+                // The planner doesn't mint returned mana/points or rewind
+                // native cooldown; these remain inside the original bridge.
+                Assert.AreEqual(2, authority.BeginCalls);
+                Assert.Throws<ArgumentException>(() =>
+                    new Original323CreepPreparationPlan(id, "C-01", enemy.EnemyId,
+                        1, "FAKE", Original323CreepPreparationKind.MovementSkill,
+                        "TEST_ONLY fabricated proof"));
+            }
+        }
+
+        [Test]
+        public void NextStageRetargetStartsOnePreparedMoveAndRequiresLiveReapproval()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("C-01", 30, 50);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var first = creeps.SpawnPracticeStage(1, -100, 200);
+                var authority = new TestOnlyConditionalCreepAuthority {
+                    DirectStage = 1, PreparedStage = 2
+                };
+                combat.ConfigureVerifiedCreepDispatch(creeps, authority);
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                Assert.AreEqual(0, authority.BeginCalls);
+                var resolver = (CombatResolution)typeof(CharacterCombatRuntime)
+                    .GetField("resolution", BindingFlags.Instance |
+                        BindingFlags.NonPublic).GetValue(combat);
+                long applied;
+                Assert.IsTrue(resolver.TryApplySkillDamage("TEST_ONLY",
+                    first.EnemyId, first.OriginalObject.ObjectBaseHitPoints,
+                    out applied));
+                var next = creeps.SpawnPracticeStage(2, 500, 800);
+                Assert.AreEqual(1, authority.BeginCalls);
+                Assert.IsTrue(combat.IsPreparingCreepDispatch(id));
+                Assert.IsNull(combat.CreepTargetOf(id));
+                Assert.AreEqual(1, combat.CreepStageOf(id).Value);
+                Assert.IsFalse(combat.TryRecallFromCreep(id),
+                    "An in-flight form/teleport cannot be bypassed by recall.");
+                Assert.IsFalse(combat.TryDispatchToCreep(id, 2));
+                authority.Finished = true;
+                combat.AdvancePendingCreepPreparations();
+                Assert.IsFalse(combat.IsPreparingCreepDispatch(id));
+                Assert.AreEqual(1, combat.CreepStageOf(id).Value,
+                    "A completed cast is not proof of a reachable landing.");
+                Assert.IsNull(combat.CreepTargetOf(id));
+                // The actual original route must now approve the NEW attack
+                // placement; no fabricated teleport or retroactive refund.
+                authority.DirectStage = 2;
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 2));
+                Assert.AreEqual(next.EnemyId, combat.CreepTargetOf(id));
+                Assert.AreEqual(1, authority.BeginCalls);
+                Assert.IsTrue(combat.TryRecallFromCreep(id));
+            }
+        }
+
+        [Test]
+        public void DeferredNextStageEligibilityRetriesAfterCastOrCooldownUnlock()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("C-01", 30, 50);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var first = creeps.SpawnPracticeStage(1, -100, 200);
+                var authority = new TestOnlyConditionalCreepAuthority {
+                    DirectStage = 1, PreparedStage = 2
+                };
+                combat.ConfigureVerifiedCreepDispatch(creeps, authority);
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                var resolution = (CombatResolution)typeof(CharacterCombatRuntime)
+                    .GetField("resolution", BindingFlags.Instance |
+                        BindingFlags.NonPublic).GetValue(combat);
+                long damage;
+                Assert.IsTrue(resolution.TryApplySkillDamage("TEST_ONLY",
+                    first.EnemyId, first.OriginalObject.ObjectBaseHitPoints,
+                    out damage));
+                authority.Available = false;
+                var next = creeps.SpawnPracticeStage(2, 500, 800);
+                Assert.AreEqual(0, authority.BeginCalls);
+                Assert.IsNull(combat.CreepTargetOf(id));
+                authority.Available = true;
+                combat.AdvancePendingCreepPreparations();
+                Assert.AreEqual(1, authority.BeginCalls,
+                    "A source-approved next-stage action starts after the old cast is ready.");
+                Assert.IsTrue(combat.IsPreparingCreepDispatch(id));
+                authority.Finished = true;
+                authority.DirectStage = 2;
+                combat.AdvancePendingCreepPreparations();
+                combat.AdvancePendingCreepPreparations();
+                Assert.AreEqual(next.EnemyId, combat.CreepTargetOf(id));
+                Assert.AreEqual(1, authority.BeginCalls);
+                Assert.AreEqual(0, combat.CreepPreparationCount);
+            }
+        }
+
+        [Test]
+        public void AutoCastFailureCannotRetryAndRechargeEachFrame()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("C-01", 30, 50);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var first = creeps.SpawnPracticeStage(1, -100, 200);
+                var authority = new TestOnlyConditionalCreepAuthority {
+                    DirectStage = 1, PreparedStage = 2
+                };
+                combat.ConfigureVerifiedCreepDispatch(creeps, authority);
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                var resolution = (CombatResolution)typeof(CharacterCombatRuntime)
+                    .GetField("resolution", BindingFlags.Instance |
+                        BindingFlags.NonPublic).GetValue(combat);
+                long damage;
+                Assert.IsTrue(resolution.TryApplySkillDamage("TEST_ONLY",
+                    first.EnemyId, first.OriginalObject.ObjectBaseHitPoints,
+                    out damage));
+                creeps.SpawnPracticeStage(2, 500, 800);
+                Assert.AreEqual(1, authority.BeginCalls);
+                authority.Failed = true;
+                combat.AdvancePendingCreepPreparations();
+                combat.AdvancePendingCreepPreparations();
+                combat.AdvancePendingCreepPreparations();
+                Assert.AreEqual(1, authority.BeginCalls);
+                Assert.IsFalse(combat.IsPreparingCreepDispatch(id));
+                Assert.IsNull(combat.CreepTargetOf(id));
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 2),
+                    "Only a new manual instruction may retry an original failed cast.");
+                Assert.AreEqual(2, authority.BeginCalls);
+            }
+        }
+
+        [Test]
+        public void ConsumingTheActorDuringPendingCastCannotCreatePhantomCreepUnit()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("C-01", 30, 50);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                creeps.SpawnPracticeStage(1, -100, 200);
+                var authority = new TestOnlyConditionalCreepAuthority();
+                combat.ConfigureVerifiedCreepDispatch(creeps, authority);
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                // Death/explicit combat cleanup may retire the actual actor
+                // without a sale transaction, including its pending ticket.
+                combat.RemoveCharacter(id);
+                authority.DirectStage = 1;
+                authority.Finished = true;
+                combat.AdvancePendingCreepPreparations();
+                Assert.IsFalse(combat.IsPreparingCreepDispatch(id));
+                Assert.AreEqual(0, combat.CharacterCount);
+                Assert.AreEqual(0, combat.CreepDeployedCount);
+                Assert.AreEqual(0, combat.CreepPreparationCount);
+                Assert.AreEqual(0, authority.ObserveCalls);
             }
         }
 

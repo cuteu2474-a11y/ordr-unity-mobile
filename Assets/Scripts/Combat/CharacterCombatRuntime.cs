@@ -1628,11 +1628,13 @@ namespace Ordr.Mobile.Combat
         // this exception; no creep eligibility is implied.
         public bool IsLockedFromRosterTransactions(long instanceId) =>
             IsStoryDeployed(instanceId) || IsCreepDeployed(instanceId) ||
+            IsPreparingCreepDispatch(instanceId) ||
             IsLockedFromOwnedUnitConsumption(instanceId);
 
         public bool IsLockedFromOwnedUnitConsumption(long instanceId) =>
             IsSharedObjectiveDeployed(instanceId) ||
-            IsOriginalPoneglyphChanneling(instanceId);
+            IsOriginalPoneglyphChanneling(instanceId) ||
+            IsPreparingCreepDispatch(instanceId);
 
         public string SharedObjectiveTargetOf(long instanceId)
         {
@@ -1679,6 +1681,7 @@ namespace Ordr.Mobile.Combat
                 originalPoneglyphChanneling.Contains(instanceId) ||
                 IsStoryDeployed(instanceId) ||
                 IsCreepDeployed(instanceId) ||
+                IsPreparingCreepDispatch(instanceId) ||
                 !enemies.TryGetValue(enemyId ?? "", out target) ||
                 !target.Enemy.IsAlive ||
                 (target.Kind != CharacterEnemyKind.SeaKing &&

@@ -856,7 +856,8 @@ namespace Ordr.Mobile.Unity
             Combat != null && Combat.CanDispatchToCreep(instanceId, stage);
 
         public bool CanCreepRecall(long instanceId) =>
-            Combat != null && Combat.IsCreepDeployed(instanceId);
+            Combat != null && Combat.IsCreepDeployed(instanceId) &&
+            !Combat.IsPreparingCreepDispatch(instanceId);
 
         public ManualActionResult RequestCreepDispatch(long instanceId, int stage)
         {
@@ -865,7 +866,9 @@ namespace Ordr.Mobile.Unity
                 return new ManualActionResult(ManualActionState.Rejected,
                     "현재 원본 사냥 조건에서 파견할 수 없습니다.");
             return new ManualActionResult(ManualActionState.Succeeded,
-                "크립 " + stage + "단계에 실제 보유 유닛 1기를 파견했습니다.");
+                Combat.IsPreparingCreepDispatch(instanceId)
+                    ? "크립 " + stage + "단계 · 원본 이동/변신 준비를 시작했습니다."
+                    : "크립 " + stage + "단계에 실제 보유 유닛 1기를 파견했습니다.");
         }
 
         public ManualActionResult RequestCreepRecall(long instanceId)
@@ -4473,6 +4476,7 @@ namespace Ordr.Mobile.Unity
             // CTp/CTq follow a committed physical death, never a UI tap or
             // an in-resolution callback that could mutate enemy enumeration.
             SourceCreepProgression?.AdvancePending();
+            Combat.AdvancePendingCreepPreparations();
             // The last enemy can die during Advance itself. Record once at
             // the transition, before the result panel is next rendered.
             RecordFullGameClearOnce();

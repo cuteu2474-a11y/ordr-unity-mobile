@@ -3229,10 +3229,25 @@ namespace Ordr.Mobile.Unity
             }
             OrdrMobileUiTheme.DrawStatusRow("크립 파견",
                 selectedCreepStage + "단계 · " + Combat.CreepDeployedCount +
-                "기 출전", OrdrMobileUiTheme.Aqua);
+                "기 출전" +
+                (Combat.CreepPreparationCount > 0 ?
+                    " · 원본 이동/변신 준비 " + Combat.CreepPreparationCount + "기" : ""),
+                OrdrMobileUiTheme.Aqua);
+            var owned = OwnedUnitsForFrame();
+            foreach (var plan in Combat.PendingCreepPreparationSnapshot())
+            {
+                var preparing = owned.FirstOrDefault(
+                    u => u.InstanceId == plan.InstanceId);
+                if (preparing != null)
+                    OrdrMobileUiTheme.DrawStatusRow(
+                        preparing.Unit.Name + " · " + plan.Stage + "단계",
+                        plan.Kind == Original323CreepPreparationKind.MovementSkill
+                            ? "이동기 시전 중" : "원본 폼 전환 중",
+                        OrdrMobileUiTheme.Aqua);
+            }
             int deployed, ready, recallable, matchingUnits, matchingGroups,
                 pages, resolved;
-            var groups = MobileStoryDispatchBrowser.Group(OwnedUnitsForFrame(),
+            var groups = MobileStoryDispatchBrowser.Group(owned,
                 Combat.IsCreepDeployed,
                 id => controller.CanCreepDispatch(id, selectedCreepStage),
                 controller.CanCreepRecall,
@@ -3287,7 +3302,7 @@ namespace Ordr.Mobile.Unity
                 }
                 if (assignedStage.HasValue)
                 {
-                    GUI.enabled = enabled;
+                    GUI.enabled = enabled && entry.CanRecall;
                     if (GUILayout.Button("복귀",
                         GUILayout.Width(68f), GUILayout.MinHeight(68f)))
                     {
