@@ -56,7 +56,7 @@
 | ID | 남은 작업 | 대상 파일·완료 조건 |
 |---|---|---|
 | S01 | 저장 자료 구조의 잔여 상태 완성: 구매 위성, 복합·네이티브 폼, 진행 중 마리아 반복 예약·나미 여진·모리아 기여, 익명 예약 콜백, 고유 아이템/발굴·공유 목표, 전체 난수와 보류 거래. **장비 거래/인벤토리 리비전·원본 장비 수량, 불릿 육식 체 3초 만료·전장 리비전, 보물 저장·교차 검증 코드는 반영**. 복원 시 재시전·재구매·보상 재지급 금지 | `CharacterCombatRuntime.SaveState.cs`, `OrdrCoreCheckpoint.cs`, 각 기능 CaptureState/RestoreState. 소유자 ID·전장·잔여 수명·공격 순번·원본 카탈로그를 보존. 복원 불가능한 Action은 계속 저장 거부 |
-| S02 | 이미 구현된 캡처 경계·A/B 파일·비공개 거래 복원의 **전 서비스 확대** | CaptureCheckpointAtSafeBoundary, OrdrCoreCheckpointStore, OrdrCommerceRestoreGraphBuilder. 누락된 전투/시설/아이템·거래 중 상태 검증, 모든 난수·소유권·파일 안전 보장 |
+| S02 | 장비 증거 공급자의 비공개 복원 경로와 바이너리 payload v2 분리 코드 반영. **동일 시점 캡처·A/B 파일·비공개 거래 복원 전 서비스 확대 및 실게임 이어하기는 여전히 남음** | CaptureCheckpointAtSafeBoundary, OrdrCoreCheckpointStore, OrdrCommerceRestoreGraphBuilder. 누락된 전투/시설/아이템·거래 중 상태 검증, 모든 난수·소유권·파일 안전 보장 |
 | S03 | 전체 월드 재결합 → 교차 검증 → 컨트롤러/씬의 원자 교체 → 이어하기 UI·버전/손상 대응 | `OrdrUnpublishedCombatRestoreGraph.cs`, `OrdrUnpublishedAuxiliaryRestoreGraph.cs`, `OrdrMainSceneShell.cs`. 파견/해독/공유 출전 소유권과 모든 이벤트 구독을 연결하고 실패 시 현재 게임 보존. 정상 저장 자동 삭제·시작 보상/과거 보상 재지급 금지 |
 
 **코드에서 확인한 구체적인 다음 연결점**

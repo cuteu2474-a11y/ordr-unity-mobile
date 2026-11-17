@@ -15,6 +15,20 @@ namespace Ordr.Mobile.Tests
     {
         private sealed class MinimumDice : ICombatProcRandom
         { public int Next(int upper) { return 0; } }
+        private sealed class VerifiedEquipmentReceipt : IOriginalEquippedItemWitness
+        {
+            public bool TryConfirmEquipmentChange(string transactionId,
+                long ownerInstanceId, string rawcode, int signedCount,
+                out OriginalEquippedStat stat, out OriginalEquippedRarity rarity,
+                out string sourceEvidence)
+            {
+                stat = OriginalEquippedStat.Attack;
+                rarity = OriginalEquippedRarity.Unique;
+                sourceEvidence = "native-equipment-purchase:confirmed";
+                return transactionId == "purchase-verified" &&
+                    ownerInstanceId > 0 && rawcode == "Iatk" && signedCount == 2;
+            }
+        }
         private sealed class WinningGold : IOriginalWispRandom
         { public int NextInclusive(int min, int max) { Assert.AreEqual(1, min); Assert.AreEqual(4, max); return 3; } }
         private sealed class Live : IDisposable
@@ -26,7 +40,8 @@ namespace Ordr.Mobile.Tests
         }
         private static string Data(string file) => File.ReadAllText(Path.Combine(Application.dataPath, "..", "data", file));
         private static Live Create(int attackers = 0, int lastRound = 10,
-            string attackerUnitId = "U-02", bool mobileLane = false)
+            string attackerUnitId = "U-02", bool mobileLane = false,
+            IOriginalEquippedItemWitness equipmentReceipts = null)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -40,6 +55,8 @@ namespace Ordr.Mobile.Tests
             combat.Start();
             rules.Enable();
             combat.ConfigureSourceModelBasicAttacks(rules);
+            if (equipmentReceipts != null)
+                combat.ConfigureSourceModelEquippedItems(equipmentReceipts);
             for (int i = 0; i < attackers; i++) combat.SpawnCharacter(attackerUnitId, -4000 + 20 * i, 4000);
             var identity = Original323MonsterWaveIdentityCatalog.FromJson(Data("original-2323C-monster-wave-script-evidence.json"));
             var battle = new SourceModelPracticeBattle(combat, new CombatWaveDirector(), shared,
@@ -48,6 +65,54 @@ namespace Ordr.Mobile.Tests
                 rules, new WinningGold(), null, mobileMainLane: mobileLane);
             battle.Start();
             return new Live { Combat = combat, Economy = shared, Battle = battle };
+        }
+
+        [Test]
+        public void EquippedItemsRestoreRebindsRealReceiptsWithoutReplay()
+        {
+            var verified = new VerifiedEquipmentReceipt();
+            using (var live = Create(1, attackerUnitId: "I-05",
+                equipmentReceipts: verified))
+            {
+                long owner = live.Combat.MobileUnitSnapshot()[0].InstanceId;
+                Assert.IsTrue(live.Combat.TryRecordSourceModelEquippedItem(
+                    "purchase-verified", owner, "Iatk", 2));
+                var original = live.Combat.CaptureRuntimeDraft();
+                Assert.AreEqual(2, live.Combat.SourceModelEquippedItemsOf(owner).Attack);
+                Assert.AreEqual(1, original.EquippedItems.Receipts.Count);
+
+                var roster = UnitRoster.Restore(live.Combat.Roster.CaptureState());
+                var session = GameSession.Restore(live.Combat.Game.CaptureState());
+                var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+                var profiles = CharacterSkillCatalog.FromJson(
+                    Data("character-skill-profiles.json"));
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"), units);
+                var dice = new MinimumDice();
+                var rules = new SourceModelBasicCombatRules(map, dice);
+                rules.Enable();
+                var restored = new CharacterCombatRuntime(units, profiles,
+                    rules, rules, dice, roster, session);
+                restored.ConfigureSourceModelBasicAttacksForRestore(rules);
+                // The ordinary game-start configuration must not silently
+                // reinitialize a mid-wave restored equipment ledger.
+                Assert.Throws<InvalidOperationException>(() =>
+                    restored.ConfigureSourceModelEquippedItems(verified));
+                restored.ConfigureSourceModelEquippedItemsForRestore(
+                    verified, null);
+                Assert.Throws<InvalidOperationException>(() =>
+                    restored.ConfigureSourceModelEquippedItemsForRestore(
+                        verified, null));
+                restored.RestoreEnemyWorldDraft(original);
+                restored.RestoreActorWorldDraft(original);
+                Assert.AreEqual(2, restored.SourceModelEquippedItemsOf(owner).Attack);
+                Assert.IsFalse(restored.TryRecordSourceModelEquippedItem(
+                    "purchase-verified", owner, "Iatk", 2));
+                var again = restored.CaptureRuntimeDraft();
+                Assert.AreEqual(original.EquippedItems.Receipts[0],
+                    again.EquippedItems.Receipts[0]);
+                Assert.AreEqual(2, again.EquippedItems.Owners[0].Stacks[0].Count);
+            }
         }
 
         [Test]

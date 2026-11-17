@@ -18,7 +18,9 @@ namespace Ordr.Mobile.Core
         private const int MaxBytes = 64 * 1024 * 1024;
         private const int MaxItems = 500000;
         private const int MaxDepth = 96;
-        private const int Version = 1;
+        // Reflection-based checkpoint fields changed: never deserialize old
+        // nonplayable draft payloads as if they contained newer owner state.
+        private const int Version = 2;
         private static readonly Dictionary<Type, FieldInfo[]> Cache =
             new Dictionary<Type, FieldInfo[]>();
 

@@ -39,6 +39,15 @@ namespace Ordr.Mobile.Tests
                 Assert.IsNull(captured.Practice);
                 var store = new OrdrCoreCheckpointStore(folder);
                 store.WriteCore(captured);
+                // Explicitly version the binary payload, not only its
+                // checksummed A/B slot envelope.
+                var slot = Path.Combine(folder, "ordr-core-draft-v1-0.json");
+                var envelope = File.ReadAllText(slot);
+                Assert.IsTrue(envelope.StartsWith("ORDR-CORE-BIN-v3\n",
+                    StringComparison.Ordinal));
+                var encoded = envelope.Substring(envelope.LastIndexOf('\n') + 1);
+                Assert.AreEqual(2,
+                    BitConverter.ToInt32(Convert.FromBase64String(encoded), 0));
                 var loaded = store.LoadCore();
                 Assert.AreEqual(captured.SessionId, loaded.SessionId);
                 Assert.AreEqual(captured.Combat.Actors.Count,
@@ -47,7 +56,7 @@ namespace Ordr.Mobile.Tests
                 // pipeline rather than fail the stale v2 version gate.
                 var prepared = OrdrCoreCheckpoint.PrepareWorldRestore(loaded);
                 Assert.AreEqual(loaded.SessionId,
-                    prepared.Missions.Missions.SessionId);
+                    prepared.Missions.SessionId);
                 Assert.Throws<NotSupportedException>(() =>
                     OrdrCoreCheckpoint.Restore(loaded),
                     "The complete live battle is NOT yet safe to resume.");

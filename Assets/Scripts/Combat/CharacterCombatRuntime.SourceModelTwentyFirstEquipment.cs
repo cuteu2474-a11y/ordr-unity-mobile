@@ -34,6 +34,27 @@ namespace Ordr.Mobile.Combat
             sourceModelEquippedItems = new OriginalEquippedItemLedger(receipts, inventory);
         }
 
+        // Restore-only: bind verified equipment event sources on a fresh,
+        // UNPUBLISHED mid-wave combat instance. No native purchase, equip
+        // event or inventory observation is replayed during reconstruction.
+        public void ConfigureSourceModelEquippedItemsForRestore(
+            IOriginalEquippedItemWitness receipts,
+            IOriginalEquippedInventorySnapshotWitness inventory)
+        {
+            if (!UsesSourceModelBasicAttacks ||
+                (receipts == null && inventory == null) ||
+                sourceModelEquippedItems != null ||
+                game.Phase != Ordr.Mobile.Core.SessionPhase.Running ||
+                characters.Count != 0 || enemies.Count != 0 ||
+                unitStatuses.Count != 0 || scheduler.Time != 0 ||
+                effectExecutor.Time != 0 || processingStep ||
+                pendingStepSeconds != 0 || activeOriginalFusionSwap != null)
+                throw new InvalidOperationException(
+                    "복원용 원본 장비 증거는 빈 전투 그래프에 한 번만 연결합니다.");
+            sourceModelEquippedItems =
+                new OriginalEquippedItemLedger(receipts, inventory);
+        }
+
         public void ConfigureSourceModelBulletArmadaLevel(
             IOriginalBulletArmadaLevelWitness witness)
         {
