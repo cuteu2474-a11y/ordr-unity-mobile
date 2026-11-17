@@ -4,6 +4,9 @@
 
 ## 저장·비공개 복원 경로
 
+- `OrdrWorldRestoreGraphBuilder.Prepare` (`Assets/Scripts/Mobile/OrdrUnpublishedWorldRestoreGraph.cs`)는 기존 `OrdrCombatRestoreGraphBuilder` → `OrdrCommerceRestoreGraphBuilder` → `OrdrAuxiliaryRestoreGraphBuilder`를 **새 동일 세션**에서 직렬 결합합니다. 필요한 원본 증거·카탈로그가 빠지면 조립 전에 거부하며, 원본 `BFi`의 `OtherOriginalScriptCall`/ `MonsterDeathGold`는 기존 `commerce.RandomForPurpose`의 단일 커서에서 분기합니다. 신규 상거래 게이트는 `() => false`, 외부 라운드 콜백·기존 게임 미션 커밋 연결은 비활성입니다. `ValidateReconstructedState`는 새 객체들의 `CaptureState`를 기존 저장본 DTO와 **읽기 전용 전수 비교**하며 한 항목이라도 다르면 비공개 세계를 버립니다. 보물 후속 권리는 미완료이므로 `save.Treasure != null`은 안전 차단합니다.
+- `OrdrUnpublishedAuxiliaryRestoreGraph.Dispose`는 실패한 비공개 세계에서 구독 해제의 중복 호출을 막고 각 실물 서비스의 `Dispose`를 끝까지 시도합니다. `OrdrUnpublishedWorldRestoreGraph`는 보조 세계 구독의 단일 소유자이며 정상 게임 컨트롤러/씬에 결과를 공개하거나 바꾸지 않습니다.
+
 - `Original323SharedBfiRandom.CaptureCheckpoint/RestoreCheckpoint`는 원본 `H6/BFi`의 실제 전역 상태·누적 사용 횟수를 저장하고, 복원 전에 **같은 세션/논리 시각/커서**를 증명하는 `IOriginal323SharedBfiRestoreWitness`와 미래 호출 감시자를 요구합니다. `OrdrCommerceRestoreGraphBuilder.Prepare`는 원본 난수 1개에서 `Gambling`/ `RareWispBranch` 용도 뷰를 재구성하거나, 단독 모바일 `MobileRollbackWispRandom`을 복원합니다. 두 저장 형식 혼합·보류 도박/리롤의 항법 변경은 차단합니다.
 - `OrdrCharacterCombatController.CaptureCheckpointAtSafeBoundary`의 `CaptureWorldSubsystemFingerprint`는 게임/공통 지갑/로스터/미션 이외의 전투·라운드·연구/파견·도박 보류 장부·원본/모바일 난수도 저장 전후 비교합니다. 리비전 변화·재진입 중에는 전체 진단 저장을 폐기합니다. 원본 실제 난수 관측·거래 중 native 효과는 별도 외부 공급자 책임입니다.
 - `CharacterCombatRuntime.ValidateKumaAutoMissileState`는 `source-kuma-autofire-v1`의 예약 시전자·유닛 S-28·원본 payload·0.2초 시계·중복을 기존 타이머/공통 저장 검증에서 검사하며 아직 지원하지 않는 익명 Action 예약은 여전히 거부합니다.

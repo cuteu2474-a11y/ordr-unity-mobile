@@ -20,13 +20,27 @@ namespace Ordr.Mobile.Combat
             { get; internal set; }
         public Original323SharedObjectiveWorld SharedObjectives
             { get; internal set; }
+        private bool disposed;
         public void Dispose()
         {
-            Practice?.Dispose();
-            SharedObjectives?.Dispose();
-            SoloStory?.Dispose();
-            StoryBuildings?.Dispose();
-            Creeps?.Dispose();
+            if (disposed) return;
+            disposed = true;
+            // Every source event subscription must be detached even if one
+            // service fails to dispose. This entire graph is unpublished.
+            Exception first = null;
+            try { Practice?.Dispose(); }
+            catch (Exception error) { if (first == null) first = error; }
+            try { SharedObjectives?.Dispose(); }
+            catch (Exception error) { if (first == null) first = error; }
+            try { SoloStory?.Dispose(); }
+            catch (Exception error) { if (first == null) first = error; }
+            try { StoryBuildings?.Dispose(); }
+            catch (Exception error) { if (first == null) first = error; }
+            try { Creeps?.Dispose(); }
+            catch (Exception error) { if (first == null) first = error; }
+            if (first != null)
+                throw new InvalidOperationException(
+                    "비공개 세계의 원본 사건 구독 해제에 실패했습니다.", first);
         }
     }
 
@@ -98,51 +112,29 @@ namespace Ordr.Mobile.Combat
             }
             if (save.Creeps != null)
             {
-                if (creepCatalog == null)
-                    throw new ArgumentNullException(nameof(creepCatalog));
-                try
-                {
-                    state.Creeps = new Original323CreepPracticeWorld(
-                        graph.Combat, creepCatalog);
-                    state.Creeps.RestoreState(save.Creeps);
-                    // Stable, already-paid sorties rebind without issuing
-                    // dispatch, recasting a mobility skill or re-crediting
-                    // a creep encounter. Missing source authority fails closed.
-                    graph.Combat.RestoreCreepDeploymentsDraft(
-                        save.Combat, save.Creeps, state.Creeps,
-                        creepDispatchAuthority);
-                }
-                catch
-                {
-                    state.Dispose();
-                    throw;
-                }
+                state.Creeps = new Original323CreepPracticeWorld(
+                    graph.Combat, creepCatalog);
+                state.Creeps.RestoreState(save.Creeps);
+                // Already-paid sorties are reattached without movement,
+                // re-casting a mobility skill or crediting a reward.
+                graph.Combat.RestoreCreepDeploymentsDraft(
+                    save.Combat, save.Creeps, state.Creeps,
+                    creepDispatchAuthority);
             }
             if (save.SoloStory != null)
             {
-                if (storyCatalog == null || storyRandom == null)
-                    throw new ArgumentNullException(
-                        "원본 스토리 카탈로그와 복원된 BFi 난수열이 필요합니다.");
-                try
-                {
-                    state.StoryBuildings = new Original323StoryBuildingPracticeWorld(
-                        graph.Combat, storyCatalog);
-                    state.StoryBuildings.RestoreState(save.StoryBuildings);
-                    state.SoloStory = new Original323SoloStoryScenario(graph.Combat,
-                        state.StoryBuildings, graph.Core.Economy, storyRandom);
-                    state.SoloStory.RestoreState(save.SoloStory);
-                    state.StoryProgression = new Original323StoryMobileProgression(
-                        graph.Core.Economy.Wallet);
-                    state.StoryProgression.RestoreState(save.StoryProgression,
-                        state.SoloStory.NativeRewards);
-                    // Do not call ConfigureNativeAwardPort: it applies pending
-                    // rewards and must wait until all other owners are restored.
-                }
-                catch
-                {
-                    state.Dispose();
-                    throw;
-                }
+                state.StoryBuildings = new Original323StoryBuildingPracticeWorld(
+                    graph.Combat, storyCatalog);
+                state.StoryBuildings.RestoreState(save.StoryBuildings);
+                state.SoloStory = new Original323SoloStoryScenario(graph.Combat,
+                    state.StoryBuildings, graph.Core.Economy, storyRandom);
+                state.SoloStory.RestoreState(save.SoloStory);
+                state.StoryProgression = new Original323StoryMobileProgression(
+                    graph.Core.Economy.Wallet);
+                state.StoryProgression.RestoreState(save.StoryProgression,
+                    state.SoloStory.NativeRewards);
+                // Applying pending native awards during restore would double
+                // grant receipts, so ConfigureNativeAwardPort is NOT called.
             }
                 if (save.Practice != null)
                 {
@@ -160,7 +152,13 @@ namespace Ordr.Mobile.Combat
             }
             catch
             {
-                state.Dispose();
+                try { state.Dispose(); }
+                catch
+                {
+                    // Preserve the original restore failure. No staged
+                    // graph is returned, and each owner has been asked to
+                    // release its subscriptions.
+                }
                 throw;
             }
         }
