@@ -38,7 +38,8 @@ namespace Ordr.Mobile.Combat
             Original323MonsterWaveIdentityCatalog originalMonsterCatalog = null,
             SourceModelBasicCombatRules sourceDamage = null,
             IOriginalWispRandom originalScriptRandom = null,
-            Action roundStarted = null)
+            Action roundStarted = null,
+            IOriginal323CreepDispatchAuthority creepDispatchAuthority = null)
         {
             if (graph == null || graph.Core == null || graph.Combat == null ||
                 save == null || researchCanApply == null)
@@ -78,6 +79,12 @@ namespace Ordr.Mobile.Combat
                     state.Creeps = new Original323CreepPracticeWorld(
                         graph.Combat, creepCatalog);
                     state.Creeps.RestoreState(save.Creeps);
+                    // Stable, already-paid sorties rebind without issuing
+                    // dispatch, recasting a mobility skill or re-crediting
+                    // a creep encounter. Missing source authority fails closed.
+                    graph.Combat.RestoreCreepDeploymentsDraft(
+                        save.Combat, save.Creeps, state.Creeps,
+                        creepDispatchAuthority);
                 }
                 catch
                 {

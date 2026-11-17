@@ -315,6 +315,137 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void StableCreepDispatchCheckpointPreservesExactOwnerLaneAndRecall()
+        {
+            var original = EmptyCombat(sourceAttacks: true);
+            long actor = original.SpawnCharacter("C-01", -300, 20);
+            using (var sourceCreeps = new Original323CreepPracticeWorld(
+                original, SourceCatalog()))
+            {
+                var first = sourceCreeps.SpawnPracticeStage(1, -100, 200);
+                original.ConfigureVerifiedCreepDispatch(sourceCreeps,
+                    new TestOnlyCreepAuthority());
+                Assert.IsTrue(original.TryDispatchToCreep(actor, 1));
+                var saved = original.CaptureRuntimeDraft();
+                var creepState = sourceCreeps.CaptureState();
+                Assert.AreEqual(1, saved.CreepDeployments.Count);
+                Assert.AreEqual(-300, saved.CreepDeployments[0].ReturnX);
+                Assert.AreEqual(first.EnemyId, saved.CreepDeployments[0].TargetId);
+                CharacterCombatRuntime.ValidateCreepDeploymentState(
+                    saved, creepState, original.Roster.CaptureState());
+
+                var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+                var skills = CharacterSkillCatalog.FromJson(
+                    Data("character-skill-profiles.json"));
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"), units);
+                var dice = new MinimumDice();
+                var rules = new SourceModelBasicCombatRules(map, dice);
+                rules.Enable();
+                var restored = new CharacterCombatRuntime(units, skills,
+                    rules, rules, dice,
+                    UnitRoster.Restore(original.Roster.CaptureState()),
+                    GameSession.Restore(original.Game.CaptureState()));
+                restored.ConfigureSourceModelBasicAttacksForRestore(rules);
+                restored.RestoreEnemyWorldDraft(saved);
+                restored.RestoreActorWorldDraft(saved);
+                using (var creeps = new Original323CreepPracticeWorld(
+                    restored, SourceCatalog()))
+                {
+                    creeps.RestoreState(creepState);
+                    Assert.Throws<NotSupportedException>(() =>
+                        restored.RestoreCreepDeploymentsDraft(
+                            saved, creepState, creeps, null));
+                    Assert.IsFalse(restored.IsCreepDeployed(actor));
+                    Assert.Throws<InvalidOperationException>(() =>
+                        restored.RestoreCreepDeploymentsDraft(
+                            saved, creepState, sourceCreeps,
+                            new TestOnlyCreepAuthority()),
+                        "다른 전투의 크립 월드를 연결하면 안 됩니다.");
+                    restored.RestoreCreepDeploymentsDraft(saved, creepState,
+                        creeps, new TestOnlyCreepAuthority());
+                    Assert.IsTrue(restored.IsCreepDeployed(actor));
+                    Assert.AreEqual(1, restored.CreepStageOf(actor).Value);
+                    Assert.AreEqual(first.EnemyId,
+                        restored.CreepTargetOf(actor));
+                    Assert.IsTrue(CanAttackLane(restored, actor, first.EnemyId));
+                    Assert.Throws<InvalidOperationException>(() =>
+                        restored.RestoreCreepDeploymentsDraft(saved, creepState,
+                            creeps, new TestOnlyCreepAuthority()));
+                    var again = restored.CaptureRuntimeDraft();
+                    Assert.AreEqual(saved.CreepDeployments[0].PositionX,
+                        again.CreepDeployments[0].PositionX);
+                    Assert.IsTrue(restored.TryRecallFromCreep(actor));
+                    Assert.AreEqual(-300, restored.Roster.Get(actor).X);
+                    Assert.AreEqual(20, restored.Roster.Get(actor).Y);
+                    Assert.IsFalse(restored.IsCreepDeployed(actor));
+                }
+            }
+        }
+
+        [Test]
+        public void CreepCheckpointRejectsForgedOwnerPositionAndUnknownTarget()
+        {
+            var original = EmptyCombat(sourceAttacks: true);
+            long actor = original.SpawnCharacter("C-01", -300, 20);
+            using (var creeps = new Original323CreepPracticeWorld(
+                original, SourceCatalog()))
+            {
+                creeps.SpawnPracticeStage(1, -100, 200);
+                original.ConfigureVerifiedCreepDispatch(creeps,
+                    new TestOnlyCreepAuthority());
+                Assert.IsTrue(original.TryDispatchToCreep(actor, 1));
+                var saved = original.CaptureRuntimeDraft();
+                var creepState = creeps.CaptureState();
+                var roster = original.Roster.CaptureState();
+                saved.CreepDeployments[0].PositionX++;
+                Assert.Throws<FormatException>(() =>
+                    CharacterCombatRuntime.ValidateCreepDeploymentState(
+                        saved, creepState, roster));
+                saved.CreepDeployments[0].PositionX--;
+                saved.CreepDeployments[0].TargetId = "creep:forged";
+                Assert.Throws<FormatException>(() =>
+                    CharacterCombatRuntime.ValidateCreepDeploymentState(
+                        saved, creepState, roster));
+                saved.CreepDeployments[0].TargetId =
+                    creepState.Encounters[0].EnemyId;
+                saved.CreepDeployments[0].AutoAttemptedEnemyId =
+                    "creep:unwitnessed-ability";
+                Assert.Throws<FormatException>(() =>
+                    CharacterCombatRuntime.ValidateCreepDeploymentState(
+                        saved, creepState, roster));
+                saved.CreepDeployments[0].AutoAttemptedEnemyId = null;
+                Assert.Throws<FormatException>(() =>
+                    CharacterCombatRuntime.ValidateCreepDeploymentState(
+                        saved, null, roster));
+                saved.Enemies.RemoveAll(x => x.Kind == CharacterEnemyKind.Creep);
+                Assert.Throws<FormatException>(() =>
+                    CharacterCombatRuntime.ValidateCreepDeploymentState(
+                        saved, creepState, roster));
+            }
+        }
+
+        [Test]
+        public void CreepCastInProgressStillCannotBecomeACheckpoint()
+        {
+            var combat = EmptyCombat(sourceAttacks: true);
+            long actor = combat.SpawnCharacter("C-01", -300, 20);
+            using (var creeps = new Original323CreepPracticeWorld(
+                combat, SourceCatalog()))
+            {
+                creeps.SpawnPracticeStage(1, -100, 200);
+                var authority = new TestOnlyConditionalCreepAuthority();
+                combat.ConfigureVerifiedCreepDispatch(creeps, authority);
+                Assert.IsTrue(combat.TryDispatchToCreep(actor, 1));
+                Assert.IsTrue(combat.IsPreparingCreepDispatch(actor));
+                Assert.Throws<NotSupportedException>(() =>
+                    combat.CaptureRuntimeDraft());
+                Assert.AreEqual(1, authority.BeginCalls,
+                    "저장 과정에서 원본 이동기를 다시 시전하지 않습니다.");
+            }
+        }
+
+        [Test]
         public void CreepDispatchPartitionsAllLanesAndRecallPreservesSameRealUnit()
         {
             var combat = EmptyCombat(sourceAttacks: true);

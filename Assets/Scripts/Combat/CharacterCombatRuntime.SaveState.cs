@@ -189,6 +189,8 @@ namespace Ordr.Mobile.Combat
         public List<SourceCombatNamiZoneCheckpoint> NamiZones =
             new List<SourceCombatNamiZoneCheckpoint>();
         public MoriaParticipationLedgerState MoriaParticipation;
+        public List<SourceCombatCreepDeploymentCheckpoint> CreepDeployments =
+            new List<SourceCombatCreepDeploymentCheckpoint>();
         // Null means the equipment source was not configured in this world.
         public OriginalEquippedItemLedgerState EquippedItems;
         public List<SourceCombatEnemyCheckpoint> Enemies =
@@ -841,13 +843,11 @@ namespace Ordr.Mobile.Combat
         // fail before anyone can accidentally publish a partial checkpoint.
         public SourceCombatRuntimeCheckpoint CaptureRuntimeDraft()
         {
-            // Until the original creep route, exact deployment assignment
-            // and attack-placement evidence have a versioned save schema,
-            // reject rather than silently turn a loaded sortie into a
-            // duplicate main-lane attacker or erase manual-recall rights.
-            if (creepDeployments.Count != 0 || creepPreparations.Count != 0)
+            // An in-progress native mobility/form cast is still opaque:
+            // never replay a source payment after loading the save.
+            if (creepPreparations.Count != 0)
                 throw new NotSupportedException(
-                    "크립 출전 유닛의 목적지·복귀 위치는 저장 복원 근거가 부족합니다.");
+                    "원본 크립 이동·변신 시전 완료 전에는 저장할 수 없습니다.");
             if (game.Phase != SessionPhase.Running ||
                 activeOriginalFusionSwap != null || processingStep ||
                 pendingStepSeconds != 0 ||
@@ -1019,6 +1019,7 @@ namespace Ordr.Mobile.Combat
             draft.NamiZones.Sort((a, b) =>
                 string.CompareOrdinal(a.Source, b.Source));
             ValidateSourceTransientState(draft);
+            CaptureCreepDeployments(draft);
             // e0HP is the original evolution world's SINGLE non-combat
             // starter, registered in the shared roster but not characters.
             // Never conflate it with a playable attacker or a phantom fusion

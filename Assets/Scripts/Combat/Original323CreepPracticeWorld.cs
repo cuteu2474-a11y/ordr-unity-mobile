@@ -45,6 +45,9 @@ namespace Ordr.Mobile.Combat
         private int nextSerial;
         private bool disposed;
         internal Original323CreepObjectCatalog SourceCatalog => catalog;
+        internal bool IsAttachedTo(CharacterCombatRuntime owner) =>
+            !disposed && ReferenceEquals(combat, owner);
+
 
         public IReadOnlyList<Original323CreepEncounter> Encounters
         { get { return encounters.AsReadOnly(); } }

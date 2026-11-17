@@ -99,6 +99,22 @@ namespace Ordr.Mobile.Combat
         void ForgetIssuedOriginalAbility(long instanceId);
     }
 
+    // Stable, already-committed dispatch only. Pending source-native
+    // mobility/form casts have a separate irreversible ticket and cannot
+    // be reconstructed from this record.
+    [Serializable]
+    public sealed class SourceCombatCreepDeploymentCheckpoint
+    {
+        public long OwnerId;
+        public int Stage;
+        public string TargetId;
+        public double ReturnX, ReturnY;
+        public double PositionX, PositionY;
+        // The auto-attempt receipt must survive load or the source ability
+        // could be cast again and charged a second time.
+        public string AutoAttemptedEnemyId;
+    }
+
     public sealed partial class CharacterCombatRuntime
     {
         private void ForgetIssuedCreepAbility(long id)
@@ -189,6 +205,9 @@ namespace Ordr.Mobile.Combat
             if (sourceWorld == null) throw new ArgumentNullException(nameof(sourceWorld));
             if (verifiedAuthority == null)
                 throw new ArgumentNullException(nameof(verifiedAuthority));
+            if (!sourceWorld.IsAttachedTo(this))
+                throw new InvalidOperationException(
+                    "다른 전투에 연결된 원본 크립 세계를 사용할 수 없습니다.");
             if (creepWorld != null || creepDeployments.Count != 0 ||
                 processingStep || activeOriginalFusionSwap != null)
                 throw new InvalidOperationException(
@@ -472,6 +491,206 @@ namespace Ordr.Mobile.Combat
             // A deferred retry happens after the next combat step without
             // charging any successful preparation a second time.
             TryAutoRetargetInactiveCreepActors();
+        }
+
+        // Cross-check saved actor/roster identity, destination history, and
+        // non-main lane exclusivity. This does NOT call any native ability
+        // or infer attack eligibility from mere unit movement classes.
+        public static void ValidateCreepDeploymentState(
+            SourceCombatRuntimeCheckpoint combat,
+            Original323CreepPracticeState creeps,
+            UnitRosterState roster)
+        {
+            if (combat == null || combat.Version != 4 ||
+                combat.CreepDeployments == null)
+                throw new FormatException("크립 파견 저장 형식이 잘못됐습니다.");
+            if (combat.CreepDeployments.Count == 0) return;
+            if (creeps == null || roster == null || roster.Units == null ||
+                combat.Actors == null)
+                throw new FormatException(
+                    "크립 출전의 실물 크립/공통 유닛 상태가 누락됐습니다.");
+            Original323CreepPracticeWorld.ValidateState(creeps);
+            var actors = new Dictionary<long, SourceCombatActorCheckpoint>();
+            foreach (var actor in combat.Actors)
+                if (actor == null || actor.InstanceId <= 0 ||
+                    actors.ContainsKey(actor.InstanceId))
+                    throw new FormatException("크립 출전 유닛 ID가 잘못됐습니다.");
+                else actors.Add(actor.InstanceId, actor);
+            var rosterOwners = new Dictionary<long, UnitRosterEntryState>();
+            foreach (var unit in roster.Units)
+                if (unit == null || unit.InstanceId <= 0 ||
+                    rosterOwners.ContainsKey(unit.InstanceId))
+                    throw new FormatException(
+                        "크립 저장의 공통 유닛 장부가 잘못됐습니다.");
+                else rosterOwners.Add(unit.InstanceId, unit);
+            var encounters = new Dictionary<string,
+                Original323CreepEncounterCheckpoint>(StringComparer.Ordinal);
+            foreach (var entry in creeps.Encounters)
+                encounters.Add(entry.EnemyId, entry);
+            // A historical target may be defeated/escaped, but a currently
+            // alive encounter must have exactly one matching live combat
+            // entity. Do not restore a phantom creep lane.
+            var physical = new HashSet<string>(StringComparer.Ordinal);
+            if (combat.Enemies == null)
+                throw new FormatException("크립의 실제 전투 대상 목록이 없습니다.");
+            foreach (var enemy in combat.Enemies)
+                if (enemy != null && enemy.Kind == CharacterEnemyKind.Creep &&
+                    !physical.Add(enemy.EnemyId))
+                    throw new FormatException("중복된 크립 실물 적입니다.");
+            foreach (var encounter in creeps.Encounters)
+            {
+                bool alive = physical.Remove(encounter.EnemyId);
+                if ((encounter.State == Original323CreepEncounterState.Alive) != alive)
+                    throw new FormatException(
+                        "크립 실물과 출현/처치 기록이 일치하지 않습니다.");
+            }
+            if (physical.Count != 0)
+                throw new FormatException("출현 기록에 없는 크립이 존재합니다.");
+            var unique = new HashSet<long>();
+            foreach (var row in combat.CreepDeployments)
+            {
+                SourceCombatActorCheckpoint actor;
+                UnitRosterEntryState owned;
+                Original323CreepEncounterCheckpoint encounter;
+                if (row == null || row.OwnerId <= 0 ||
+                    !unique.Add(row.OwnerId) ||
+                    !actors.TryGetValue(row.OwnerId, out actor) ||
+                    !rosterOwners.TryGetValue(row.OwnerId, out owned) ||
+                    owned.UnitId != actor.CatalogId ||
+                    actor.StoryDeployed || actor.PoneglyphChanneling ||
+                    !string.IsNullOrEmpty(actor.SharedObjectiveEnemyId) ||
+                    row.Stage < 1 || row.Stage > 3 ||
+                    string.IsNullOrWhiteSpace(row.TargetId) ||
+                    !encounters.TryGetValue(row.TargetId, out encounter) ||
+                    encounter.Stage != row.Stage ||
+                    double.IsNaN(row.ReturnX) || double.IsInfinity(row.ReturnX) ||
+                    double.IsNaN(row.ReturnY) || double.IsInfinity(row.ReturnY) ||
+                    double.IsNaN(row.PositionX) || double.IsInfinity(row.PositionX) ||
+                    double.IsNaN(row.PositionY) || double.IsInfinity(row.PositionY) ||
+                    owned.X != row.PositionX || owned.Y != row.PositionY)
+                    throw new FormatException(
+                        "크립 파견 소유자·전장·복귀 좌표가 잘못됐습니다.");
+                if (row.AutoAttemptedEnemyId != null)
+                {
+                    Original323CreepEncounterCheckpoint attempted;
+                    if (string.IsNullOrWhiteSpace(row.AutoAttemptedEnemyId) ||
+                        !encounters.TryGetValue(row.AutoAttemptedEnemyId,
+                            out attempted) ||
+                        (attempted.Stage != row.Stage &&
+                         attempted.Stage != row.Stage + 1))
+                        throw new FormatException(
+                            "원본 크립 이동기 재시전 방지 장부가 잘못됐습니다.");
+                }
+            }
+        }
+
+        // No pending source cast can be saved here: its native completion,
+        // paid resources and one-use authorization are not serializable.
+        private void CaptureCreepDeployments(SourceCombatRuntimeCheckpoint draft)
+        {
+            if (creepPreparations.Count != 0)
+                throw new NotSupportedException(
+                    "진행 중인 원본 크립 이동기·폼 시전은 저장할 수 없습니다.");
+            if (creepDeployments.Count == 0)
+            {
+                if (autoCreepPreparationAttempted.Count != 0)
+                    throw new InvalidOperationException(
+                        "출전 유닛 없는 크립 시전 이력이 남았습니다.");
+                return;
+            }
+            if (creepWorld == null || creepAuthority == null)
+                throw new InvalidOperationException(
+                    "크립 실물 전장과 원본 파견 증거가 함께 필요합니다.");
+            var ids = new List<long>(creepDeployments.Keys);
+            ids.Sort();
+            foreach (long id in ids)
+            {
+                var assignment = creepDeployments[id];
+                var owned = roster.Get(id);
+                string attempt;
+                draft.CreepDeployments.Add(
+                    new SourceCombatCreepDeploymentCheckpoint {
+                        OwnerId = id, Stage = assignment.Stage,
+                        TargetId = assignment.TargetId,
+                        ReturnX = assignment.ReturnX,
+                        ReturnY = assignment.ReturnY,
+                        PositionX = owned.X, PositionY = owned.Y,
+                        AutoAttemptedEnemyId =
+                            autoCreepPreparationAttempted.TryGetValue(
+                                id, out attempt) ? attempt : null
+                    });
+            }
+            foreach (long owner in autoCreepPreparationAttempted.Keys)
+                if (!creepDeployments.ContainsKey(owner))
+                    throw new InvalidOperationException(
+                        "출전하지 않은 유닛의 크립 이동기 이력이 있습니다.");
+            if (autoCreepPreparationAttempted.Count >
+                creepDeployments.Count)
+                throw new InvalidOperationException(
+                    "크립 이동기 시도 기록의 유닛 ID가 중복됩니다.");
+            ValidateCreepDeploymentState(draft, creepWorld.CaptureState(),
+                roster.CaptureState());
+        }
+
+        // Called after the already-saved CreepPracticeWorld was restored
+        // and all combat actors recovered, but before any combat tick.
+        // Placement is not recomputed and no cast, reward or movement fires.
+        public void RestoreCreepDeploymentsDraft(
+            SourceCombatRuntimeCheckpoint combat,
+            Original323CreepPracticeState savedCreeps,
+            Original323CreepPracticeWorld restoredCreeps,
+            IOriginal323CreepDispatchAuthority authority)
+        {
+            ValidateCreepDeploymentState(combat, savedCreeps,
+                roster.CaptureState());
+            if (combat.CreepDeployments.Count == 0) return;
+            if (restoredCreeps == null || authority == null)
+                throw new NotSupportedException(
+                    "파견된 크립 유닛은 원본 전장·출전 증거 포트 없이 복원할 수 없습니다.");
+            if (!restoredCreeps.IsAttachedTo(this))
+                throw new InvalidOperationException(
+                    "다른 전투/종료된 크립 월드의 출전은 복원할 수 없습니다.");
+            if (game.Phase != SessionPhase.Running || processingStep ||
+                pendingStepSeconds != 0 || activeOriginalFusionSwap != null ||
+                creepWorld != null || creepDeployments.Count != 0 ||
+                creepPreparations.Count != 0 ||
+                autoCreepPreparationAttempted.Count != 0 ||
+                characters.Count != combat.Actors.Count ||
+                scheduler.Time != combat.Time)
+                throw new InvalidOperationException(
+                    "크립 출전은 준비된 비공개 전투에만 연결합니다.");
+            var current = restoredCreeps.CaptureState();
+            if (current.Encounters.Count != savedCreeps.Encounters.Count)
+                throw new FormatException(
+                    "복원된 크립 실물 개체 수가 원본 기록과 다릅니다.");
+            foreach (var saved in savedCreeps.Encounters)
+            {
+                var present = restoredCreeps.FindEncounter(saved.EnemyId);
+                if (present == null ||
+                    present.OriginalObject.Stage != saved.Stage ||
+                    present.OriginalObject.Rawcode != saved.Rawcode ||
+                    present.State != saved.State ||
+                    present.X != saved.X || present.Y != saved.Y)
+                    throw new FormatException(
+                        "크립 출전 목적지의 복원된 실물이 다릅니다.");
+            }
+            foreach (var row in combat.CreepDeployments)
+                if (!characters.ContainsKey(row.OwnerId))
+                    throw new FormatException(
+                        "복원된 전투에 크립 출전 유닛이 없습니다.");
+            // Attach only after all checks. A failed unpublished restore
+            // is discarded; nothing touches the current live scene.
+            ConfigureVerifiedCreepDispatch(restoredCreeps, authority);
+            foreach (var row in combat.CreepDeployments)
+            {
+                creepDeployments.Add(row.OwnerId, new CreepDeployment {
+                    Stage = row.Stage, TargetId = row.TargetId,
+                    ReturnX = row.ReturnX, ReturnY = row.ReturnY
+                });
+                if (row.AutoAttemptedEnemyId != null)
+                    autoCreepPreparationAttempted.Add(
+                        row.OwnerId, row.AutoAttemptedEnemyId);
+            }
         }
 
         private void ForgetCreepDeployment(long id)

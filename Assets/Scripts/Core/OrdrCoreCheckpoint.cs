@@ -161,6 +161,9 @@ namespace Ordr.Mobile.Core
         {
             var restored = RestoreCoreOnly(state);
             ValidateCombatDraft(state);
+            if (state.Combat != null)
+                CharacterCombatRuntime.ValidateCreepDeploymentState(
+                    state.Combat, state.Creeps, state.Roster);
             if (state.ScriptRandom != null)
                 MobileRollbackWispRandom.Restore(state.ScriptRandom);
             if (state.WispPoolRandom != null)
