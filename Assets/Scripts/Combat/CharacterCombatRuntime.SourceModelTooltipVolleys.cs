@@ -143,26 +143,24 @@ namespace Ordr.Mobile.Combat
             double startAt = count == 20 ? .12 : .23;
             double interval = count == 20 ? .055 : .05;
             string originalPrimaryId = primary.Id;
+            if (sourceNextVolleyCastId == long.MaxValue)
+                throw new OverflowException("원본 연타 시전 순번을 더 늘릴 수 없습니다.");
+            long castId = ++sourceNextVolleyCastId;
             for (int hit = 0; hit < count; hit++)
             {
-                int hitIndex = hit;
-                effectExecutor.SchedulePracticeSourceAttack(owner,
-                    "practice-volley:" + actor.Id + ":" + accepted.Id +
-                        ":" + Time + ":" + hitIndex,
-                    startAt + hitIndex * interval, () => {
-                        if (!CanFinishSourceModelDelayedAttack(actor.Id,
-                                storyLane, revision))
-                            return;
-                        if (accepted.Id == "E-06:skill:0")
-                            ApplySourceOriginalViviSalvoPulse(actor, accepted, hitIndex);
-                        else
-                            ApplySourceOriginalHancockPulse(
-                                actor, accepted, originalPrimaryId, hitIndex);
-                        RemoveDefeatedEnemies();
-                    });
+                var pulse = new SourceVolleyPulseCheckpoint {
+                    OwnerId = actor.Id, SkillId = accepted.Id,
+                    OriginalPrimaryId = originalPrimaryId,
+                    StoryLane = storyLane, LaneRevision = revision,
+                    CastId = castId, CastAt = effectExecutor.Time,
+                    HitIndex = hit
+                };
+                effectExecutor.ScheduleRestorableSourceAttack(owner,
+                    SourceVolleyPulseTarget(actor.Id, castId, hit),
+                    startAt + hit * interval,
+                    SourceVolleyPulseKind, EncodeSourceVolleyPulse(pulse),
+                    CreateSourceVolleyPulse(pulse, actor, accepted));
             }
-            // Anonymous callbacks are intentionally rejected by the current
-            // draft-save guard until an effect-kind replay descriptor exists.
             RemoveDefeatedEnemies();
             return true;
         }

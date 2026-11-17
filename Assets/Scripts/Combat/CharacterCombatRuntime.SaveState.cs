@@ -198,6 +198,7 @@ namespace Ordr.Mobile.Combat
         // Script-selected timed JASS packets retain their original hit
         // geometry and attacker+enemy binding; no hidden Action closures.
         public SourceRemainingDelayedOwnerCheckpoint RemainingDelayed;
+        public SourceVolleyWorldCheckpoint VolleyOwners;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -329,9 +330,7 @@ namespace Ordr.Mobile.Combat
                     f.LaneRevision != owner.SourceLaneRevision ||
                     f.StoryLane != owner.StoryDeployed ||
                     double.IsNaN(f.ExpiresAt) || double.IsInfinity(f.ExpiresAt) ||
-                    f.ExpiresAt <= state.Time ||
-                    !((f.Form == "awakening" && owner.CatalogId == "TR-03") ||
-                      (f.Form == "forest" && owner.CatalogId == "TR-06")))
+                    !ValidateRestorableCompositeForm(f, owner, state.Time))
                     throw new FormatException("원본 임시 변신 상태가 잘못됐습니다.");
             }
             seen.Clear();
@@ -605,10 +604,8 @@ namespace Ordr.Mobile.Combat
             if (covered + sourceSatellites.Count != sourceIndependentAttackers.Count)
                 throw new NotSupportedException(
                     "원본 소환·구매 위성 이외의 독립 공격자를 아직 복원할 수 없습니다.");
-            foreach (var form in sourceModelTenthForms.Values)
-                if (form.Form != "awakening" && form.Form != "forest")
-                    throw new NotSupportedException(
-                        "미확인 원본 네이티브 변신은 안전하게 복원할 수 없습니다.");
+            // Finite and mana-lifetime transforms now share the strict
+            // owner/skill/clock validation in ValidateSourceSidecars().
         }
 
         private void RestoreSourceSidecars(SourceCombatRuntimeCheckpoint state)
@@ -625,10 +622,35 @@ namespace Ordr.Mobile.Combat
                 if (a.SourceLaneRevision > 0)
                     sourceModelStoryLaneRevisions.Add(a.InstanceId, a.SourceLaneRevision);
             foreach (var f in state.Forms)
+            {
+                CharacterInstance actor;
+                if (!characters.TryGetValue(f.OwnerId, out actor))
+                    throw new FormatException("저장된 변신 소유자를 찾을 수 없습니다.");
+                if (!CanRebindRestoredCompositeForm(actor, f.Form))
+                    throw new NotSupportedException(
+                        "복합 변신의 원본 유닛 코드·기술 프로필이 다릅니다.");
+                if (f.Form == "nika")
+                {
+                    // Rebind the pinned H0BY attack variant without recasting
+                    // the form or crediting MP/health/XP/rewards.
+                    if (sourceModelRules == null ||
+                        sourceModelRules.SourceObjectAttack("H0BY") == null ||
+                        sourceModelRules.SourceFormRawcodeOf(
+                            InstanceKey(f.OwnerId)) != null ||
+                        actor.Abilities.Resources == null ||
+                        actor.Abilities.Resources.Mana <= 0 ||
+                        actor.Abilities.Resources.MaximumMana != 100)
+                        throw new NotSupportedException(
+                            "보니 니카의 원본 폼 공격체·MP100을 복원할 증거가 없습니다.");
+                    sourceModelRules.SetSourceForm(InstanceKey(f.OwnerId), "H0BY");
+                }
                 sourceModelTenthForms.Add(f.OwnerId, new SourceModelTenthFormState {
-                    Form = f.Form, ExpiresAt = f.ExpiresAt,
+                    Form = f.Form,
+                    ExpiresAt = f.Form == "nika"
+                        ? double.PositiveInfinity : f.ExpiresAt,
                     StoryLane = f.StoryLane, LaneRevision = f.LaneRevision
                 });
+            }
             foreach (var f in state.Forest)
                 sourceModelForestNutrients.Add(f.OwnerId, f.Nutrients);
             // Existing actor IDs and their lane revisions were validated
@@ -681,6 +703,7 @@ namespace Ordr.Mobile.Combat
             RestoreCompositeSkillOwners(state.CompositeSkillOwners);
             RestoreBonneyAgeOwners(state.BonneyAgeOwners);
             RestoreRemainingDelayedOwners(state.RemainingDelayed);
+            RestoreSourceVolleyOwners(state.VolleyOwners);
         }
 
         private void RestoreManualOwners(SourceCombatRuntimeCheckpoint state)
@@ -941,6 +964,7 @@ namespace Ordr.Mobile.Combat
             ValidateCompositeSkillOwners(state);
             ValidateBonneyAgeOwners(state);
             ValidateRemainingDelayedState(state);
+            ValidateSourceVolleyOwners(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1105,7 +1129,8 @@ namespace Ordr.Mobile.Combat
                 SatelliteWorld = CaptureSourceSatelliteWorld(),
                 CompositeSkillOwners = CaptureCompositeSkillOwners(),
                 BonneyAgeOwners = CaptureBonneyAgeOwners(),
-                RemainingDelayed = CaptureRemainingDelayedOwners()
+                RemainingDelayed = CaptureRemainingDelayedOwners(),
+                VolleyOwners = CaptureSourceVolleyOwners()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1162,7 +1187,8 @@ namespace Ordr.Mobile.Combat
             foreach (var row in sourceModelTenthForms)
                 draft.Forms.Add(new SourceCombatFormCheckpoint {
                     OwnerId = row.Key, Form = row.Value.Form,
-                    ExpiresAt = row.Value.ExpiresAt,
+                    ExpiresAt = row.Value.Form == "nika" ? -1 :
+                         row.Value.ExpiresAt,
                     StoryLane = row.Value.StoryLane,
                     LaneRevision = row.Value.LaneRevision
                 });
@@ -1266,6 +1292,7 @@ namespace Ordr.Mobile.Combat
             ValidateCompositeSkillOwners(draft);
             ValidateBonneyAgeOwners(draft);
             ValidateRemainingDelayedState(draft);
+            ValidateSourceVolleyOwners(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);
