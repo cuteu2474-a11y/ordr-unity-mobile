@@ -41,6 +41,9 @@ namespace Ordr.Mobile.Mobile
         public IOriginal323SharedObjectiveWitness SharedObjectiveWitness;
         public IOriginal323SharedBfiRestoreWitness OriginalStateWitness;
         public IOriginal323ScriptRandomDrawWitness OriginalDrawWitness;
+        public IOriginal323ScriptAttackProcWitness OriginalAttackEventWitness;
+        public Func<CharacterCombatRuntime,
+            IOriginal323VerifiedAttackDummySpellWorld> CreateOriginalAttackSpellWorld;
     }
 
     // Owns the source event subscriptions created by auxiliary reconstruction.
@@ -51,6 +54,8 @@ namespace Ordr.Mobile.Mobile
         public OrdrUnpublishedCommerceRestoreGraph Commerce { get; private set; }
         public OrdrUnpublishedAuxiliaryRestoreGraph Auxiliary { get; private set; }
         public OrdrUnpublishedTreasureRestoreGraph Treasure { get; private set; }
+        public Original323ScriptAttackProcRolls OriginalAttackRolls
+            { get; private set; }
         public string SessionId { get; private set; }
         public double LogicalTime { get; private set; }
         public bool IsDisposed { get; private set; }
@@ -60,12 +65,14 @@ namespace Ordr.Mobile.Mobile
             OrdrUnpublishedCommerceRestoreGraph commerce,
             OrdrUnpublishedAuxiliaryRestoreGraph auxiliary,
             OrdrUnpublishedTreasureRestoreGraph treasure,
+            Original323ScriptAttackProcRolls originalAttackRolls,
             string sessionId, double logicalTime)
         {
             Combat = combat;
             Commerce = commerce;
             Auxiliary = auxiliary;
             Treasure = treasure;
+            OriginalAttackRolls = originalAttackRolls;
             SessionId = sessionId;
             LogicalTime = logicalTime;
         }
@@ -120,6 +127,11 @@ namespace Ordr.Mobile.Mobile
                  inputs.OriginalDrawWitness == null))
                 throw new NotSupportedException(
                     "원본 H6 난수는 현재 세션의 상태와 향후 호출 목격자가 모두 필요합니다.");
+            if (save.OriginalScriptAttackProcs != null &&
+                (inputs.OriginalAttackEventWitness == null ||
+                 inputs.CreateOriginalAttackSpellWorld == null))
+                throw new NotSupportedException(
+                    "원본 Bnm/Bnp/Bnr 사건은 같은 전투의 원본 충돌·공격 목격 공급자가 필요합니다.");
             if (save.Creeps != null && inputs.CreepCatalog == null ||
                 save.Combat.CreepDeployments.Count > 0 &&
                     inputs.CreepDispatchAuthority == null ||
@@ -170,6 +182,22 @@ namespace Ordr.Mobile.Mobile
                     null, // never attach a live mission-commit callback
                     inputs.OriginalStateWitness, inputs.OriginalDrawWitness);
 
+                Original323ScriptAttackProcRolls originalAttackRolls = null;
+                if (save.OriginalScriptAttackProcs != null)
+                {
+                    originalAttackRolls = new Original323ScriptAttackProcRolls(
+                        commerce.OriginalScriptRandom,
+                        inputs.OriginalAttackEventWitness);
+                    originalAttackRolls.RestoreState(
+                        save.OriginalScriptAttackProcs);
+                    var spellWorld = inputs.CreateOriginalAttackSpellWorld(
+                        combat.Combat);
+                    if (spellWorld == null)
+                        throw new NotSupportedException(
+                            "원본 공격 충돌 처리기를 새 전투에서 재생성하지 못했습니다.");
+                    combat.Combat.ConfigureOriginal323ScriptAttackEffectWorldForRestore(
+                        save.Combat, originalAttackRolls, spellWorld);
+                }
                 var treasure = OrdrTreasureRestoreGraphBuilder.Prepare(
                     save, combat, commerce);
                 // Both handles below share the exact H6 instance in original
@@ -188,10 +216,11 @@ namespace Ordr.Mobile.Mobile
                     inputs.CreepDispatchAuthority, inputs.SharedOriginalObjects,
                     inputs.SharedObjectiveWitness, scriptOther);
                 ValidateReconstructedState(
-                    save, combat, commerce, auxiliary, treasure);
+                    save, combat, commerce, auxiliary, treasure,
+                    originalAttackRolls);
                 return new OrdrUnpublishedWorldRestoreGraph(
                     combat, commerce, auxiliary, treasure,
-                    save.SessionId, save.LogicalTime);
+                    originalAttackRolls, save.SessionId, save.LogicalTime);
             }
             catch
             {
@@ -224,7 +253,8 @@ namespace Ordr.Mobile.Mobile
             OrdrUnpublishedCombatRestoreGraph combat,
             OrdrUnpublishedCommerceRestoreGraph commerce,
             OrdrUnpublishedAuxiliaryRestoreGraph auxiliary,
-            OrdrUnpublishedTreasureRestoreGraph treasure = null)
+            OrdrUnpublishedTreasureRestoreGraph treasure = null,
+            Original323ScriptAttackProcRolls originalAttackRolls = null)
         {
             if (save == null || combat == null || commerce == null ||
                 auxiliary == null || combat.Core == null ||
@@ -265,6 +295,15 @@ namespace Ordr.Mobile.Mobile
                 commerce.ScriptRandom?.CaptureState());
             AssertSameState("원본 H6 커서", save.OriginalScriptRandom,
                 commerce.OriginalScriptRandom?.CaptureCheckpoint());
+            if (save.OriginalScriptAttackProcs != null &&
+                (originalAttackRolls == null ||
+                 !ReferenceEquals(originalAttackRolls.SharedRandom,
+                    commerce.OriginalScriptRandom)))
+                throw new FormatException(
+                    "공격 이벤트와 원본 BFi 난수의 소유자가 다릅니다.");
+            AssertSameState("원본 공격 확률 영수증",
+                save.OriginalScriptAttackProcs,
+                originalAttackRolls?.CaptureState());
             AssertSameState("위습 풀 난수", save.WispPoolRandom,
                 commerce.WispPoolRandom.CaptureState());
             AssertSameState("졸업 상점 난수", save.GraduatedRarePoolRandom,

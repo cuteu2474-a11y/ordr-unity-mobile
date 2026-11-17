@@ -1590,6 +1590,7 @@ namespace Ordr.Mobile.Unity
             add(PracticeBattle?.CaptureState());
             add((sessionScriptRandom as MobileRollbackWispRandom)?.CaptureState());
             add(originalSharedScriptRandom?.CaptureCheckpoint());
+            add(originalScriptAttackSkillRolls?.CaptureState());
             add(sessionWispPoolRandom?.CaptureState());
             add(sessionGraduatedRarePoolRandom?.CaptureState());
             add(sessionTierPoolRandom?.CaptureState());
@@ -1615,6 +1616,12 @@ namespace Ordr.Mobile.Unity
         {
             return CaptureCheckpointAtSafeBoundary(() =>
             {
+                // The original native CJB/CJC receipt book has retry-after-
+                // settlement obligations but no atomic recovery port yet.
+                // An empty recovered book could pay the same purchase twice.
+                if (originalMoneyGambling != null)
+                    throw new NotSupportedException(
+                        "원본 CJB/CJC 구매 사건의 영수증/미정산 복원이 없어 저장할 수 없습니다.");
                 var runtime = Combat.CaptureRuntimeDraft();
                 var wave = VerifiedWaveDirector.CaptureState();
                 var practice = PracticeBattle?.CaptureState();
@@ -1650,7 +1657,8 @@ namespace Ordr.Mobile.Unity
                     CaptureTreasureCheckpointDraft(),
                     SharedObjectives?.CaptureState(),
                     originalSharedScriptRandom?.CaptureCheckpoint(),
-                    deferredWispAbilities?.CaptureState());
+                    deferredWispAbilities?.CaptureState(),
+                    originalScriptAttackSkillRolls?.CaptureState());
             }, CaptureWorldSubsystemFingerprint);
         }
 

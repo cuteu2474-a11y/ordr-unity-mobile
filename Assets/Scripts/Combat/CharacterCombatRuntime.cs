@@ -473,6 +473,30 @@ namespace Ordr.Mobile.Combat
             originalScriptAttackEffects = coordinator;
         }
 
+        // The saved Bnm/Bnp/Bnr event ledger is already settled in the
+        // original H6 stream. Bind its existing owner AFTER actor restoration
+        // without rolling, casting a dummy spell or replaying attacked events.
+        // Only the new unpublished combat graph may call this method.
+        public void ConfigureOriginal323ScriptAttackEffectWorldForRestore(
+            SourceCombatRuntimeCheckpoint saved,
+            Original323ScriptAttackProcRolls restoredOriginalRolls,
+            IOriginal323VerifiedAttackDummySpellWorld originalSpellWorld)
+        {
+            if (saved == null || restoredOriginalRolls == null ||
+                originalSpellWorld == null || originalScriptAttackEffects != null ||
+                characters.Count != saved.Actors?.Count ||
+                game.Phase != SessionPhase.Running ||
+                scheduler.Time != saved.Time ||
+                processingStep || pendingStepSeconds != 0)
+                throw new InvalidOperationException(
+                    "원본 공격 확률 이벤트는 완성된 새 비공개 전투에서만 재연결합니다.");
+            var coordinator = new Original323ScriptAttackEffectCoordinator(
+                restoredOriginalRolls, originalSpellWorld);
+            attackPipeline.ConfigureOriginalScriptAttackDeclared(
+                OnOriginal323AttackedScriptSpell);
+            originalScriptAttackEffects = coordinator;
+        }
+
         private void OnOriginal323AttackedScriptSpell(
             string attackerId, string originalRawcode, string targetId)
         {

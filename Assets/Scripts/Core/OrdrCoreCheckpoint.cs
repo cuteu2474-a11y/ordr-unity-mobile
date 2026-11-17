@@ -31,6 +31,9 @@ namespace Ordr.Mobile.Core
         // Exclusive with ScriptRandom: original H6 BFi needs a same-session
         // witness on restore, never a new guessed System.Random seed.
         public Original323SharedBfiCheckpoint OriginalScriptRandom;
+        // Original Bnm/Bnp/Bnr attacked-event receipts share the same H6
+        // cursor; event duplicates must survive a session restoration.
+        public Original323ScriptAttackProcState OriginalScriptAttackProcs;
         // Three distinct local fallback-native draw streams. They MUST NOT
         // be merged with the source BFi lane or with each other on resume.
         public MobileRollbackWispRandomState WispPoolRandom;
@@ -102,7 +105,8 @@ namespace Ordr.Mobile.Core
             Original323TreasureSessionState treasure = null,
             Original323SharedObjectiveWorldState sharedObjectives = null,
             Original323SharedBfiCheckpoint originalScriptRandom = null,
-            Original323WispDeferredAbilityRegistryState wispDeferredAbilities = null)
+            Original323WispDeferredAbilityRegistryState wispDeferredAbilities = null,
+            Original323ScriptAttackProcState originalScriptAttackProcs = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -117,6 +121,7 @@ namespace Ordr.Mobile.Core
                 Combat = combat, Waves = waves, Practice = practice,
                 ScriptRandom = scriptRandom,
                 OriginalScriptRandom = originalScriptRandom,
+                OriginalScriptAttackProcs = originalScriptAttackProcs,
                 TierPoolRandom = tierPoolRandom,
                 WispPoolRandom = wispPoolRandom,
                 GraduatedRarePoolRandom = graduatedRarePoolRandom,
@@ -211,6 +216,14 @@ namespace Ordr.Mobile.Core
             if (state.OriginalScriptRandom != null)
                 Original323SharedBfiRandom.ValidateCheckpoint(
                     state.OriginalScriptRandom);
+            if (state.OriginalScriptAttackProcs != null)
+            {
+                if (state.OriginalScriptRandom == null || state.Combat == null)
+                    throw new FormatException(
+                        "원본 공격 이벤트에는 같은 전투/H6 난수 저장본이 필요합니다.");
+                Original323ScriptAttackProcRolls.ValidateState(
+                    state.OriginalScriptAttackProcs, state.OriginalScriptRandom);
+            }
             if (state.WispPoolRandom != null)
                 MobileRollbackWispRandom.Restore(state.WispPoolRandom);
             if (state.GraduatedRarePoolRandom != null)

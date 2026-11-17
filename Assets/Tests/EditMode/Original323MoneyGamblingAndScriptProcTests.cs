@@ -194,6 +194,66 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void RestoredAttackedEventReceiptsDoNotDrawAgain()
+        {
+            var shared = Shared(3, new Draws());
+            var originalWitness = new AttackEvent();
+            var first = new Original323ScriptAttackProcRolls(
+                shared, originalWitness);
+            bool triggered;
+            // Real game actor IDs are numeric; test those stable instance IDs.
+            var numericWitness = new NumericAttackEvent();
+            first = new Original323ScriptAttackProcRolls(shared, numericWitness);
+            Assert.IsTrue(first.TryObserveAndRoll(
+                "Bnm", "27", "enemy:source:1", 5, out triggered));
+            Assert.IsTrue(triggered);
+            Assert.IsTrue(first.TryObserveAndRoll(
+                "Bnp", "27", "enemy:source:2", 6, out triggered));
+            Assert.IsFalse(triggered);
+            var checkpoint = shared.CaptureCheckpoint();
+            var receipts = first.CaptureState();
+            Assert.AreEqual(2, receipts.Receipts.Count);
+            Assert.AreEqual(checkpoint.DrawCount,
+                receipts.Receipts[1].GlobalBfiOrdinal);
+            var recovered = Original323SharedBfiRandom.FromObservedState(
+                new Original323SharedBfiSnapshot(
+                    checkpoint.State, checkpoint.DrawCount),
+                "observed original H6 matching restored checkpoint",
+                new Draws());
+            var replayWitness = new NumericAttackEvent();
+            var restored = new Original323ScriptAttackProcRolls(
+                recovered, replayWitness);
+            restored.RestoreState(receipts);
+            Assert.IsFalse(restored.TryObserveAndRoll(
+                "Bnm", "27", "enemy:source:1", 5, out triggered));
+            Assert.AreEqual(0, replayWitness.Calls);
+            Assert.AreEqual(2, recovered.DrawCount);
+            Assert.AreEqual(2, restored.CaptureState().Receipts.Count);
+            Assert.Throws<InvalidOperationException>(() =>
+                restored.RestoreState(receipts));
+
+            receipts.Receipts[1].GlobalBfiOrdinal =
+                receipts.Receipts[0].GlobalBfiOrdinal;
+            Assert.Throws<FormatException>(() =>
+                Original323ScriptAttackProcRolls.ValidateState(
+                    receipts, checkpoint));
+        }
+
+        private sealed class NumericAttackEvent : IOriginal323ScriptAttackProcWitness
+        {
+            public int Calls;
+            public bool TryConfirmOriginalAttackEvent(string function,
+                string attacker, string target, long ordinal,
+                out string proof)
+            {
+                Calls++;
+                proof = "original attacked event callback seen";
+                return attacker == "27" &&
+                    target.StartsWith("enemy:source:") && ordinal > 0;
+            }
+        }
+
+        [Test]
         public void ScriptAttackEventConsumesOneBfiEvenWhenNoSkillProc()
         {
             var shared = Shared(3, new Draws());
