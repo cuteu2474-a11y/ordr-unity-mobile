@@ -3370,6 +3370,27 @@ namespace Ordr.Mobile.Unity
             }
         }
 
+        // Conservatively group only ordinary units with no active effects
+        // AND the same actual basic-attack readiness/next attack clock.
+        // Higher-grade units may have distinct growth, equipment or unique
+        // resource histories even if their catalog ID matches: leave those
+        // individually selectable until a complete state fingerprint exists.
+        private string StoryDispatchDisplayState(MobileUnitSnapshot actor)
+        {
+            long id = actor.InstanceId;
+            if (actor.Unit.Grade != "흔함" && actor.Unit.Grade != "안흔함")
+                return "individual:" + id;
+            var status = Combat.UnitStatusOf(id);
+            if (status.ActiveCount != 0)
+                return "individual:" + id;
+            var attack = Combat.InspectBasicAttack(id);
+            return "ordinary:" + attack.Kind + ":" +
+                (attack.NextAttackAtSeconds.HasValue
+                    ? attack.NextAttackAtSeconds.Value.ToString("R",
+                        System.Globalization.CultureInfo.InvariantCulture)
+                    : "none");
+        }
+
         private void DrawStoryDispatchPanel()
         {
             var manual = controller.ManualActions;
@@ -3384,22 +3405,23 @@ namespace Ordr.Mobile.Unity
 
             GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
             var owned = OwnedUnitsForFrame();
-            int deployedCount, readyCount, recallCount, matched, pages, resolved;
-            var visibleUnits = MobileStoryDispatchBrowser.Select(owned,
+            int deployedCount, readyCount, recallCount, matchedUnits,
+                matchedGroups, pages, resolved;
+            var visibleGroups = MobileStoryDispatchBrowser.Group(owned,
                 manual.IsStoryDeployed, manual.CanDispatchStory, manual.CanRecallStory,
-                storyRosterFilter, storyRosterPage, 8,
+                StoryDispatchDisplayState, storyRosterFilter, storyRosterPage, 8,
                 out deployedCount, out readyCount, out recallCount,
-                out matched, out pages, out resolved);
+                out matchedUnits, out matchedGroups, out pages, out resolved);
             storyRosterPage = resolved;
             OrdrMobileUiTheme.DrawStatusRow("파견 현황",
                 deployedCount + "기 파견 · " + readyCount + "기 파견 가능",
                 OrdrMobileUiTheme.Aqua);
-            if (readyCount == 0)
-                GUILayout.Label("보스·미션 진행 중이거나 원본 입장 조건에 맞지 않으면" +
-                    " 새 유닛을 파견할 수 없습니다.", OrdrMobileUiTheme.Overline);
+            if (readyCount == 0 && deployedCount == 0)
+                GUILayout.Label("현재 원본 파견 조건을 충족하는 보유 유닛이 없습니다.",
+                    OrdrMobileUiTheme.Overline);
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(storyRosterFilter == MobileStoryRosterFilter.All ?
-                "전체 ✓" : "전체", GUILayout.MinHeight(54)))
+                "가능·파견 중 ✓" : "가능·파견 중", GUILayout.MinHeight(54)))
             { storyRosterFilter = MobileStoryRosterFilter.All; storyRosterPage = 0; }
             if (GUILayout.Button(storyRosterFilter == MobileStoryRosterFilter.ReadyToDispatch ?
                 "파견 가능 ✓" : "파견 가능", GUILayout.MinHeight(54)))
@@ -3409,36 +3431,47 @@ namespace Ordr.Mobile.Unity
             { storyRosterFilter = MobileStoryRosterFilter.Deployed; storyRosterPage = 0; }
             GUILayout.EndHorizontal();
 
-            if (matched == 0)
+            if (matchedUnits == 0)
                 GUILayout.Label(storyRosterFilter == MobileStoryRosterFilter.Deployed ?
                     "파견 중인 유닛이 없습니다." :
-                    storyRosterFilter == MobileStoryRosterFilter.ReadyToDispatch ?
-                    "지금 파견할 수 있는 유닛이 없습니다." : "보유 유닛이 없습니다.",
+                    "지금 파견할 수 있는 유닛이 없습니다.",
                     OrdrMobileUiTheme.Explanation);
+            else if (matchedGroups < matchedUnits)
+                GUILayout.Label(matchedUnits + "기 · 동일 상태 " +
+                    matchedGroups + "묶음", OrdrMobileUiTheme.Explanation);
             DrawPager(storyRosterPage, pages, page => storyRosterPage = page);
-            foreach (var unit in visibleUnits)
+            foreach (var group in visibleGroups)
             {
-                var actor = unit.Unit;
+                var item = group.First;
+                var actor = item.Unit;
                 GUILayout.BeginHorizontal();
                 DrawCharacterPortrait(actor.Unit.Id, 48f);
                 if (OrdrMobileUiTheme.DrawActionRow(actor.Unit.Name,
-                    actor.Unit.Grade + " · #" + actor.InstanceId +
-                    (unit.IsDeployed ? (unit.CanRecall ? " · 파견 중" : " · 복귀 제한") :
-                     Combat.IsSharedObjectiveDeployed(actor.InstanceId) ? " · 공유 목표 출전 중" :
-                     Combat.IsOriginalPoneglyphChanneling(actor.InstanceId) ? " · 해독 중" :
-                     unit.CanDispatch ? " · 파견 가능" : " · 파견 조건 미충족"),
+                    actor.Unit.Grade +
+                    (group.Count > 1 ? " · " + group.Count + "기 동일 상태" :
+                        " · #" + actor.InstanceId) +
+                    (item.IsDeployed ? (item.CanRecall ? " · 파견 중" : " · 복귀 제한")
+                        : " · 파견 가능"),
                     OrdrMobileUiTheme.Aqua, 68f))
                 {
                     Combat.Roster.Select(actor.InstanceId);
                     notice = actor.Unit.Name + " 선택";
                 }
                 bool enabled = GUI.enabled;
-                GUI.enabled = enabled && (unit.IsDeployed ? unit.CanRecall : unit.CanDispatch);
-                if (GUILayout.Button(unit.IsDeployed ? "복귀" : "파견",
+                GUI.enabled = enabled && (item.IsDeployed ? item.CanRecall : item.CanDispatch);
+                if (GUILayout.Button(item.IsDeployed ? "복귀" : "파견",
                     GUILayout.Width(68f), GUILayout.MinHeight(68f)))
-                    ShowResult(unit.IsDeployed ?
-                        manual.RequestStoryRecall(actor.InstanceId) :
-                        manual.RequestStoryDispatch(actor.InstanceId));
+                {
+                    // Recheck at commit: one tap acts on exactly ONE owned
+                    // instance, even if group membership changed this frame.
+                    var chosen = group.FirstCurrentlyActionable(item.IsDeployed ?
+                        (Func<long, bool>)manual.CanRecallStory : manual.CanDispatchStory);
+                    if (chosen.HasValue)
+                        ShowResult(item.IsDeployed ?
+                            manual.RequestStoryRecall(chosen.Value) :
+                            manual.RequestStoryDispatch(chosen.Value));
+                    else notice = "현재 요청 가능한 유닛이 없습니다.";
+                }
                 GUI.enabled = enabled;
                 GUILayout.EndHorizontal();
             }
