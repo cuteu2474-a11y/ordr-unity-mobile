@@ -271,6 +271,46 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void KumaAutofireCheckpointRejectsDuplicateOrForgedTimedMissile()
+        {
+            var original = World();
+            original.Start();
+            original.BeginWave(1);
+            long owner = original.SpawnCharacter("TEST-01", 0, 0);
+            var state = original.CaptureRuntimeDraft();
+            state.HasSourceModelBasicAttacks = true;
+            state.Actors[0].CatalogId = "S-28";
+            state.Timed.NextSequence = 1;
+            state.Timed.Pending.Add(new CombatTimedEffectState {
+                Sequence = 1,
+                CasterId = owner.ToString(),
+                TargetId = "practice-kuma-phoenix:" + owner,
+                Kind = "source-kuma-autofire-v1",
+                Payload = "S-28:h017:A0EA",
+                At = state.Time + .2
+            });
+            Assert.DoesNotThrow(() =>
+                CharacterCombatRuntime.ValidateKumaAutoMissileState(state));
+            state.Timed.NextSequence = 2;
+            state.Timed.Pending.Add(new CombatTimedEffectState {
+                Sequence = 2, CasterId = owner.ToString(),
+                TargetId = "practice-kuma-phoenix:" + owner,
+                Kind = "source-kuma-autofire-v1",
+                Payload = "S-28:h017:A0EA", At = state.Time + .2
+            });
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateKumaAutoMissileState(state));
+            state.Timed.Pending.RemoveAt(1);
+            state.Timed.Pending[0].At = state.Time + .5;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateKumaAutoMissileState(state));
+            state.Timed.Pending[0].At = state.Time + .2;
+            state.Timed.Pending[0].Payload = "forged-buff";
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateKumaAutoMissileState(state));
+        }
+
+        [Test]
         public void PoneglyphChannelKeepsTheSamePausedOwnerWithoutRestarting()
         {
             var original = World();

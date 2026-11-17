@@ -28,6 +28,9 @@ namespace Ordr.Mobile.Core
         // Stage S03: independent state for commerce and the shared BFi stream.
         // These are not sufficient to enable game resume by themselves.
         public MobileRollbackWispRandomState ScriptRandom;
+        // Exclusive with ScriptRandom: original H6 BFi needs a same-session
+        // witness on restore, never a new guessed System.Random seed.
+        public Original323SharedBfiCheckpoint OriginalScriptRandom;
         // Three distinct local fallback-native draw streams. They MUST NOT
         // be merged with the source BFi lane or with each other on resume.
         public MobileRollbackWispRandomState WispPoolRandom;
@@ -94,7 +97,8 @@ namespace Ordr.Mobile.Core
             MobileRollbackWispRandomState wispPoolRandom = null,
             MobileRollbackWispRandomState graduatedRarePoolRandom = null,
             Original323TreasureSessionState treasure = null,
-            Original323SharedObjectiveWorldState sharedObjectives = null)
+            Original323SharedObjectiveWorldState sharedObjectives = null,
+            Original323SharedBfiCheckpoint originalScriptRandom = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -108,6 +112,7 @@ namespace Ordr.Mobile.Core
                 MissionGameplay = missions.CaptureState(),
                 Combat = combat, Waves = waves, Practice = practice,
                 ScriptRandom = scriptRandom,
+                OriginalScriptRandom = originalScriptRandom,
                 TierPoolRandom = tierPoolRandom,
                 WispPoolRandom = wispPoolRandom,
                 GraduatedRarePoolRandom = graduatedRarePoolRandom,
@@ -189,8 +194,15 @@ namespace Ordr.Mobile.Core
             if (state.Combat != null)
                 CharacterCombatRuntime.ValidateCreepDeploymentState(
                     state.Combat, state.Creeps, state.Roster);
+            if (state.ScriptRandom != null &&
+                state.OriginalScriptRandom != null)
+                throw new FormatException(
+                    "원본 공통 BFi와 모바일 임시 난수는 함께 저장할 수 없습니다.");
             if (state.ScriptRandom != null)
                 MobileRollbackWispRandom.Restore(state.ScriptRandom);
+            if (state.OriginalScriptRandom != null)
+                Original323SharedBfiRandom.ValidateCheckpoint(
+                    state.OriginalScriptRandom);
             if (state.WispPoolRandom != null)
                 MobileRollbackWispRandom.Restore(state.WispPoolRandom);
             if (state.GraduatedRarePoolRandom != null)
@@ -321,7 +333,8 @@ namespace Ordr.Mobile.Core
                         Original323OtherworldGamblingRules.RiskBonusResource))
                 throw new FormatException("이세계 도박 위험 보너스와 공유 지갑이 다릅니다.");
             if ((state.UnitGambling != null || state.OtherworldGambling != null ||
-                state.UnitReroll != null) && state.ScriptRandom == null)
+                state.UnitReroll != null) && state.ScriptRandom == null &&
+                state.OriginalScriptRandom == null)
                 throw new FormatException("유닛 도박 보류 결과의 공통 난수열이 누락됐습니다.");
             if (state.MoneyDesk != null)
             {
@@ -335,7 +348,8 @@ namespace Ordr.Mobile.Core
                      state.MoneyDesk.MaterialSupport.PurchasedCount != wallet.Balance(
                         SourceModelMaterialSupport.PurchaseCountResource)))
                     throw new FormatException("도박소 구매 장부와 공통 지갑이 다릅니다.");
-                if (state.ScriptRandom == null)
+                if (state.ScriptRandom == null &&
+                    state.OriginalScriptRandom == null)
                     throw new FormatException("도박소 상태를 복원할 공통 난수 기록이 없습니다.");
                 if (state.MoneyDesk.LastClock > state.LogicalTime ||
                     state.MoneyDesk.Regular.LastClock > state.LogicalTime ||
@@ -370,6 +384,7 @@ namespace Ordr.Mobile.Core
                 throw new FormatException("전투 공격 순번 형식이 잘못됐습니다.");
             CombatTimedEffectQueue.ValidateState(world.Timed);
             CharacterCombatRuntime.ValidateMariaPulseState(world);
+            CharacterCombatRuntime.ValidateKumaAutoMissileState(world);
             CharacterCombatRuntime.ValidateSourceTransientState(world);
             var registered = new HashSet<string>(StringComparer.Ordinal);
             foreach (var item in world.Attacks.Events)

@@ -55,8 +55,8 @@
 
 | ID | 남은 작업 | 대상 파일·완료 조건 |
 |---|---|---|
-| S01 | 나미 여진·모리아 기여·마리아 CDh, 크립 파견 및 **솔로 스토리/포네그리프/공유 목표 출전의 정체성과 진행 상태**까지 체크포인트 기록·비공개 소유권 복원 코드 반영. 구매 위성/복합 폼·진행 중 원본 이동기·익명 예약·보류 난수 등은 남음 | `CharacterCombatRuntime.SaveState.cs`, `Original323StoryManualDispatch.cs`, `Original323SharedObjectiveWorld.cs`. 실행 검증 전 정식 이어하기 미활성 |
-| S02 | 크립/스토리/해독·공유 목표 영수증과 유닛 소유권을 원본 실물/로스터/기존 지갑·미션에 교차 연결. 엄격한 바이너리 payload **v5**. **상거래/시설/위성/원본 난수 전체 서비스의 동일 시점 결합 및 출처 미확정 진행 중 사건**은 미완료 | `OrdrCoreCheckpoint.Validate`, `OrdrAuxiliaryRestoreGraphBuilder`, `OrdrCommerceRestoreGraphBuilder`. 실제 월드 통합 검증 필요 |
+| S01 | 나미 여진·모리아 기여·마리아 CDh, 크립 파견 및 **솔로 스토리/포네그리프/공유 목표 출전의 정체성과 진행 상태**까지 체크포인트 기록·비공개 소유권 복원 코드 반영. 구매 위성/복합 폼·진행 중 원본 이동기·익명 예약(쿠마 A0EA·마리아 CDh만 종류별 검증)·보류 난수 등은 남음 | `CharacterCombatRuntime.SaveState.cs`, `Original323StoryManualDispatch.cs`, `Original323SharedObjectiveWorld.cs`. 실행 검증 전 정식 이어하기 미활성 |
+| S02 | 원본 `H6/BFi` 전역 상태/횟수를 모바일 시드/난수 역사와 **별개 형식**으로 기록하고, 복원 시 같은 세션/시각의 원본 목격자 확인을 필수화. 도박/희귀 분기는 같은 공유 커서로 결합. 보류 도박·리롤 항법을 지갑과 대조하고 전투·경제·원본/모바일 RNG의 저장 전후 동일성 펜스를 확장. strict payload **v6** | `Original323SharedBfiRandom`, `OrdrCommerceRestoreGraphBuilder`, `OrdrCharacterCombatController.CaptureCheckpointAtSafeBoundary`. 전체 보물/출현 후속 원본 목격·위성/폼·정식 전역 재결합 및 통합 실행 검증은 미완료 |
 | S03 | 전체 월드 재결합 → 교차 검증 → 컨트롤러/씬의 원자 교체 → 이어하기 UI·버전/손상 대응 | `OrdrUnpublishedCombatRestoreGraph.cs`, `OrdrUnpublishedAuxiliaryRestoreGraph.cs`, `OrdrMainSceneShell.cs`. 파견/해독/공유 출전 소유권과 모든 이벤트 구독을 연결하고 실패 시 현재 게임 보존. 정상 저장 자동 삭제·시작 보상/과거 보상 재지급 금지 |
 
 **코드에서 확인한 구체적인 다음 연결점**

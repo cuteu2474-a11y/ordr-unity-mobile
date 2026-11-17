@@ -30,6 +30,24 @@ namespace Ordr.Mobile.Core
             int expectedOriginalResult, out string evidence);
     }
 
+    // The signed source H6 stream cannot be substituted with the fallback
+    // System.Random seed/history. Only the stream's exact cursor is saved.
+    [Serializable]
+    public sealed class Original323SharedBfiCheckpoint
+    {
+        public int Version = 1;
+        public int State;
+        public long DrawCount;
+    }
+
+    // A session-scoped native witness must independently confirm this saved
+    // cursor before a new game may issue ANY future original BFi draw.
+    public interface IOriginal323SharedBfiRestoreWitness
+    {
+        bool TryConfirmCheckpoint(string sessionId, double logicalTime,
+            int state, long drawCount, out string sourceEvidence);
+    }
+
     public sealed class Original323SharedBfiSnapshot
     {
         public int State { get; private set; }
@@ -107,6 +125,45 @@ namespace Ordr.Mobile.Core
             result.state = originalState.State;
             result.draws = originalState.DrawCount;
             return result;
+        }
+
+        public Original323SharedBfiCheckpoint CaptureCheckpoint()
+        {
+            return new Original323SharedBfiCheckpoint {
+                State = state, DrawCount = draws
+            };
+        }
+
+        public static void ValidateCheckpoint(Original323SharedBfiCheckpoint saved)
+        {
+            if (saved == null || saved.Version != 1 ||
+                saved.State == 0 || saved.DrawCount < 0)
+                throw new FormatException(
+                    "원본 공통 BFi 난수의 상태·사용 순번이 잘못됐습니다.");
+        }
+
+        public static Original323SharedBfiRandom RestoreCheckpoint(
+            Original323SharedBfiCheckpoint saved,
+            string sessionId, double logicalTime,
+            IOriginal323SharedBfiRestoreWitness authority,
+            IOriginal323ScriptRandomDrawWitness futureDrawObserver)
+        {
+            ValidateCheckpoint(saved);
+            if (string.IsNullOrWhiteSpace(sessionId) ||
+                double.IsNaN(logicalTime) || double.IsInfinity(logicalTime) ||
+                logicalTime < 0 || authority == null ||
+                futureDrawObserver == null)
+                throw new NotSupportedException(
+                    "원본 난수는 같은 세션·시각의 실측 증거로만 복원합니다.");
+            string evidence;
+            if (!authority.TryConfirmCheckpoint(sessionId, logicalTime,
+                    saved.State, saved.DrawCount, out evidence) ||
+                !TrustworthyEvidence(evidence))
+                throw new NotSupportedException(
+                    "원본 H6 커서의 해당 게임 세션 관측이 검증되지 않았습니다.");
+            return FromObservedState(
+                new Original323SharedBfiSnapshot(saved.State, saved.DrawCount),
+                evidence, futureDrawObserver);
         }
 
         public Original323SharedBfiSnapshot Snapshot()

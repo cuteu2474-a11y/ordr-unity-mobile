@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Combat;
@@ -1475,7 +1476,8 @@ namespace Ordr.Mobile.Unity
         // app-pause/focus flags remain untouched. No gameplay reward or
         // scene transition occurs while the draft is assembled.
         private OrdrCoreCheckpointState CaptureCheckpointAtSafeBoundary(
-            Func<OrdrCoreCheckpointState> create)
+            Func<OrdrCoreCheckpointState> create,
+            Func<string> captureExtraSubsystems = null)
         {
             if (create == null) throw new ArgumentNullException(nameof(create));
             if (checkpointCaptureActive || Combat == null || SharedEconomy == null ||
@@ -1494,6 +1496,8 @@ namespace Ordr.Mobile.Unity
                 string walletBefore = JsonUtility.ToJson(SharedEconomy.Wallet.CaptureState());
                 string rosterBefore = JsonUtility.ToJson(SharedEconomy.Units.CaptureState());
                 string missionsBefore = JsonUtility.ToJson(PersonalMissions.CaptureState());
+                string extraBefore = captureExtraSubsystems == null ?
+                    null : captureExtraSubsystems();
                 OrdrCoreCheckpointState result = create();
                 if (Combat.Time != clock || result.LogicalTime != clock ||
                     Combat.PendingSimulationSeconds != 0 ||
@@ -1508,7 +1512,10 @@ namespace Ordr.Mobile.Unity
                         StringComparison.Ordinal) ||
                     !string.Equals(missionsBefore,
                         JsonUtility.ToJson(PersonalMissions.CaptureState()),
-                        StringComparison.Ordinal))
+                        StringComparison.Ordinal) ||
+                    (captureExtraSubsystems != null &&
+                     !string.Equals(extraBefore, captureExtraSubsystems(),
+                         StringComparison.Ordinal)))
                     throw new InvalidOperationException(
                         "스냅샷 읽기 중 게임/지갑/유닛/미션 상태가 변경되어 저장을 취소했습니다.");
                 return result;
@@ -1561,6 +1568,45 @@ namespace Ordr.Mobile.Unity
             };
         }
 
+        // Check every mutable owner BEFORE and AFTER the single-frame draft.
+        // JsonUtility is only an in-memory comparison here: the persisted
+        // checkpoint still uses OrdrCheckpointBinaryCodec, including 64-bit
+        // receipts. This detects reentrant native/commerce changes which the
+        // previous wallet+roster-only fence could miss.
+        private string CaptureWorldSubsystemFingerprint()
+        {
+            var digest = new StringBuilder(8192);
+            Action<object> add = state => {
+                digest.Append('|');
+                if (state == null) digest.Append("null");
+                else
+                {
+                    var json = JsonUtility.ToJson(state);
+                    digest.Append(json.Length).Append(':').Append(json);
+                }
+            };
+            add(Combat.CaptureRuntimeDraft());
+            add(VerifiedWaveDirector.CaptureState());
+            add(PracticeBattle?.CaptureState());
+            add((sessionScriptRandom as MobileRollbackWispRandom)?.CaptureState());
+            add(originalSharedScriptRandom?.CaptureCheckpoint());
+            add(sessionWispPoolRandom?.CaptureState());
+            add(sessionGraduatedRarePoolRandom?.CaptureState());
+            add(sessionTierPoolRandom?.CaptureState());
+            add(PracticeMoneyGamblingDesk?.CaptureState());
+            add(PracticeTierUnitGambling?.CaptureState());
+            add(PracticeUnitGambling?.CaptureState());
+            add(PracticeUnitReroll?.CaptureState());
+            add(PlayerBuildingResearch?.CaptureState());
+            add(EvolutionProgress?.CaptureState());
+            add(Poneglyph?.CaptureState());
+            add(PracticeCreeps?.CaptureState());
+            add(PracticeStoryBuildings?.CaptureState());
+            add(SoloStory?.CaptureState());
+            add(SharedObjectives?.CaptureState());
+            return digest.ToString();
+        }
+
         // Same frozen frame for live combat, commerce, pending rolls, story
         // and wave ledgers. Anonymous timed Actions still reject capture.
         public OrdrCoreCheckpointState CaptureWorldCheckpointDraft()
@@ -1573,9 +1619,10 @@ namespace Ordr.Mobile.Unity
                 var script = sessionScriptRandom as MobileRollbackWispRandom;
                 var money = PracticeMoneyGamblingDesk == null ? null :
                     PracticeMoneyGamblingDesk.CaptureState();
-                if (money != null && script == null)
+                if (money != null && script == null &&
+                    originalSharedScriptRandom == null)
                     throw new NotSupportedException(
-                        "원본 외부 BFi 난수는 복원 커서가 없어 저장할 수 없습니다.");
+                        "원본 외부 BFi 난수의 실제 커서가 없어 저장할 수 없습니다.");
                 if (money != null && (sessionWispPoolRandom == null ||
                     sessionGraduatedRarePoolRandom == null ||
                     sessionTierPoolRandom == null))
@@ -1599,8 +1646,9 @@ namespace Ordr.Mobile.Unity
                     sessionWispPoolRandom?.CaptureState(),
                     sessionGraduatedRarePoolRandom?.CaptureState(),
                     CaptureTreasureCheckpointDraft(),
-                    SharedObjectives?.CaptureState());
-            });
+                    SharedObjectives?.CaptureState(),
+                    originalSharedScriptRandom?.CaptureCheckpoint());
+            }, CaptureWorldSubsystemFingerprint);
         }
 
         public void WriteWorldCheckpointDraftForDiagnostics()

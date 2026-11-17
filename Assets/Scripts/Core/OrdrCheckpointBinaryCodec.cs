@@ -22,7 +22,7 @@ namespace Ordr.Mobile.Core
         // nonplayable draft payloads as if they contained newer owner state.
         // External lane ownership and shared-native event history changed strict payload fields.
         // Older nonplayable drafts cannot be interpreted as current worlds.
-        private const int Version = 5;
+        private const int Version = 6;
         private static readonly Dictionary<Type, FieldInfo[]> Cache =
             new Dictionary<Type, FieldInfo[]>();
 

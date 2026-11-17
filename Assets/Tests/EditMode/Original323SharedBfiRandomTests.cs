@@ -31,6 +31,101 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        // A test-only authoritative session observer. The production
+        // restore API never accepts a saved cursor without such an observer.
+        private sealed class ResumeWitness : IOriginal323SharedBfiRestoreWitness
+        {
+            public bool Approved = true;
+            public string SessionId = "test-original-session";
+            public double Time = 11.25;
+            public int State;
+            public long DrawCount;
+            public int Calls;
+            public bool TryConfirmCheckpoint(string sessionId, double time,
+                int state, long drawCount, out string evidence)
+            {
+                Calls++;
+                evidence = "verified-original-session-cursor";
+                return Approved && sessionId == SessionId &&
+                    time == Time && state == State &&
+                    drawCount == DrawCount;
+            }
+        }
+
+        [Test]
+        public void SharedBfiCheckpointKeepsGlobalOrderWithoutStartingNewSeed()
+        {
+            var firstObserver = new Observer();
+            var first = Create(firstObserver);
+            Assert.AreEqual(1, first.NextForPurpose(
+                Original323ScriptRandomPurpose.RareWispBranch, 1, 100));
+            Assert.AreEqual(3, first.NextForPurpose(
+                Original323ScriptRandomPurpose.MonsterDeathGold, 1, 4));
+            var checkpoint = first.CaptureCheckpoint();
+            Assert.AreEqual(2, checkpoint.DrawCount);
+            var witness = new ResumeWitness {
+                State = checkpoint.State, DrawCount = checkpoint.DrawCount
+            };
+            var afterObserver = new Observer();
+            var restored = Original323SharedBfiRandom.RestoreCheckpoint(
+                checkpoint, witness.SessionId, witness.Time,
+                witness, afterObserver);
+            Assert.AreEqual(1, witness.Calls);
+            Assert.AreEqual(checkpoint.DrawCount, restored.DrawCount);
+            Assert.AreEqual(first.Snapshot().State, restored.Snapshot().State);
+            Assert.AreEqual(
+                first.NextForPurpose(
+                    Original323ScriptRandomPurpose.Gambling, 1, 100),
+                restored.ForPurpose(
+                    Original323ScriptRandomPurpose.Gambling).NextInclusive(1, 100));
+            Assert.AreEqual(
+                first.NextForPurpose(
+                    Original323ScriptRandomPurpose.OtherOriginalScriptCall, 1, 7),
+                restored.ForPurpose(
+                    Original323ScriptRandomPurpose.OtherOriginalScriptCall)
+                    .NextInclusive(1, 7));
+            Assert.AreEqual(first.Snapshot().State,
+                restored.Snapshot().State);
+            Assert.AreEqual(2, afterObserver.Events.Count);
+            StringAssert.StartsWith("3:Gambling:", afterObserver.Events[0]);
+            StringAssert.StartsWith("4:OtherOriginalScriptCall:",
+                afterObserver.Events[1]);
+        }
+
+        [Test]
+        public void SharedBfiResumeRejectsUnverifiedOrForeignSessionWithoutDraws()
+        {
+            var original = Create(new Observer());
+            original.NextForPurpose(
+                Original323ScriptRandomPurpose.Gambling, 1, 100);
+            var checkpoint = original.CaptureCheckpoint();
+            var witness = new ResumeWitness {
+                State = checkpoint.State, DrawCount = checkpoint.DrawCount
+            };
+            var observer = new Observer();
+            Assert.Throws<NotSupportedException>(() =>
+                Original323SharedBfiRandom.RestoreCheckpoint(
+                    checkpoint, "foreign-session", witness.Time,
+                    witness, observer));
+            Assert.Throws<NotSupportedException>(() =>
+                Original323SharedBfiRandom.RestoreCheckpoint(
+                    checkpoint, witness.SessionId, witness.Time + 1,
+                    witness, observer));
+            witness.Approved = false;
+            Assert.Throws<NotSupportedException>(() =>
+                Original323SharedBfiRandom.RestoreCheckpoint(
+                    checkpoint, witness.SessionId, witness.Time,
+                    witness, observer));
+            Assert.AreEqual(0, observer.Events.Count);
+            checkpoint.Version = 9;
+            Assert.Throws<FormatException>(() =>
+                Original323SharedBfiRandom.ValidateCheckpoint(checkpoint));
+            checkpoint.Version = 1;
+            checkpoint.State = 0;
+            Assert.Throws<FormatException>(() =>
+                Original323SharedBfiRandom.ValidateCheckpoint(checkpoint));
+        }
+
         private sealed class NativePool : IOriginal323NativeUnitPoolRandom
         {
             public int Calls;

@@ -419,6 +419,46 @@ namespace Ordr.Mobile.Combat
                         "마리아 반복 효과의 다음 예약이 누락됐습니다.");
         }
 
+        // Typed A0EA autonomous attacks must have exactly one owning real
+        // Kuma, an unexpired native 0.2s clock, and the original payload.
+        // Unknown/anonymous kinds remain rejected by the timed queue itself.
+        public static void ValidateKumaAutoMissileState(
+            SourceCombatRuntimeCheckpoint state)
+        {
+            if (state == null || state.Version != 4 ||
+                state.Actors == null || state.Timed == null)
+                throw new FormatException("쿠마 피닉스 파이어 저장 상태가 없습니다.");
+            CombatTimedEffectQueue.ValidateState(state.Timed);
+            var actors = new Dictionary<long, SourceCombatActorCheckpoint>();
+            foreach (var actor in state.Actors)
+                if (actor == null || actor.InstanceId <= 0 ||
+                    actors.ContainsKey(actor.InstanceId))
+                    throw new FormatException("쿠마 예약 소유자 목록이 중복됐습니다.");
+                else actors.Add(actor.InstanceId, actor);
+            var scheduled = new HashSet<long>();
+            foreach (var pending in state.Timed.Pending)
+            {
+                if (pending.Kind != KumaAutoMissileQueueKind) continue;
+                long owner;
+                SourceCombatActorCheckpoint actor;
+                if (!state.HasSourceModelBasicAttacks ||
+                    pending.Payload != KumaAutoMissileQueuePayload ||
+                    !long.TryParse(pending.CasterId,
+                        NumberStyles.None, CultureInfo.InvariantCulture,
+                        out owner) ||
+                    pending.CasterId != owner.ToString(CultureInfo.InvariantCulture) ||
+                    !actors.TryGetValue(owner, out actor) ||
+                    actor.CatalogId != "S-28" ||
+                    pending.TargetId != "practice-kuma-phoenix:" +
+                        pending.CasterId ||
+                    !scheduled.Add(owner) ||
+                    pending.At < state.Time ||
+                    pending.At - state.Time > KumaNative.CooldownSeconds + 0.000001)
+                    throw new FormatException(
+                        "쿠마 A0EA 발사 예약이 중복되거나 원본 시계가 아닙니다.");
+            }
+        }
+
         // Source-model transient state has no cast/reward side effects.
         // A participating enemy must still be alive and in the line lane;
         // zero-duration Nami aura leases must be backed by a live zone.
@@ -875,6 +915,7 @@ namespace Ordr.Mobile.Combat
             ValidateEquipmentState(state);
             ValidateSourceTransientState(state);
             ValidateMariaPulseState(state);
+            ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
                 poneglyph, sharedWorld);
             if (state.Actors.Exists(actor => actor.StoryDeployed))
@@ -1082,6 +1123,7 @@ namespace Ordr.Mobile.Combat
             }
             ValidateManualOwnerState(draft);
             ValidateMariaPulseState(draft);
+            ValidateKumaAutoMissileState(draft);
             ValidateEquipmentState(draft);
             foreach (var row in sourceModelTenthForms)
                 draft.Forms.Add(new SourceCombatFormCheckpoint {
