@@ -31,6 +31,12 @@ namespace Ordr.Mobile.Combat
         public Original323CreepPracticeState CaptureState()
         {
             if (disposed) throw new ObjectDisposedException(nameof(Original323CreepPracticeWorld));
+            // v1 checkpoints have no provenance, pending CTp/CTq/CTr
+            // receipts or one-time native BFi state.
+            foreach (var item in encounters)
+                if (item.SourceConfirmed)
+                    throw new NotSupportedException(
+                        "원본 크립 출현·보상 장부는 저장 v1 복원 대상이 아닙니다.");
             var state = new Original323CreepPracticeState {
                 NextSerial = nextSerial, DefeatedCount = DefeatedCount,
                 EscapedCount = EscapedCount

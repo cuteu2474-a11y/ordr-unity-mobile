@@ -800,6 +800,43 @@ namespace Ordr.Mobile.Unity
         }
         public Original323CreepPracticeWorld PracticeCreeps { get; private set; }
         private IOriginal323CreepDispatchAuthority verifiedCreepDispatchAuthority;
+        private IOriginal323CreepSourceSpawnPort nativeCreepSpawnPort;
+        private IOriginal323CreepPirateShipPlacement nativeCreepShipPlacement;
+        public Original323CreepSourceProgression SourceCreepProgression { get; private set; }
+
+        // Connect the actual CTs initial event and CTp/CTq successor spawns
+        // only when supplied with FINAL enemy stats and source-event proof.
+        // Proven reward amounts use the same wallet; CTq physical h060
+        // requires its own source-confirmed placement before it can settle.
+        public void ConfigureOriginalCreepSourceEvents(
+            IOriginal323CreepSourceSpawnPort spawnAuthority,
+            IOriginal323CreepPirateShipPlacement shipPlacement = null)
+        {
+            if (spawnAuthority == null) throw new ArgumentNullException(nameof(spawnAuthority));
+            if (nativeCreepSpawnPort != null || SourceCreepProgression != null)
+                throw new InvalidOperationException("원본 크립 사건 공급자 중복");
+            nativeCreepSpawnPort = spawnAuthority;
+            nativeCreepShipPlacement = shipPlacement;
+            if (PracticeCreeps != null) AttachOriginalCreepProgression();
+        }
+
+        private void AttachOriginalCreepProgression()
+        {
+            if (nativeCreepSpawnPort == null || PracticeCreeps == null ||
+                SourceCreepProgression != null) return;
+            var payout = new Original323CreepRewardWalletPort(Combat,
+                SharedEconomy, sessionScriptRandom, Units, MapBaseStats,
+                nativeCreepShipPlacement);
+            SourceCreepProgression = new Original323CreepSourceProgression(
+                Combat, PracticeCreeps, nativeCreepSpawnPort, payout);
+            SourceCreepProgression.ProgressionFailed += Debug.LogException;
+        }
+
+        public bool ObserveOriginalFirstCreepSpawn(string witnessedCTsEventId)
+        {
+            return SourceCreepProgression != null &&
+                SourceCreepProgression.ObserveOriginalFirstSpawn(witnessedCTsEventId);
+        }
 
         // Installed only when source evidence identifies the exact actor,
         // active creep, attack position, movement/cast costs and cooldowns.
@@ -1174,11 +1211,18 @@ namespace Ordr.Mobile.Unity
                 PracticeMoneyGamblingDesk?.RecordDefeatedSourceBoss(enemyId, rawcode);
             };
             PracticeCreeps = new Original323CreepPracticeWorld(Combat, creepCatalog);
+            AttachOriginalCreepProgression();
             if (verifiedCreepDispatchAuthority != null)
                 Combat.ConfigureVerifiedCreepDispatch(
                     PracticeCreeps, verifiedCreepDispatchAuthority);
             PracticeCreeps.EncounterDefeated += encounter =>
-                PracticeUnitGambling?.RecordThirdCreepDefeated(encounter.OriginalObject.Rawcode);
+            {
+                // An OBJECT BASE diagnostic kill is not a witnessed CTr
+                // event and may not mint the original gambling charge.
+                if (encounter.SourceConfirmed)
+                    PracticeUnitGambling?.RecordThirdCreepDefeated(
+                        encounter.OriginalObject.Rawcode);
+            };
             PracticeBattle.Start();
             var presenter = GetComponent<OrdrUnitWorldPresenter>();
             if (presenter != null) presenter.ShowAllOwnedUnits();
@@ -1393,6 +1437,7 @@ namespace Ordr.Mobile.Unity
             Wisps?.Dispose();
             PracticeBattle?.Dispose();
             SoloStory?.Dispose();
+            SourceCreepProgression?.Dispose();
             PracticeCreeps?.Dispose();
             PracticeStoryBuildings?.Dispose();
             SharedObjectives?.Dispose();
@@ -4425,6 +4470,9 @@ namespace Ordr.Mobile.Unity
                 Debug.LogException(ex);
                 return;
             }
+            // CTp/CTq follow a committed physical death, never a UI tap or
+            // an in-resolution callback that could mutate enemy enumeration.
+            SourceCreepProgression?.AdvancePending();
             // The last enemy can die during Advance itself. Record once at
             // the transition, before the result panel is next rendered.
             RecordFullGameClearOnce();

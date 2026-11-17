@@ -14,11 +14,13 @@ namespace Ordr.Mobile.Combat
         public double X { get; private set; }
         public double Y { get; private set; }
         public Original323CreepEncounterState State { get; internal set; }
+        public bool SourceConfirmed { get; internal set; }
+        public bool RewardSettled { get; internal set; }
         // The actual reward table/roll has not yet been source-approved.
         // A real defeat creates a pending outcome, NOT coins or wood.
         public bool RewardAwaitingSourceVerification
         {
-            get { return State == Original323CreepEncounterState.Defeated; }
+            get { return State == Original323CreepEncounterState.Defeated && !RewardSettled; }
         }
 
         internal Original323CreepEncounter(string enemyId,
@@ -42,6 +44,7 @@ namespace Ordr.Mobile.Combat
             new List<Original323CreepEncounter>();
         private int nextSerial;
         private bool disposed;
+        internal Original323CreepObjectCatalog SourceCatalog => catalog;
 
         public IReadOnlyList<Original323CreepEncounter> Encounters
         { get { return encounters.AsReadOnly(); } }
@@ -78,18 +81,38 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentOutOfRangeException(nameof(x), "크립 원본 또는 연습 배치 좌표가 필요합니다.");
             var source = catalog.Find(stage);
             if (source == null) throw new ArgumentOutOfRangeException(nameof(stage));
+            return SpawnStage(stage, x, y, source.ObjectBaseHitPoints,
+                source.CreateObjectBasePracticeDefenses(), false);
+        }
+
+        internal Original323CreepEncounter SpawnSourceConfirmedStage(int stage,
+            double x, double y, long finalHealth, EnemyDefenseProfile finalDefenses)
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(Original323CreepPracticeWorld));
+            if (combat.Game.Phase != SessionPhase.Running ||
+                finalHealth <= 0 || finalDefenses == null ||
+                double.IsNaN(x) || double.IsInfinity(x) ||
+                double.IsNaN(y) || double.IsInfinity(y))
+                throw new InvalidOperationException("원본 크립 출현 값이 유효하지 않습니다.");
+            return SpawnStage(stage, x, y, finalHealth, finalDefenses, true);
+        }
+
+        private Original323CreepEncounter SpawnStage(int stage, double x, double y,
+            long health, EnemyDefenseProfile defenses, bool sourceConfirmed)
+        {
+            var source = catalog.Find(stage);
+            if (source == null) throw new ArgumentOutOfRangeException(nameof(stage));
             foreach (var existing in encounters)
                 if (existing.OriginalObject.Stage == stage &&
                     existing.State == Original323CreepEncounterState.Alive)
                     throw new InvalidOperationException("동일 단계 크립이 이미 살아 있습니다.");
-
-            // IDs identify individual lives, so later verified respawn events
-            // cannot retroactively change a prior kill/reward record.
-            string id = "creep:object-base:" + source.Rawcode + ":" + (nextSerial + 1);
-            var encounter = new Original323CreepEncounter(id, source, x, y);
-            combat.SpawnEnemyWithDefenses(id, source.ObjectBaseHitPoints,
-                CharacterEnemyKind.Creep, x, y, 0,
-                source.CreateObjectBasePracticeDefenses());
+            string id = (sourceConfirmed ? "creep:source:" : "creep:object-base:") +
+                source.Rawcode + ":" + (nextSerial + 1);
+            var encounter = new Original323CreepEncounter(id, source, x, y) {
+                SourceConfirmed = sourceConfirmed
+            };
+            combat.SpawnEnemyWithDefenses(id, health,
+                CharacterEnemyKind.Creep, x, y, 0, defenses);
             nextSerial++;
             byEnemy.Add(id, encounter);
             encounters.Add(encounter);
@@ -123,7 +146,13 @@ namespace Ordr.Mobile.Combat
             {
                 encounter.State = Original323CreepEncounterState.Defeated;
                 DefeatedCount++;
-                EncounterDefeated?.Invoke(encounter);
+                var listeners = EncounterDefeated;
+                if (listeners != null)
+                    foreach (Action<Original323CreepEncounter> listener
+                        in listeners.GetInvocationList())
+                        try { listener(encounter); }
+                        catch (Exception error)
+                        { try { EncounterSpawnObserverFailed?.Invoke(error); } catch { } }
             }
             else
             {
