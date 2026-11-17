@@ -46,6 +46,7 @@ namespace Ordr.Mobile.Core
         public Original323StoryMobileProgressionState StoryProgression;
         // Source-verified snapshots for treasure only; never enable Continue.
         public Original323TreasureSessionState Treasure;
+        public Original323SharedObjectiveWorldState SharedObjectives;
     }
 
     public sealed class OrdrRestoredCoreCheckpoint
@@ -92,7 +93,8 @@ namespace Ordr.Mobile.Core
             MobileRollbackWispRandomState tierPoolRandom = null,
             MobileRollbackWispRandomState wispPoolRandom = null,
             MobileRollbackWispRandomState graduatedRarePoolRandom = null,
-            Original323TreasureSessionState treasure = null)
+            Original323TreasureSessionState treasure = null,
+            Original323SharedObjectiveWorldState sharedObjectives = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -116,7 +118,7 @@ namespace Ordr.Mobile.Core
                 Poneglyph = poneglyph, Creeps = creeps,
                 StoryBuildings = storyBuildings, SoloStory = soloStory,
                 StoryProgression = storyProgression,
-                Treasure = treasure
+                Treasure = treasure, SharedObjectives = sharedObjectives
             };
             // The mission gameplay component carries the SAME shared wallet.
             // A different wallet or a torn cross-service snapshot is rejected.
@@ -161,6 +163,29 @@ namespace Ordr.Mobile.Core
         {
             var restored = RestoreCoreOnly(state);
             ValidateCombatDraft(state);
+            if (state.Combat != null)
+            {
+                CharacterCombatRuntime.ValidateExternalLaneState(
+                    state.Combat, state.Roster,
+                    state.Poneglyph, state.SharedObjectives);
+                if (state.SharedObjectives != null)
+                {
+                    if (state.Poneglyph == null)
+                        throw new FormatException(
+                            "원본 공유 목표의 공유 미션 원장이 누락됐습니다.");
+                    Original323SharedObjectiveWorld.ValidateState(
+                        state.SharedObjectives, state.Combat, state.Poneglyph);
+                }
+                else
+                    foreach (var enemy in state.Combat.Enemies)
+                        if (enemy.EnemyId != null &&
+                            enemy.EnemyId.StartsWith(
+                                "shared:objective:", StringComparison.Ordinal))
+                            throw new FormatException(
+                                "공유 목표의 원본 출현/격파 이력이 누락됐습니다.");
+            }
+            else if (state.SharedObjectives != null)
+                throw new FormatException("전투 실물 없는 공유 목표는 저장할 수 없습니다.");
             if (state.Combat != null)
                 CharacterCombatRuntime.ValidateCreepDeploymentState(
                     state.Combat, state.Creeps, state.Roster);

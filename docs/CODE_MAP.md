@@ -4,14 +4,17 @@
 
 ## 저장·비공개 복원 경로
 
+- `Original323StoryManualDispatch.RestoreCommittedDeployments` + `Original323SoloStoryMovement.IsRestorableStoryPosition`은 완료된 솔로 스토리 파견의 기존 실물/좌표만 검증한 후 외부 파견 소유권을 복구합니다. `CharacterCombatRuntime.SaveState.cs`의 `ValidateExternalLaneState/RestoreExternalLaneOwners`는 스토리·포네그리프·공유 목표의 상호 배타성/로스터 ID/전장 정보를 확인하고 **이동·해독 시작·공유 출현 재실행 없이** 액터 소유권을 복구합니다. `OrdrCombatRestoreGraphBuilder.Prepare`가 저장된 해독/공유 기록을 전투 복원에 전달합니다.
+- `Original323SharedObjectiveWorld.CaptureState/RestoreState`는 원본 출현·격파 확인·정산/미처리 대장 버프 영수증을 `OrdrCoreCheckpointState.SharedObjectives`로 보존합니다. `SourceCombatRuntimeCheckpoint.SharedDeployments`는 유닛별 목표 ID/출전 좌표/복귀 좌표를 보관합니다. `OrdrCoreCheckpoint.Validate`는 원본 공유 목표 실물·미션·전투 소유권을 교차 검사하며, `OrdrAuxiliaryRestoreGraphBuilder.Prepare`는 공유 미션 보상 월드와 출현 기록을 다시 구성합니다. **외부 원본 목격 공급자/공유 난수 없으면 실패**하며 보상·원본 출현·격파 콜백은 재실행하지 않습니다.
+
 - `CharacterCombatRuntime.CreepDispatch.cs`의 `CaptureCreepDeployments`는 크립 출전 완료 유닛의 원래 ID·단계·목표 적·현재/복귀 좌표·이미 시도한 자동 이동기 영수증을 `SourceCombatRuntimeCheckpoint.CreepDeployments`에 저장합니다. `ValidateCreepDeploymentState`는 `OrdrCoreCheckpoint.Validate`에서 로스터·전투 액터·`Original323CreepPracticeState`의 실물 역사·좌표와 교차 검사합니다. `OrdrAuxiliaryRestoreGraphBuilder.Prepare`는 크립 실물 복원 후 `RestoreCreepDeploymentsDraft`로 원본 파견 권한을 재연결하며, 이동·시전·보상 없이 기존 배치를 재구성합니다. 네이티브 이동/변신 시전 진행 중과 원본 출처 확정 크립 보상은 별도 미완료로 차단합니다.
 
 - `MoriaParticipationLedger.CaptureState/RestoreState`는 실제 라인 대상·기여한 소유자 ID를 보존하며, `CharacterCombatRuntime.ValidateSourceTransientState`가 살아 있는 적·원본 S-09 소유자·누락 영역 오라를 교차 검증합니다. `SourceCombatRuntimeCheckpoint.NamiZones`는 임시 `e00K/A089` 오라 영역의 좌표·전장/기한·안정된 원본 ID 순번을 저장하고 복원 시 기존 상태효과를 중복 계산하지 않습니다.
 - 마리아 `D-01`의 `ScheduleSourceMariaPulse`는 `CombatTimedEffectQueue.ScheduleRestorable` 종류 `source-maria-cdh-v1`을 사용합니다. 소유자 모드/토큰·소모한 토큰 순번(`MariaNextToken`)과 큐의 다음 정확한 `At/Sequence`를 함께 검증하며, `RestoreSourceModelTimedEffect`는 기존 쿠마 `A0EA` 복원도 보존합니다. 복원 중 새 마리아 시전·재추첨·보상 지급은 하지 않으며 익명 예약은 여전히 거부합니다.
-- 체크포인트 필드 추가 후 `OrdrCheckpointBinaryCodec`의 strict payload v4를 사용합니다. 기존 A/B 외피/손상 판정은 유지하며 전체 씬/게임용 이어하기는 미완성입니다.
+- 체크포인트 필드 추가 후 `OrdrCheckpointBinaryCodec`의 strict payload v5를 사용합니다. 기존 A/B 외피/손상 판정은 유지하며 전체 씬/게임용 이어하기는 미완성입니다.
 
 
-- 원본 장비 증거 공급자는 새 게임 시작 시 `ConfigureSourceModelEquippedItems`, 진행 라운드의 비공개 복원 시 `ConfigureSourceModelEquippedItemsForRestore`에서만 연결합니다. 복원 전용 경로는 공격자·적·시계가 없는 전투 월드에서 1회만 가능하며, 장비 구매/원본 관측/영수증 처리를 재실행하지 않습니다. 옛 미완성 바이너리 초안은 v4에서 거부합니다.
+- 원본 장비 증거 공급자는 새 게임 시작 시 `ConfigureSourceModelEquippedItems`, 진행 라운드의 비공개 복원 시 `ConfigureSourceModelEquippedItemsForRestore`에서만 연결합니다. 복원 전용 경로는 공격자·적·시계가 없는 전투 월드에서 1회만 가능하며, 장비 구매/원본 관측/영수증 처리를 재실행하지 않습니다. 옛 미완성 바이너리 초안은 v5에서 거부합니다.
 
 - `OrdrCoreCheckpoint.PrepareWorldRestore`는 `SourceCombatRuntimeCheckpoint.Version=4`만 인정하고, 공개 `Restore`는 전투 초안이 있는 경우 기존대로 차단합니다. `CharacterCombatRuntime.RestoreActorWorldDraft`는 전투 로스터 밖의 원본 진화체 `e0HP` 1기를 별도 실물로 인정하며 실제 액터 중복·신원은 그대로 검사합니다.
 - `OriginalEquippedItemLedger.CaptureState/RestoreState`는 장비별 원본 rawcode·개수·등급/타입, delta 영수증/소유자, native 전체 관측 리비전 및 삭제된 ID의 tombstone을 원자 재구성합니다. `CharacterCombatRuntime.ValidateEquipmentState`와 `OrdrCoreCheckpoint.ValidateCombatDraft`가 소유권·자료 형식/중복을 검사하고 원본 증거 공급자 재연결이 없으면 복원을 거부합니다. 불릿 육식 체 3초 효과는 `SourceCombatRuntimeCheckpoint.BulletStances`에 원본 유닛 ID·전장 리비전·절대 만료시각을 기록하고 `ValidateSourceSidecars`/비공개 `RestoreSourceSidecars`로 재시전 없이 연결합니다. 만료된 효과는 복원하지 않고, 잘못된 ID/폼·전장·시각/중복 레코드는 차단합니다. 나미 여진·모리아 기여·마리아 반복은 비공개 저장을 지원하며, 그 외 익명 예약과 실제 게임 이어하기 UI/전체 씬 복원은 비활성입니다.

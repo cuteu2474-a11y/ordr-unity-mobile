@@ -20,9 +20,9 @@ namespace Ordr.Mobile.Core
         private const int MaxDepth = 96;
         // Reflection-based checkpoint fields changed: never deserialize old
         // nonplayable draft payloads as if they contained newer owner state.
-        // CDh, e00K and Moria owner sidecars changed strict payload fields.
+        // External lane ownership and shared-native event history changed strict payload fields.
         // Older nonplayable drafts cannot be interpreted as current worlds.
-        private const int Version = 4;
+        private const int Version = 5;
         private static readonly Dictionary<Type, FieldInfo[]> Cache =
             new Dictionary<Type, FieldInfo[]>();
 

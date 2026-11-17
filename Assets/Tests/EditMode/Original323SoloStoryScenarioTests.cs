@@ -210,6 +210,131 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        private sealed class SourceSharedWitness : IOriginal323SharedObjectiveWitness
+        {
+            public int SpawnCalls, DefeatCalls;
+            public bool TryConfirmSpawn(Original323SharedObjectiveSpawnPlan plan,
+                out string evidence)
+            {
+                SpawnCalls++;
+                evidence = "original native objective source observed";
+                return true;
+            }
+            public bool TryConfirmDefeat(Original323SharedObjectiveSpawnPlan plan,
+                string enemyId, string defeatId, out string evidence)
+            {
+                DefeatCalls++;
+                evidence = "original native defeat source observed";
+                return true;
+            }
+        }
+
+        [Test]
+        public void ObservedSharedObjectiveHistoryRestoresWithoutSpawnOrGrant()
+        {
+            OriginalMapBaseStatCatalog map;
+            var first = Combat(out map);
+            first.BeginWave(1);
+            var missions = new Original323PoneglyphSession();
+            var awards = new Original323SharedMissionRewardWorld(first,
+                new SharedEconomySession(new EconomyWallet(), first.Roster),
+                map, missions, new MobileRollbackWispRandom(145));
+            var witness = new SourceSharedWitness();
+            var plan = new Original323SharedObjectiveSpawnPlan(
+                Original323SharedMissionKind.SeaKing, "CNW", "o02N",
+                "sea-king-native-first", 1000, 5, "hero", null, 15, 20);
+            using (var objectives = new Original323SharedObjectiveWorld(
+                first, awards, missions, witness))
+            {
+                var observed = objectives.ObserveSpawn(plan);
+                Assert.AreEqual(1, witness.SpawnCalls);
+                var savedHistory = objectives.CaptureState();
+                var savedWorld = first.CaptureRuntimeDraft();
+                Original323SharedObjectiveWorld.ValidateState(savedHistory,
+                    savedWorld, missions.CaptureState());
+
+                var units = CharacterUnitCatalog.FromJson(Source("units.json"));
+                var skills = CharacterSkillCatalog.FromJson(
+                    Source("character-skill-profiles.json"));
+                var dice = new FirstDie();
+                var rules = new SourceModelBasicCombatRules(map, dice);
+                var restored = new CharacterCombatRuntime(
+                    units, skills, rules, rules, dice,
+                    UnitRoster.Restore(first.Roster.CaptureState()),
+                    GameSession.Restore(first.Game.CaptureState()));
+                restored.RestoreEnemyWorldDraft(savedWorld);
+                restored.RestoreActorWorldDraft(savedWorld,
+                    missions.CaptureState(), savedHistory);
+                var missionsAgain = Original323PoneglyphSession.Restore(
+                    missions.CaptureState(), restored.Time);
+                var walletAgain = new EconomyWallet();
+                var awardsAgain = new Original323SharedMissionRewardWorld(
+                    restored,
+                    new SharedEconomySession(walletAgain, restored.Roster),
+                    map, missionsAgain, new MobileRollbackWispRandom(145));
+                var noReplayWitness = new SourceSharedWitness();
+                Assert.Throws<ArgumentException>(() =>
+                    new Original323SharedObjectiveWorld(restored, awards,
+                        missionsAgain, noReplayWitness),
+                    "실행 중이던 세계의 보상 공급자를 새 전투에 다시 묶지 않습니다.");
+                using (var resumed = new Original323SharedObjectiveWorld(
+                    restored, awardsAgain, missionsAgain, noReplayWitness))
+                {
+                    resumed.RestoreState(savedHistory);
+                    Assert.IsTrue(resumed.IsLiveTarget(observed.EnemyId));
+                    Assert.AreEqual(0, noReplayWitness.SpawnCalls);
+                    Assert.AreEqual(0, noReplayWitness.DefeatCalls);
+                    Assert.AreEqual(0, walletAgain.Balance("gold"));
+                    Assert.AreEqual(observed.EnemyId,
+                        resumed.ObserveSpawn(plan).EnemyId);
+                    Assert.AreEqual(0, noReplayWitness.SpawnCalls);
+                    Assert.AreEqual(1, resumed.CaptureState().Encounters.Count);
+                }
+                savedHistory.Encounters[0].MaximumHealth++;
+                Assert.Throws<FormatException>(() =>
+                    Original323SharedObjectiveWorld.ValidateState(
+                        savedHistory, savedWorld, missions.CaptureState()));
+            }
+        }
+
+        [Test]
+        public void RestoredStoryOwnerUsesExistingPositionWithoutDispatchingAgain()
+        {
+            OriginalMapBaseStatCatalog map;
+            var combat = Combat(out map);
+            long actor = combat.SpawnCharacter("C-01",
+                Original323SoloStoryMovement.SoloStoryX,
+                Original323SoloStoryMovement.SoloStoryY);
+            OriginalMapBaseStatCatalog foreignMap;
+            var foreignCombat = Combat(out foreignMap);
+            var invalidWitness = new Original323StoryManualDispatch(combat,
+                new Original323SoloStoryMovement(foreignCombat, foreignMap));
+            Assert.Throws<NotSupportedException>(() =>
+                invalidWitness.RestoreCommittedDeployments(new[] { actor }),
+                "복원 전투와 다른 게임의 원본 이동 공급자를 재사용하면 안 됩니다.");
+            var port = new Original323StoryManualDispatch(combat,
+                new Original323SoloStoryMovement(combat, map));
+            port.RestoreCommittedDeployments(new[] { actor });
+            combat.ConfigureStoryDeployment(port);
+            Assert.IsTrue(combat.IsStoryDeployed(actor));
+            Assert.AreEqual(Original323SoloStoryMovement.SoloStoryX,
+                combat.Roster.Get(actor).X);
+            Assert.Throws<InvalidOperationException>(() =>
+                port.RestoreCommittedDeployments(new[] { actor }));
+            Assert.AreEqual(ManualActionState.Succeeded,
+                port.Recall(actor).State);
+            Assert.IsFalse(combat.IsStoryDeployed(actor));
+            Assert.AreEqual(Original323SoloStoryMovement.SoloStartX,
+                combat.Roster.Get(actor).X);
+
+            var other = combat.SpawnCharacter("C-01", 0, 0);
+            var invalid = new Original323StoryManualDispatch(combat,
+                new Original323SoloStoryMovement(combat, map));
+            Assert.Throws<FormatException>(() =>
+                invalid.RestoreCommittedDeployments(new[] { other }));
+            Assert.AreEqual(0, invalid.DeployedCount);
+        }
+
         [Test]
         public void OriginalJassManualEntryAndReturnUseFixedSoloPositions()
         {

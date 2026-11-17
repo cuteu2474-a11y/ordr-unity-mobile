@@ -1598,7 +1598,8 @@ namespace Ordr.Mobile.Unity
                     sessionTierPoolRandom?.CaptureState(),
                     sessionWispPoolRandom?.CaptureState(),
                     sessionGraduatedRarePoolRandom?.CaptureState(),
-                    CaptureTreasureCheckpointDraft());
+                    CaptureTreasureCheckpointDraft(),
+                    SharedObjectives?.CaptureState());
             });
         }
 

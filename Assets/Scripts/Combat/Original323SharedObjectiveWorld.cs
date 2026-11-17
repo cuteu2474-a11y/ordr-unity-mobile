@@ -117,6 +117,37 @@ namespace Ordr.Mobile.Combat
         public bool AdmiralBuffDebtSettled { get; internal set; }
     }
 
+    // An observed native objective is a real world owner, not merely a
+    // saved physical enemy. Preserve the witness receipts, pending native
+    // death and follow-up obligations without re-observing their events.
+    [Serializable]
+    public sealed class Original323SharedObjectiveEncounterCheckpoint
+    {
+        public Original323SharedMissionKind Mission;
+        public string SourceKey, ObjectRawcode, SourceEventId;
+        public long MaximumHealth;
+        public double Armor, X, Y;
+        public string ArmorType;
+        public bool HasMagicResistance;
+        public double MagicResistance;
+        public string EnemyId;
+        public Original323SharedObjectiveState State;
+        public string SpawnEvidence, DefeatEvidence;
+        public string ConfirmedDefeatEventId, ConfirmedDefeatEvidence;
+        public bool GateSpawnDebtSettled;
+        public string AppliedAdmiralBuffEventId, AppliedAdmiralBuffEvidence;
+        public bool AdmiralBuffDebtSettled;
+    }
+
+    [Serializable]
+    public sealed class Original323SharedObjectiveWorldState
+    {
+        public int Version = 1;
+        public int Serial;
+        public List<Original323SharedObjectiveEncounterCheckpoint> Encounters =
+            new List<Original323SharedObjectiveEncounterCheckpoint>();
+    }
+
     // Native-authorized side objectives share the real combat damage/death
     // pipeline, but are never wave monsters or manually spawned fake clears.
     public sealed class Original323SharedObjectiveWorld : IDisposable
@@ -148,6 +179,9 @@ namespace Ordr.Mobile.Combat
             this.awards = awards ?? throw new ArgumentNullException(nameof(awards));
             this.missions = missions ?? throw new ArgumentNullException(nameof(missions));
             this.witness = witness ?? throw new ArgumentNullException(nameof(witness));
+            if (!awards.IsAttachedTo(combat, missions))
+                throw new ArgumentException(
+                    "공유 목표의 보상·해독 세션이 다른 전투에 속해 있습니다.");
             combat.EnemyExited += OnEnemyExit;
         }
 
@@ -359,6 +393,229 @@ namespace Ordr.Mobile.Combat
             if (record.State == Original323SharedObjectiveState.DefeatedUnverified &&
                 record.ConfirmedDefeatEventId != null)
                 TryFinalizeDefeat(record);
+        }
+
+
+        public Original323SharedObjectiveWorldState CaptureState()
+        {
+            if (disposed) throw new ObjectDisposedException(
+                nameof(Original323SharedObjectiveWorld));
+            var state = new Original323SharedObjectiveWorldState {
+                Serial = serial
+            };
+            foreach (var entry in history)
+                state.Encounters.Add(new Original323SharedObjectiveEncounterCheckpoint {
+                    Mission = entry.Plan.Mission,
+                    SourceKey = entry.Plan.SourceKey,
+                    ObjectRawcode = entry.Plan.ObjectRawcode,
+                    SourceEventId = entry.Plan.SourceEventId,
+                    MaximumHealth = entry.Plan.Health,
+                    Armor = entry.Plan.Armor,
+                    X = entry.Plan.X, Y = entry.Plan.Y,
+                    ArmorType = entry.Plan.ArmorType,
+                    HasMagicResistance = entry.Plan.MagicResistancePercent.HasValue,
+                    MagicResistance = entry.Plan.MagicResistancePercent.GetValueOrDefault(),
+                    EnemyId = entry.EnemyId,
+                    State = entry.State,
+                    SpawnEvidence = entry.SpawnEvidence,
+                    DefeatEvidence = entry.DefeatEvidence,
+                    ConfirmedDefeatEventId = entry.ConfirmedDefeatEventId,
+                    ConfirmedDefeatEvidence = entry.ConfirmedDefeatEvidence,
+                    GateSpawnDebtSettled = entry.GateSpawnDebtSettled,
+                    AppliedAdmiralBuffEventId = entry.AppliedAdmiralBuffEventId,
+                    AppliedAdmiralBuffEvidence = entry.AppliedAdmiralBuffEvidence,
+                    AdmiralBuffDebtSettled = entry.AdmiralBuffDebtSettled
+                });
+            ValidateState(state, null, null);
+            return state;
+        }
+
+        public static void ValidateState(Original323SharedObjectiveWorldState state,
+            SourceCombatRuntimeCheckpoint combat,
+            Original323PoneglyphState poneglyph)
+        {
+            if (state == null || state.Version != 1 ||
+                state.Encounters == null || state.Serial < 0 ||
+                state.Serial != state.Encounters.Count || state.Serial > 10000)
+                throw new FormatException("공유 목표 원본 사건 기록이 잘못됐습니다.");
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            var spawnEvents = new HashSet<string>(StringComparer.Ordinal);
+            var defeatEvents = new HashSet<string>(StringComparer.Ordinal);
+            var missions = new HashSet<Original323SharedMissionKind>();
+            var living = new HashSet<string>(StringComparer.Ordinal);
+            if (combat != null)
+            {
+                if (combat.Enemies == null)
+                    throw new FormatException("공유 목표의 실제 적 목록이 없습니다.");
+                foreach (var enemy in combat.Enemies)
+                    if (enemy != null && enemy.EnemyId != null &&
+                        enemy.EnemyId.StartsWith("shared:objective:",
+                            StringComparison.Ordinal) &&
+                        (enemy.Kind == CharacterEnemyKind.SeaKing ||
+                         enemy.Kind == CharacterEnemyKind.Challenge))
+                        living.Add(enemy.EnemyId);
+            }
+            for (int i = 0; i < state.Encounters.Count; i++)
+            {
+                var row = state.Encounters[i];
+                if (row == null ||
+                    !Original323SharedObjectiveSpawnPlan.IsOriginalIdentity(
+                        row.Mission, row.SourceKey, row.ObjectRawcode) ||
+                    string.IsNullOrWhiteSpace(row.SourceEventId) ||
+                    row.SourceEventId.Length > 256 ||
+                    row.MaximumHealth <= 0 ||
+                    double.IsNaN(row.Armor) || double.IsInfinity(row.Armor) ||
+                    double.IsNaN(row.X) || double.IsInfinity(row.X) ||
+                    double.IsNaN(row.Y) || double.IsInfinity(row.Y) ||
+                    string.IsNullOrWhiteSpace(row.ArmorType) ||
+                    double.IsNaN(row.MagicResistance) ||
+                    double.IsInfinity(row.MagicResistance) ||
+                    row.MagicResistance < 0 || row.MagicResistance > 100 ||
+                    (!row.HasMagicResistance && row.MagicResistance != 0) ||
+                    !Enum.IsDefined(typeof(Original323SharedObjectiveState),
+                        row.State) ||
+                    row.EnemyId != "shared:objective:" + row.Mission + ":" + (i + 1) ||
+                    !ids.Add(row.EnemyId) ||
+                    !spawnEvents.Add(row.SourceEventId) ||
+                    !missions.Add(row.Mission) ||
+                    !Original323BossRoundRules.TrustedRuntimeEvidence(
+                        row.SpawnEvidence))
+                    throw new FormatException(
+                        "공유 목표의 실제 원본 출현/실물 정보가 잘못됐습니다.");
+                if (row.ConfirmedDefeatEventId != null &&
+                    (string.IsNullOrWhiteSpace(row.ConfirmedDefeatEventId) ||
+                     row.ConfirmedDefeatEventId.Length > 256 ||
+                     !defeatEvents.Add(row.ConfirmedDefeatEventId) ||
+                     !Original323BossRoundRules.TrustedRuntimeEvidence(
+                         row.ConfirmedDefeatEvidence)))
+                    throw new FormatException(
+                        "공유 목표 원본 격파 사건 영수증이 잘못됐습니다.");
+                if (row.ConfirmedDefeatEventId == null &&
+                    row.ConfirmedDefeatEvidence != null)
+                    throw new FormatException("확인되지 않은 격파 증거가 있습니다.");
+                if (row.State == Original323SharedObjectiveState.Completed &&
+                    (row.ConfirmedDefeatEventId == null ||
+                     row.DefeatEvidence != row.ConfirmedDefeatEvidence))
+                    throw new FormatException(
+                        "보상 정산된 공유 목표의 격파 근거가 없습니다.");
+                if (row.State != Original323SharedObjectiveState.Completed &&
+                    row.DefeatEvidence != null)
+                    throw new FormatException(
+                        "완료되지 않은 공유 목표에 정산 근거가 있습니다.");
+                if (row.AppliedAdmiralBuffEventId != null &&
+                    (row.Mission != Original323SharedMissionKind.MarineAdmiral ||
+                     !Original323BossRoundRules.TrustedRuntimeEvidence(
+                         row.AppliedAdmiralBuffEvidence)))
+                    throw new FormatException(
+                        "해군 대장 원본 버프의 적용 영수증이 잘못됐습니다.");
+                if (row.AppliedAdmiralBuffEventId == null &&
+                    (row.AppliedAdmiralBuffEvidence != null ||
+                     row.AdmiralBuffDebtSettled))
+                    throw new FormatException(
+                        "원본 대장 버프를 적용하지 않은 정산 기록입니다.");
+                if (row.AdmiralBuffDebtSettled &&
+                    row.State != Original323SharedObjectiveState.Completed)
+                    throw new FormatException("대장 후속 보상이 먼저 정산됐습니다.");
+                if (row.Mission != Original323SharedMissionKind.MarineAdmiral &&
+                    !row.GateSpawnDebtSettled)
+                    throw new FormatException(
+                        "일반 목표에 원본 대장 출현 대기 건이 있습니다.");
+                if (poneglyph != null)
+                {
+                    if (poneglyph.Missions == null ||
+                        poneglyph.Missions.Length != 8 ||
+                        (row.State == Original323SharedObjectiveState.Completed) !=
+                            poneglyph.Missions[(int)row.Mission])
+                        throw new FormatException(
+                            "공유 미션 정산 상태가 원본 목표와 다릅니다.");
+                }
+                if (combat != null)
+                {
+                    bool physical = living.Remove(row.EnemyId);
+                    if ((row.State == Original323SharedObjectiveState.Alive) != physical)
+                        throw new FormatException(
+                            "공유 목표 기록과 전투에 남은 실제 적이 다릅니다.");
+                    if (physical)
+                    {
+                        SourceCombatEnemyCheckpoint enemy = null;
+                        foreach (var e in combat.Enemies)
+                            if (e.EnemyId == row.EnemyId) { enemy = e; break; }
+                        var expectedKind = row.Mission ==
+                            Original323SharedMissionKind.SeaKing ?
+                            CharacterEnemyKind.SeaKing : CharacterEnemyKind.Challenge;
+                        if (enemy == null || enemy.Kind != expectedKind ||
+                            enemy.MaximumHealth != row.MaximumHealth ||
+                            enemy.Defenses?.Source == null ||
+                            !enemy.Defenses.Source.StartsWith(
+                                "original observed shared objective " +
+                                row.SourceEventId + " / ",
+                                StringComparison.Ordinal))
+                            throw new FormatException(
+                                "공유 목표의 실제 방어·체력·원본 등장 증거가 다릅니다.");
+                    }
+                }
+            }
+            if (combat != null && living.Count != 0)
+                throw new FormatException(
+                    "원본 기록에 없는 공유 목표 실물이 남았습니다.");
+        }
+
+        public void RestoreState(Original323SharedObjectiveWorldState state)
+        {
+            ValidateState(state, null, missions.CaptureState());
+            if (disposed || serial != 0 || history.Count != 0 ||
+                byEnemy.Count != 0 || usedSpawnIds.Count != 0 ||
+                usedDefeatIds.Count != 0 ||
+                combat.Game.Phase != SessionPhase.Running)
+                throw new InvalidOperationException(
+                    "공유 목표는 새 비공개 세계에 한 번만 복원합니다.");
+            var real = combat.MobileEnemySnapshot();
+            var liveIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var enemy in real)
+                if (enemy.Id != null &&
+                    enemy.Id.StartsWith("shared:objective:",
+                        StringComparison.Ordinal) &&
+                    (enemy.Kind == CharacterEnemyKind.SeaKing ||
+                     enemy.Kind == CharacterEnemyKind.Challenge))
+                    liveIds.Add(enemy.Id);
+            var staged = new List<Original323SharedObjectiveEncounter>();
+            foreach (var row in state.Encounters)
+            {
+                bool physical = liveIds.Remove(row.EnemyId);
+                if ((row.State == Original323SharedObjectiveState.Alive) != physical)
+                    throw new FormatException(
+                        "복원된 공유 목표 적 실물과 출현 장부가 다릅니다.");
+                var plan = new Original323SharedObjectiveSpawnPlan(
+                    row.Mission, row.SourceKey, row.ObjectRawcode,
+                    row.SourceEventId, row.MaximumHealth, row.Armor,
+                    row.ArmorType, row.HasMagicResistance ?
+                        (double?)row.MagicResistance : null, row.X, row.Y);
+                staged.Add(new Original323SharedObjectiveEncounter {
+                    EnemyId = row.EnemyId, Plan = plan, State = row.State,
+                    SpawnEvidence = row.SpawnEvidence,
+                    DefeatEvidence = row.DefeatEvidence,
+                    ConfirmedDefeatEventId = row.ConfirmedDefeatEventId,
+                    ConfirmedDefeatEvidence = row.ConfirmedDefeatEvidence,
+                    GateSpawnDebtSettled = row.GateSpawnDebtSettled,
+                    AppliedAdmiralBuffEventId = row.AppliedAdmiralBuffEventId,
+                    AppliedAdmiralBuffEvidence = row.AppliedAdmiralBuffEvidence,
+                    AdmiralBuffDebtSettled = row.AdmiralBuffDebtSettled
+                });
+            }
+            if (liveIds.Count != 0)
+                throw new FormatException(
+                    "공유 목표 저장에 없는 실제 적이 존재합니다.");
+            // No ObserveSpawn, TrySettleDefeat, native witness callback,
+            // wallet debit or mission reward is fired while restoring.
+            foreach (var record in staged)
+            {
+                history.Add(record);
+                byEnemy.Add(record.EnemyId, record);
+                usedSpawnIds.Add(record.Plan.SourceEventId);
+                if (record.ConfirmedDefeatEventId != null)
+                    usedDefeatIds.Add(record.ConfirmedDefeatEventId);
+            }
+            serial = state.Serial;
         }
 
         public void Dispose()

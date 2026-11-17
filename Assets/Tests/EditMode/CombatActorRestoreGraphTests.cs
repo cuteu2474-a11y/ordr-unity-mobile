@@ -271,6 +271,94 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void PoneglyphChannelKeepsTheSamePausedOwnerWithoutRestarting()
+        {
+            var original = World();
+            original.Start();
+            original.BeginWave(1);
+            long owner = original.SpawnCharacter("TEST-01", 9, 11);
+            original.SetOriginalPoneglyphChanneling(owner, true);
+            var state = original.CaptureRuntimeDraft();
+            var poneglyph = new Original323PoneglyphState {
+                SharedCompletedCount = 8, HasActiveUnit = true,
+                ActiveUnitId = owner, ActiveDurationSeconds = 150,
+                AttemptCount = 1, StartedAt = 0, FinishesAt = 150,
+                LastMessage = "source recorded decode"
+            };
+            for (int i = 0; i < 8; i++)
+            {
+                poneglyph.Missions[i] = true;
+                poneglyph.AcceptedEvents.Add("source-event-" + i);
+            }
+            CharacterCombatRuntime.ValidateExternalLaneState(state,
+                original.Roster.CaptureState(), poneglyph);
+            var restored = World(
+                UnitRoster.Restore(original.Roster.CaptureState()),
+                GameSession.Restore(original.Game.CaptureState()));
+            restored.RestoreEnemyWorldDraft(state);
+            restored.RestoreActorWorldDraft(state, poneglyph);
+            Assert.IsTrue(restored.IsOriginalPoneglyphChanneling(owner));
+            Assert.IsTrue(restored.CaptureRuntimeDraft().Actors[0].PoneglyphChanneling);
+            Assert.AreEqual(9, restored.Roster.Get(owner).X);
+            Assert.AreEqual(11, restored.Roster.Get(owner).Y);
+            poneglyph.ActiveUnitId = owner + 1;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateExternalLaneState(state,
+                    original.Roster.CaptureState(), poneglyph));
+        }
+
+        [Test]
+        public void SharedObjectiveOwnerRestoresWithoutMovementAndRejectsFakeHistory()
+        {
+            var original = World();
+            original.Start();
+            original.BeginWave(1);
+            long owner = original.SpawnCharacter("TEST-01", 8, 9);
+            const string enemyId = "shared:objective:SeaKing:1";
+            original.SpawnEnemyWithDefenses(enemyId, 100,
+                CharacterEnemyKind.SeaKing, 8, 9, 0,
+                new EnemyDefenseProfile(CharacterEnemyKind.SeaKing,
+                    0, null, "hero",
+                    "original observed shared objective native-sea-king-1 / source-observed"));
+            var state = original.CaptureRuntimeDraft();
+            state.Actors[0].SharedObjectiveEnemyId = enemyId;
+            state.SharedDeployments.Add(new SourceCombatSharedDeploymentCheckpoint {
+                OwnerId = owner, EnemyId = enemyId,
+                ReturnX = 2, ReturnY = 3,
+                PositionX = 8, PositionY = 9
+            });
+            var observed = new Original323SharedObjectiveWorldState { Serial = 1 };
+            observed.Encounters.Add(new Original323SharedObjectiveEncounterCheckpoint {
+                Mission = Original323SharedMissionKind.SeaKing,
+                SourceKey = "CNW", ObjectRawcode = "o02N",
+                SourceEventId = "native-sea-king-1",
+                MaximumHealth = 100, Armor = 0, ArmorType = "hero",
+                X = 8, Y = 9,
+                EnemyId = enemyId, State = Original323SharedObjectiveState.Alive,
+                SpawnEvidence = "source-observed",
+                GateSpawnDebtSettled = true
+            });
+            var poneglyph = new Original323PoneglyphState();
+            CharacterCombatRuntime.ValidateExternalLaneState(state,
+                original.Roster.CaptureState(), poneglyph, observed);
+            var restored = World(
+                UnitRoster.Restore(original.Roster.CaptureState()),
+                GameSession.Restore(original.Game.CaptureState()));
+            restored.RestoreEnemyWorldDraft(state);
+            restored.RestoreActorWorldDraft(state, poneglyph, observed);
+            Assert.AreEqual(enemyId, restored.SharedObjectiveTargetOf(owner));
+            Assert.AreEqual(8, restored.Roster.Get(owner).X);
+            Assert.AreEqual(9, restored.Roster.Get(owner).Y);
+            Assert.IsTrue(restored.TryRecallFromSharedObjective(owner));
+            Assert.AreEqual(2, restored.Roster.Get(owner).X);
+            Assert.AreEqual(3, restored.Roster.Get(owner).Y);
+            observed.Encounters[0].SourceEventId = "forged";
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateExternalLaneState(state,
+                    original.Roster.CaptureState(), poneglyph, observed));
+        }
+
+        [Test]
         public void DeployedActorIsRejectedBeforeRestoringRuntime()
         {
             var original = World();

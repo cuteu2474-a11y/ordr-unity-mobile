@@ -48,6 +48,11 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentException("공유 도전과제는 악몽 이세계의 같은 전투·지갑에서만 처리합니다.");
         }
 
+        internal bool IsAttachedTo(CharacterCombatRuntime owner,
+            Original323PoneglyphSession sharedMissions) =>
+            ReferenceEquals(combat, owner) &&
+            ReferenceEquals(missions, sharedMissions);
+
         public long OrdinaryExcavationStock => economy.Wallet.Balance(ExcavationStackResource);
         public long PendingExcavations => OrdinaryExcavationStock; // compatibility getter
         public long PendingGateAdmirals => economy.Wallet.Balance(PendingGateAdmiralResource);

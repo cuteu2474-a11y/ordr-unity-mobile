@@ -86,6 +86,15 @@ namespace Ordr.Mobile.Combat
     }
 
     [Serializable]
+    public sealed class SourceCombatSharedDeploymentCheckpoint
+    {
+        public long OwnerId;
+        public string EnemyId;
+        public double ReturnX, ReturnY;
+        public double PositionX, PositionY;
+    }
+
+    [Serializable]
     public sealed class SourceCombatDefenseCheckpoint
     {
         public bool HasKind;
@@ -191,6 +200,8 @@ namespace Ordr.Mobile.Combat
         public MoriaParticipationLedgerState MoriaParticipation;
         public List<SourceCombatCreepDeploymentCheckpoint> CreepDeployments =
             new List<SourceCombatCreepDeploymentCheckpoint>();
+        public List<SourceCombatSharedDeploymentCheckpoint> SharedDeployments =
+            new List<SourceCombatSharedDeploymentCheckpoint>();
         // Null means the equipment source was not configured in this world.
         public OriginalEquippedItemLedgerState EquippedItems;
         public List<SourceCombatEnemyCheckpoint> Enemies =
@@ -692,6 +703,143 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+
+        // The three external lanes each retain the SAME real owned actor.
+        // Source story movement, active Poneglyph session and native shared
+        // objective history are independent owners; a saved boolean alone
+        // must never create new cast, movement, mission or reward events.
+        public static void ValidateExternalLaneState(
+            SourceCombatRuntimeCheckpoint state,
+            UnitRosterState roster,
+            Original323PoneglyphState poneglyph = null,
+            Original323SharedObjectiveWorldState sharedWorld = null)
+        {
+            if (state == null || state.Version != 4 ||
+                state.Actors == null || state.Enemies == null ||
+                state.SharedDeployments == null ||
+                state.CreepDeployments == null ||
+                roster == null || roster.Units == null)
+                throw new FormatException(
+                    "스토리·해독·공유 출전 복원 자료가 불완전합니다.");
+            if (sharedWorld != null)
+                Original323SharedObjectiveWorld.ValidateState(
+                    sharedWorld, state, poneglyph);
+            var actors = new Dictionary<long, SourceCombatActorCheckpoint>();
+            foreach (var row in state.Actors)
+                if (row == null || row.InstanceId <= 0 ||
+                    actors.ContainsKey(row.InstanceId))
+                    throw new FormatException("외부 전장 유닛 신원이 잘못됐습니다.");
+                else actors.Add(row.InstanceId, row);
+            var positions = new Dictionary<long, UnitRosterEntryState>();
+            foreach (var unit in roster.Units)
+                if (unit == null || unit.InstanceId <= 0 ||
+                    positions.ContainsKey(unit.InstanceId))
+                    throw new FormatException("외부 전장 로스터 ID가 중복됐습니다.");
+                else positions.Add(unit.InstanceId, unit);
+            var creeps = new HashSet<long>();
+            foreach (var row in state.CreepDeployments)
+                if (row == null || !creeps.Add(row.OwnerId))
+                    throw new FormatException("다중 크립 출전 유닛입니다.");
+            var targets = new Dictionary<string, SourceCombatEnemyCheckpoint>(
+                StringComparer.Ordinal);
+            foreach (var enemy in state.Enemies)
+                if (enemy == null || string.IsNullOrWhiteSpace(enemy.EnemyId) ||
+                    targets.ContainsKey(enemy.EnemyId))
+                    throw new FormatException("외부 목표 적의 ID가 잘못됐습니다.");
+                else targets.Add(enemy.EnemyId, enemy);
+            var sharedRows = new HashSet<long>();
+            foreach (var row in state.SharedDeployments)
+            {
+                SourceCombatActorCheckpoint actor;
+                UnitRosterEntryState unit;
+                SourceCombatEnemyCheckpoint enemy;
+                bool aliveInSource = false;
+                if (sharedWorld != null)
+                    foreach (var record in sharedWorld.Encounters)
+                        if (record.EnemyId == row?.EnemyId &&
+                            record.State == Original323SharedObjectiveState.Alive)
+                            aliveInSource = true;
+                if (row == null || row.OwnerId <= 0 ||
+                    !sharedRows.Add(row.OwnerId) ||
+                    !actors.TryGetValue(row.OwnerId, out actor) ||
+                    !positions.TryGetValue(row.OwnerId, out unit) ||
+                    actor.StoryDeployed || actor.PoneglyphChanneling ||
+                    creeps.Contains(row.OwnerId) ||
+                    actor.SharedObjectiveEnemyId != row.EnemyId ||
+                    !targets.TryGetValue(row.EnemyId ?? "", out enemy) ||
+                    (enemy.Kind != CharacterEnemyKind.SeaKing &&
+                     enemy.Kind != CharacterEnemyKind.Challenge) ||
+                    !aliveInSource ||
+                    double.IsNaN(row.ReturnX) || double.IsInfinity(row.ReturnX) ||
+                    double.IsNaN(row.ReturnY) || double.IsInfinity(row.ReturnY) ||
+                    double.IsNaN(row.PositionX) || double.IsInfinity(row.PositionX) ||
+                    double.IsNaN(row.PositionY) || double.IsInfinity(row.PositionY) ||
+                    unit.X != row.PositionX || unit.Y != row.PositionY ||
+                    unit.X != enemy.X || unit.Y != enemy.Y)
+                    throw new FormatException(
+                        "공유 목표 출전 유닛의 원본 소유권·좌표가 잘못됐습니다.");
+            }
+            long decoder = 0;
+            foreach (var actor in state.Actors)
+            {
+                UnitRosterEntryState owned;
+                if (!positions.TryGetValue(actor.InstanceId, out owned) ||
+                    (actor.StoryDeployed && (actor.PoneglyphChanneling ||
+                        actor.SharedObjectiveEnemyId != null ||
+                        creeps.Contains(actor.InstanceId))) ||
+                    (actor.SharedObjectiveEnemyId != null &&
+                        !sharedRows.Contains(actor.InstanceId)) ||
+                    (actor.StoryDeployed &&
+                        (!state.HasSourceModelBasicAttacks ||
+                         owned.X !=
+                            Ordr.Mobile.Mobile.Original323SoloStoryMovement.SoloStoryX ||
+                         owned.Y !=
+                            Ordr.Mobile.Mobile.Original323SoloStoryMovement.SoloStoryY)) ||
+                    (actor.PoneglyphChanneling &&
+                        (decoder != 0 || creeps.Contains(actor.InstanceId) ||
+                         actor.SharedObjectiveEnemyId != null ||
+                         actor.StoryDeployed)))
+                    throw new FormatException("외부 전장에 유닛이 중복 배치됐습니다.");
+                if (actor.PoneglyphChanneling) decoder = actor.InstanceId;
+            }
+            long savedDecoder = poneglyph != null && poneglyph.HasActiveUnit ?
+                poneglyph.ActiveUnitId : 0;
+            if (decoder != savedDecoder)
+                throw new FormatException(
+                    "포네그리프 해독 유닛과 전투 정지 장부가 다릅니다.");
+        }
+
+        private void RestoreExternalLaneOwners(SourceCombatRuntimeCheckpoint state)
+        {
+            var storyOwners = new List<long>();
+            foreach (var actor in state.Actors)
+            {
+                if (actor.StoryDeployed) storyOwners.Add(actor.InstanceId);
+                if (actor.PoneglyphChanneling)
+                    originalPoneglyphChanneling.Add(actor.InstanceId);
+            }
+            storyOwners.Sort();
+            if (storyOwners.Count > 0)
+            {
+                var story = storyDispatch as
+                    Ordr.Mobile.Mobile.IOriginal323StoryDispatchRestorePort;
+                if (story == null || !story.IsAttachedTo(this))
+                    throw new NotSupportedException(
+                        "현재 비공개 전투의 원본 스토리 이동 증빙이 없습니다.");
+                story.RestoreCommittedDeployments(storyOwners);
+                foreach (long id in storyOwners)
+                    if (!IsStoryDeployed(id))
+                        throw new FormatException(
+                            "스토리 파견 소유권이 재연결되지 않았습니다.");
+            }
+            foreach (var row in state.SharedDeployments)
+                sharedObjectiveDeployed.Add(row.OwnerId,
+                    new SharedObjectiveDeployment {
+                        EnemyId = row.EnemyId, ReturnX = row.ReturnX,
+                        ReturnY = row.ReturnY
+                    });
+        }
+
         private sealed class StagedRestoredActor
         {
             public CharacterInstance Actor;
@@ -706,7 +854,9 @@ namespace Ordr.Mobile.Combat
         // Only unassigned main-lane actors can be restored here until story,
         // Poneglyph and shared-objective owners have their own restore ports.
         // A rejected reconstruction must be discarded, never published.
-        public void RestoreActorWorldDraft(SourceCombatRuntimeCheckpoint state)
+        public void RestoreActorWorldDraft(SourceCombatRuntimeCheckpoint state,
+            Original323PoneglyphState poneglyph = null,
+            Original323SharedObjectiveWorldState sharedWorld = null)
         {
             if (state == null || state.Version != 4 || state.Actors == null ||
                 state.Attacks == null || state.Timed == null ||
@@ -725,6 +875,16 @@ namespace Ordr.Mobile.Combat
             ValidateEquipmentState(state);
             ValidateSourceTransientState(state);
             ValidateMariaPulseState(state);
+            ValidateExternalLaneState(state, roster.CaptureState(),
+                poneglyph, sharedWorld);
+            if (state.Actors.Exists(actor => actor.StoryDeployed))
+            {
+                var storyPort = storyDispatch as
+                    Ordr.Mobile.Mobile.IOriginal323StoryDispatchRestorePort;
+                if (storyPort == null || !storyPort.IsAttachedTo(this))
+                    throw new NotSupportedException(
+                        "현재 비공개 전투의 원본 스토리 파견 공급자가 없습니다.");
+            }
             var staged = new List<StagedRestoredActor>();
             var identifiers = new HashSet<long>();
             foreach (var record in state.Actors)
@@ -734,10 +894,6 @@ namespace Ordr.Mobile.Combat
                     string.IsNullOrWhiteSpace(record.CatalogId) ||
                     record.Abilities == null || record.Status == null)
                     throw new FormatException("저장된 실제 캐릭터의 ID/상태가 잘못됐습니다.");
-                if (record.StoryDeployed || record.PoneglyphChanneling ||
-                    !string.IsNullOrEmpty(record.SharedObjectiveEnemyId))
-                    throw new NotSupportedException(
-                        "스토리·공유 출전·해독 유닛의 원본 소유권 복원이 먼저 필요합니다.");
                 UnitState owned;
                 try { owned = roster.Get(record.InstanceId); }
                 catch (KeyNotFoundException)
@@ -816,6 +972,9 @@ namespace Ordr.Mobile.Combat
                 if (item.SourceManagedResources)
                     RebindRestoredSourceModelResources(actor);
             }
+            // Rebind the three exclusive external lanes from previously
+            // committed source states, WITHOUT movement, cast, or reward.
+            RestoreExternalLaneOwners(state);
             // Recreate exact summon attack identities before loading the
             // saved next-hit clocks and per-attacker event sequences.
             RestoreSourceSidecars(state);
@@ -898,6 +1057,11 @@ namespace Ordr.Mobile.Combat
                     Abilities = actor.Abilities.CaptureState(),
                     Status = status.CaptureState()
                 });
+                if (IsStoryDeployed(id) &&
+                    !(storyDispatch is
+                        Ordr.Mobile.Mobile.IOriginal323StoryDispatchRestorePort))
+                    throw new NotSupportedException(
+                        "스토리 파견 복원 불가능한 외부 이동 엔진입니다.");
                 int mariaStage;
                 long mariaToken;
                 double mariaReady, marcoReady;
@@ -1019,6 +1183,20 @@ namespace Ordr.Mobile.Combat
             draft.NamiZones.Sort((a, b) =>
                 string.CompareOrdinal(a.Source, b.Source));
             ValidateSourceTransientState(draft);
+            foreach (var assignment in sharedObjectiveDeployed)
+            {
+                var position = roster.Get(assignment.Key);
+                draft.SharedDeployments.Add(
+                    new SourceCombatSharedDeploymentCheckpoint {
+                        OwnerId = assignment.Key,
+                        EnemyId = assignment.Value.EnemyId,
+                        ReturnX = assignment.Value.ReturnX,
+                        ReturnY = assignment.Value.ReturnY,
+                        PositionX = position.X, PositionY = position.Y
+                    });
+            }
+            draft.SharedDeployments.Sort((a, b) =>
+                a.OwnerId.CompareTo(b.OwnerId));
             CaptureCreepDeployments(draft);
             // e0HP is the original evolution world's SINGLE non-combat
             // starter, registered in the shared roster but not characters.

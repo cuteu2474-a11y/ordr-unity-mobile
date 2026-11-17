@@ -16,9 +16,14 @@ namespace Ordr.Mobile.Combat
         public Original323SoloStoryScenario SoloStory { get; internal set; }
         public Original323StoryMobileProgression StoryProgression { get; internal set; }
         public SourceModelPracticeBattle Practice { get; internal set; }
+        public Original323SharedMissionRewardWorld SharedMissionRewards
+            { get; internal set; }
+        public Original323SharedObjectiveWorld SharedObjectives
+            { get; internal set; }
         public void Dispose()
         {
             Practice?.Dispose();
+            SharedObjectives?.Dispose();
             SoloStory?.Dispose();
             StoryBuildings?.Dispose();
             Creeps?.Dispose();
@@ -39,7 +44,10 @@ namespace Ordr.Mobile.Combat
             SourceModelBasicCombatRules sourceDamage = null,
             IOriginalWispRandom originalScriptRandom = null,
             Action roundStarted = null,
-            IOriginal323CreepDispatchAuthority creepDispatchAuthority = null)
+            IOriginal323CreepDispatchAuthority creepDispatchAuthority = null,
+            OriginalMapBaseStatCatalog sharedOriginalObjects = null,
+            IOriginal323SharedObjectiveWitness sharedObjectiveWitness = null,
+            IOriginalWispRandom sharedMissionRandom = null)
         {
             if (graph == null || graph.Core == null || graph.Combat == null ||
                 save == null || researchCanApply == null)
@@ -50,6 +58,11 @@ namespace Ordr.Mobile.Combat
             if (save.SoloStory != null && (storyCatalog == null || storyRandom == null))
                 throw new ArgumentNullException(
                     "원본 스토리 카탈로그와 복원 가능한 BFi 난수가 필요합니다.");
+            if (save.SharedObjectives != null &&
+                (save.Poneglyph == null || sharedOriginalObjects == null ||
+                 sharedObjectiveWitness == null || sharedMissionRandom == null))
+                throw new ArgumentNullException(
+                    "공유 목표를 이어갈 원본 보상/목격/난수 공급자가 필요합니다.");
             if (save.Practice != null &&
                 (practiceCatalog == null || originalMonsterCatalog == null ||
                  sourceDamage == null || originalScriptRandom == null))
@@ -61,6 +74,19 @@ namespace Ordr.Mobile.Combat
             if (save.Poneglyph != null)
                 state.Poneglyph = Original323PoneglyphSession.Restore(
                     save.Poneglyph, save.LogicalTime);
+            if (save.SharedObjectives != null)
+            {
+                // The original spawn/defeat witnesses are only attached;
+                // restoring must NOT call ObserveSpawn or settle an old
+                // wallet/mission debt for a second time.
+                state.SharedMissionRewards = new Original323SharedMissionRewardWorld(
+                    graph.Combat, graph.Core.Economy, sharedOriginalObjects,
+                    state.Poneglyph, sharedMissionRandom);
+                state.SharedObjectives = new Original323SharedObjectiveWorld(
+                    graph.Combat, state.SharedMissionRewards,
+                    state.Poneglyph, sharedObjectiveWitness);
+                state.SharedObjectives.RestoreState(save.SharedObjectives);
+            }
             if (save.Evolution != null)
                 state.Evolution = Original323EvolutionProgress.Restore(
                     save.Evolution, save.LogicalTime);

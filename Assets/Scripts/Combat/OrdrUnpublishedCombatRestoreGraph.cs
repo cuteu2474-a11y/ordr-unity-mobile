@@ -57,7 +57,8 @@ namespace Ordr.Mobile.Combat
             // No SpawnCharacter(), BeginWave(), SpawnEnemy(), Start() or
             // wallet reward is run for a previously existing actor.
             world.RestoreEnemyWorldDraft(save.Combat);
-            world.RestoreActorWorldDraft(save.Combat);
+            world.RestoreActorWorldDraft(save.Combat,
+                save.Poneglyph, save.SharedObjectives);
             var waves = CombatWaveDirector.Restore(world, save.Waves,
                 originalWavePlan);
             return new OrdrUnpublishedCombatRestoreGraph(core, world, waves);

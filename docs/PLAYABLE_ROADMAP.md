@@ -55,13 +55,13 @@
 
 | ID | 남은 작업 | 대상 파일·완료 조건 |
 |---|---|---|
-| S01 | 나미 여진·모리아 기여·마리아 CDh 영속 반복, **크립 파견 완료 상태의 실물 ID/목적지/복귀 좌표/재시전 억제 기록**을 저장·비공개 복원 코드에 추가. 구매 위성/복합 폼·진행 중 원본 이동기·익명 예약·스토리/공유/해독 출전·보류 난수 등은 아직 남음 | `CharacterCombatRuntime.SaveState.cs`, `CharacterCombatRuntime.CreepDispatch.cs`, `OrdrUnpublishedAuxiliaryRestoreGraph.cs`. 결과를 실제 검증한 뒤에만 기능 단위 완료 판단 |
-| S02 | 장비 증거·지속 효과·안정된 크립 파견의 복원 순서 및 바이너리 payload v4 연결 코드 반영. **지갑/로스터/전투/파견/시설/원본 난수와 보류 거래의 전체 동일 시점 결합**은 미완료 | `CaptureCheckpointAtSafeBoundary`, `OrdrCoreCheckpointStore`, `OrdrCommerceRestoreGraphBuilder`. 정식 이어하기·원자 교체 전 교차 검증 및 실행 확인 필요 |
+| S01 | 나미 여진·모리아 기여·마리아 CDh, 크립 파견 및 **솔로 스토리/포네그리프/공유 목표 출전의 정체성과 진행 상태**까지 체크포인트 기록·비공개 소유권 복원 코드 반영. 구매 위성/복합 폼·진행 중 원본 이동기·익명 예약·보류 난수 등은 남음 | `CharacterCombatRuntime.SaveState.cs`, `Original323StoryManualDispatch.cs`, `Original323SharedObjectiveWorld.cs`. 실행 검증 전 정식 이어하기 미활성 |
+| S02 | 크립/스토리/해독·공유 목표 영수증과 유닛 소유권을 원본 실물/로스터/기존 지갑·미션에 교차 연결. 엄격한 바이너리 payload **v5**. **상거래/시설/위성/원본 난수 전체 서비스의 동일 시점 결합 및 출처 미확정 진행 중 사건**은 미완료 | `OrdrCoreCheckpoint.Validate`, `OrdrAuxiliaryRestoreGraphBuilder`, `OrdrCommerceRestoreGraphBuilder`. 실제 월드 통합 검증 필요 |
 | S03 | 전체 월드 재결합 → 교차 검증 → 컨트롤러/씬의 원자 교체 → 이어하기 UI·버전/손상 대응 | `OrdrUnpublishedCombatRestoreGraph.cs`, `OrdrUnpublishedAuxiliaryRestoreGraph.cs`, `OrdrMainSceneShell.cs`. 파견/해독/공유 출전 소유권과 모든 이벤트 구독을 연결하고 실패 시 현재 게임 보존. 정상 저장 자동 삭제·시작 보상/과거 보상 재지급 금지 |
 
 **코드에서 확인한 구체적인 다음 연결점**
 
-1. `RestoreActorWorldDraft`는 스토리·공유 출전·해독 유닛을 여전히 거부하지만, **완료된 크립 파견은 새 `CreepDeployments`와 보조 크립 월드/원본 자격 공급자 연결로 별도 복원**할 수 있습니다. 원본 이동기/폼 시전 진행 중인 파견·출처 확정 크립 보상은 여전히 차단하며 전체 월드 이어하기는 비활성입니다.
+1. `RestoreActorWorldDraft`는 저장된 포네그리프/공유 목표 사건과 솔로 스토리의 검증된 파견 포트가 연결될 때 **외부 전장 소유권을 비공개 복원**합니다. 빠진 원본 이동·공유 이벤트/목격·복원 가능한 난수는 거부하며, 실제 씬 교체까지 완료한 것이 아닙니다.
 2. 보조 그래프는 연구·진화체·해독·크립·스토리·65R를 준비하지만 씬에 공개하지 않습니다. 스토리 보상 포트는 전체 소유자 복구 전에 연결하면 보류 보상을 실행할 수 있어 결합 순서를 유지해야 합니다.
 3. 물품 지원은 MoneyDesk.MaterialSupport로 저장되고 **비공개 거래 복원 그래프**에도 결합했습니다. 남은 과제는 권리·항법/능력·추가 난수, 보상 유닛 소유권을 전체 월드와 안전하게 재결합하는 것입니다. 별도 중복 저장 필드는 만들지 않습니다.
 4. 마르코 수동 상태·불릿 육식 체·나미 여진·모리아 처치 기여·마리아 CDh 예약은 각각 기존 상태 소유자와 체크포인트로 연결했습니다(실행 미검증). 추가 예약·폼/위성·출전 소유권 및 온전한 난수·UI 복원은 후속이며, 코드 연결만으로 이어하기 완성을 선언하지 않습니다.

@@ -8,7 +8,8 @@ namespace Ordr.Mobile.Mobile
     // Offline single-player translation of original JASS CWL/CWM (60274-60295).
     // The entry is manually requested, never an automatic combat relocation.
     // This is a source-derived MOBILE MODEL, not a live Warcraft observation.
-    public sealed class Original323SoloStoryMovement : IOriginal323StoryUnitMovement
+    public sealed class Original323SoloStoryMovement : IOriginal323StoryUnitMovement,
+        IOriginal323StoryRestorePositionWitness
     {
         public const double SoloStoryX = -7088.0; // Lo[0] => Bs center
         public const double SoloStoryY = -4784.0;
@@ -65,6 +66,16 @@ namespace Ordr.Mobile.Mobile
 
         public bool CanDispatch(long instanceId) =>
             IsCombatUnit(instanceId) && !BossOrMissionIsAlive();
+
+        // CWL has a single committed solo-story destination; validate only
+        // ownership/rawcode and this observed coordinate, not entry-time
+        // boss restrictions (which can change after the original dispatch).
+        public bool IsAttachedTo(CharacterCombatRuntime owner) =>
+            ReferenceEquals(combat, owner);
+
+        public bool IsRestorableStoryPosition(long instanceId,
+            double x, double y) =>
+            IsCombatUnit(instanceId) && x == SoloStoryX && y == SoloStoryY;
 
         public bool CanRecall(long instanceId) => IsCombatUnit(instanceId);
 

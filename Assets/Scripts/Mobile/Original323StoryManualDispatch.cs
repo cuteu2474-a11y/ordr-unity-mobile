@@ -21,10 +21,24 @@ namespace Ordr.Mobile.Mobile
         void OnUnitRemoved(long instanceId);
     }
 
+    // A restore witness must prove that an already-committed story position
+    // is valid, without calling the source movement transaction again.
+    public interface IOriginal323StoryRestorePositionWitness
+    {
+        bool IsAttachedTo(CharacterCombatRuntime owner);
+        bool IsRestorableStoryPosition(long instanceId, double x, double y);
+    }
+
+    public interface IOriginal323StoryDispatchRestorePort : IOriginalStoryDispatchPort
+    {
+        bool IsAttachedTo(CharacterCombatRuntime owner);
+        void RestoreCommittedDeployments(IReadOnlyList<long> ids);
+    }
+
     // Canonical manual state is committed only AFTER the source movement succeeds.
     // No automatic dispatch, invented reward, timer or stage unlock.
     public sealed class Original323StoryManualDispatch :
-        IOriginalStoryDispatchPort, IOriginal323StoryDispatchUnitLifecycle
+        IOriginal323StoryDispatchRestorePort, IOriginal323StoryDispatchUnitLifecycle
     {
         private readonly CharacterCombatRuntime combat;
         private readonly IOriginal323StoryUnitMovement movement;
@@ -37,6 +51,9 @@ namespace Ordr.Mobile.Mobile
             this.combat = combat ?? throw new ArgumentNullException(nameof(combat));
             movement = verifiedMovement ?? throw new ArgumentNullException(nameof(verifiedMovement));
         }
+
+        public bool IsAttachedTo(CharacterCombatRuntime owner) =>
+            ReferenceEquals(combat, owner);
 
         private bool Owned(long id)
         {
@@ -81,6 +98,35 @@ namespace Ordr.Mobile.Mobile
             combat.RefreshAfterCommittedStoryLaneChange(id);
             return new ManualActionResult(ManualActionState.Succeeded,
                 "유닛이 메인 전장으로 복귀했습니다.");
+        }
+
+        // Rebind committed story owners on an UNPUBLISHED runtime. Every
+        // actor already exists at the saved story location; no dispatch,
+        // recall, movement, cooldown or compensation may execute here.
+        public void RestoreCommittedDeployments(IReadOnlyList<long> ids)
+        {
+            if (ids == null) throw new ArgumentNullException(nameof(ids));
+            if (deployed.Count != 0)
+                throw new InvalidOperationException(
+                    "복원 대상 스토리 파견 상태가 이미 사용 중입니다.");
+            var witness = movement as IOriginal323StoryRestorePositionWitness;
+            if (ids.Count > 0 &&
+                (witness == null || !witness.IsAttachedTo(combat)))
+                throw new NotSupportedException(
+                    "원본 스토리 이동 위치를 증명할 복원 공급자가 없습니다.");
+            var seen = new HashSet<long>();
+            foreach (long id in ids)
+            {
+                if (!seen.Add(id) || !Owned(id))
+                    throw new FormatException(
+                        "스토리 파견 유닛이 중복되거나 소유되어 있지 않습니다.");
+                var unit = combat.Roster.Get(id);
+                if (!witness.IsRestorableStoryPosition(id, unit.X, unit.Y))
+                    throw new FormatException(
+                        "복원하려는 스토리 파견 위치의 원본 근거가 없습니다.");
+            }
+            // All owners were checked before the adapter is mutated.
+            foreach (long id in ids) deployed.Add(id);
         }
 
         // Called only after the canonical unit removal has been confirmed.
