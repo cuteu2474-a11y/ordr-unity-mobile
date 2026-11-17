@@ -427,6 +427,7 @@ namespace Ordr.Mobile.Core
             CharacterCombatRuntime.ValidateBonneyAgeOwners(world);
             CharacterCombatRuntime.ValidateRemainingDelayedState(world);
             CharacterCombatRuntime.ValidateSourceVolleyOwners(world);
+            CharacterCombatRuntime.ValidateSourceFusionNativeOwners(world);
             CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
                 world, state.OriginalScriptAttackProcs);
             CharacterCombatRuntime.ValidateMariaPulseState(world);

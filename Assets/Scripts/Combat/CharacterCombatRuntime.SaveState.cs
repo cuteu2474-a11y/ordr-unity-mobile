@@ -199,6 +199,9 @@ namespace Ordr.Mobile.Combat
         // geometry and attacker+enemy binding; no hidden Action closures.
         public SourceRemainingDelayedOwnerCheckpoint RemainingDelayed;
         public SourceVolleyWorldCheckpoint VolleyOwners;
+        // Roger/Tesoro/Shark native purchase-bound cooldown, enemy-spawn
+        // snapshots and already-booked packet owners.
+        public SourceFusionNativeWorldCheckpoint FusionNative;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -606,6 +609,7 @@ namespace Ordr.Mobile.Combat
                     "원본 소환·구매 위성 이외의 독립 공격자를 아직 복원할 수 없습니다.");
             // Finite and mana-lifetime transforms now share the strict
             // owner/skill/clock validation in ValidateSourceSidecars().
+            RejectUnrestorableSourceUtaState();
         }
 
         private void RestoreSourceSidecars(SourceCombatRuntimeCheckpoint state)
@@ -704,6 +708,7 @@ namespace Ordr.Mobile.Combat
             RestoreBonneyAgeOwners(state.BonneyAgeOwners);
             RestoreRemainingDelayedOwners(state.RemainingDelayed);
             RestoreSourceVolleyOwners(state.VolleyOwners);
+            RestoreSourceFusionNativeOwners(state.FusionNative);
         }
 
         private void RestoreManualOwners(SourceCombatRuntimeCheckpoint state)
@@ -965,6 +970,7 @@ namespace Ordr.Mobile.Combat
             ValidateBonneyAgeOwners(state);
             ValidateRemainingDelayedState(state);
             ValidateSourceVolleyOwners(state);
+            ValidateSourceFusionNativeOwners(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1130,7 +1136,8 @@ namespace Ordr.Mobile.Combat
                 CompositeSkillOwners = CaptureCompositeSkillOwners(),
                 BonneyAgeOwners = CaptureBonneyAgeOwners(),
                 RemainingDelayed = CaptureRemainingDelayedOwners(),
-                VolleyOwners = CaptureSourceVolleyOwners()
+                VolleyOwners = CaptureSourceVolleyOwners(),
+                FusionNative = CaptureSourceFusionNativeOwners()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1293,6 +1300,7 @@ namespace Ordr.Mobile.Combat
             ValidateBonneyAgeOwners(draft);
             ValidateRemainingDelayedState(draft);
             ValidateSourceVolleyOwners(draft);
+            ValidateSourceFusionNativeOwners(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);

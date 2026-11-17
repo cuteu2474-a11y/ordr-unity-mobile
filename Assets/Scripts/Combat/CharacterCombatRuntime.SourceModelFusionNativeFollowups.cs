@@ -136,65 +136,16 @@ namespace Ordr.Mobile.Combat
                 CharacterCombatEventType.SkillActivated, actorKey, targetId,
                 "로저 · 인페르노",
                 "MODEL_ONLY B8c/A202/A14V: 원본 150초 쿨다운, 보스/스토리 한정, 2.2초 공격 준비", 0));
-            effectExecutor.SchedulePracticeSourceAttack(actorKey,
-                "practice-native:IM01:A14V:stun", .01, () =>
-                {
-                    if (!CanFinishSourceModelDelayedAttack(actorId, lane, laneRevision))
-                        return;
-                    foreach (var enemy in enemies.Values)
-                    {
-                        if (!enemy.Enemy.IsAlive ||
-                            !CanAttackInThisLane(actor, enemy)) continue;
-                        double dx = enemy.X - centerX, dy = enemy.Y - centerY;
-                        if (dx * dx + dy * dy > 800 * 800) continue;
-                        double duration = enemy.Kind == CharacterEnemyKind.Boss ||
-                            enemy.Kind == CharacterEnemyKind.Story ? 1 : 2;
-                        string source = "practice-native:IM01:A14V:" + actorId;
-                        enemy.Enemy.Status.RemoveSource(source);
-                        enemy.Enemy.Status.Apply(new CombatEffect(source,
-                            CombatEffectType.Stun, CombatEffectOrigin.TriggeredSkill,
-                            1, duration));
-                    }
-                    // A202's own AHtb primary effect lasts 3 seconds.
-                    SpatialCombatEnemy primary;
-                    if (enemies.TryGetValue(targetId, out primary) &&
-                        primary.Enemy.IsAlive && CanAttackInThisLane(actor, primary))
-                    {
-                        string source = "practice-native:IM01:A202:" + actorId;
-                        primary.Enemy.Status.RemoveSource(source);
-                        primary.Enemy.Status.Apply(new CombatEffect(source,
-                            CombatEffectType.Stun, CombatEffectOrigin.TriggeredSkill,
-                            1, 3));
-                    }
-                });
-            effectExecutor.SchedulePracticeSourceAttack(actorKey,
-                "practice-native:IM01:A14V:impact", 2.2, () =>
-                {
-                    if (!CanFinishSourceModelDelayedAttack(actorId, lane, laneRevision))
-                        return;
-                    // Bcc samples a real random multiplier in [1,2] once,
-                    // then sends one CHAOS/NORMAL 800-area packet.
-                    double multiplier = 1 +
-                        sourceModelRules.NextScriptRoll(1000000) / 1000000.0;
-                    ApplySourceModelAreaPacket(actorKey, lane, target, 800,
-                        4000000 * multiplier, Ordr323AttackType.Chaos,
-                        "로저 · 인페르노 광역");
-                    SpatialCombatEnemy primary;
-                    if (!enemies.TryGetValue(targetId, out primary) ||
-                        !primary.Enemy.IsAlive ||
-                        !CanAttackInThisLane(actor, primary)) return;
-                    if (primary.Kind != CharacterEnemyKind.Boss &&
-                        primary.Kind != CharacterEnemyKind.Story) return;
-                    // Native B8c: boss = 40% CURRENT HP; story = 25% MAX HP.
-                    // Apply through existing damage/death accounting; final
-                    // native universal mitigation is still unverified.
-                    double percent = primary.Kind == CharacterEnemyKind.Boss ?
-                        primary.Enemy.Health * .40 : primary.Enemy.MaxHealth * .25;
-                    long amount = (long)Math.Min(long.MaxValue - 1,
-                        Math.Floor(Math.Max(0, percent)));
-                    ApplySourceModelFixedPrimaryPacket(actorKey, primary, amount,
-                        "로저 · 인페르노 추가 타격 (CHAOS/UNIVERSAL 모델)");
-                });
+            ScheduleSourceFusionNativePulse(new SourceFusionNativePulse {
+                Kind = FusionRogerStunKind, OwnerId = actorId,
+                TargetId = targetId, StoryLane = lane, LaneRevision = laneRevision,
+                CenterX = centerX, CenterY = centerY
+            }, .01);
+            ScheduleSourceFusionNativePulse(new SourceFusionNativePulse {
+                Kind = FusionRogerImpactKind, OwnerId = actorId,
+                TargetId = targetId, StoryLane = lane, LaneRevision = laneRevision,
+                CenterX = centerX, CenterY = centerY
+            }, 2.2, target);
             return true;
         }
 
@@ -461,7 +412,8 @@ namespace Ordr.Mobile.Combat
             long gold = sourceModelTwentiethPlayerGold();
             if (gold < 0) throw new InvalidOperationException("공유 골드가 음수입니다.");
             double capped = Math.Min(gold, 250000);
-            double goldPower = capped * capped / 250000.0;
+            // B8L's pinned gold power is recomputed from this capped
+            // declaration-time balance only when the reserved hit fires.
             int used;
             sourceModelTesoroFrostCounts.TryGetValue(actor.Id, out used);
             used = Math.Min(3, used + 1);
@@ -469,7 +421,6 @@ namespace Ordr.Mobile.Combat
             sourceModelTesoroFrostCounts[actor.Id] = third ? 0 : used;
             if (!third) sourceModelRules.NextScriptRoll(2); // B8S branch 1/2: same damage.
 
-            string caster = InstanceKey(actor.Id);
             bool story = IsStoryDeployed(actor.Id);
             long laneRevision = SourceModelLaneRevision(actor.Id);
             string targetId = primary.Id;
@@ -477,62 +428,13 @@ namespace Ordr.Mobile.Combat
             // later area pulse still happens if that original target dies
             // or moves; only the target-specific follow-up needs it alive.
             double centerX = primary.X, centerY = primary.Y;
-            effectExecutor.SchedulePracticeSourceAttack(caster,
-                "practice-native:ET12:B8S", .45, () =>
-                {
-                    if (!CanFinishSourceModelDelayedAttack(actor.Id, story, laneRevision))
-                        return;
-                    double radius = third ? 325 : 425;
-                    var victims = new List<SpatialCombatEnemy>();
-                    foreach (var enemy in enemies.Values)
-                    {
-                        if (!enemy.Enemy.IsAlive || !CanAttackInThisLane(actor, enemy))
-                            continue;
-                        double dx = enemy.X - centerX, dy = enemy.Y - centerY;
-                        if (dx * dx + dy * dy <= radius * radius)
-                            victims.Add(enemy);
-                    }
-                    victims.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
-                    string name = "테조로 · 황금 충격";
-                    events.Add(new CharacterCombatEvent(
-                        CharacterCombatEventType.SkillActivated, caster,
-                        targetId, name,
-                        "MODEL_ONLY B8S/B8L: 공격 시 골드 상한250000, 0.45초 지연·" +
-                        radius + " 범위, 재화 차감 없음", 0));
-                    foreach (var victim in victims)
-                    {
-                        // The ordinary line/boss spawn writes the current
-                        // LL level into JD=A11S; snapshot that factor per
-                        // victim, not once at the center or a hard-coded 0.
-                        double nativeFactor =
-                            SourceModelNativeTesoroCorrection(victim);
-                        double normalMultiplier = 1 +
-                            sourceModelRules.NextScriptRoll(500001) / 1000000.0;
-                        ApplySourceModelAreaPacket(caster, story, victim, 0,
-                            (third ? 160000 : 400000) * normalMultiplier,
-                            Ordr323AttackType.Spells, name);
-                        if (!victim.Enemy.IsAlive) continue;
-                        ApplySourceModelAreaPacket(caster, story, victim, 0,
-                            goldPower * nativeFactor * 1.5,
-                            Ordr323AttackType.Siege, name);
-                        if (!third && victim.Enemy.IsAlive)
-                        {
-                            double missing = Math.Max(0,
-                                victim.Enemy.MaxHealth - victim.Enemy.Health);
-                            ApplySourceModelAreaPacket(caster, story, victim, 0,
-                                missing * .01 * .45 * goldPower / 25000.0 *
-                                    nativeFactor,
-                                Ordr323AttackType.Siege, name);
-                        }
-                    }
-                    SpatialCombatEnemy center;
-                    if (enemies.TryGetValue(targetId, out center) &&
-                        center.Enemy.IsAlive && CanAttackInThisLane(actor, center))
-                        ApplySourceModelAreaPacket(caster, story, center, 0,
-                            center.Enemy.MaxHealth * (third ? .14 : .18) *
-                                SourceModelNativeTesoroCorrection(center),
-                            Ordr323AttackType.Siege, name + " · 주 대상");
-                });
+            ScheduleSourceFusionNativePulse(new SourceFusionNativePulse {
+                Kind = FusionTesoroImpactKind, OwnerId = actor.Id,
+                TargetId = targetId, StoryLane = story,
+                LaneRevision = laneRevision, CenterX = centerX,
+                CenterY = centerY, GoldCap = (long)capped,
+                ThirdImpact = third
+            }, .45);
         }
 
         // B6s creates physical h04O with source-object 38001 base damage,
@@ -907,66 +809,11 @@ namespace Ordr.Mobile.Combat
         private void ScheduleSourceModelFusionSharkInnerFire(long actorId,
             double delaySeconds)
         {
-            string casterId = InstanceKey(actorId);
-            effectExecutor.SchedulePracticeSourceAttack(casterId,
-                "practice-native:SPH3:A0N1", delaySeconds, () =>
-                {
-                    CharacterInstance actor;
-                    if (!UsesSourceModelBasicAttacks ||
-                        game.Phase != SessionPhase.Running ||
-                        SourceModelFusionNativeBalance(
-                            Original323FusionNativeFollowupLedger.SharkCenId) <= 0 ||
-                        !characters.TryGetValue(actorId, out actor) ||
-                        !actor.AttackReady || actor.Catalog.Id != "SR-03")
-                        return;
-
-                    // CEO's native filter is Ji[owner] &&
-                    // GetUnitPointValue(ally)>100. The mobile player owns
-                    // its active roster; unknown UnitData points fail closed.
-                    ApplySourceModelFusionSharkInnerFire(actorId, actorId);
-                    var candidates = new List<long>();
-                    var position = roster.Get(actorId);
-                    foreach (var ally in characters.Values)
-                    {
-                        if (ally.Id == actorId || !ally.AttackReady ||
-                            !CanShareAllyCombatLane(ally.Id, actorId))
-                            continue;
-                        var point = sourceModelNativePointValues == null ? null :
-                            sourceModelNativePointValues.Find(ally.Catalog.Id);
-                        if (point == null || !point.UnitPointValue.HasValue ||
-                            point.UnitPointValue.Value <= 100) continue;
-                        var other = roster.Get(ally.Id);
-                        double dx = position.X - other.X;
-                        double dy = position.Y - other.Y;
-                        if (dx * dx + dy * dy <= 450 * 450)
-                            candidates.Add(ally.Id);
-                    }
-                    for (int selected = 0; selected < 2 && candidates.Count > 0;
-                         selected++)
-                    {
-                        int index = sourceModelRules.NextScriptRoll(candidates.Count);
-                        long targetId = candidates[index];
-                        candidates.RemoveAt(index);
-                        double orderDelay = (selected + 1) * .1;
-                        bool isStory = IsStoryDeployed(actorId);
-                        long revision = SourceModelLaneRevision(actorId);
-                        effectExecutor.SchedulePracticeSourceAttack(casterId,
-                            "practice-native:SPH3:A0N1:ally", orderDelay, () =>
-                            {
-                                CharacterInstance caster;
-                                CharacterInstance target;
-                                if (!CanFinishSourceModelDelayedAttack(actorId,
-                                        isStory, revision) ||
-                                    !characters.TryGetValue(actorId, out caster) ||
-                                    !caster.AttackReady ||
-                                    !characters.TryGetValue(targetId, out target) ||
-                                    !target.AttackReady ||
-                                    !CanShareAllyCombatLane(actorId, targetId)) return;
-                                ApplySourceModelFusionSharkInnerFire(actorId, targetId);
-                            });
-                    }
-                    ScheduleSourceModelFusionSharkInnerFire(actorId, 19.9);
-                });
+            ScheduleSourceFusionNativePulse(new SourceFusionNativePulse {
+                Kind = FusionSharkCycleKind, OwnerId = actorId,
+                StoryLane = IsStoryDeployed(actorId),
+                LaneRevision = SourceModelLaneRevision(actorId)
+            }, delaySeconds);
         }
 
         private void ApplySourceModelFusionSharkInnerFire(long casterId,

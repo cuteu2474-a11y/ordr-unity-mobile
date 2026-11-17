@@ -1,5 +1,8 @@
 # 코드 구조
 
+- 로저 I-04 인페르노(기절·후속)/테조로 E-11 B8S(0.45초)/S-샤크 SR-03 CEN(19.9초 반복, 0.1·0.2초 아군)의 타입별 예약: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceFusionNativeSaveState.cs`. 재사용 시계·골드/3타 분기·몬스터 등장 시 A11S/AI19 스냅샷·활성 소유권 및 우타 저장 차단: `.SourceFusionNativeWorldState.cs`; 생산자 `.SourceModelFusionNativeFollowups.cs`, 복원 라우터 `.SourceModelTooltipManualActions.cs`.
+
+
 - 6종 원본 모델 폼 소유권·지속시각/니카 H0BY MP100 복원: `CharacterCombatRuntime.SourceCompositeFormSaveState.cs`, `.SaveState.cs`. 비비 B5s·핸콕 B5F 20/25회 타입 예약: `.SourceVolleySaveState.cs` 및 `.SourceModelTooltipVolleys.cs`; 복원 라우터 `.SourceModelTooltipManualActions.cs`.
 
 - 보니 TR-21 세월·40스택·속박/축소 실물 소유권: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceBonneyAgeSaveState.cs`. 원본 JASS 다단/지연 5계열 예약의 정확한 피해 조합·장소·공격 타입·순번: `.SourceRemainingDelayedSaveState.cs` (스케줄 생산자 `.SourceModelRemainingCallbacks.cs`, 복원 라우터 `.SourceModelTooltipManualActions.cs`).
@@ -37,7 +40,7 @@
 
 - `MoriaParticipationLedger.CaptureState/RestoreState`는 실제 라인 대상·기여한 소유자 ID를 보존하며, `CharacterCombatRuntime.ValidateSourceTransientState`가 살아 있는 적·원본 S-09 소유자·누락 영역 오라를 교차 검증합니다. `SourceCombatRuntimeCheckpoint.NamiZones`는 임시 `e00K/A089` 오라 영역의 좌표·전장/기한·안정된 원본 ID 순번을 저장하고 복원 시 기존 상태효과를 중복 계산하지 않습니다.
 - 마리아 `D-01`의 `ScheduleSourceMariaPulse`는 `CombatTimedEffectQueue.ScheduleRestorable` 종류 `source-maria-cdh-v1`을 사용합니다. 소유자 모드/토큰·소모한 토큰 순번(`MariaNextToken`)과 큐의 다음 정확한 `At/Sequence`를 함께 검증하며, `RestoreSourceModelTimedEffect`는 기존 쿠마 `A0EA` 복원도 보존합니다. 복원 중 새 마리아 시전·재추첨·보상 지급은 하지 않으며 익명 예약은 여전히 거부합니다.
-- 체크포인트 필드 추가 후 `OrdrCheckpointBinaryCodec`의 strict payload v16를 사용합니다. 기존 A/B 외피/손상 판정은 유지하며 전체 씬/게임용 이어하기는 미완성입니다.
+- 체크포인트 필드 추가 후 `OrdrCheckpointBinaryCodec`의 strict payload v17를 사용합니다. 기존 A/B 외피/손상 판정은 유지하며 전체 씬/게임용 이어하기는 미완성입니다.
 
 
 - 원본 장비 증거 공급자는 새 게임 시작 시 `ConfigureSourceModelEquippedItems`, 진행 라운드의 비공개 복원 시 `ConfigureSourceModelEquippedItemsForRestore`에서만 연결합니다. 복원 전용 경로는 공격자·적·시계가 없는 전투 월드에서 1회만 가능하며, 장비 구매/원본 관측/영수증 처리를 재실행하지 않습니다. 옛 미완성 바이너리 초안은 v7에서 거부합니다.
