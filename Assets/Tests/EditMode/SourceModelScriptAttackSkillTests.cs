@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using Ordr.Mobile.Combat;
@@ -2034,6 +2035,52 @@ namespace Ordr.Mobile.Tests
                     e.Type == CombatEffectType.AttackPowerBuff && e.Amount == 40));
                 Assert.IsFalse(live.Combat.UnitStatusOf(mainAlly).Snapshot().Any(e =>
                     e.Type == CombatEffectType.AttackPowerBuff));
+            }
+        }
+
+        [Test]
+        public void SatelliteAttackClockDoesNotWakeForOutOfRangeEnemy()
+        {
+            // Uses a real purchased H0AB satellite and an existing wave
+            // target. Private positioning is test-only; no free satellite
+            // acquisition path is added to the playable world.
+            using (var live = Create("TR-30", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle()
+                    .Add(OriginalMissionWalletRewards.TraitPointsId, 2)
+                    .Add("wood", 7));
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AB", wallet));
+                long satelliteId = live.Combat.PracticeSatellites().Single().Id;
+                string key = "practice-satellite:" + satelliteId;
+                live.Battle.Advance(.5);
+                var enemy = live.Combat.MobileEnemySnapshot().First(x =>
+                    x.Kind == CharacterEnemyKind.Line && x.Health > 0);
+
+                const BindingFlags flags =
+                    BindingFlags.Instance | BindingFlags.NonPublic;
+                var all = (System.Collections.IDictionary)
+                    typeof(CharacterCombatRuntime)
+                        .GetField("sourceIndependentAttackers", flags)
+                        .GetValue(live.Combat);
+                var satellite = all[key];
+                Assert.IsNotNull(satellite);
+                var type = satellite.GetType();
+                var x = type.GetField("X");
+                var y = type.GetField("Y");
+                var next = typeof(CharacterCombatRuntime)
+                    .GetMethod("NextSourceIndependentAttackAt", flags);
+                Assert.IsNotNull(next);
+                x.SetValue(satellite, 100000d);
+                y.SetValue(satellite, 100000d);
+                Assert.IsNull(next.Invoke(live.Combat, null),
+                    "An off-range autonomous attacker must not wake the combat scheduler.");
+                x.SetValue(satellite, enemy.X);
+                y.SetValue(satellite, enemy.Y);
+                Assert.IsNotNull(next.Invoke(live.Combat, null),
+                    "The existing attack must become schedulable when in range.");
             }
         }
 

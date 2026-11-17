@@ -257,12 +257,25 @@ namespace Ordr.Mobile.Combat
             return candidates;
         }
 
+        // Native "attackonce" keeps its explicit primary even if it is
+        // temporarily out of reach. The same finite-reach predicate as the
+        // actual hit executor must control both scheduling and firing.
+        private List<TargetCandidate> ReachableSourceIndependentTargets(
+            SourceIndependentAttacker actor)
+        {
+            var candidates = SourceIndependentTargets(actor);
+            return candidates.Count != 0 &&
+                attackPipeline.SelectDefaultTarget(actor.Key, candidates,
+                    TargetPriority.Nearest) != null ? candidates : null;
+        }
+
         private double? NextSourceIndependentAttackAt()
         {
             double? next = null;
             foreach (var actor in sourceIndependentAttackers.Values)
             {
-                if (actor.Blocked || SourceIndependentTargets(actor).Count == 0) continue;
+                if (actor.Blocked ||
+                    ReachableSourceIndependentTargets(actor) == null) continue;
                 double? at = attackPipeline.NextAttackAt(actor.Key);
                 // A lifetime expiring exactly at the next attack time does
                 // not authorize one last free hit. The terminal time is
@@ -290,8 +303,8 @@ namespace Ordr.Mobile.Combat
                     (actor.ExpiresAt.HasValue &&
                      scheduler.Time >= actor.ExpiresAt.Value))
                     continue;
-                var candidates = SourceIndependentTargets(actor);
-                if (candidates.Count == 0) continue;
+                var candidates = ReachableSourceIndependentTargets(actor);
+                if (candidates == null) continue;
                 BasicAttackResult hit;
                 try
                 {

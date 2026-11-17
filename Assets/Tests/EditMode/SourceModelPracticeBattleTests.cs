@@ -195,7 +195,10 @@ namespace Ordr.Mobile.Tests
             // observer and is NOT a shortcut enabled in normal gameplay.
             using (var game = Create(0, 65, mobileLane: true))
             {
-                game.Battle.Advance(56.1); // R1 lead-in 21s + 35s.
+                // Stop at the exact 21s + 35s boundary. At 56.1s the
+                // first 2R enemy already exists, invalidating a 35-only
+                // carry-over fixture before its separate 2R spawn check.
+                game.Battle.Advance(56);
                 Assert.AreEqual(2, game.Combat.Game.CurrentWave);
                 var before = game.Battle.CaptureCombatPressure();
                 Assert.AreEqual(35, before.TrackedWaveAliveEnemies);
