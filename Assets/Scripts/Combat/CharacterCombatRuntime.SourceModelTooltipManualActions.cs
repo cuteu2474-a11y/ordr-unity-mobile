@@ -464,7 +464,8 @@ namespace Ordr.Mobile.Combat
                     kind, payload, casterId, targetId) ??
                     RestoreSourceTemporaryTimedEffect(
                         kind, payload, casterId, targetId) ??
-                    RestoreSourceKingTimedEffect(kind, payload, casterId, targetId);
+                    RestoreSourceKingTimedEffect(kind, payload, casterId, targetId) ??
+                    RestoreRemainingDelayedHit(kind, payload, casterId, targetId);
             }
             long id, token, lane;
             int tick;

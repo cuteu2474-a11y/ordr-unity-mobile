@@ -193,6 +193,11 @@ namespace Ordr.Mobile.Combat
         // Owner-side attack clocks, once-per-enemy triggers, Koby growth
         // and the King slow generation receipts live outside status engines.
         public SourceCompositeSkillOwnerCheckpoint CompositeSkillOwners;
+        // Target-local Bonney age receipts and indefinite source-model roots.
+        public SourceBonneyAgeOwnerCheckpoint BonneyAgeOwners;
+        // Script-selected timed JASS packets retain their original hit
+        // geometry and attacker+enemy binding; no hidden Action closures.
+        public SourceRemainingDelayedOwnerCheckpoint RemainingDelayed;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -566,13 +571,12 @@ namespace Ordr.Mobile.Combat
         private void RejectNonRestorableSourceSkillState()
         {
             if (!UsesSourceModelBasicAttacks) return;
-            // Non-equipment summons and transform callbacks still require
-            // independent reconstruction; never silently erase.
-            if (sourceModelBonneyAge.Count != 0 ||
-                sourceModelKingExecutionUsed.Count != 0 ||
-                sourceModelMarcoVerifiedForm != null)
+            // External original-form witnesses cannot be rebound from a
+            // local checkpoint. Bonney age and King's execution receipts
+            // have independent identity-validated owners below.
+            if (sourceModelMarcoVerifiedForm != null)
                 throw new NotSupportedException(
-                    "실물 소환/임시 변신/외부 형태 증거가 저장되지 않아 전투 초안을 거부합니다.");
+                    "외부 마르코 원본 형태 목격자 재연결 전에는 저장할 수 없습니다.");
             int covered = 0;
             foreach (var summon in sourceTemporarySummons)
                 if (summon.HasIndependentCombat)
@@ -675,6 +679,8 @@ namespace Ordr.Mobile.Combat
             RestoreSourceNativeDelayedOwners(state.NativeDelayed);
             RestoreSourceTemporaryOwners(state.TemporaryOwners);
             RestoreCompositeSkillOwners(state.CompositeSkillOwners);
+            RestoreBonneyAgeOwners(state.BonneyAgeOwners);
+            RestoreRemainingDelayedOwners(state.RemainingDelayed);
         }
 
         private void RestoreManualOwners(SourceCombatRuntimeCheckpoint state)
@@ -933,6 +939,8 @@ namespace Ordr.Mobile.Combat
             ValidateSourceTemporaryOwners(state);
             ValidateSourceSatelliteWorldState(state);
             ValidateCompositeSkillOwners(state);
+            ValidateBonneyAgeOwners(state);
+            ValidateRemainingDelayedState(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1095,7 +1103,9 @@ namespace Ordr.Mobile.Combat
                 NativeDelayed = CaptureSourceNativeDelayedOwners(),
                 TemporaryOwners = CaptureSourceTemporaryOwners(),
                 SatelliteWorld = CaptureSourceSatelliteWorld(),
-                CompositeSkillOwners = CaptureCompositeSkillOwners()
+                CompositeSkillOwners = CaptureCompositeSkillOwners(),
+                BonneyAgeOwners = CaptureBonneyAgeOwners(),
+                RemainingDelayed = CaptureRemainingDelayedOwners()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1254,6 +1264,8 @@ namespace Ordr.Mobile.Combat
             ValidateSourceNativeDelayedState(draft);
             ValidateSourceTemporaryOwners(draft);
             ValidateCompositeSkillOwners(draft);
+            ValidateBonneyAgeOwners(draft);
+            ValidateRemainingDelayedState(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);

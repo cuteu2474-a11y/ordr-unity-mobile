@@ -459,13 +459,20 @@ namespace Ordr.Mobile.Combat
             if (remainingCallbackSerial == long.MaxValue)
                 throw new OverflowException("원본 콜백 예약 순번 범위 초과");
             long serial = ++remainingCallbackSerial;
-            var script = RemainingHitSpec(spec.CatalogId, spec.Rawcode, spec.Jass, hits);
-            effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
+            var payload = CreateRemainingDelayedPayload(
+                actor.Id, target.Id, spec, lane, revision,
+                effectExecutor.Time, delay, serial, x, y, hits);
+            if (!ValidRemainingCallbackPacket(payload, target.Kind))
+                throw new NotSupportedException(
+                    "원본 JASS의 실제 히트 데이터와 고정 명세가 불일치합니다.");
+            // The queue target is an original unique booking key, not the
+            // enemy ID. The native callback may finish at its cast position
+            // even when the originally attacked enemy has moved.
+            effectExecutor.ScheduleRestorableSourceAttack(InstanceKey(actor.Id),
                 "remaining-jass:" + actor.Id + ":" + serial,
-                delay, () => {
-                    if (CanFinishSourceModelDelayedAttack(actor.Id, lane, revision))
-                        ApplySourceScriptHits(actor, target, script, script.OnProc, x, y);
-                });
+                delay, RemainingDelayedHitKind,
+                EncodeRemainingDelayedPayload(payload),
+                CreateRemainingDelayedHitCallback(payload, actor, target));
         }
 
         // Bd8 is not a generic slow: XL in the pinned JASS is A04R.

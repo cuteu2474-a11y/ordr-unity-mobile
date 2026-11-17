@@ -424,6 +424,8 @@ namespace Ordr.Mobile.Core
             CharacterCombatRuntime.ValidateSatelliteWalletReceipts(
                 world, state.MissionGameplay?.Wallet);
             CharacterCombatRuntime.ValidateCompositeSkillOwners(world);
+            CharacterCombatRuntime.ValidateBonneyAgeOwners(world);
+            CharacterCombatRuntime.ValidateRemainingDelayedState(world);
             CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
                 world, state.OriginalScriptAttackProcs);
             CharacterCombatRuntime.ValidateMariaPulseState(world);
