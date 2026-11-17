@@ -102,6 +102,75 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        private sealed class WitnessedBlink : IOriginal323CreepVerifiedBlinkRuntime
+        {
+            public bool AllowPreview = true;
+            public bool AllowIssue = true;
+            public bool Finished;
+            public bool ThrowOnIssue;
+            public bool ThrowOnObserve;
+            public double X, Y;
+            public int PreviewCalls, IssueCalls, ObserveCalls;
+            public string LastRawcode;
+            public double LastIssuedX, LastIssuedY;
+            public bool TryPreviewOriginalBlink(long id, string raw,
+                Original323CreepEncounter target, out double x,
+                out double y, out string evidence)
+            {
+                PreviewCalls++;
+                LastRawcode = raw;
+                x = X; y = Y;
+                evidence = "original-w3x:w3a-confirmed-blink-attack-site";
+                return AllowPreview;
+            }
+            public bool TryIssueOriginalBlink(long id, string raw,
+                string enemy, double x, double y, string evidence)
+            {
+                IssueCalls++;
+                LastRawcode = raw;
+                LastIssuedX = x; LastIssuedY = y;
+                if (ThrowOnIssue)
+                    throw new InvalidOperationException("source cast failed");
+                return AllowIssue;
+            }
+            public Original323CreepPreparationProgress ObserveOriginalBlink(
+                long id, string raw, string enemy)
+            {
+                ObserveCalls++;
+                if (ThrowOnObserve)
+                    throw new InvalidOperationException("native observer unavailable");
+                return Finished
+                    ? Original323CreepPreparationProgress.Completed
+                    : Original323CreepPreparationProgress.Pending;
+            }
+        }
+
+        private sealed class WitnessedAttackSite :
+            IOriginal323CreepVerifiedAttackPosition
+        {
+            public bool AllowDirect;
+            public bool AllowBlink = true;
+            public double X, Y;
+            public int DirectCalls, BlinkCalls;
+            public bool TryConfirmDirectAttackPlacement(long id,
+                string catalogId, Original323CreepEncounter target,
+                out double x, out double y, out string evidence)
+            {
+                DirectCalls++;
+                x = X; y = Y;
+                evidence = "original-w3x:direct-reach-weapon-ground";
+                return AllowDirect;
+            }
+            public bool TryConfirmOriginalBlinkLanding(long id,
+                string catalogId, Original323CreepEncounter target,
+                double x, double y, out string evidence)
+            {
+                BlinkCalls++;
+                evidence = "original-w3x:ground-attack-after-blink";
+                return AllowBlink && x == X && y == Y;
+            }
+        }
+
         // Inspects the SAME private lane predicate used by basic attacks,
         // skill targeting and native enemy auras. No damage is fabricated.
         private static bool CanAttackLane(CharacterCombatRuntime combat,
@@ -368,6 +437,175 @@ namespace Ordr.Mobile.Tests
                 Assert.IsNull(combat.CreepTargetOf(id));
                 Assert.AreEqual(0, combat.CharacterCount);
                 Assert.AreEqual(0, combat.CreepDeployedCount);
+            }
+        }
+
+        [Test]
+        public void OriginalBlinkCatalogContainsExactly21BoundOwnersAndActualW3ARanges()
+        {
+            Assert.AreEqual(21, Original323CreepBlinkAbilityCatalog.Count);
+            Assert.AreEqual(21, Original323CreepBlinkAbilityCatalog.All
+                .Select(row => row.CatalogId).Distinct().Count());
+            Original323CreepBlinkAbility shortRange, longRange;
+            Assert.IsTrue(Original323CreepBlinkAbilityCatalog.TryGet(
+                "MY-05", out shortRange));
+            Assert.AreEqual("A0W9", shortRange.Rawcode);
+            Assert.AreEqual(800, shortRange.MaximumDistance);
+            Assert.AreEqual(0.1, shortRange.OriginalCooldownSeconds);
+            Assert.IsTrue(Original323CreepBlinkAbilityCatalog.TryGet(
+                "L-08", out longRange));
+            Assert.AreEqual("A05Q", longRange.Rawcode);
+            Assert.AreEqual(99999, longRange.MaximumDistance);
+            Assert.AreEqual(15, longRange.OriginalCooldownSeconds);
+            Original323CreepBlinkAbility ignored;
+            Assert.IsFalse(Original323CreepBlinkAbilityCatalog.TryGet(
+                "C-01", out ignored),
+                "A ground unit without the source AEbl ability is not a blink candidate.");
+        }
+
+        [Test]
+        public void BlinkCapabilityAloneCannotSkipNativeCastOrGroundAttackProof()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("R-05", 0, 0);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var target = creeps.SpawnPracticeStage(1, 500, 0);
+                var native = new WitnessedBlink { X = 501, Y = 0 };
+                var witness = new WitnessedAttackSite { X = 501, Y = 0 };
+                var authority = new Original323CreepVerifiedMobilityAuthority(
+                    combat, native, witness);
+                combat.ConfigureVerifiedCreepDispatch(creeps, authority);
+                double x, y;
+                Assert.IsFalse(authority.TryResolveAttackPlacement(id, target,
+                    out x, out y),
+                    "A hypothetical reachable blink site cannot become free relocation.");
+                Assert.IsTrue(combat.CanDispatchToCreep(id, 1));
+                Assert.AreEqual(0, native.IssueCalls);
+                Assert.IsFalse(combat.IsCreepDeployed(id));
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                Assert.IsTrue(combat.IsPreparingCreepDispatch(id));
+                Assert.AreEqual(1, native.IssueCalls);
+                Assert.AreEqual("A05C", native.LastRawcode);
+                Assert.AreEqual(501, native.LastIssuedX);
+                Assert.AreEqual(0, native.LastIssuedY);
+                Assert.AreEqual(0, combat.CreepDeployedCount);
+                combat.AdvancePendingCreepPreparations();
+                Assert.AreEqual(0, combat.CreepDeployedCount);
+                Assert.IsFalse(combat.TryDispatchToCreep(id, 1));
+                // The completed native receipt itself authorizes ONE
+                // approved landing without inventing a direct walking path.
+                native.Finished = true;
+                combat.AdvancePendingCreepPreparations();
+                Assert.AreEqual(target.EnemyId, combat.CreepTargetOf(id));
+                Assert.AreEqual(1, combat.CreepDeployedCount);
+                Assert.AreEqual(1, native.IssueCalls);
+                Assert.IsTrue(combat.TryRecallFromCreep(id));
+                native.AllowPreview = false;
+                Assert.IsFalse(combat.CanDispatchToCreep(id, 1),
+                    "The completed ability receipt cannot be reused after recall.");
+                Assert.AreEqual(1, native.IssueCalls);
+            }
+        }
+
+        [Test]
+        public void OriginalBlinkMaximumDistanceIsNotUniversalCreepRange()
+        {
+            var combat = EmptyCombat();
+            long shortId = combat.SpawnCharacter("MY-05", -1000, 0);
+            long longId = combat.SpawnCharacter("R-05", -1000, 0);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                creeps.SpawnPracticeStage(1, 0, 0);
+                var native = new WitnessedBlink { X = 0, Y = 0 };
+                var hit = new WitnessedAttackSite { X = 0, Y = 0 };
+                combat.ConfigureVerifiedCreepDispatch(creeps,
+                    new Original323CreepVerifiedMobilityAuthority(combat, native, hit));
+                Assert.IsFalse(combat.CanDispatchToCreep(shortId, 1),
+                    "MY-05 original 800 cannot reach 1000 without another proven hop.");
+                Assert.IsTrue(combat.CanDispatchToCreep(longId, 1));
+                Assert.AreEqual("A05C", native.LastRawcode);
+                Assert.AreEqual(0, native.IssueCalls);
+                hit.AllowBlink = false;
+                Assert.IsFalse(combat.CanDispatchToCreep(longId, 1),
+                    "A legal distance without ground-target damage is not valid.");
+                Assert.IsFalse(combat.TryDispatchToCreep(longId, 1));
+                Assert.AreEqual(0, native.IssueCalls);
+                Assert.AreEqual(0, combat.CreepPreparationCount);
+            }
+        }
+
+        [Test]
+        public void NativeObserverErrorReleasesLockWithoutFreeTravelOrSecondCast()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("R-05", 0, 0);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                creeps.SpawnPracticeStage(1, 500, 0);
+                var native = new WitnessedBlink {
+                    X = 501, Y = 0, ThrowOnObserve = true
+                };
+                var site = new WitnessedAttackSite { X = 501, Y = 0 };
+                combat.ConfigureVerifiedCreepDispatch(creeps,
+                    new Original323CreepVerifiedMobilityAuthority(combat, native, site));
+                int reported = 0;
+                combat.CreepPreparationObserverFailed += ex => { reported++; };
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                combat.AdvancePendingCreepPreparations();
+                Assert.AreEqual(1, reported);
+                Assert.AreEqual(0, combat.CreepPreparationCount);
+                Assert.IsFalse(combat.IsCreepDeployed(id));
+                Assert.AreEqual(0, combat.Roster.Get(id).X);
+                Assert.AreEqual(1, native.IssueCalls);
+            }
+        }
+
+        [Test]
+        public void ConfirmedDirectRouteNeverSpendsBlinkCooldown()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("R-05", 0, 0);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var target = creeps.SpawnPracticeStage(1, 500, 0);
+                var native = new WitnessedBlink { X = 501, Y = 0 };
+                var site = new WitnessedAttackSite {
+                    X = 501, Y = 0, AllowDirect = true
+                };
+                combat.ConfigureVerifiedCreepDispatch(creeps,
+                    new Original323CreepVerifiedMobilityAuthority(combat, native, site));
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                Assert.AreEqual(0, native.IssueCalls);
+                Assert.AreEqual(0, combat.CreepPreparationCount);
+                Assert.AreEqual(target.EnemyId, combat.CreepTargetOf(id));
+            }
+        }
+
+        [Test]
+        public void NativeCastErrorReleasesCreepReservationForLaterRealRetry()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("R-05", 0, 0);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                creeps.SpawnPracticeStage(1, 500, 0);
+                var native = new WitnessedBlink {
+                    X = 501, Y = 0, ThrowOnIssue = true
+                };
+                var site = new WitnessedAttackSite { X = 501, Y = 0 };
+                combat.ConfigureVerifiedCreepDispatch(creeps,
+                    new Original323CreepVerifiedMobilityAuthority(combat, native, site));
+                Assert.Throws<InvalidOperationException>(() =>
+                    combat.TryDispatchToCreep(id, 1));
+                Assert.IsFalse(combat.IsPreparingCreepDispatch(id));
+                Assert.IsFalse(combat.IsCreepDeployed(id));
+                Assert.AreEqual(0, combat.CreepPreparationCount);
+                Assert.AreEqual(0, combat.Roster.Get(id).X);
+                native.ThrowOnIssue = false;
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                Assert.AreEqual(2, native.IssueCalls);
+                Assert.AreEqual(1, combat.CreepPreparationCount);
             }
         }
 

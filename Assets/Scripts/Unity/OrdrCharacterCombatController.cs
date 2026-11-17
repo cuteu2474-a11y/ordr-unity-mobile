@@ -848,6 +848,7 @@ namespace Ordr.Mobile.Unity
             if (verifiedCreepDispatchAuthority != null)
                 throw new InvalidOperationException("크립 자격 공급자는 중복 등록할 수 없습니다.");
             verifiedCreepDispatchAuthority = authority;
+            Combat.CreepPreparationObserverFailed += Debug.LogException;
             if (PracticeCreeps != null)
                 Combat.ConfigureVerifiedCreepDispatch(PracticeCreeps, authority);
         }
@@ -1436,6 +1437,7 @@ namespace Ordr.Mobile.Unity
             {
                 Combat.CharacterRemoved -= OnPoneglyphUnitRemoved;
                 Combat.CharacterRemovalObserverFailed -= Debug.LogException;
+                Combat.CreepPreparationObserverFailed -= Debug.LogException;
             }
             Wisps?.Dispose();
             PracticeBattle?.Dispose();

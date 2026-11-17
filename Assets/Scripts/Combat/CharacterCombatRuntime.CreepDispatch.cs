@@ -33,17 +33,30 @@ namespace Ordr.Mobile.Combat
         public string OriginalAbilityRawcode { get; private set; }
         public string SourceEvidence { get; private set; }
         public Original323CreepPreparationKind Kind { get; private set; }
+        public bool HasApprovedLanding { get; private set; }
+        public double ApprovedLandingX { get; private set; }
+        public double ApprovedLandingY { get; private set; }
 
         public Original323CreepPreparationPlan(long instanceId, string catalogId,
             string enemyId, int stage, string abilityRawcode,
-            Original323CreepPreparationKind kind, string evidence)
+            Original323CreepPreparationKind kind, string evidence,
+            double? approvedLandingX = null, double? approvedLandingY = null)
         {
             if (instanceId <= 0 || string.IsNullOrWhiteSpace(catalogId) ||
                 string.IsNullOrWhiteSpace(enemyId) || stage < 1 || stage > 3 ||
                 string.IsNullOrWhiteSpace(abilityRawcode) ||
                 !Enum.IsDefined(typeof(Original323CreepPreparationKind), kind) ||
-                !Original323BossRoundRules.TrustedRuntimeEvidence(evidence))
+                !Original323BossRoundRules.TrustedRuntimeEvidence(evidence) ||
+                approvedLandingX.HasValue != approvedLandingY.HasValue ||
+                approvedLandingX.HasValue &&
+                    (double.IsNaN(approvedLandingX.Value) ||
+                     double.IsInfinity(approvedLandingX.Value) ||
+                     double.IsNaN(approvedLandingY.Value) ||
+                     double.IsInfinity(approvedLandingY.Value)))
                 throw new ArgumentException("원본 크립 준비의 유닛·기술·증빙이 필요합니다.");
+            HasApprovedLanding = approvedLandingX.HasValue;
+            ApprovedLandingX = approvedLandingX.GetValueOrDefault();
+            ApprovedLandingY = approvedLandingY.GetValueOrDefault();
             InstanceId = instanceId;
             CatalogId = catalogId;
             EnemyId = enemyId;
@@ -78,8 +91,23 @@ namespace Ordr.Mobile.Combat
             Original323CreepPreparationPlan plan);
     }
 
+    // A completed original mobility ticket is one-use state. The runtime
+    // informs the source bridge once its single placement is settled/aborted,
+    // or the real owned actor is removed.
+    public interface IOriginal323CreepAbilityTicketLifecycle
+    {
+        void ForgetIssuedOriginalAbility(long instanceId);
+    }
+
     public sealed partial class CharacterCombatRuntime
     {
+        private void ForgetIssuedCreepAbility(long id)
+        {
+            var lifecycle = creepAuthority as IOriginal323CreepAbilityTicketLifecycle;
+            if (lifecycle != null)
+                lifecycle.ForgetIssuedOriginalAbility(id);
+        }
+
         private sealed class CreepDeployment
         {
             public int Stage;
@@ -102,6 +130,15 @@ namespace Ordr.Mobile.Combat
         // points/mana. A fresh player action remains possible.
         private readonly Dictionary<long, string> autoCreepPreparationAttempted =
             new Dictionary<long, string>();
+        public event Action<Exception> CreepPreparationObserverFailed;
+
+        private void ReportCreepPreparationObserverFailure(Exception error)
+        {
+            var listeners = CreepPreparationObserverFailed;
+            if (listeners == null) return;
+            foreach (Action<Exception> listener in listeners.GetInvocationList())
+                try { listener(error); } catch { }
+        }
         public int CreepPreparationCount => creepPreparations.Count;
         public bool IsPreparingCreepDispatch(long id) =>
             creepPreparations.ContainsKey(id);
@@ -267,9 +304,20 @@ namespace Ordr.Mobile.Combat
                 !CanStartCreepRequest(id, target))
                 return false;
             creepPreparations.Add(id, new PendingCreepPreparation { Plan = plan });
-            bool started = conditional.TryBeginPreparation(plan);
-            if (!started) creepPreparations.Remove(id);
-            return started;
+            try
+            {
+                bool started = conditional.TryBeginPreparation(plan);
+                if (!started) creepPreparations.Remove(id);
+                return started;
+            }
+            catch
+            {
+                // A native source exception is not a durable cast receipt.
+                // Release the transaction lock, preserve the old placement,
+                // and let the combat controller report the source failure.
+                creepPreparations.Remove(id);
+                throw;
+            }
         }
 
         // One tap: directly move when already eligible; otherwise invoke the
@@ -305,26 +353,52 @@ namespace Ordr.Mobile.Combat
                 if (!creepPreparations.TryGetValue(id, out request) ||
                     conditional == null)
                     continue;
-                var progress = conditional.ObservePreparation(request.Plan);
+                Original323CreepPreparationProgress progress;
+                try { progress = conditional.ObservePreparation(request.Plan); }
+                catch (Exception error)
+                {
+                    // A cast may already have debited its own resources.
+                    // Never silently reissue it after a witness exception.
+                    creepPreparations.Remove(id);
+                    ForgetIssuedCreepAbility(id);
+                    ReportCreepPreparationObserverFailure(error);
+                    continue;
+                }
                 if (progress == Original323CreepPreparationProgress.Pending)
                     continue;
-                creepPreparations.Remove(id);
                 if (progress != Original323CreepPreparationProgress.Completed)
+                {
+                    creepPreparations.Remove(id);
+                    ForgetIssuedCreepAbility(id);
                     continue;
-                CharacterInstance actor;
-                if (!characters.TryGetValue(id, out actor) ||
-                    actor.Catalog.Id != request.Plan.CatalogId ||
-                    IsStoryDeployed(id) ||
-                    sharedObjectiveDeployed.ContainsKey(id) ||
-                    originalPoneglyphChanneling.Contains(id))
-                    continue;
-                var target = FindAliveCreepStage(request.Plan.Stage);
-                if (target == null ||
-                    target.EnemyId != request.Plan.EnemyId)
-                    continue;
-                double x, y;
-                if (TryCreepPlacement(id, target, out x, out y))
-                    CommitCreepPlacement(id, target, x, y);
+                }
+                // Keep the ticket live ONLY during this exact completion.
+                // The mobility source can now prove a finished native AEbl
+                // landing independently of any direct walking/pathing route.
+                try
+                {
+                    CharacterInstance actor;
+                    if (!characters.TryGetValue(id, out actor) ||
+                        actor.Catalog.Id != request.Plan.CatalogId ||
+                        IsStoryDeployed(id) ||
+                        sharedObjectiveDeployed.ContainsKey(id) ||
+                        originalPoneglyphChanneling.Contains(id))
+                        continue;
+                    var target = FindAliveCreepStage(request.Plan.Stage);
+                    if (target == null ||
+                        target.EnemyId != request.Plan.EnemyId)
+                        continue;
+                    double x, y;
+                    if (TryCreepPlacement(id, target, out x, out y))
+                        CommitCreepPlacement(id, target, x, y);
+                }
+                finally
+                {
+                    // A completed cast may never authorize a second free
+                    // return to this location after recall or re-deploy.
+                    creepPreparations.Remove(id);
+                    ForgetIssuedCreepAbility(id);
+                }
             }
             TryAutoRetargetInactiveCreepActors();
         }
@@ -358,8 +432,19 @@ namespace Ordr.Mobile.Combat
                 if (autoCreepPreparationAttempted.TryGetValue(id, out prior) &&
                     prior == next.EnemyId)
                     continue;
-                if (BeginCreepPreparation(id, next))
-                    autoCreepPreparationAttempted[id] = next.EnemyId;
+                // Reserve this original target BEFORE running external
+                // source code. A throwing cast must never be auto-reissued
+                // every frame with a second mana/cooldown payment.
+                autoCreepPreparationAttempted[id] = next.EnemyId;
+                try
+                {
+                    if (!BeginCreepPreparation(id, next))
+                        autoCreepPreparationAttempted.Remove(id);
+                }
+                catch (Exception error)
+                {
+                    ReportCreepPreparationObserverFailure(error);
+                }
             }
         }
 
@@ -394,6 +479,7 @@ namespace Ordr.Mobile.Combat
             creepDeployments.Remove(id);
             creepPreparations.Remove(id);
             autoCreepPreparationAttempted.Remove(id);
+            ForgetIssuedCreepAbility(id);
         }
     }
 }
