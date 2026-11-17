@@ -34,6 +34,9 @@ namespace Ordr.Mobile.Core
         // Original Bnm/Bnp/Bnr attacked-event receipts share the same H6
         // cursor; event duplicates must survive a session restoration.
         public Original323ScriptAttackProcState OriginalScriptAttackProcs;
+        // Original CJB/CJC purchase rights, two H6 draw ordinals and native
+        // settlement receipts are separate from the mobile practice MoneyDesk.
+        public Original323MoneyGamblingState OriginalMoneyGambling;
         // Three distinct local fallback-native draw streams. They MUST NOT
         // be merged with the source BFi lane or with each other on resume.
         public MobileRollbackWispRandomState WispPoolRandom;
@@ -106,7 +109,8 @@ namespace Ordr.Mobile.Core
             Original323SharedObjectiveWorldState sharedObjectives = null,
             Original323SharedBfiCheckpoint originalScriptRandom = null,
             Original323WispDeferredAbilityRegistryState wispDeferredAbilities = null,
-            Original323ScriptAttackProcState originalScriptAttackProcs = null)
+            Original323ScriptAttackProcState originalScriptAttackProcs = null,
+            Original323MoneyGamblingState originalMoneyGambling = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -122,6 +126,7 @@ namespace Ordr.Mobile.Core
                 ScriptRandom = scriptRandom,
                 OriginalScriptRandom = originalScriptRandom,
                 OriginalScriptAttackProcs = originalScriptAttackProcs,
+                OriginalMoneyGambling = originalMoneyGambling,
                 TierPoolRandom = tierPoolRandom,
                 WispPoolRandom = wispPoolRandom,
                 GraduatedRarePoolRandom = graduatedRarePoolRandom,
@@ -223,6 +228,14 @@ namespace Ordr.Mobile.Core
                         "원본 공격 이벤트에는 같은 전투/H6 난수 저장본이 필요합니다.");
                 Original323ScriptAttackProcRolls.ValidateState(
                     state.OriginalScriptAttackProcs, state.OriginalScriptRandom);
+            }
+            if (state.OriginalMoneyGambling != null)
+            {
+                if (state.OriginalScriptRandom == null || state.Combat == null)
+                    throw new FormatException(
+                        "원본 CJB/CJC 구매에는 동일 세션의 전투/H6 기록이 필요합니다.");
+                Original323MoneyGamblingService.ValidateState(
+                    state.OriginalMoneyGambling, state.OriginalScriptRandom);
             }
             if (state.WispPoolRandom != null)
                 MobileRollbackWispRandom.Restore(state.WispPoolRandom);

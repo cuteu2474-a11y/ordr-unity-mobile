@@ -193,6 +193,95 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(30, sink.Balance);
         }
 
+
+        private sealed class PurchaseRestore : IOriginal323MoneyGamblingRestoreWitness
+        {
+            public int Calls;
+            public bool Approved = true;
+            public bool TryConfirmRestoredReceipt(string sessionId,
+                double logicalTime, Original323MoneyGamblingReceiptState item,
+                out string evidence)
+            {
+                Calls++;
+                evidence = "observed same native shop purchase and settlement right";
+                return Approved && sessionId == "session:1" &&
+                    logicalTime == 11 && item.TransactionId == "purchased:1";
+            }
+        }
+
+        [Test]
+        public void PendingNativeGamblingRestoresWithoutRerollAndSettlesOnce()
+        {
+            var shared = Shared(10000, new Draws());
+            var original = new Original323MoneyGamblingService(
+                shared, new Purchase(), new Settlement { Accept = false });
+            Original323MoneyGamblingOutcome outcome;
+            Assert.IsFalse(original.TrySettle("purchased:1",
+                Original323MoneyGamblingTier.Regular, out outcome));
+            var saved = original.CaptureState();
+            var h6 = shared.CaptureCheckpoint();
+            Assert.AreEqual(1, saved.Receipts.Count);
+            Assert.IsFalse(saved.Receipts[0].Settled);
+            Assert.AreEqual(1, saved.Receipts[0].FirstBfiOrdinal);
+            Assert.AreEqual(2, saved.Receipts[0].SecondBfiOrdinal);
+
+            var replay = Original323SharedBfiRandom.FromObservedState(
+                new Original323SharedBfiSnapshot(h6.State, h6.DrawCount),
+                "observed original same-session H6 cursor", new Draws());
+            var purchases = new Purchase();
+            var sink = new Settlement();
+            var native = new PurchaseRestore();
+            var restored = new Original323MoneyGamblingService(
+                replay, purchases, sink);
+            restored.RestoreState(saved, "session:1", 11, native);
+            Assert.AreEqual(1, native.Calls);
+            Assert.AreEqual(0, purchases.Calls);
+            Assert.IsTrue(restored.TrySettle("purchased:1",
+                Original323MoneyGamblingTier.Regular, out outcome));
+            Assert.AreEqual(30, sink.Balance);
+            Assert.AreEqual(2, replay.DrawCount);
+            Assert.IsFalse(restored.TrySettle("purchased:1",
+                Original323MoneyGamblingTier.Regular, out outcome));
+            Assert.AreEqual(1, sink.Calls);
+            Assert.IsTrue(restored.CaptureState().Receipts[0].Settled);
+        }
+
+        [Test]
+        public void SettledNativeGamblingRestoreRejectsReplayOrUnverifiedSource()
+        {
+            var shared = Shared(10000, new Draws());
+            var source = new Original323MoneyGamblingService(
+                shared, new Purchase(), new Settlement());
+            Original323MoneyGamblingOutcome outcome;
+            Assert.IsTrue(source.TrySettle("purchased:1",
+                Original323MoneyGamblingTier.Regular, out outcome));
+            var saved = source.CaptureState();
+            var h6 = shared.CaptureCheckpoint();
+            var replay = Original323SharedBfiRandom.FromObservedState(
+                new Original323SharedBfiSnapshot(h6.State, h6.DrawCount),
+                "observed original same-session H6 cursor", new Draws());
+            var sink = new Settlement();
+            var restored = new Original323MoneyGamblingService(
+                replay, new Purchase(), sink);
+            Assert.Throws<NotSupportedException>(() => restored.RestoreState(
+                saved, "session:1", 11,
+                new PurchaseRestore { Approved = false }));
+            Assert.AreEqual(0, restored.CaptureState().Receipts.Count);
+            restored.RestoreState(saved, "session:1", 11,
+                new PurchaseRestore());
+            Assert.IsFalse(restored.TrySettle("purchased:1",
+                Original323MoneyGamblingTier.Regular, out outcome));
+            Assert.AreEqual(0, sink.Calls);
+            Assert.AreEqual(2, replay.DrawCount);
+            saved.Receipts[0].SecondBfiOrdinal++;
+            Assert.Throws<FormatException>(() =>
+                Original323MoneyGamblingService.ValidateState(saved, h6));
+            saved.Receipts[0].SecondBfiOrdinal--;
+            saved.Receipts[0].GoldReturned++;
+            Assert.Throws<FormatException>(() =>
+                Original323MoneyGamblingService.ValidateState(saved, h6));
+        }
+
         [Test]
         public void RestoredAttackedEventReceiptsDoNotDrawAgain()
         {

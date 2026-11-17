@@ -44,6 +44,10 @@ namespace Ordr.Mobile.Mobile
         public IOriginal323ScriptAttackProcWitness OriginalAttackEventWitness;
         public Func<CharacterCombatRuntime,
             IOriginal323VerifiedAttackDummySpellWorld> CreateOriginalAttackSpellWorld;
+        // Must create NEW native purchase/settlement/restore witnesses bound
+        // only to the reconstructed combat world, not the published scene.
+        public Func<CharacterCombatRuntime, Original323SharedBfiRandom,
+            Original323MoneyGamblingRestorePorts> CreateOriginalMoneyGamblingPorts;
     }
 
     // Owns the source event subscriptions created by auxiliary reconstruction.
@@ -56,6 +60,8 @@ namespace Ordr.Mobile.Mobile
         public OrdrUnpublishedTreasureRestoreGraph Treasure { get; private set; }
         public Original323ScriptAttackProcRolls OriginalAttackRolls
             { get; private set; }
+        public Original323MoneyGamblingService OriginalMoneyGambling
+            { get; private set; }
         public string SessionId { get; private set; }
         public double LogicalTime { get; private set; }
         public bool IsDisposed { get; private set; }
@@ -66,6 +72,7 @@ namespace Ordr.Mobile.Mobile
             OrdrUnpublishedAuxiliaryRestoreGraph auxiliary,
             OrdrUnpublishedTreasureRestoreGraph treasure,
             Original323ScriptAttackProcRolls originalAttackRolls,
+            Original323MoneyGamblingService originalMoneyGambling,
             string sessionId, double logicalTime)
         {
             Combat = combat;
@@ -73,6 +80,7 @@ namespace Ordr.Mobile.Mobile
             Auxiliary = auxiliary;
             Treasure = treasure;
             OriginalAttackRolls = originalAttackRolls;
+            OriginalMoneyGambling = originalMoneyGambling;
             SessionId = sessionId;
             LogicalTime = logicalTime;
         }
@@ -132,6 +140,11 @@ namespace Ordr.Mobile.Mobile
                  inputs.CreateOriginalAttackSpellWorld == null))
                 throw new NotSupportedException(
                     "원본 Bnm/Bnp/Bnr 사건은 같은 전투의 원본 충돌·공격 목격 공급자가 필요합니다.");
+            if (save.OriginalMoneyGambling != null &&
+                (save.OriginalScriptRandom == null ||
+                 inputs.CreateOriginalMoneyGamblingPorts == null))
+                throw new NotSupportedException(
+                    "원본 CJB/CJC 구매는 새 전투의 원본 구매/정산/복원 공급자가 필요합니다.");
             if (save.Creeps != null && inputs.CreepCatalog == null ||
                 save.Combat.CreepDeployments.Count > 0 &&
                     inputs.CreepDispatchAuthority == null ||
@@ -198,6 +211,22 @@ namespace Ordr.Mobile.Mobile
                     combat.Combat.ConfigureOriginal323ScriptAttackEffectWorldForRestore(
                         save.Combat, originalAttackRolls, spellWorld);
                 }
+                Original323MoneyGamblingService originalMoneyGambling = null;
+                if (save.OriginalMoneyGambling != null)
+                {
+                    var ports = inputs.CreateOriginalMoneyGamblingPorts(
+                        combat.Combat, commerce.OriginalScriptRandom);
+                    if (ports == null || ports.Purchases == null ||
+                        ports.Settlement == null || ports.RestoreWitness == null)
+                        throw new NotSupportedException(
+                            "새 원본 도박 거래 포트가 불완전합니다.");
+                    originalMoneyGambling = new Original323MoneyGamblingService(
+                        commerce.OriginalScriptRandom,
+                        ports.Purchases, ports.Settlement);
+                    originalMoneyGambling.RestoreState(
+                        save.OriginalMoneyGambling, save.SessionId,
+                        save.LogicalTime, ports.RestoreWitness);
+                }
                 var treasure = OrdrTreasureRestoreGraphBuilder.Prepare(
                     save, combat, commerce);
                 // Both handles below share the exact H6 instance in original
@@ -217,10 +246,11 @@ namespace Ordr.Mobile.Mobile
                     inputs.SharedObjectiveWitness, scriptOther);
                 ValidateReconstructedState(
                     save, combat, commerce, auxiliary, treasure,
-                    originalAttackRolls);
+                    originalAttackRolls, originalMoneyGambling);
                 return new OrdrUnpublishedWorldRestoreGraph(
                     combat, commerce, auxiliary, treasure,
-                    originalAttackRolls, save.SessionId, save.LogicalTime);
+                    originalAttackRolls, originalMoneyGambling,
+                    save.SessionId, save.LogicalTime);
             }
             catch
             {
@@ -254,7 +284,8 @@ namespace Ordr.Mobile.Mobile
             OrdrUnpublishedCommerceRestoreGraph commerce,
             OrdrUnpublishedAuxiliaryRestoreGraph auxiliary,
             OrdrUnpublishedTreasureRestoreGraph treasure = null,
-            Original323ScriptAttackProcRolls originalAttackRolls = null)
+            Original323ScriptAttackProcRolls originalAttackRolls = null,
+            Original323MoneyGamblingService originalMoneyGambling = null)
         {
             if (save == null || combat == null || commerce == null ||
                 auxiliary == null || combat.Core == null ||
@@ -304,6 +335,15 @@ namespace Ordr.Mobile.Mobile
             AssertSameState("원본 공격 확률 영수증",
                 save.OriginalScriptAttackProcs,
                 originalAttackRolls?.CaptureState());
+            if (save.OriginalMoneyGambling != null &&
+                (originalMoneyGambling == null ||
+                 !ReferenceEquals(originalMoneyGambling.SharedRandom,
+                    commerce.OriginalScriptRandom)))
+                throw new FormatException(
+                    "원본 CJB/CJC와 H6 난수 소유자가 다릅니다.");
+            AssertSameState("원본 도박 구매/정산 영수증",
+                save.OriginalMoneyGambling,
+                originalMoneyGambling?.CaptureState());
             AssertSameState("위습 풀 난수", save.WispPoolRandom,
                 commerce.WispPoolRandom.CaptureState());
             AssertSameState("졸업 상점 난수", save.GraduatedRarePoolRandom,
