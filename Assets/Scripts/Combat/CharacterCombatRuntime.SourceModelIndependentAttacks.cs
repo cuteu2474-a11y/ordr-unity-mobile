@@ -48,10 +48,17 @@ namespace Ordr.Mobile.Combat
 
         private void RegisterSourceIndependentAttack(string key, string rawcode,
             bool storyLane, double x, double y, long ownerInstanceId,
-            double? expiresAt = null, CharacterSkillProfile skillProfile = null)
+            double? expiresAt = null, CharacterSkillProfile skillProfile = null,
+            bool restoreDetachedPurchasedSatellite = false)
         {
-            if (ownerInstanceId <= 0 || !characters.ContainsKey(ownerInstanceId))
-                throw new InvalidOperationException("실제 소유 캐릭터가 없는 독립 공격자는 등록할 수 없습니다.");
+            if (ownerInstanceId <= 0 ||
+                (!characters.ContainsKey(ownerInstanceId) &&
+                 (!restoreDetachedPurchasedSatellite ||
+                  !key.StartsWith("practice-satellite:", StringComparison.Ordinal) ||
+                  SourceModelNativeCharacterRules.SatelliteName(rawcode) == null ||
+                  skillProfile == null ||
+                  skillProfile.UnitId != SourceModelNativeCharacterRules.Vegapunk)))
+                throw new InvalidOperationException("원본 위성 복원 증거 없이 소유자 없는 독립 공격자를 등록할 수 없습니다.");
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 string.IsNullOrWhiteSpace(key) ||
                 sourceIndependentAttackers.ContainsKey(key) || unitStatuses.ContainsKey(key) ||
@@ -61,13 +68,19 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("연습 독립 공격자 생성 조건이 맞지 않습니다.");
             var attack = sourceModelRules.SourceObjectAttack(rawcode);
             if (attack == null) throw new InvalidOperationException("원본 독립 공격 주사위 미확인: " + rawcode);
+            // Resolve all original object resources before mutating the
+            // scheduler, so a missing SLK row cannot leave a ghost timer.
+            var resources = sourceModelRules.SourceObjectResources(rawcode);
             // The first full cooldown is a documented practice scheduling
             // convention. The native Warcraft initial attack phase is unknown.
             attackPipeline.RegisterUnit(key, new UnitCombatSpec(rawcode, attack,
                 Array.Empty<CombatSkillSpec>(), SourceModelBasicCombatRules.Evidence),
                 attack.IntervalSeconds);
-            unitStatuses.Add(key, new CombatStatusEngine());
-            var resources = sourceModelRules.SourceObjectResources(rawcode);
+            var newStatus = new CombatStatusEngine();
+            // Satellite/summon instances created mid-wave must share the
+            // world clock, not begin their timed buffs from t=0.
+            newStatus.Advance(scheduler.Time);
+            unitStatuses.Add(key, newStatus);
             // Map object SLK is the only starting mana source. Summons without
             // a documented mana action cannot gain an invented active spell.
             double maximumMana = resources == null ? 0 : resources.MaximumMana;

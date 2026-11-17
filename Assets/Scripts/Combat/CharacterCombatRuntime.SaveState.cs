@@ -187,6 +187,9 @@ namespace Ordr.Mobile.Combat
         // per-enemy generation counters (no lambda serialization).
         public SourceNativeDelayedOwnerCheckpoint NativeDelayed;
         public SourceTemporaryOwnerCheckpoint TemporaryOwners;
+        // Purchased B4a satellites are permanent player units, even after
+        // creator sale. Keep their independent attack, mana and aura clocks.
+        public SourceSatelliteWorldCheckpoint SatelliteWorld;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -592,9 +595,9 @@ namespace Ordr.Mobile.Combat
                             "소환수의 원본 독립 공격자 부수상태를 복원할 수 없습니다.");
                     covered++;
                 }
-            if (covered != sourceIndependentAttackers.Count || sourceSatellites.Count != 0)
+            if (covered + sourceSatellites.Count != sourceIndependentAttackers.Count)
                 throw new NotSupportedException(
-                    "구매 위성·기타 독립 공격자는 별도의 복원 장부가 필요합니다.");
+                    "원본 소환·구매 위성 이외의 독립 공격자를 아직 복원할 수 없습니다.");
             foreach (var form in sourceModelTenthForms.Values)
                 if (form.Form != "awakening" && form.Form != "forest")
                     throw new NotSupportedException(
@@ -649,6 +652,7 @@ namespace Ordr.Mobile.Combat
                 sourceTemporarySummons.Add(summoned);
             }
             sourceNextSummonId = state.NextSummonId;
+            RestoreSourceSatelliteWorld(state.SatelliteWorld);
             if (sourceNamiZones.Count != 0 || sourceNamiAuraKeys.Count != 0 ||
                 sourceFollowupSequence != 0 || moriaParticipation.HasPending)
                 throw new InvalidOperationException(
@@ -923,6 +927,7 @@ namespace Ordr.Mobile.Combat
             ValidateOriginalDummyState(state);
             ValidateSourceNativeDelayedState(state);
             ValidateSourceTemporaryOwners(state);
+            ValidateSourceSatelliteWorldState(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1083,7 +1088,8 @@ namespace Ordr.Mobile.Combat
                 Timed = effectExecutor.CaptureTimedState(),
                 OriginalNativeDummy = CaptureOriginalDummyState(),
                 NativeDelayed = CaptureSourceNativeDelayedOwners(),
-                TemporaryOwners = CaptureSourceTemporaryOwners()
+                TemporaryOwners = CaptureSourceTemporaryOwners(),
+                SatelliteWorld = CaptureSourceSatelliteWorld()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1196,6 +1202,7 @@ namespace Ordr.Mobile.Combat
             }
             draft.Summons.Sort((a, b) => a.Id.CompareTo(b.Id));
             ValidateSourceSidecars(draft);
+            ValidateSourceSatelliteWorldState(draft);
             var enemyIds = new List<string>(enemies.Keys);
             enemyIds.Sort(StringComparer.Ordinal);
             foreach (string id in enemyIds)

@@ -420,6 +420,9 @@ namespace Ordr.Mobile.Core
             CharacterCombatRuntime.ValidateOriginalDummyState(world);
             CharacterCombatRuntime.ValidateSourceNativeDelayedState(world);
             CharacterCombatRuntime.ValidateSourceTemporaryOwners(world);
+            CharacterCombatRuntime.ValidateSourceSatelliteWorldState(world);
+            CharacterCombatRuntime.ValidateSatelliteWalletReceipts(
+                world, state.MissionGameplay?.Wallet);
             CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
                 world, state.OriginalScriptAttackProcs);
             CharacterCombatRuntime.ValidateMariaPulseState(world);
