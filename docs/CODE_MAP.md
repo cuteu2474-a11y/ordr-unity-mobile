@@ -2,6 +2,11 @@
 
 > 코드의 **현재 진입점**과 공통 엔진 경로만 기록합니다. 날짜별 개발 일지와 반복된 스킬 설명은 삭제했습니다. [현재 상태](START_HERE.md) / [개발 작업](PLAYABLE_ROADMAP.md)을 함께 확인하세요.
 
+## 저장·비공개 복원 경로
+
+- `OrdrCoreCheckpoint.PrepareWorldRestore`는 `SourceCombatRuntimeCheckpoint.Version=4`만 인정하고, 공개 `Restore`는 전투 초안이 있는 경우 기존대로 차단합니다. `CharacterCombatRuntime.RestoreActorWorldDraft`는 전투 로스터 밖의 원본 진화체 `e0HP` 1기를 별도 실물로 인정하며 실제 액터 중복·신원은 그대로 검사합니다.
+- `OriginalEquippedItemLedger.CaptureState/RestoreState`는 장비별 원본 rawcode·개수·등급/타입, delta 영수증/소유자, native 전체 관측 리비전 및 삭제된 ID의 tombstone을 원자 재구성합니다. `CharacterCombatRuntime.ValidateEquipmentState`와 `OrdrCoreCheckpoint.ValidateCombatDraft`가 소유권·자료 형식/중복을 검사하고 원본 증거 공급자 재연결이 없으면 복원을 거부합니다. 불릿 3초 육식 체 활성 상태 및 다른 익명 예약은 현재 저장 거부 대상입니다. 아직 게임용 이어하기 UI/전체 씬 복원은 비활성입니다.
+
 ## 원본 숫자·스탯 공급 경로
 
 - `SourceModelBasicCombatRules.OriginalUnitPointValue`: 원본 `OriginalMapBaseStatCatalog.UnitPointValue`를 카탈로그 ID/원본 rawcode까지 대조. 히바리 도시락 자격 판정에 사용. **스탯 STR/AGI/INT와 별개**.

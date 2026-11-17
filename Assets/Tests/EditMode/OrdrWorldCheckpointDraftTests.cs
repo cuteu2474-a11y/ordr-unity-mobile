@@ -43,6 +43,11 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(captured.SessionId, loaded.SessionId);
                 Assert.AreEqual(captured.Combat.Actors.Count,
                     loaded.Combat.Actors.Count);
+                // Combat v4 must reach the unpublished reconstruction
+                // pipeline rather than fail the stale v2 version gate.
+                var prepared = OrdrCoreCheckpoint.PrepareWorldRestore(loaded);
+                Assert.AreEqual(loaded.SessionId,
+                    prepared.Missions.Missions.SessionId);
                 Assert.Throws<NotSupportedException>(() =>
                     OrdrCoreCheckpoint.Restore(loaded),
                     "The complete live battle is NOT yet safe to resume.");

@@ -121,6 +121,36 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void EquipmentSaveMustBelongToAnActualLiveCombatActor()
+        {
+            var original = World();
+            original.Start();
+            original.BeginWave(1);
+            long id = original.SpawnCharacter("TEST-01", 0, 0);
+            var save = original.CaptureRuntimeDraft();
+            save.HasSourceModelBasicAttacks = true;
+            save.EquippedItems = new OriginalEquippedItemLedgerState();
+            save.EquippedItems.ReceiptOwners.Add(id + 100);
+            save.EquippedItems.Receipts.Add("witnessed-transaction");
+            save.EquippedItems.Owners.Add(new OriginalEquippedOwnerState {
+                OwnerId = id + 100,
+                Stacks = new System.Collections.Generic.List<OriginalEquippedStackState> {
+                    new OriginalEquippedStackState {
+                        Rawcode = "Iatk", Count = 1,
+                        Stat = OriginalEquippedStat.Attack,
+                        Rarity = OriginalEquippedRarity.Unique
+                    }
+                }
+            });
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateEquipmentState(save));
+            save.EquippedItems.Owners[0].OwnerId = id;
+            save.EquippedItems.ReceiptOwners[0] = id;
+            Assert.DoesNotThrow(() =>
+                CharacterCombatRuntime.ValidateEquipmentState(save));
+        }
+
+        [Test]
         public void DeployedActorIsRejectedBeforeRestoringRuntime()
         {
             var original = World();

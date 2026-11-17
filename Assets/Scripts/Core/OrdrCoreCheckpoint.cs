@@ -335,6 +335,7 @@ namespace Ordr.Mobile.Core
                     "전투 예약·라운드/게임 시계가 일치하지 않습니다.");
             CharacterCombatRuntime.ValidateManualOwnerState(world);
             CharacterCombatRuntime.ValidateSourceSidecars(world);
+            CharacterCombatRuntime.ValidateEquipmentState(world);
             CombatScheduler.ValidateState(world.Attacks.Scheduler);
             CombatSkillTriggerEngine.ValidateState(world.Attacks.Skills);
             if (world.Attacks.Version != 1 || world.Attacks.Events == null)
@@ -458,7 +459,7 @@ namespace Ordr.Mobile.Core
         {
             Validate(state);
             if (state.Combat == null || state.Waves == null ||
-                state.Combat.Version != 2)
+                state.Combat.Version != 4)
                 throw new FormatException("복원할 전장 상태가 존재하지 않습니다.");
             return RestoreCoreOnly(state);
         }

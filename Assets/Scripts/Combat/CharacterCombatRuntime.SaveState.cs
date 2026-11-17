@@ -26,8 +26,7 @@ namespace Ordr.Mobile.Combat
     }
 
     // S03 manual-owner states that have no future anonymous Action callbacks.
-    // Other forms, independent summons, native equipment and active Maria
-    // periodic spells deliberately remain fail-closed until rebuilt end-to-end.
+    // Unserializable forms and active Maria periodic spells remain fail-closed.
     [Serializable]
     public sealed class SourceCombatManualOwnerCheckpoint
     {
@@ -162,6 +161,8 @@ namespace Ordr.Mobile.Combat
             new List<SourceCombatFormCheckpoint>();
         public List<SourceCombatForestCheckpoint> Forest =
             new List<SourceCombatForestCheckpoint>();
+        // Null means the equipment source was not configured in this world.
+        public OriginalEquippedItemLedgerState EquippedItems;
         public List<SourceCombatEnemyCheckpoint> Enemies =
             new List<SourceCombatEnemyCheckpoint>();
     }
@@ -283,6 +284,27 @@ namespace Ordr.Mobile.Combat
                 throw new FormatException("일반 전투에 원본 소환·폼을 주입할 수 없습니다.");
         }
 
+
+        public static void ValidateEquipmentState(SourceCombatRuntimeCheckpoint state)
+        {
+            if (state == null || state.Version != 4 || state.Actors == null)
+                throw new FormatException("원본 장비 복원 대상이 없습니다.");
+            if (state.EquippedItems == null) return;
+            if (!state.HasSourceModelBasicAttacks)
+                throw new FormatException("원본 전투가 아닌 장부에 장비가 저장됐습니다.");
+            OriginalEquippedItemLedger.ValidateState(state.EquippedItems);
+            var actors = new HashSet<long>();
+            foreach (var row in state.Actors)
+                if (row == null || row.InstanceId <= 0 || !actors.Add(row.InstanceId))
+                    throw new FormatException("장비 저장의 소유 유닛 신원이 잘못됐습니다.");
+            foreach (var owner in state.EquippedItems.Owners)
+                if (!actors.Contains(owner.OwnerId))
+                    throw new FormatException(
+                        "이미 제거된 유닛에 원본 장비 실물이 저장됐습니다.");
+            // Historical receipt/revision owner IDs may legitimately refer
+            // to a sold or fused character: those are replay tombstones.
+        }
+
         private void RejectNonRestorableSourceSkillState()
         {
             if (!UsesSourceModelBasicAttacks) return;
@@ -297,17 +319,23 @@ namespace Ordr.Mobile.Combat
             if (HasUnexpiredSourceNamiZones())
                 throw new NotSupportedException(
                     "나미 크리마텍트 3초 여진의 위치·남은 시간이 저장되지 않아 진행 중 저장을 거부합니다.");
-            // Actor-dependent native equipment, living summons and transform
-            // callbacks need distinct reconstruction; never silently erase.
+            // Bullet's active three-second stance is not in the checkpoint
+            // yet. Equipped rawcodes can persist; this in-flight attack
+            // entitlement cannot be silently cleared by a resume.
+            if (sourceModelBulletRokushikiUntil.Count != 0 ||
+                sourceModelBulletRokushikiLane.Count != 0)
+                throw new NotSupportedException(
+                    "불릿 육식 체 예약 상태는 남은 시간·전장과 함께 저장되기 전까지 저장할 수 없습니다.");
+            // Non-equipment summons and transform callbacks still require
+            // independent reconstruction; never silently erase.
             if (sourceFormCastFinishes.Count != 0 ||
                 sourceAttackPauseFinishes.Count != 0 ||
                 sourceFormNames.Count != 0 ||
                 sourceModelBonneyAge.Count != 0 ||
                 sourceModelKingExecutionUsed.Count != 0 ||
-                sourceModelEquippedItems != null ||
                 sourceModelMarcoVerifiedForm != null)
                 throw new NotSupportedException(
-                    "실물 소환/장비/임시 변신/외부 형태 증거가 저장되지 않아 전투 초안을 거부합니다.");
+                    "실물 소환/임시 변신/외부 형태 증거가 저장되지 않아 전투 초안을 거부합니다.");
             int covered = 0;
             foreach (var summon in sourceTemporarySummons)
                 if (summon.HasIndependentCombat)
@@ -480,7 +508,10 @@ namespace Ordr.Mobile.Combat
             if (state == null || state.Version != 4 || state.Actors == null ||
                 state.Attacks == null || state.Timed == null ||
                 game.Phase != SessionPhase.Running || characters.Count != 0 ||
-                unitStatuses.Count != 0 || roster.Count != state.Actors.Count ||
+                unitStatuses.Count != 0 ||
+                roster.Count < state.Actors.Count ||
+                roster.Count > state.Actors.Count + 1 ||
+                (sourceModelEquippedItems != null) != (state.EquippedItems != null) ||
                 processingStep || pendingStepSeconds != 0 ||
                 scheduler.Time != 0 || effectExecutor.Time != 0 ||
                 UsesSourceModelBasicAttacks != state.HasSourceModelBasicAttacks ||
@@ -488,6 +519,7 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("복원된 로스터·전투 모드에 새 전투 엔진이 필요합니다.");
             ValidateManualOwnerState(state);
             ValidateSourceSidecars(state);
+            ValidateEquipmentState(state);
             var staged = new List<StagedRestoredActor>();
             var identifiers = new HashSet<long>();
             foreach (var record in state.Actors)
@@ -554,6 +586,19 @@ namespace Ordr.Mobile.Combat
                     SourceManagedResources = record.SourceManagedResources
                 });
             }
+            // e0HP belongs to the evolution service, not the combat registry.
+            // A valid world checkpoint also cross-checks its evolution receipt.
+            int externalEvolution = 0;
+            foreach (var unit in roster.CaptureState().Units)
+                if (!identifiers.Contains(unit.InstanceId))
+                {
+                    if (unit.UnitId != Original323SoloStartProfile.EvolutionRawcode ||
+                        ++externalEvolution > 1)
+                        throw new FormatException(
+                            "전투 명단에 없는 유닛은 진화체 1기만 허용합니다.");
+                }
+            if (staged.Count + externalEvolution != roster.Count)
+                throw new FormatException("전투와 진화체의 소유자 수가 일치하지 않습니다.");
             // Every actor is valid before creating any registration entries.
             foreach (var item in staged)
             {
@@ -584,6 +629,8 @@ namespace Ordr.Mobile.Combat
                 triggers.Time != state.Time)
                 throw new FormatException("복원된 평타·스킬·효과 시계가 맞지 않습니다.");
             RestoreManualOwners(state);
+            if (sourceModelEquippedItems != null)
+                sourceModelEquippedItems.RestoreState(state.EquippedItems);
         }
 
         // Captures real owner identities, resources, status clocks and all
@@ -615,6 +662,8 @@ namespace Ordr.Mobile.Combat
                 Time = scheduler.Time, NextSummonId = sourceNextSummonId,
                 HasSourceModelBasicAttacks = UsesSourceModelBasicAttacks,
                 MobileMainLaneEnabled = sourceModelMainLane != null,
+                EquippedItems = sourceModelEquippedItems == null ? null :
+                    sourceModelEquippedItems.CaptureState(),
                 Attacks = attackPipeline.CaptureState(),
                 Timed = effectExecutor.CaptureTimedState()
             };
@@ -659,6 +708,7 @@ namespace Ordr.Mobile.Combat
                 });
             }
             ValidateManualOwnerState(draft);
+            ValidateEquipmentState(draft);
             foreach (var row in sourceModelTenthForms)
                 draft.Forms.Add(new SourceCombatFormCheckpoint {
                     OwnerId = row.Key, Form = row.Value.Form,

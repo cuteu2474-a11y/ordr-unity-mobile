@@ -180,6 +180,60 @@ namespace Ordr.Mobile.Tests
         }
 
 
+
+        [Test]
+        public void CheckpointPreservesReceiptsAndFullNativeRevisionWithoutRegrantingGear()
+        {
+            var witness = new Witness();
+            var native = new NativeInventory { Revision = 8, Stacks = new[] {
+                new OriginalNativeEquippedStack("Iarm", 3,
+                    OriginalEquippedStat.Armor, OriginalEquippedRarity.Legendary)
+            }};
+            var original = new OriginalEquippedItemLedger(witness, native);
+            Assert.IsTrue(original.TryRecord("equip-7", 7, "Iatk", 2));
+            Assert.IsTrue(original.TrySynchronizeFromNative(9));
+            original.RemoveOwner(7);
+            var state = original.CaptureState();
+            var recovered = new OriginalEquippedItemLedger(witness, native);
+            recovered.RestoreState(state);
+            Assert.AreEqual(0, recovered.Snapshot(7).Total);
+            Assert.AreEqual(3, recovered.Snapshot(9).LegendaryArmor);
+            Assert.IsFalse(recovered.TryRecord("equip-7", 7, "Iatk", 2));
+            Assert.IsFalse(recovered.TrySynchronizeFromNative(9));
+            Assert.IsFalse(recovered.TryRecord("equip-other", 9, "Iatk", 1));
+            native.Revision = 9;
+            native.Stacks = new[] { new OriginalNativeEquippedStack("Iarm", 1,
+                OriginalEquippedStat.Armor, OriginalEquippedRarity.Legendary) };
+            Assert.IsTrue(recovered.TrySynchronizeFromNative(9));
+            Assert.AreEqual(1, recovered.Snapshot(9).Total);
+        }
+
+        [Test]
+        public void TamperedOrUnwitnessedEquipmentSaveFailsBeforeAnyMutation()
+        {
+            var receipt = new Witness();
+            var native = new NativeInventory { Stacks = new[] {
+                new OriginalNativeEquippedStack("Ispd", 1,
+                    OriginalEquippedStat.AttackSpeed, OriginalEquippedRarity.Unique)
+            }};
+            var original = new OriginalEquippedItemLedger(receipt, native);
+            Assert.IsTrue(original.TryRecord("equip-1", 2, "Iatk", 1));
+            Assert.IsTrue(original.TrySynchronizeFromNative(3));
+            var state = original.CaptureState();
+            var empty = new OriginalEquippedItemLedger(receipt, native);
+            state.Owners[0].Stacks[0].Count = -10;
+            Assert.Throws<FormatException>(() => empty.RestoreState(state));
+            Assert.AreEqual(0, empty.CaptureState().Owners.Count);
+            state.Owners[0].Stacks[0].Count = 1;
+            Assert.Throws<NotSupportedException>(() =>
+                new OriginalEquippedItemLedger(receipt).RestoreState(state));
+            Assert.Throws<NotSupportedException>(() =>
+                new OriginalEquippedItemLedger(null, native).RestoreState(state));
+            state.NativeRevisions[0].OwnerId = 2;
+            Assert.Throws<FormatException>(() => empty.RestoreState(state));
+            Assert.AreEqual(0, empty.CaptureState().Owners.Count);
+        }
+
         [Test]
         public void DeltaAcrossDifferentRawcodesCannotOverflowTotal()
         {
