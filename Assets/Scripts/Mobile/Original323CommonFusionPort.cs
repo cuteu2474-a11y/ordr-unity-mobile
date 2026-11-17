@@ -496,7 +496,8 @@ namespace Ordr.Mobile.Mobile
             acquisitionRoutes = new Original323CwrAcquisitionRoutes(
                 registrations, units, objects);
             planner = new OriginalJassFusionPlanner(registrations, labels,
-                id => combat.IsStoryDeployed(id), this, units);
+                id => combat.IsStoryDeployed(id), this, units,
+                permitStoryUnitConsumption: true);
             planner.SetVerifiedObjectMap(this);
             var materialGroups = new Original323FusionMaterialGroups(objects);
             planner.SetVerifiedMaterialGroups(materialGroups);
@@ -968,8 +969,8 @@ namespace Ordr.Mobile.Mobile
                 {
                     if (material.MissingCount <= 0) continue;
                     if (material.MissingAfterRecallCount > 0) allUnitsOwned = false;
-                    // Story actors are owned but require explicit recall. Do
-                    // not offer them as ordinary "missing common" candidates.
+                    // In this mobile route story materials are immediately
+                    // consumable. Preview-only routes still require recall.
                     if (material.StoryDeployedCount > 0)
                         deficitsAreOnlyCommons = false;
                     deficitMaterialKinds++;

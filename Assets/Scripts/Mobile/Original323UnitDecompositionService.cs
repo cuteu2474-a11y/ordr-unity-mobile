@@ -72,7 +72,9 @@ namespace Ordr.Mobile.Mobile
             UnitState unit;
             try { unit = combat.Roster.Get(id); }
             catch (KeyNotFoundException) { return Reject("보유 유닛이 없습니다."); }
-            if (!Supports(unit.UnitId) || combat.IsStoryDeployed(id)) return Reject("분해 가능한 보유 유닛을 선택해 주세요.");
+            if (!Supports(unit.UnitId) ||
+                combat.IsLockedFromOwnedUnitConsumption(id))
+                return Reject("분해 가능한 보유 유닛을 선택해 주세요.");
             // Preserve an unrewindable failed result: another actor may not bypass it.
             foreach (long old in new List<long>(rolledCounts.Keys))
                 if (!Exists(old)) rolledCounts.Remove(old);

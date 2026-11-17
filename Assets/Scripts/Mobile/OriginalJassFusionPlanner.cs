@@ -97,6 +97,7 @@ namespace Ordr.Mobile.Mobile
         private readonly OriginalJassFusionCatalog original;
         private readonly OriginalUnitRawcodeLabelCatalog labels;
         private readonly Func<long, bool> deployed;
+        private readonly bool permitStoryUnitConsumption;
         private readonly CharacterUnitCatalog catalog;
         private IOriginalJassSpecialConditionEvaluator specialRules;
         private IVerifiedUnitRawcodeMap verifiedObjectMap;
@@ -106,11 +107,13 @@ namespace Ordr.Mobile.Mobile
         public OriginalJassFusionPlanner(OriginalJassFusionCatalog original,
             OriginalUnitRawcodeLabelCatalog labels, Func<long, bool> storyDeployed,
             IOriginalJassSpecialConditionEvaluator specialRules = null,
-            CharacterUnitCatalog verifiedUnits = null)
+            CharacterUnitCatalog verifiedUnits = null,
+            bool permitStoryUnitConsumption = false)
         {
             this.original = original ?? throw new ArgumentNullException(nameof(original));
             this.labels = labels ?? throw new ArgumentNullException(nameof(labels));
             this.deployed = storyDeployed ?? throw new ArgumentNullException(nameof(storyDeployed));
+            this.permitStoryUnitConsumption = permitStoryUnitConsumption;
             this.specialRules = specialRules;
             this.catalog = verifiedUnits;
         }
@@ -166,7 +169,11 @@ namespace Ordr.Mobile.Mobile
                 if (unit == null || unit.InstanceId <= 0 || !uniqueIds.Add(unit.InstanceId))
                     throw new FormatException("보유 인스턴스 ID가 잘못됐거나 중복됐습니다.");
                 bool onStory = deployed(unit.InstanceId);
-                var inventory = onStory ? storyUnits : allUnits;
+                // Story-dispatched materials become spendable only in the
+                // explicitly approved mobile transaction route. Preview-only
+                // and source-native planners keep their previous behavior.
+                var inventory = onStory && !permitStoryUnitConsumption
+                    ? storyUnits : allUnits;
                 List<long> ids;
                 if (!inventory.TryGetValue(unit.Unit.Id, out ids))
                 {

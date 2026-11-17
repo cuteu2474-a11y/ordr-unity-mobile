@@ -116,7 +116,7 @@ namespace Ordr.Mobile.Mobile
             foreach (var row in now) live.Add(row.InstanceId);
             foreach (long id in exactMaterials)
                 if (id <= 0 || !seen.Add(id) ||
-                    !live.Contains(id) || combat.IsStoryDeployed(id))
+                    !live.Contains(id) || combat.IsLockedFromOwnedUnitConsumption(id))
                 {
                     reason = "원본 시전 재료가 보유 목록과 일치하지 않습니다.";
                     return false;
@@ -308,7 +308,7 @@ namespace Ordr.Mobile.Mobile
                     if (!used.Add(id) || !TryReadOriginalUnitRawcode(id, out actual) ||
                         !String.Equals(actual, command.MaterialRawcodes[i],
                             StringComparison.Ordinal) ||
-                        owner.combat.IsStoryDeployed(id))
+                        owner.combat.IsLockedFromOwnedUnitConsumption(id))
                     {
                         reason = "원본 재료 객체 또는 파견 상태가 변경됐습니다.";
                         return false;

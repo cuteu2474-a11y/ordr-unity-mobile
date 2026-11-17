@@ -151,12 +151,11 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void DifferentObjectAndDeployedOrUnavailableUnitCannotBeSold()
+        public void DifferentObjectAndUnavailableUnitCannotBeSold()
         {
             foreach (var broken in new[] {
                 new FakeWorld { Catalog = "C-02" },
                 new FakeWorld { Rawcode = "h002" },
-                new FakeWorld { Deployed = true },
                 new FakeWorld { HasUnit = false }
             })
             {
@@ -167,6 +166,37 @@ namespace Ordr.Mobile.Tests
             }
             Assert.AreEqual(ManualActionState.Rejected,
                 new OriginalLuffyCommonSaleCoordinator(new FakeWorld()).ConfirmSale(0).State);
+        }
+
+        [Test]
+        public void StoryDeployedOriginalCommonSaleUsesOneAuthoritativeTransaction()
+        {
+            var state = new FakeWorld { Deployed = true, Sold = 2, Roll = 35 };
+            var port = new OriginalLuffyCommonSaleCoordinator(state);
+            Assert.AreEqual(ManualActionState.Succeeded, port.ConfirmSale(3).State);
+            Assert.IsFalse(state.HasUnit);
+            Assert.AreEqual(3, state.Sold);
+            Assert.AreEqual(1, state.Wisps);
+            Assert.AreEqual(1, state.Wood);
+            Assert.AreEqual(1, state.RngCalls);
+            Assert.AreEqual(ManualActionState.Rejected, port.ConfirmSale(3).State);
+            Assert.AreEqual(3, state.Sold);
+        }
+
+        [Test]
+        public void StoryDeployedOriginalSaleFailureDoesNotConsumeAnyResources()
+        {
+            var state = new FakeWorld {
+                Deployed = true, Sold = 2, Roll = 35, ThrowOnApply = true
+            };
+            Assert.AreEqual(ManualActionState.Rejected,
+                new OriginalLuffyCommonSaleCoordinator(state).ConfirmSale(3).State);
+            Assert.IsTrue(state.HasUnit);
+            Assert.IsTrue(state.Deployed);
+            Assert.AreEqual(2, state.Sold);
+            Assert.AreEqual(0, state.RngCalls);
+            Assert.AreEqual(0, state.Wisps);
+            Assert.AreEqual(0, state.Wood);
         }
 
         [Test]

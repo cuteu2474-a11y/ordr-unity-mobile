@@ -37,7 +37,7 @@ namespace Ordr.Mobile.Mobile
 
         public bool CanSell(MobileUnitSnapshot unit)
         {
-            if (unit == null || combat.IsStoryDeployed(unit.InstanceId)) return false;
+            if (unit == null || combat.IsLockedFromOwnedUnitConsumption(unit.InstanceId)) return false;
             var original = objects.Find(unit.Unit.Id);
             string ability = SaleAbility(unit.Unit.Grade);
             return original != null && ability != null &&
@@ -61,7 +61,7 @@ namespace Ordr.Mobile.Mobile
             if (pending.Count > 0 && !pending.ContainsKey(id))
                 return Reject("이전 판매 결과가 대기 중입니다. 같은 유닛의 판매를 먼저 완료해 주세요.");
             var unit = Find(id);
-            if (!CanSell(unit)) return Reject("판매 가능한 보유 유닛이 아니거나 파견 중입니다.");
+            if (!CanSell(unit)) return Reject("판매 가능한 보유 유닛이 아니거나 공유 목표·해독 중입니다.");
             busy = true;
             // Mobile fallback rolls can rewind when a sale is rejected. A
             // witnessed original RNG has no rewind authority: keep the

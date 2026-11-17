@@ -102,6 +102,10 @@ namespace Ordr.Mobile.Combat
                 new Dictionary<long, UnitState>();
             private readonly Dictionary<long, long> sourceStatusRevisions =
                 new Dictionary<long, long>();
+            // The canonical lane owner must not change between staged
+            // validation and irreversible material consumption.
+            private readonly Dictionary<long, bool> sourceStoryDeployment =
+                new Dictionary<long, bool>();
             private readonly double atTime;
             private readonly int atWave;
             private readonly SessionPhase atPhase;
@@ -124,6 +128,7 @@ namespace Ordr.Mobile.Combat
                     sourcePositions.Add(id, owner.roster.Get(id));
                     sourceStatusRevisions.Add(id,
                         owner.unitStatuses[InstanceKey(id)].Revision);
+                    sourceStoryDeployment.Add(id, owner.IsStoryDeployed(id));
                 }
             }
 
@@ -168,9 +173,10 @@ namespace Ordr.Mobile.Combat
                 foreach (long id in materialIds)
                 {
                     if (!world.characters.ContainsKey(id) ||
-                        world.IsLockedFromRosterTransactions(id))
+                        world.IsLockedFromOwnedUnitConsumption(id) ||
+                        world.IsStoryDeployed(id) != sourceStoryDeployment[id])
                         throw new InvalidOperationException(
-                            "원본 조합 재료가 사라지거나 파견됐습니다.");
+                            "원본 조합 재료가 제거되거나 소유권·파견 상태가 변경됐습니다.");
                     UnitState oldLocation = sourcePositions[id];
                     UnitState now = world.roster.Get(id);
                     if (now.X != oldLocation.X || now.Y != oldLocation.Y ||
@@ -277,9 +283,9 @@ namespace Ordr.Mobile.Combat
             foreach (long id in exactMaterials)
             {
                 if (id <= 0 || !unique.Add(id) ||
-                    !characters.ContainsKey(id) || IsLockedFromRosterTransactions(id))
+                    !characters.ContainsKey(id) || IsLockedFromOwnedUnitConsumption(id))
                     throw new InvalidOperationException(
-                        "존재하지 않거나 파견 중인 원본 재료 인스턴스");
+                        "원본 재료가 없거나 공유 목표·해독에 사용 중입니다.");
                 materials.Add(id);
             }
             var ticket = new OriginalFusionUnitSwap(this, materials);
@@ -302,8 +308,9 @@ namespace Ordr.Mobile.Combat
         {
             if (activeOriginalFusionSwap != null || processingStep ||
                 pendingStepSeconds != 0 || game.Phase != SessionPhase.Running ||
-                !characters.ContainsKey(instanceId) || IsLockedFromRosterTransactions(instanceId))
-                throw new InvalidOperationException("현재 유닛을 판매할 수 없습니다.");
+                !characters.ContainsKey(instanceId) ||
+                IsLockedFromOwnedUnitConsumption(instanceId))
+                throw new InvalidOperationException("현재 유닛을 소비할 수 없습니다.");
             var ticket = new OriginalFusionUnitSwap(this,
                 new List<long> { instanceId }, true);
             activeOriginalFusionSwap = ticket;
@@ -326,9 +333,9 @@ namespace Ordr.Mobile.Combat
             foreach (long id in instanceIds)
             {
                 if (id <= 0 || !unique.Add(id) ||
-                    !characters.ContainsKey(id) || IsLockedFromRosterTransactions(id))
+                    !characters.ContainsKey(id) || IsLockedFromOwnedUnitConsumption(id))
                     throw new InvalidOperationException(
-                        "원본 재료 인스턴스가 중복·파견·제거되었습니다.");
+                        "원본 재료 인스턴스가 중복·사용 중·제거되었습니다.");
                 ids.Add(id);
             }
             var ticket = new OriginalFusionUnitSwap(this, ids, true);
@@ -1608,11 +1615,16 @@ namespace Ordr.Mobile.Combat
         public bool IsSharedObjectiveDeployed(long instanceId) =>
             sharedObjectiveDeployed.ContainsKey(instanceId);
 
-        // A deployed or decoding actor remains in the roster for combat, but
-        // cannot be used as fusion material or removed by commerce. Death and
-        // explicit battle cleanup still use RemoveCharacter directly.
+        // Story dispatch still restricts ordinary roster actions, such as
+        // manual placement. A player-confirmed fusion/sale/decomposition may
+        // instead CONSUME a story-deployed unit atomically without recalling
+        // it. Shared-objective deployment and Poneglyph decoding never gain
+        // this exception; no creep eligibility is implied.
         public bool IsLockedFromRosterTransactions(long instanceId) =>
-            IsStoryDeployed(instanceId) || IsSharedObjectiveDeployed(instanceId) ||
+            IsStoryDeployed(instanceId) || IsLockedFromOwnedUnitConsumption(instanceId);
+
+        public bool IsLockedFromOwnedUnitConsumption(long instanceId) =>
+            IsSharedObjectiveDeployed(instanceId) ||
             IsOriginalPoneglyphChanneling(instanceId);
 
         public string SharedObjectiveTargetOf(long instanceId)

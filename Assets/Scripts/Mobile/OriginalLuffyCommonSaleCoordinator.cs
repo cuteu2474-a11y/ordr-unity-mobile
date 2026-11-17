@@ -84,9 +84,9 @@ namespace Ordr.Mobile.Mobile
                             out rawcode, out deployed, out reason) ||
                         !isSourceBackedCommon(catalog, rawcode))
                         return Reject("원본 A09G 흔함 유닛이 아니거나 소유하지 않았습니다.");
-                    if (deployed)
-                        return Reject("스토리 파견 중인 유닛은 판매할 수 없습니다.");
-
+                    // Story deployment is not a consumption lock in the
+                    // confirmed mobile policy. The source-backed transaction
+                    // still controls exact ownership, shared RNG and rollback.
                     int alreadySold;
                     if (!transaction.TryReadSaleCount(out alreadySold, out reason) ||
                         alreadySold < 0 || alreadySold == int.MaxValue)

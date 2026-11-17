@@ -73,6 +73,83 @@ namespace Ordr.Mobile.Tests
             }
         }
         [Test]
+        public void StoryDispatchedDecompositionConsumesOneActualActorWithoutRecall()
+        {
+            using (var game = Create())
+            {
+                long id = game.Combat.SpawnCharacter("S-02", 1, 2);
+                var story = new Original323StoryManualDispatch(game.Combat,
+                    new Original323SoloStoryMovement(game.Combat, game.Map));
+                game.Combat.ConfigureStoryDeployment(story);
+                Assert.AreEqual(ManualActionState.Succeeded, story.Dispatch(id).State);
+                Assert.IsTrue(story.IsDeployed(id));
+                Assert.AreEqual(ManualActionState.Succeeded, game.Service.Request(id).State);
+                Assert.IsTrue(game.Combat.IsOriginalUnitCasting(id));
+                game.Service.Advance(5);
+                Assert.IsFalse(story.IsDeployed(id),
+                    "A committed material removal must retire the story lane.");
+                Assert.AreEqual(0, game.Service.PendingCount);
+                Assert.AreEqual(3, game.Combat.CharacterCount);
+                CollectionAssert.AreEquivalent(new[] { "U-13", "C-07", "C-08" },
+                    game.Combat.MobileUnitSnapshot().Select(x => x.Unit.Id));
+                Assert.IsFalse(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == id));
+            }
+        }
+
+        [Test]
+        public void FailedStoryDecompositionPreservesLaneAndAllOriginalMaterials()
+        {
+            using (var game = Create())
+            {
+                long id = game.Combat.SpawnCharacter("S-02", 1, 2);
+                var story = new Original323StoryManualDispatch(game.Combat,
+                    new Original323SoloStoryMovement(game.Combat, game.Map));
+                game.Combat.ConfigureStoryDeployment(story);
+                Assert.AreEqual(ManualActionState.Succeeded, story.Dispatch(id).State);
+                var original = game.Combat.Roster.Get(id);
+                game.Combat.ConfigureVerifiedUnitAttackProvider(
+                    new FailSpawn { FailId = "C-08" });
+                Assert.AreEqual(ManualActionState.Succeeded, game.Service.Request(id).State);
+                game.Service.Advance(5);
+                Assert.IsTrue(story.IsDeployed(id),
+                    "Rollback must never auto-recall a still-owned story actor.");
+                Assert.AreEqual(original.X, game.Combat.Roster.Get(id).X);
+                Assert.AreEqual(original.Y, game.Combat.Roster.Get(id).Y);
+                Assert.AreEqual(1, game.Combat.CharacterCount);
+                Assert.AreEqual("S-02", game.Combat.Roster.Get(id).UnitId);
+                Assert.AreEqual(0, game.Service.PendingCount);
+            }
+        }
+
+        [Test]
+        public void StoryDispatchedCommonSaleUsesExistingAtomicRemovalAndCounter()
+        {
+            using (var game = Create())
+            {
+                long id = game.Combat.SpawnCharacter("C-01", 1, 2);
+                var story = new Original323StoryManualDispatch(game.Combat,
+                    new Original323SoloStoryMovement(game.Combat, game.Map));
+                game.Combat.ConfigureStoryDeployment(story);
+                Assert.AreEqual(ManualActionState.Succeeded, story.Dispatch(id).State);
+                var sales = new Original323LowerGradeSaleService(
+                    game.Combat, game.Economy, game.Map, new Rolls());
+                Assert.IsTrue(sales.CanSell(game.Combat.MobileUnitSnapshot().Single()));
+                long gold = game.Economy.Wallet.Balance("gold");
+                using (var rolledBack = game.Combat.BeginOriginalUnitRemoval(id)) { }
+                Assert.IsTrue(story.IsDeployed(id));
+                Assert.AreEqual(1, game.Combat.CharacterCount);
+                Assert.AreEqual(ManualActionState.Succeeded, sales.Sell(id).State);
+                Assert.IsFalse(story.IsDeployed(id));
+                Assert.AreEqual(0, game.Combat.CharacterCount);
+                Assert.AreEqual(1, sales.CommonSold);
+                Assert.AreEqual(gold, game.Economy.Wallet.Balance("gold"));
+                Assert.AreEqual(ManualActionState.Rejected, sales.Sell(id).State,
+                    "Duplicate sale cannot re-credit one removed actor.");
+                Assert.AreEqual(1, sales.CommonSold);
+            }
+        }
+
+        [Test]
         public void CaponeWaitsFiveSecondsThenAtomicallyCreatesThreeExactSourceResults()
         {
             var rng = new Rolls();

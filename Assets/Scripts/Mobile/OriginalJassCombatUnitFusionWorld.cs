@@ -114,7 +114,7 @@ namespace Ordr.Mobile.Mobile
                     MobileUnitSnapshot unit;
                     string original;
                     if (!used.Add(id) || !byId.TryGetValue(id, out unit) ||
-                        combat.IsStoryDeployed(id) ||
+                        combat.IsLockedFromOwnedUnitConsumption(id) ||
                         !rules.TryReadOriginalRawcode(id, out original) ||
                         !String.Equals(original, command.MaterialRawcodes[i],
                             StringComparison.Ordinal))
