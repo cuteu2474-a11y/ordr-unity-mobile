@@ -400,29 +400,19 @@ namespace Ordr.Mobile.Combat
                         "MODEL_ONLY BpT/h06O: 0.35초 접근 모델 / 실물 소환 없음", 0));
                     RemainingProc(actor, target, spec,
                         "h06O 장난감 생성 / 3.5초 수명 / target selfdestruct");
-                    bool dollLane = IsStoryDeployed(actor.Id);
-                    long dollRevision = SourceModelLaneRevision(actor.Id);
-                    var dollImpact = RemainingHitSpec(spec.CatalogId,
-                        spec.Rawcode, spec.Jass, RemainingDirect(500));
-                    effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
+                    var pendingDoll = new SourceTemporaryDeferredPayload {
+                        OwnerId = actor.Id, StoryLane = IsStoryDeployed(actor.Id),
+                        LaneRevision = SourceModelLaneRevision(actor.Id),
+                        CastAt = effectExecutor.Time, DelaySeconds = .35,
+                        SummonId = doll.Id, EnemyId = target.Id,
+                        OriginalAbilityRawcode = "A03A"
+                    };
+                    effectExecutor.ScheduleRestorableSourceAttack(
+                        InstanceKey(actor.Id),
                         "remaining-doll:" + actor.Id + ":" + doll.Id,
-                        .35, () => {
-                            SpatialCombatEnemy ordered;
-                            if (!CanFinishSourceModelDelayedAttack(actor.Id,
-                                    dollLane, dollRevision) ||
-                                !enemies.TryGetValue(target.Id, out ordered) ||
-                                !ReferenceEquals(target, ordered) ||
-                                !ordered.Enemy.IsAlive ||
-                                !CanAttackInThisLane(actor, ordered)) return;
-                            // Use the victim's current coordinates when it
-                            // has moved since the order. If the target is
-                            // lost, do not invent a new target or explosion:
-                            // the doll lives until its 3.5s timed death.
-                            if (!RetireSourceTemporaryActor(
-                                    doll.Id, ordered.Id, ordered.X, ordered.Y)) return;
-                            ApplySourceScriptHits(actor, ordered, dollImpact,
-                                dollImpact.OnProc);
-                        });
+                        .35, TemporarySugarDollKind,
+                        EncodeTemporaryDeferred(pendingDoll),
+                        CreateTemporarySugarDollImpact(pendingDoll));
                     break;
                 case "R-29": // e0KE/A03O ANfl, ordered target + up to 8 forks.
                     foreach (var victim in RemainingOrderedNativeTargets(

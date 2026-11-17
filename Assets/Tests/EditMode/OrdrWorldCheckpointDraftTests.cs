@@ -46,7 +46,7 @@ namespace Ordr.Mobile.Tests
                 Assert.IsTrue(envelope.StartsWith("ORDR-CORE-BIN-v3\n",
                     StringComparison.Ordinal));
                 var encoded = envelope.Substring(envelope.LastIndexOf('\n') + 1);
-                Assert.AreEqual(11,
+                Assert.AreEqual(12,
                     BitConverter.ToInt32(Convert.FromBase64String(encoded), 0));
                 var loaded = store.LoadCore();
                 Assert.AreEqual(captured.SessionId, loaded.SessionId);

@@ -80,23 +80,16 @@ namespace Ordr.Mobile.Combat
             long token = ++sourceAttackPauseSerial;
             sourceAttackPauseTokens[actor.Id] = token;
             string key = "practice-attack-pause:" + actor.Id + ":" + token;
-            effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
-                key, seconds, () => {
-                    double activeUntil;
-                    long activeToken;
-                    if (!sourceAttackPauseTokens.TryGetValue(actor.Id,
-                            out activeToken) || activeToken != token ||
-                        !sourceAttackPauseFinishes.TryGetValue(actor.Id,
-                            out activeUntil) || activeUntil != until) return;
-                    sourceAttackPauseTokens.Remove(actor.Id);
-                    sourceAttackPauseFinishes.Remove(actor.Id);
-                    sourceFormCastWake = true;
-                    if (CanFinishSourceModelDelayedAttack(actor.Id, lane, revision))
-                        events.Add(new CharacterCombatEvent(
-                            CharacterCombatEventType.SkillActivated,
-                            InstanceKey(actor.Id), target.Id, skillName,
-                            "MODEL_ONLY 원본 EXPauseUnit 해제 / 평타 재개", 0));
-                });
+            var pending = new SourceTemporaryDeferredPayload {
+                OwnerId = actor.Id, StoryLane = lane,
+                LaneRevision = revision, CastAt = effectExecutor.Time,
+                DelaySeconds = seconds, Token = token,
+                EnemyId = target.Id, SkillName = skillName
+            };
+            effectExecutor.ScheduleRestorableSourceAttack(InstanceKey(actor.Id),
+                key, seconds, TemporaryAttackPauseKind,
+                EncodeTemporaryDeferred(pending),
+                CreateTemporaryAttackPauseRelease(pending));
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated,
                 InstanceKey(actor.Id), target.Id, skillName,
@@ -199,6 +192,7 @@ namespace Ordr.Mobile.Combat
             sourceAttackPauseFinishes.Remove(ownerId);
             sourceAttackPauseTokens.Remove(ownerId);
             sourceFormNames.Remove(ownerId);
+            sourceModelYamatoOpeningReady.Remove(ownerId);
             ForgetSourceModelTenthForm(ownerId);
             ForgetNativeSourceCharacter(ownerId);
             for (int i = sourceTemporarySummons.Count - 1; i >= 0; i--)
@@ -360,22 +354,16 @@ namespace Ordr.Mobile.Combat
                     CharacterCombatEventType.SkillActivated, attacker,
                     primary.Id, skill.Name,
                     "MODEL_ONLY 변신 시전 시작 / " + castTime + "초", 0));
-                effectExecutor.SchedulePracticeSourceAttack(attacker,
-                    "practice-form-cast:" + attacker, castTime, () => {
-                        // Check the lane revision BEFORE touching this
-                        // owner's new windup. Recast on the same scheduler
-                        // tick can have an identical expected finish time.
-                        if (!CanFinishSourceModelDelayedAttack(
-                                actor.Id, lane, revision)) return;
-                        double stillExpected;
-                        if (!sourceFormCastFinishes.TryGetValue(
-                                actor.Id, out stillExpected) ||
-                            stillExpected != expectedFinish)
-                            return;
-                        sourceFormCastFinishes.Remove(actor.Id);
-                        sourceFormCastWake = true;
-                        ApplySourceForm(actor.Id, skill, form);
-                    });
+                var pending = new SourceTemporaryDeferredPayload {
+                    OwnerId = actor.Id, StoryLane = lane,
+                    LaneRevision = revision, CastAt = effectExecutor.Time,
+                    DelaySeconds = castTime, SkillId = skill.Id
+                };
+                effectExecutor.ScheduleRestorableSourceAttack(attacker,
+                    "practice-form-cast:" + attacker, castTime,
+                    TemporaryFormWindupKind,
+                    EncodeTemporaryDeferred(pending),
+                    CreateTemporaryFormWindupFinish(pending));
                 return;
             }
 

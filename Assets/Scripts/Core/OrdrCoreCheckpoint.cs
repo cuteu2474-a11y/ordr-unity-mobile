@@ -419,6 +419,7 @@ namespace Ordr.Mobile.Core
             CombatTimedEffectQueue.ValidateState(world.Timed);
             CharacterCombatRuntime.ValidateOriginalDummyState(world);
             CharacterCombatRuntime.ValidateSourceNativeDelayedState(world);
+            CharacterCombatRuntime.ValidateSourceTemporaryOwners(world);
             CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
                 world, state.OriginalScriptAttackProcs);
             CharacterCombatRuntime.ValidateMariaPulseState(world);

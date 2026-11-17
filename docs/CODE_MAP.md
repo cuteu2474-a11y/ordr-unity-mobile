@@ -1,5 +1,7 @@
 # 코드 구조
 
+- TR-14 변신/EXPauseUnit 평타 해제/슈가 h06O 가상 투사체 예약 및 변신 이름·야마토 후속 소유권 복원: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceTemporaryOwnerSaveState.cs` (생산자: `.SourceModelTemporarySkills.cs`/`.SourceModelRemainingCallbacks.cs`).
+
 - 원본 지연 네이티브 스킬 예약 3종의 직렬화·복원·유효성 검증: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceNativeDelayedSaveState.cs`; 생산자: `CharacterCombatRuntime.SourceModelNativeFollowups.cs`, `.SourceModelLegacyFollowups.cs`, 타입 큐 재연결: `.SourceModelTooltipManualActions.cs`.
 
 - 원본 Bnm/Bnp/Bnr e0KD 네이티브 지연 시전의 체크포인트/소유권 검증: `Assets/Scripts/Combat/CharacterCombatRuntime.OriginalNativeDummySaveState.cs`; 비공개 결합: `Assets/Scripts/Mobile/OrdrUnpublishedWorldRestoreGraph.cs` (시전/타격/보상 재실행 금지, 완료 주문 ID 묘비 복원).

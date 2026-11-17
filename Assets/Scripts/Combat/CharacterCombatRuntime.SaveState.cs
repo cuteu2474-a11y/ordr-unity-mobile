@@ -186,6 +186,7 @@ namespace Ordr.Mobile.Combat
         // Source-backed, queue-owned native delayed hits and liquid-fire
         // per-enemy generation counters (no lambda serialization).
         public SourceNativeDelayedOwnerCheckpoint NativeDelayed;
+        public SourceTemporaryOwnerCheckpoint TemporaryOwners;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -561,10 +562,7 @@ namespace Ordr.Mobile.Combat
             if (!UsesSourceModelBasicAttacks) return;
             // Non-equipment summons and transform callbacks still require
             // independent reconstruction; never silently erase.
-            if (sourceFormCastFinishes.Count != 0 ||
-                sourceAttackPauseFinishes.Count != 0 ||
-                sourceFormNames.Count != 0 ||
-                sourceModelBonneyAge.Count != 0 ||
+            if (sourceModelBonneyAge.Count != 0 ||
                 sourceModelKingExecutionUsed.Count != 0 ||
                 sourceModelMarcoVerifiedForm != null)
                 throw new NotSupportedException(
@@ -668,6 +666,7 @@ namespace Ordr.Mobile.Combat
             }
             moriaParticipation.RestoreState(state.MoriaParticipation);
             RestoreSourceNativeDelayedOwners(state.NativeDelayed);
+            RestoreSourceTemporaryOwners(state.TemporaryOwners);
         }
 
         private void RestoreManualOwners(SourceCombatRuntimeCheckpoint state)
@@ -923,6 +922,7 @@ namespace Ordr.Mobile.Combat
             ValidateSourceTransientState(state);
             ValidateOriginalDummyState(state);
             ValidateSourceNativeDelayedState(state);
+            ValidateSourceTemporaryOwners(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1082,7 +1082,8 @@ namespace Ordr.Mobile.Combat
                 Attacks = attackPipeline.CaptureState(),
                 Timed = effectExecutor.CaptureTimedState(),
                 OriginalNativeDummy = CaptureOriginalDummyState(),
-                NativeDelayed = CaptureSourceNativeDelayedOwners()
+                NativeDelayed = CaptureSourceNativeDelayedOwners(),
+                TemporaryOwners = CaptureSourceTemporaryOwners()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1238,6 +1239,7 @@ namespace Ordr.Mobile.Combat
             ValidateSourceTransientState(draft);
             ValidateOriginalDummyState(draft);
             ValidateSourceNativeDelayedState(draft);
+            ValidateSourceTemporaryOwners(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);

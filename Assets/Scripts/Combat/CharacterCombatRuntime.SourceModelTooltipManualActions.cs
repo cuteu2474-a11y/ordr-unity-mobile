@@ -461,7 +461,9 @@ namespace Ordr.Mobile.Combat
                 var kuma = RestoreSourceModelKumaPhoenixFire(
                     kind, payload, casterId, targetId);
                 return kuma ?? RestoreSourceNativeDelayed(
-                    kind, payload, casterId, targetId);
+                    kind, payload, casterId, targetId) ??
+                    RestoreSourceTemporaryTimedEffect(
+                        kind, payload, casterId, targetId);
             }
             long id, token, lane;
             int tick;
