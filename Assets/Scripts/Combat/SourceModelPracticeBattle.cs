@@ -707,6 +707,7 @@ namespace Ordr.Mobile.Combat
             waves.VerifiedMonsterDefeated += RewardActualDeath;
             combat.SourceModelTimeAdvancing += MoveLivingMonsters;
             combat.ActualEnemyDamage += ObserveActualWaveDamage;
+            combat.Game.WaveEnemyCountChanged += ObserveActualWaveCount;
             // Previous HP damage is not reconstructed from restored enemies.
             ResetRoundDamageObservation(false);
             Started = true;
@@ -761,6 +762,7 @@ namespace Ordr.Mobile.Combat
             waves.VerifiedMonsterDefeated += RewardActualDeath;
             combat.SourceModelTimeAdvancing += MoveLivingMonsters;
             combat.ActualEnemyDamage += ObserveActualWaveDamage;
+            combat.Game.WaveEnemyCountChanged += ObserveActualWaveCount;
             Started = true;
             BeginRound(1);
         }
@@ -858,6 +860,16 @@ namespace Ordr.Mobile.Combat
             BeginRound(wave + 1);
             return false;
         }
+        // A transient dip below 70 is a full grace reset even if another
+        // monster spawns before the next 0.1-second wave observation.
+        // Count changes are emitted only by the authoritative wave session;
+        // story buildings/creeps are not part of this callback.
+        private void ObserveActualWaveCount(int alive)
+        {
+            if (Started && combat.Game.Phase == SessionPhase.Running)
+                deathCount.Observe(alive, combat.Time);
+        }
+
         private void MoveLivingMonsters(double elapsed)
         {
             foreach (var enemy in combat.MobileEnemySnapshot())
@@ -949,6 +961,7 @@ namespace Ordr.Mobile.Combat
             waves.VerifiedMonsterDefeated -= RewardActualDeath;
             combat.SourceModelTimeAdvancing -= MoveLivingMonsters;
             combat.ActualEnemyDamage -= ObserveActualWaveDamage;
+            combat.Game.WaveEnemyCountChanged -= ObserveActualWaveCount;
             MoneyGamblingBossDefeated = null;
         }
     }

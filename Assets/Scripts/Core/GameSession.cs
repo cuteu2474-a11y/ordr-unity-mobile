@@ -41,6 +41,12 @@ namespace Ordr.Mobile.Core
         public int LeakedEnemies { get; private set; }
         public int DefeatedEnemies { get; private set; }
 
+        // Actual main-lane count transitions, including a kill and a new
+        // spawn at the same combat timestamp. Non-wave enemies never emit.
+        // The practice death-grace observer uses these edges instead of
+        // relying only on end-of-frame sampling.
+        public event Action<int> WaveEnemyCountChanged;
+
         public GameSessionState CaptureState()
         {
             return new GameSessionState {
@@ -94,6 +100,7 @@ namespace Ordr.Mobile.Core
             RequireRunning();
             if (CurrentWave == 0) throw new InvalidOperationException("라운드 시작 전입니다.");
             checked { AliveEnemies++; }
+            WaveEnemyCountChanged?.Invoke(AliveEnemies);
         }
 
         public void DefeatEnemy()
@@ -102,6 +109,7 @@ namespace Ordr.Mobile.Core
             if (AliveEnemies <= 0) throw new InvalidOperationException("살아있는 적이 없습니다.");
             AliveEnemies--;
             checked { DefeatedEnemies++; }
+            WaveEnemyCountChanged?.Invoke(AliveEnemies);
         }
 
         public void LeakEnemy()
@@ -110,6 +118,7 @@ namespace Ordr.Mobile.Core
             if (AliveEnemies <= 0) throw new InvalidOperationException("살아있는 적이 없습니다.");
             AliveEnemies--;
             checked { LeakedEnemies++; }
+            WaveEnemyCountChanged?.Invoke(AliveEnemies);
             // 원작 패배 기준은 미확인: 임의로 패배 처리하지 않는다.
         }
 

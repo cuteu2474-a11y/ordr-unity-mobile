@@ -810,6 +810,44 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void DeathCountdownObservesBriefBelowLimitReboundWithinOneWaveFrame()
+        {
+            using (var game = Create())
+            {
+                game.Battle.Advance(53);
+                Assert.AreEqual(70, game.Combat.Game.AliveEnemies);
+                double firstStart = game.Battle.CaptureState().DeathCountStartedAt;
+                game.Battle.Advance(1.0);
+                Assert.Greater(game.Battle.DeathCountdownSecondsRemaining, 18d);
+                Assert.Less(game.Battle.DeathCountdownSecondsRemaining, 20d);
+
+                // Both changes occur at one combat timestamp. Frame-only
+                // polling would see 70->70 and incorrectly retain the old
+                // deadline even though the limit was momentarily broken.
+                var victim = game.Combat.MobileEnemySnapshot().First();
+                Assert.IsTrue(game.Combat.LeakEnemy(victim.Id));
+                Assert.AreEqual(69, game.Combat.Game.AliveEnemies);
+                Assert.IsFalse(game.Battle.IsDeathCountdownActive);
+                game.Combat.SpawnEnemy("count-rebound-fixture", 100,
+                    CharacterEnemyKind.Line, 0, 0, 0);
+                Assert.AreEqual(70, game.Combat.Game.AliveEnemies);
+                Assert.IsTrue(game.Battle.IsDeathCountdownActive);
+                Assert.Greater(game.Battle.CaptureState().DeathCountStartedAt, firstStart);
+                Assert.AreEqual(20d, game.Battle.DeathCountdownSecondsRemaining, 1e-7);
+
+                // Only main-lane enemies affect the death count. An
+                // independent story building must not restart the clock.
+                game.Combat.SpawnEnemy("story-count-fixture", 100,
+                    CharacterEnemyKind.Story, 0, 0, 0);
+                Assert.AreEqual(70, game.Combat.Game.AliveEnemies);
+                Assert.AreEqual(20d, game.Battle.DeathCountdownSecondsRemaining, 1e-7);
+
+                game.Battle.Advance(.1);
+                Assert.Greater(game.Battle.DeathCountdownSecondsRemaining, 19.8);
+            }
+        }
+
+        [Test]
         public void DeathCountdownUsesCombatClockAndPreservesCheckpointState()
         {
             var timer = new MonsterCountDeathCountdown(70);
