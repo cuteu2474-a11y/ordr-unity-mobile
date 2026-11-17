@@ -21,7 +21,7 @@ namespace Ordr.Mobile.Mobile
     }
 
     public sealed class Original323GraduatedRareShopWorld :
-        IOriginal323GraduatedRareShopWorld
+        IOriginal323GraduatedRareShopWorld, IOriginal323RestoreCommerceOwner
     {
         private static readonly string[] RareRawcodes = {
             "h09X", "h01Q", "h025", "h01L", "h022", "h021", "h020", "h01Z", "h01Y", "h01X", "h01W", "h01V", "h01U", "h01T", "h02M", "h01S", "h01R", "h01M", "h01N", "h01O", "h05L", "h01P", "h02I", "h029", "h028", "h027", "h026", "h02A", "h024", "h02C", "h02D", "h02G", "h02F", "h02E", "h04H", "h023", "h02B", "h02H", "h02J", "h02K", "h02L", "h05K", "h05X"
@@ -89,6 +89,11 @@ namespace Ordr.Mobile.Mobile
                 labels.Add(rawcode, entry.Name);
             }
         }
+
+        public bool IsAttachedTo(CharacterCombatRuntime runtime,
+            Original323WispDeferredAbilityRegistry registry) =>
+            ReferenceEquals(combat, runtime) &&
+            ReferenceEquals(deferredBonus, registry);
 
         public IOriginal323GraduatedRareShopTransaction Begin()
         {

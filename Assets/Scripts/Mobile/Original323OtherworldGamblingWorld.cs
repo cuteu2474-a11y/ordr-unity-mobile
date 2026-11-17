@@ -6,7 +6,8 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Mobile
 {
-    public sealed class Original323OtherworldGamblingWorld : IOriginal323OtherworldGamblingWorld
+    public sealed class Original323OtherworldGamblingWorld :
+        IOriginal323OtherworldGamblingWorld, IOriginal323RestoreCommerceOwner
     {
         private readonly CharacterCombatRuntime combat;
         private readonly IOriginalWispDeferredBonusPort abilities;
@@ -53,6 +54,11 @@ namespace Ordr.Mobile.Mobile
                 throw new ArgumentException("CJM 원본 결과 객체 불일치: " + rawcode);
             ids.Add(rawcode, id); names.Add(rawcode, entry.Name);
         }
+
+        public bool IsAttachedTo(CharacterCombatRuntime runtime,
+            Original323WispDeferredAbilityRegistry registry) =>
+            ReferenceEquals(combat, runtime) &&
+            ReferenceEquals(abilities, registry);
 
         public IOriginal323OtherworldGamblingTransaction Begin(Original323OtherworldGamblingOutcome outcome)
         {

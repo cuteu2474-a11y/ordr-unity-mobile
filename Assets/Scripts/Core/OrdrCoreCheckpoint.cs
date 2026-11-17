@@ -50,6 +50,9 @@ namespace Ordr.Mobile.Core
         // Source-verified snapshots for treasure only; never enable Continue.
         public Original323TreasureSessionState Treasure;
         public Original323SharedObjectiveWorldState SharedObjectives;
+        // Original A0YE/A0YZ pending ability ownership for actual unit IDs.
+        // This is NOT evidence that the native buff has been applied.
+        public Original323WispDeferredAbilityRegistryState WispDeferredAbilities;
     }
 
     public sealed class OrdrRestoredCoreCheckpoint
@@ -98,7 +101,8 @@ namespace Ordr.Mobile.Core
             MobileRollbackWispRandomState graduatedRarePoolRandom = null,
             Original323TreasureSessionState treasure = null,
             Original323SharedObjectiveWorldState sharedObjectives = null,
-            Original323SharedBfiCheckpoint originalScriptRandom = null)
+            Original323SharedBfiCheckpoint originalScriptRandom = null,
+            Original323WispDeferredAbilityRegistryState wispDeferredAbilities = null)
         {
             if (game == null || economy == null || missions == null ||
                 !economy.HasStarted || game.Phase == SessionPhase.NotStarted ||
@@ -123,7 +127,8 @@ namespace Ordr.Mobile.Core
                 Poneglyph = poneglyph, Creeps = creeps,
                 StoryBuildings = storyBuildings, SoloStory = soloStory,
                 StoryProgression = storyProgression,
-                Treasure = treasure, SharedObjectives = sharedObjectives
+                Treasure = treasure, SharedObjectives = sharedObjectives,
+                WispDeferredAbilities = wispDeferredAbilities
             };
             // The mission gameplay component carries the SAME shared wallet.
             // A different wallet or a torn cross-service snapshot is rejected.
@@ -194,6 +199,9 @@ namespace Ordr.Mobile.Core
             if (state.Combat != null)
                 CharacterCombatRuntime.ValidateCreepDeploymentState(
                     state.Combat, state.Creeps, state.Roster);
+            if (state.WispDeferredAbilities != null)
+                Original323WispDeferredAbilityRegistry.ValidateState(
+                    state.WispDeferredAbilities, state.Roster);
             if (state.ScriptRandom != null &&
                 state.OriginalScriptRandom != null)
                 throw new FormatException(

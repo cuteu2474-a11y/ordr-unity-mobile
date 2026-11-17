@@ -50,6 +50,7 @@ namespace Ordr.Mobile.Mobile
         public OrdrUnpublishedCombatRestoreGraph Combat { get; private set; }
         public OrdrUnpublishedCommerceRestoreGraph Commerce { get; private set; }
         public OrdrUnpublishedAuxiliaryRestoreGraph Auxiliary { get; private set; }
+        public OrdrUnpublishedTreasureRestoreGraph Treasure { get; private set; }
         public string SessionId { get; private set; }
         public double LogicalTime { get; private set; }
         public bool IsDisposed { get; private set; }
@@ -57,12 +58,14 @@ namespace Ordr.Mobile.Mobile
         internal OrdrUnpublishedWorldRestoreGraph(
             OrdrUnpublishedCombatRestoreGraph combat,
             OrdrUnpublishedCommerceRestoreGraph commerce,
-            OrdrUnpublishedAuxiliaryRestoreGraph auxiliary, string sessionId,
-            double logicalTime)
+            OrdrUnpublishedAuxiliaryRestoreGraph auxiliary,
+            OrdrUnpublishedTreasureRestoreGraph treasure,
+            string sessionId, double logicalTime)
         {
             Combat = combat;
             Commerce = commerce;
             Auxiliary = auxiliary;
+            Treasure = treasure;
             SessionId = sessionId;
             LogicalTime = logicalTime;
         }
@@ -86,8 +89,15 @@ namespace Ordr.Mobile.Mobile
         {
             OrdrCommerceRestoreGraphBuilder.ValidateCommerceDraft(save);
             if (save.Treasure != null)
-                throw new NotSupportedException(
-                    "보물의 원본 보류 탐색·시전 영수증이 아직 통합 복원되지 않았습니다.");
+            {
+                // Reconstruct only a disposable scratch wallet before any
+                // source factory is invoked. This must never grant initial
+                // bounty maps or apply pending native One Piece abilities.
+                var scratch = new EconomyWallet();
+                scratch.RestoreState(save.MissionGameplay.Wallet);
+                OrdrTreasureRestoreGraphBuilder.ValidatePrerequisites(
+                    save, scratch);
+            }
             if (save.Practice == null && save.Game.CurrentWave > 0)
                 throw new NotSupportedException(
                     "진행된 라운드에는 원본 65R 출현·전투 진행 장부가 필요합니다.");
@@ -160,6 +170,8 @@ namespace Ordr.Mobile.Mobile
                     null, // never attach a live mission-commit callback
                     inputs.OriginalStateWitness, inputs.OriginalDrawWitness);
 
+                var treasure = OrdrTreasureRestoreGraphBuilder.Prepare(
+                    save, combat, commerce);
                 // Both handles below share the exact H6 instance in original
                 // mode. No script RNG, source draw or reward is consumed.
                 var scriptOther = commerce.RandomForPurpose(
@@ -175,10 +187,11 @@ namespace Ordr.Mobile.Mobile
                     inputs.SourceDamage, monsterGold, null,
                     inputs.CreepDispatchAuthority, inputs.SharedOriginalObjects,
                     inputs.SharedObjectiveWitness, scriptOther);
-                ValidateReconstructedState(save, combat, commerce, auxiliary);
+                ValidateReconstructedState(
+                    save, combat, commerce, auxiliary, treasure);
                 return new OrdrUnpublishedWorldRestoreGraph(
-                    combat, commerce, auxiliary, save.SessionId,
-                    save.LogicalTime);
+                    combat, commerce, auxiliary, treasure,
+                    save.SessionId, save.LogicalTime);
             }
             catch
             {
@@ -194,7 +207,8 @@ namespace Ordr.Mobile.Mobile
         // This is a read-only assertion of identity, not a second restore.
         // Passing local component validation is insufficient when a staged
         // service refers to the wrong combat, wallet or RNG epoch.
-        private static void SameState<T>(string owner, T original, T restored)
+        internal static void AssertSameState<T>(
+            string owner, T original, T restored)
             where T : class
         {
             if (original == null && restored == null) return;
@@ -209,7 +223,8 @@ namespace Ordr.Mobile.Mobile
             OrdrCoreCheckpointState save,
             OrdrUnpublishedCombatRestoreGraph combat,
             OrdrUnpublishedCommerceRestoreGraph commerce,
-            OrdrUnpublishedAuxiliaryRestoreGraph auxiliary)
+            OrdrUnpublishedAuxiliaryRestoreGraph auxiliary,
+            OrdrUnpublishedTreasureRestoreGraph treasure = null)
         {
             if (save == null || combat == null || commerce == null ||
                 auxiliary == null || combat.Core == null ||
@@ -229,47 +244,50 @@ namespace Ordr.Mobile.Mobile
                 throw new FormatException(
                     "원본 공통 BFi/모바일 난수 소유권이 중복되거나 누락됐습니다.");
 
-            SameState("게임", save.Game, combat.Core.Game.CaptureState());
-            SameState("개인미션/보상 영수증", save.MissionGameplay,
+            AssertSameState("게임", save.Game, combat.Core.Game.CaptureState());
+            AssertSameState("개인미션/보상 영수증", save.MissionGameplay,
                 combat.Core.MissionGameplay.CaptureState());
-            SameState("로스터", save.Roster,
+            AssertSameState("로스터", save.Roster,
                 combat.Core.Economy.Units.CaptureState());
-            SameState("지갑", save.MissionGameplay.Wallet,
+            AssertSameState("지갑", save.MissionGameplay.Wallet,
                 combat.Core.Economy.Wallet.CaptureState());
-            SameState("전투", save.Combat, combat.Combat.CaptureRuntimeDraft());
-            SameState("웨이브", save.Waves, combat.Waves.CaptureState());
-            SameState("도박소", save.MoneyDesk, commerce.MoneyDesk.CaptureState());
-            SameState("유닛 도박", save.UnitGambling,
+            AssertSameState("전투", save.Combat, combat.Combat.CaptureRuntimeDraft());
+            AssertSameState("웨이브", save.Waves, combat.Waves.CaptureState());
+            AssertSameState("도박소", save.MoneyDesk, commerce.MoneyDesk.CaptureState());
+            AssertSameState("유닛 도박", save.UnitGambling,
                 commerce.UnitTiers.CaptureState());
-            SameState("이세계 도박", save.OtherworldGambling,
+            AssertSameState("이세계 도박", save.OtherworldGambling,
                 commerce.Otherworld.CaptureState());
-            SameState("리롤", save.UnitReroll, commerce.Reroll.CaptureState());
-            SameState("공통 모바일 난수", save.ScriptRandom,
+            AssertSameState("리롤", save.UnitReroll, commerce.Reroll.CaptureState());
+            AssertSameState("위습/도박 원본 능력 소유권",
+                save.WispDeferredAbilities, commerce.DeferredAbilities.CaptureState());
+            AssertSameState("공통 모바일 난수", save.ScriptRandom,
                 commerce.ScriptRandom?.CaptureState());
-            SameState("원본 H6 커서", save.OriginalScriptRandom,
+            AssertSameState("원본 H6 커서", save.OriginalScriptRandom,
                 commerce.OriginalScriptRandom?.CaptureCheckpoint());
-            SameState("위습 풀 난수", save.WispPoolRandom,
+            AssertSameState("위습 풀 난수", save.WispPoolRandom,
                 commerce.WispPoolRandom.CaptureState());
-            SameState("졸업 상점 난수", save.GraduatedRarePoolRandom,
+            AssertSameState("졸업 상점 난수", save.GraduatedRarePoolRandom,
                 commerce.GraduatedRarePoolRandom.CaptureState());
-            SameState("유닛 등급 난수", save.TierPoolRandom,
+            AssertSameState("유닛 등급 난수", save.TierPoolRandom,
                 commerce.TierPoolRandom.CaptureState());
-            SameState("해독", save.Poneglyph, auxiliary.Poneglyph?.CaptureState());
-            SameState("연구", save.Research, auxiliary.Research?.CaptureState());
-            SameState("진화", save.Evolution, auxiliary.Evolution?.CaptureState());
-            SameState("크립", save.Creeps, auxiliary.Creeps?.CaptureState());
-            SameState("스토리 건물", save.StoryBuildings,
+            AssertSameState("해독", save.Poneglyph, auxiliary.Poneglyph?.CaptureState());
+            AssertSameState("연구", save.Research, auxiliary.Research?.CaptureState());
+            AssertSameState("진화", save.Evolution, auxiliary.Evolution?.CaptureState());
+            AssertSameState("크립", save.Creeps, auxiliary.Creeps?.CaptureState());
+            AssertSameState("스토리 건물", save.StoryBuildings,
                 auxiliary.StoryBuildings?.CaptureState());
-            SameState("스토리", save.SoloStory, auxiliary.SoloStory?.CaptureState());
-            SameState("스토리 연구/보상", save.StoryProgression,
+            AssertSameState("스토리", save.SoloStory, auxiliary.SoloStory?.CaptureState());
+            AssertSameState("스토리 연구/보상", save.StoryProgression,
                 auxiliary.StoryProgression == null ? null :
                 auxiliary.StoryProgression.CaptureState(
                     auxiliary.SoloStory.NativeRewards));
-            SameState("공유 목표", save.SharedObjectives,
+            AssertSameState("공유 목표", save.SharedObjectives,
                 auxiliary.SharedObjectives?.CaptureState());
-            SameState("65R 출현", save.Practice, auxiliary.Practice?.CaptureState());
-            // Treasure is excluded by ValidatePrerequisites. No session
-            // events, cast, loot or reward may be replayed for comparison.
+            AssertSameState("65R 출현", save.Practice, auxiliary.Practice?.CaptureState());
+            AssertSameState("보물/가이몬/알람", save.Treasure,
+                treasure?.CaptureState());
+            // No session events, cast, loot or reward may be replayed here.
         }
     }
 }

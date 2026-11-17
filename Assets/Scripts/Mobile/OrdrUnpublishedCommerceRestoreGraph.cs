@@ -4,6 +4,14 @@ using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Mobile
 {
+    // Reward factories must prove that their roster and bonus receipts
+    // belong to the exact newly reconstructed world, never a live session.
+    public interface IOriginal323RestoreCommerceOwner
+    {
+        bool IsAttachedTo(CharacterCombatRuntime combat,
+            Original323WispDeferredAbilityRegistry abilities);
+    }
+
     // This is a reconstructed, UNPUBLISHED commerce graph. No live UI, reward
     // callback or existing game session is replaced by this object.
     // Native ability receipts, original navigation selection, all additional
@@ -21,6 +29,8 @@ namespace Ordr.Mobile.Mobile
         public MobileRollbackWispRandom GraduatedRarePoolRandom { get; private set; }
         public MobileRollbackWispRandom TierPoolRandom { get; private set; }
         public SourceModelMoneyGamblingDesk MoneyDesk { get; private set; }
+        public Original323WispDeferredAbilityRegistry DeferredAbilities
+            { get; private set; }
         public SourceModelMaterialSupport MaterialSupport { get; private set; }
         public SourceModelUnitGambling UnitTiers { get; private set; }
         public SourceModelOtherworldUnitGambling Otherworld { get; private set; }
@@ -47,12 +57,14 @@ namespace Ordr.Mobile.Mobile
             SourceModelUnitReroll reroll,
             Original323SharedBfiRandom observedOriginal,
             IOriginalWispRandom gamblingRandom,
-            IOriginalWispRandom rareBranchRandom)
+            IOriginalWispRandom rareBranchRandom,
+            Original323WispDeferredAbilityRegistry deferredAbilities)
         {
             ScriptRandom = script;
             OriginalScriptRandom = observedOriginal;
             GamblingRandom = gamblingRandom;
             RareBranchRandom = rareBranchRandom;
+            DeferredAbilities = deferredAbilities;
             WispPoolRandom = wisp;
             GraduatedRarePoolRandom = graduatedRare;
             TierPoolRandom = tier;
@@ -80,7 +92,9 @@ namespace Ordr.Mobile.Mobile
                 save.TierPoolRandom == null || save.MoneyDesk == null ||
                 save.MoneyDesk.MaterialSupport == null ||
                 save.UnitGambling == null ||
-                save.OtherworldGambling == null || save.UnitReroll == null)
+                save.OtherworldGambling == null ||
+                save.UnitReroll == null ||
+                save.WispDeferredAbilities == null)
                 throw new NotSupportedException(
                     "원본 거래·공통 BFi·네이티브 난수/보류 추첨 중 누락이 있습니다.");
             if (save.ScriptRandom != null)
@@ -171,14 +185,34 @@ namespace Ordr.Mobile.Mobile
             var tier = MobileRollbackWispRandom.Restore(save.TierPoolRandom);
             var abilities = createAbilities(graph.Combat) ??
                 throw new InvalidOperationException("원본 스킬 능력 장부가 누락됐습니다.");
+            // Restore each pending A0YE/A0YZ owner BEFORE reward factories
+            // inspect reroll rights. No native ability is executed.
+            if (!abilities.IsAttachedTo(graph.Combat))
+                throw new NotSupportedException(
+                    "복원된 원본 능력 장부가 다른 게임의 로스터를 참조합니다.");
+            abilities.RestoreState(save.WispDeferredAbilities);
             var unitWorld = createUnitWorld(graph.Combat, abilities) ??
                 throw new InvalidOperationException("원본 유닛 도박 보상 월드가 누락됐습니다.");
+            if (!unitWorld.IsAttachedTo(graph.Combat, abilities))
+                throw new NotSupportedException(
+                    "유닛 도박의 원본 보상 세계가 현재 복원 전투와 다릅니다.");
             var otherworldWorld = createOtherworldWorld(graph.Combat, abilities) ??
                 throw new InvalidOperationException("이세계 도박 실물 월드가 누락됐습니다.");
+            var otherworldOwner =
+                otherworldWorld as IOriginal323RestoreCommerceOwner;
+            if (otherworldOwner == null ||
+                !otherworldOwner.IsAttachedTo(graph.Combat, abilities))
+                throw new NotSupportedException(
+                    "이세계 도박 원본 보상 월드의 소유권이 확인되지 않았습니다.");
             var rareWorld = createRareWorld(graph.Combat, rareBranchRandom, graduatedRare,
                 abilities) ??
                 throw new InvalidOperationException("졸업 상점 원본 유닛 월드가 누락됐습니다.");
 
+            var rareOwner = rareWorld as IOriginal323RestoreCommerceOwner;
+            if (rareOwner == null ||
+                !rareOwner.IsAttachedTo(graph.Combat, abilities))
+                throw new NotSupportedException(
+                    "졸업 상점 원본 보상 월드의 소유권이 확인되지 않았습니다.");
             var money = new SourceModelMoneyGamblingDesk(wallet, game,
                 gamblingRandom, () => graph.Combat.Time, interactionGate);
             var support = new SourceModelMaterialSupport(wallet, game,
@@ -204,7 +238,7 @@ namespace Ordr.Mobile.Mobile
             reroll.RestoreState(save.UnitReroll);
             return new OrdrUnpublishedCommerceRestoreGraph(script, wisp,
                 graduatedRare, tier, money, support, tiers, otherworld, reroll,
-                original, gamblingRandom, rareBranchRandom);
+                original, gamblingRandom, rareBranchRandom, abilities);
         }
     }
 }

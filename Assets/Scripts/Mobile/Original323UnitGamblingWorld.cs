@@ -16,7 +16,8 @@ namespace Ordr.Mobile.Mobile
         void Commit();
     }
 
-    public sealed class Original323UnitGamblingWorld : IOriginal323UnitGamblingWorld
+    public sealed class Original323UnitGamblingWorld :
+        IOriginal323UnitGamblingWorld, IOriginal323RestoreCommerceOwner
     {
         private readonly CharacterCombatRuntime combat;
         private readonly Original323WispDeferredAbilityRegistry abilities;
@@ -65,6 +66,11 @@ namespace Ordr.Mobile.Mobile
                 if (Original323UnitGamblingRules.Common[i] == rawcode) return "C-" + (i + 1).ToString("00");
             return null;
         }
+        public bool IsAttachedTo(CharacterCombatRuntime runtime,
+            Original323WispDeferredAbilityRegistry registry) =>
+            ReferenceEquals(combat, runtime) &&
+            ReferenceEquals(abilities, registry);
+
         public string CatalogId(string rawcode) => ids[rawcode];
         public string DisplayName(string rawcode) => names[rawcode];
         public IOriginal323UnitGamblingTransaction Begin(IReadOnlyList<string> rawcodes, string bonusAbility)

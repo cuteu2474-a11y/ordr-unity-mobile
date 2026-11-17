@@ -1597,6 +1597,7 @@ namespace Ordr.Mobile.Unity
             add(PracticeTierUnitGambling?.CaptureState());
             add(PracticeUnitGambling?.CaptureState());
             add(PracticeUnitReroll?.CaptureState());
+            add(deferredWispAbilities?.CaptureState());
             add(PlayerBuildingResearch?.CaptureState());
             add(EvolutionProgress?.CaptureState());
             add(Poneglyph?.CaptureState());
@@ -1604,6 +1605,7 @@ namespace Ordr.Mobile.Unity
             add(PracticeStoryBuildings?.CaptureState());
             add(SoloStory?.CaptureState());
             add(SharedObjectives?.CaptureState());
+            add(CaptureTreasureCheckpointDraft());
             return digest.ToString();
         }
 
@@ -1647,7 +1649,8 @@ namespace Ordr.Mobile.Unity
                     sessionGraduatedRarePoolRandom?.CaptureState(),
                     CaptureTreasureCheckpointDraft(),
                     SharedObjectives?.CaptureState(),
-                    originalSharedScriptRandom?.CaptureCheckpoint());
+                    originalSharedScriptRandom?.CaptureCheckpoint(),
+                    deferredWispAbilities?.CaptureState());
             }, CaptureWorldSubsystemFingerprint);
         }
 
