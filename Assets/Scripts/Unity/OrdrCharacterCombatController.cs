@@ -799,6 +799,47 @@ namespace Ordr.Mobile.Unity
             }
         }
         public Original323CreepPracticeWorld PracticeCreeps { get; private set; }
+        private IOriginal323CreepDispatchAuthority verifiedCreepDispatchAuthority;
+
+        // Installed only when source evidence identifies the exact actor,
+        // active creep, attack position, movement/cast costs and cooldowns.
+        // No data-only mobility class automatically grants this authority.
+        public void ConfigureVerifiedCreepDispatchAuthority(
+            IOriginal323CreepDispatchAuthority authority)
+        {
+            if (authority == null) throw new ArgumentNullException(nameof(authority));
+            if (verifiedCreepDispatchAuthority != null)
+                throw new InvalidOperationException("크립 자격 공급자는 중복 등록할 수 없습니다.");
+            verifiedCreepDispatchAuthority = authority;
+            if (PracticeCreeps != null)
+                Combat.ConfigureVerifiedCreepDispatch(PracticeCreeps, authority);
+        }
+
+        public bool CanCreepDispatch(long instanceId, int stage) =>
+            Combat != null && Combat.CanDispatchToCreep(instanceId, stage);
+
+        public bool CanCreepRecall(long instanceId) =>
+            Combat != null && Combat.IsCreepDeployed(instanceId);
+
+        public ManualActionResult RequestCreepDispatch(long instanceId, int stage)
+        {
+            if (!CanCreepDispatch(instanceId, stage) ||
+                !Combat.TryDispatchToCreep(instanceId, stage))
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "현재 원본 사냥 조건에서 파견할 수 없습니다.");
+            return new ManualActionResult(ManualActionState.Succeeded,
+                "크립 " + stage + "단계에 실제 보유 유닛 1기를 파견했습니다.");
+        }
+
+        public ManualActionResult RequestCreepRecall(long instanceId)
+        {
+            if (!CanCreepRecall(instanceId) ||
+                !Combat.TryRecallFromCreep(instanceId))
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "현재 복귀할 수 있는 크립 파견 유닛이 없습니다.");
+            return new ManualActionResult(ManualActionState.Succeeded,
+                "크립 파견 유닛 1기가 메인 전장으로 복귀했습니다.");
+        }
         public Original323StoryBuildingPracticeWorld PracticeStoryBuildings { get; private set; }
         public Original323StoryBuildingCatalog StoryBuildingCatalog { get; private set; }
         public Original323SoloStoryScenario SoloStory { get; private set; }
@@ -1133,6 +1174,9 @@ namespace Ordr.Mobile.Unity
                 PracticeMoneyGamblingDesk?.RecordDefeatedSourceBoss(enemyId, rawcode);
             };
             PracticeCreeps = new Original323CreepPracticeWorld(Combat, creepCatalog);
+            if (verifiedCreepDispatchAuthority != null)
+                Combat.ConfigureVerifiedCreepDispatch(
+                    PracticeCreeps, verifiedCreepDispatchAuthority);
             PracticeCreeps.EncounterDefeated += encounter =>
                 PracticeUnitGambling?.RecordThirdCreepDefeated(encounter.OriginalObject.Rawcode);
             PracticeBattle.Start();

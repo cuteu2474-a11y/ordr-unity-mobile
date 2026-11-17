@@ -106,6 +106,8 @@ namespace Ordr.Mobile.Combat
             // validation and irreversible material consumption.
             private readonly Dictionary<long, bool> sourceStoryDeployment =
                 new Dictionary<long, bool>();
+            private readonly Dictionary<long, int?> sourceCreepStage =
+                new Dictionary<long, int?>();
             private readonly double atTime;
             private readonly int atWave;
             private readonly SessionPhase atPhase;
@@ -129,6 +131,7 @@ namespace Ordr.Mobile.Combat
                     sourceStatusRevisions.Add(id,
                         owner.unitStatuses[InstanceKey(id)].Revision);
                     sourceStoryDeployment.Add(id, owner.IsStoryDeployed(id));
+                    sourceCreepStage.Add(id, owner.CreepStageOf(id));
                 }
             }
 
@@ -174,7 +177,8 @@ namespace Ordr.Mobile.Combat
                 {
                     if (!world.characters.ContainsKey(id) ||
                         world.IsLockedFromOwnedUnitConsumption(id) ||
-                        world.IsStoryDeployed(id) != sourceStoryDeployment[id])
+                        world.IsStoryDeployed(id) != sourceStoryDeployment[id] ||
+                        world.CreepStageOf(id) != sourceCreepStage[id])
                         throw new InvalidOperationException(
                             "원본 조합 재료가 제거되거나 소유권·파견 상태가 변경됐습니다.");
                     UnitState oldLocation = sourcePositions[id];
@@ -1478,6 +1482,7 @@ namespace Ordr.Mobile.Combat
                 (id, enemy) => UsesSourceModelBasicAttacks &&
                     sourceModelMainLane != null && characters.ContainsKey(id) &&
                     !IsStoryDeployed(id) &&
+                    !IsCreepDeployed(id) &&
                     SharedObjectiveTargetOf(id) == null &&
                     (enemy.Kind == CharacterEnemyKind.Line ||
                      enemy.Kind == CharacterEnemyKind.Boss ||
@@ -1550,6 +1555,7 @@ namespace Ordr.Mobile.Combat
             // left-side formation without touching the other combat lanes.
             if (UsesSourceModelBasicAttacks && sourceModelMainLane != null &&
                 !IsStoryDeployed(instanceId) &&
+                !IsCreepDeployed(instanceId) &&
                 SharedObjectiveTargetOf(instanceId) == null &&
                 !IsOriginalPoneglyphChanneling(instanceId))
             {
@@ -1621,7 +1627,8 @@ namespace Ordr.Mobile.Combat
         // it. Shared-objective deployment and Poneglyph decoding never gain
         // this exception; no creep eligibility is implied.
         public bool IsLockedFromRosterTransactions(long instanceId) =>
-            IsStoryDeployed(instanceId) || IsLockedFromOwnedUnitConsumption(instanceId);
+            IsStoryDeployed(instanceId) || IsCreepDeployed(instanceId) ||
+            IsLockedFromOwnedUnitConsumption(instanceId);
 
         public bool IsLockedFromOwnedUnitConsumption(long instanceId) =>
             IsSharedObjectiveDeployed(instanceId) ||
@@ -1645,6 +1652,11 @@ namespace Ordr.Mobile.Combat
                 IsOriginalPoneglyphChanneling(casterId) ||
                 IsOriginalPoneglyphChanneling(recipientId))
                 return false;
+            if (IsCreepDeployed(casterId) || IsCreepDeployed(recipientId))
+                return IsCreepDeployed(casterId) &&
+                    IsCreepDeployed(recipientId) &&
+                    CreepTargetOf(casterId) != null &&
+                    CreepTargetOf(casterId) == CreepTargetOf(recipientId);
             string casterObjective = SharedObjectiveTargetOf(casterId);
             string recipientObjective = SharedObjectiveTargetOf(recipientId);
             if (casterObjective != null || recipientObjective != null)
@@ -1666,6 +1678,7 @@ namespace Ordr.Mobile.Combat
                 sharedObjectiveDeployed.ContainsKey(instanceId) ||
                 originalPoneglyphChanneling.Contains(instanceId) ||
                 IsStoryDeployed(instanceId) ||
+                IsCreepDeployed(instanceId) ||
                 !enemies.TryGetValue(enemyId ?? "", out target) ||
                 !target.Enemy.IsAlive ||
                 (target.Kind != CharacterEnemyKind.SeaKing &&
@@ -1725,6 +1738,7 @@ namespace Ordr.Mobile.Combat
                 // Duplicate notifications must not invalidate a live decoding clock.
                 if (originalPoneglyphChanneling.Contains(instanceId)) return;
                 if (!characters.ContainsKey(instanceId) || IsStoryDeployed(instanceId) ||
+                    IsCreepDeployed(instanceId) ||
                     IsSharedObjectiveDeployed(instanceId))
                     throw new InvalidOperationException(
                         "포네그리프 해독은 메인 전장의 보유 유닛으로만 시작합니다.");
@@ -2566,6 +2580,7 @@ namespace Ordr.Mobile.Combat
                 throw new KeyNotFoundException("존재하지 않는 캐릭터 인스턴스.");
             originalPoneglyphChanneling.Remove(instanceId);
             sharedObjectiveDeployed.Remove(instanceId);
+            ForgetCreepDeployment(instanceId);
             CancelOriginalUnitCast(instanceId);
             if (instance.AttackReady) attackPipeline.RemoveUnit(InstanceKey(instanceId));
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
@@ -2648,7 +2663,8 @@ namespace Ordr.Mobile.Combat
             if (!characters.ContainsKey(instanceId))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
             if (originalPoneglyphChanneling.Contains(instanceId) ||
-                sharedObjectiveDeployed.ContainsKey(instanceId))
+                sharedObjectiveDeployed.ContainsKey(instanceId) ||
+                IsCreepDeployed(instanceId))
                 throw new InvalidOperationException(
                     "해독/공유 목표 출전 중에는 일반 이동할 수 없습니다.");
             roster.Move(instanceId, x, y);
@@ -2847,6 +2863,9 @@ namespace Ordr.Mobile.Combat
                 return enemy.Enemy.Id == sharedTarget.EnemyId &&
                     (enemy.Kind == CharacterEnemyKind.SeaKing ||
                      enemy.Kind == CharacterEnemyKind.Challenge);
+            if (IsCreepDeployed(unit.Id))
+                return enemy.Kind == CharacterEnemyKind.Creep &&
+                    CreepTargetOf(unit.Id) == enemy.Enemy.Id;
             // 크립/해왕류/도전은 별도 출전 허가가 없는 한 일반 전장에 섞이지 않는다.
             if (enemy.Kind == CharacterEnemyKind.Creep ||
                 enemy.Kind == CharacterEnemyKind.SeaKing ||

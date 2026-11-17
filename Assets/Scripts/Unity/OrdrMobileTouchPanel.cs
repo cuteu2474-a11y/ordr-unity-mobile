@@ -54,6 +54,8 @@ namespace Ordr.Mobile.Unity
         private const int StoryGreenBloodPageSize = 6;
         private bool showStoryDispatch = true;
         private bool showStoryCreeps;
+        private int selectedCreepStage = 1;
+        private int creepRosterPage;
         private bool confirmStoryRecallAll;
         private int storyRosterPage;
         private MobileStoryRosterFilter storyRosterFilter = MobileStoryRosterFilter.All;
@@ -3192,8 +3194,6 @@ namespace Ordr.Mobile.Unity
 
         private void DrawStoryCreepOverview()
         {
-            GUILayout.Label("크립 파견은 아직 이용할 수 없습니다.",
-                OrdrMobileUiTheme.Explanation);
             var creeps = controller.PracticeCreeps;
             if (creeps == null)
             {
@@ -3213,12 +3213,92 @@ namespace Ordr.Mobile.Unity
                 GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
                 OrdrMobileUiTheme.DrawStatusRow(stage + "단계 · " + name,
                     state, OrdrMobileUiTheme.Aqua);
+                if (GUILayout.Button(selectedCreepStage == stage ?
+                    "선택한 사냥 대상 ✓" : "이 단계 선택",
+                    GUILayout.MinHeight(48f)))
+                {
+                    selectedCreepStage = stage;
+                    creepRosterPage = 0;
+                }
                 if (latest != null && latest.State == Original323CreepEncounterState.Alive)
                 {
                     var enemy = Combat.EnemyOf(latest.EnemyId);
                     if (enemy != null) DrawStoryHealth(enemy.Health, enemy.MaxHealth);
                 }
                 GUILayout.EndVertical();
+            }
+            OrdrMobileUiTheme.DrawStatusRow("크립 파견",
+                selectedCreepStage + "단계 · " + Combat.CreepDeployedCount +
+                "기 출전", OrdrMobileUiTheme.Aqua);
+            int deployed, ready, recallable, matchingUnits, matchingGroups,
+                pages, resolved;
+            var groups = MobileStoryDispatchBrowser.Group(OwnedUnitsForFrame(),
+                Combat.IsCreepDeployed,
+                id => controller.CanCreepDispatch(id, selectedCreepStage),
+                controller.CanCreepRecall,
+                actor => StoryDispatchDisplayState(actor) + ":creep:" +
+                    (Combat.CreepStageOf(actor.InstanceId)?.ToString() ?? "main"),
+                MobileStoryRosterFilter.All, creepRosterPage, 6,
+                out deployed, out ready, out recallable, out matchingUnits,
+                out matchingGroups, out pages, out resolved);
+            creepRosterPage = resolved;
+            GUILayout.Label("파견 가능 " + ready + "기 · 출전 중 " + deployed +
+                "기", OrdrMobileUiTheme.Explanation);
+            if (matchingUnits == 0)
+                GUILayout.Label("현재 선택 대상에 파견 가능한 유닛이 없습니다.",
+                    OrdrMobileUiTheme.Explanation);
+            DrawPager(creepRosterPage, pages, page => creepRosterPage = page);
+            foreach (var group in groups)
+            {
+                var entry = group.First;
+                long id = entry.Unit.InstanceId;
+                var assignedStage = Combat.CreepStageOf(id);
+                GUILayout.BeginHorizontal();
+                DrawCharacterPortrait(entry.Unit.Unit.Id, 48f);
+                if (OrdrMobileUiTheme.DrawActionRow(entry.Unit.Unit.Name,
+                    entry.Unit.Unit.Grade +
+                    (group.Count > 1 ? " · " + group.Count + "기" :
+                        " · #" + id) +
+                    (assignedStage.HasValue ?
+                        " · " + assignedStage.Value + "단계 파견 중" :
+                        " · 파견 가능"),
+                    OrdrMobileUiTheme.Aqua, 68f))
+                {
+                    Combat.Roster.Select(id);
+                    notice = entry.Unit.Unit.Name + " 선택";
+                }
+                bool enabled = GUI.enabled;
+                bool canMove = assignedStage.HasValue &&
+                    assignedStage.Value != selectedCreepStage &&
+                    controller.CanCreepDispatch(id, selectedCreepStage);
+                if (!assignedStage.HasValue || canMove)
+                {
+                    GUI.enabled = enabled && (!assignedStage.HasValue || canMove);
+                    if (GUILayout.Button(assignedStage.HasValue ? "이동" : "파견",
+                        GUILayout.Width(68f), GUILayout.MinHeight(68f)))
+                    {
+                        var chosen = group.FirstCurrentlyActionable(
+                            actorId => controller.CanCreepDispatch(
+                                actorId, selectedCreepStage));
+                        if (chosen.HasValue)
+                            ShowResult(controller.RequestCreepDispatch(
+                                chosen.Value, selectedCreepStage));
+                    }
+                }
+                if (assignedStage.HasValue)
+                {
+                    GUI.enabled = enabled;
+                    if (GUILayout.Button("복귀",
+                        GUILayout.Width(68f), GUILayout.MinHeight(68f)))
+                    {
+                        var chosen = group.FirstCurrentlyActionable(
+                            controller.CanCreepRecall);
+                        if (chosen.HasValue)
+                            ShowResult(controller.RequestCreepRecall(chosen.Value));
+                    }
+                }
+                GUI.enabled = enabled;
+                GUILayout.EndHorizontal();
             }
         }
 

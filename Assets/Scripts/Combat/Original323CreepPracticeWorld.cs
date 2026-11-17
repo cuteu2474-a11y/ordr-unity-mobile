@@ -48,6 +48,11 @@ namespace Ordr.Mobile.Combat
         public int DefeatedCount { get; private set; }
         public int EscapedCount { get; private set; }
         public event Action<Original323CreepEncounter> EncounterDefeated;
+        // The combat lane may inherit an already-approved deployed attacker
+        // when a physically spawned NEXT stage arrives. This is not itself
+        // a spawn, reward or player dispatch request.
+        public event Action<Original323CreepEncounter> EncounterSpawned;
+        public event Action<Exception> EncounterSpawnObserverFailed;
 
         public Original323CreepPracticeWorld(CharacterCombatRuntime combat,
             Original323CreepObjectCatalog catalog)
@@ -88,6 +93,16 @@ namespace Ordr.Mobile.Combat
             nextSerial++;
             byEnemy.Add(id, encounter);
             encounters.Add(encounter);
+            var listeners = EncounterSpawned;
+            if (listeners != null)
+                foreach (Action<Original323CreepEncounter> handler
+                    in listeners.GetInvocationList())
+                    try { handler(encounter); }
+                    catch (Exception error)
+                    {
+                        try { EncounterSpawnObserverFailed?.Invoke(error); }
+                        catch { }
+                    }
             return encounter;
         }
 

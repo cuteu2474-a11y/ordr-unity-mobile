@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Collections;
+using System.Reflection;
 using NUnit.Framework;
 using Ordr.Mobile.Combat;
 using Ordr.Mobile.Core;
@@ -27,7 +29,37 @@ namespace Ordr.Mobile.Tests
                 Data("original-2323C-monster-object-stats.json"));
         }
 
-        private static CharacterCombatRuntime EmptyCombat()
+        private sealed class TestOnlyCreepAuthority : IOriginal323CreepDispatchAuthority
+        {
+            public long ExcludeOnStageTwo;
+            public bool RestrictStageTwo;
+            public int Calls;
+            public bool TryResolveAttackPlacement(long id,
+                Original323CreepEncounter target, out double x, out double y)
+            {
+                Calls++;
+                x = target.X + 1; y = target.Y;
+                return !(RestrictStageTwo &&
+                    target.OriginalObject.Stage == 2 && id == ExcludeOnStageTwo);
+            }
+        }
+
+        // Inspects the SAME private lane predicate used by basic attacks,
+        // skill targeting and native enemy auras. No damage is fabricated.
+        private static bool CanAttackLane(CharacterCombatRuntime combat,
+            long ownerId, string enemyId)
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var units = (IDictionary)typeof(CharacterCombatRuntime)
+                .GetField("characters", flags).GetValue(combat);
+            var enemies = (IDictionary)typeof(CharacterCombatRuntime)
+                .GetField("enemies", flags).GetValue(combat);
+            var fn = typeof(CharacterCombatRuntime).GetMethod(
+                "CanAttackInThisLane", flags);
+            return (bool)fn.Invoke(combat, new[] { units[ownerId], enemies[enemyId] });
+        }
+
+        private static CharacterCombatRuntime EmptyCombat(bool sourceAttacks = false)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -37,6 +69,11 @@ namespace Ordr.Mobile.Tests
             var rules = new SourceModelBasicCombatRules(map, dice);
             var world = new CharacterCombatRuntime(units, skills, rules, rules, dice);
             world.Start();
+            if (sourceAttacks)
+            {
+                rules.Enable();
+                world.ConfigureSourceModelBasicAttacks(rules);
+            }
             world.BeginWave(1);
             return world;
         }
@@ -128,6 +165,151 @@ namespace Ordr.Mobile.Tests
                 var respawn = creeps.SpawnPracticeStage(1, -100, 200);
                 Assert.AreNotEqual(first.EnemyId, respawn.EnemyId);
                 Assert.AreEqual(3, creeps.Encounters.Count);
+            }
+        }
+
+        [Test]
+        public void CreepDispatchIsFailClosedUntilARealEligibilityAuthorityIsConnected()
+        {
+            var combat = EmptyCombat(sourceAttacks: true);
+            long actor = combat.SpawnCharacter("C-01", -100, 200);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var first = creeps.SpawnPracticeStage(1, -100, 200);
+                combat.SpawnEnemy("main", 100000, CharacterEnemyKind.Line,
+                    -99, 200, 0);
+                Assert.IsFalse(combat.CanDispatchToCreep(actor, 1));
+                Assert.IsFalse(combat.TryDispatchToCreep(actor, 1));
+                Assert.IsNull(combat.CreepTargetOf(actor));
+                Assert.IsTrue(CanAttackLane(combat, actor, "main"));
+                Assert.IsFalse(CanAttackLane(combat, actor, first.EnemyId));
+                Assert.AreEqual(0, combat.CreepDeployedCount);
+            }
+        }
+
+        [Test]
+        public void CreepDispatchPartitionsAllLanesAndRecallPreservesSameRealUnit()
+        {
+            var combat = EmptyCombat(sourceAttacks: true);
+            long creepActor = combat.SpawnCharacter("C-01", -300, 20);
+            long mainActor = combat.SpawnCharacter("C-02", -290, 20);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var first = creeps.SpawnPracticeStage(1, -100, 200);
+                combat.SpawnEnemy("main", 100000, CharacterEnemyKind.Line,
+                    -99, 200, 0);
+                var approved = new TestOnlyCreepAuthority();
+                combat.ConfigureVerifiedCreepDispatch(creeps, approved);
+                Assert.IsTrue(combat.TryDispatchToCreep(creepActor, 1));
+                Assert.IsFalse(combat.TryDispatchToCreep(creepActor, 1));
+                Assert.IsFalse(combat.CanDispatchToCreep(creepActor, 4));
+                Assert.AreEqual(2, combat.CharacterCount);
+                Assert.AreEqual(first.EnemyId, combat.CreepTargetOf(creepActor));
+                Assert.IsTrue(combat.IsCreepDeployed(creepActor));
+                Assert.IsTrue(combat.IsLockedFromRosterTransactions(creepActor));
+                Assert.IsFalse(combat.IsLockedFromOwnedUnitConsumption(creepActor),
+                    "Confirmed user sale/fusion may consume but not auto-recall.");
+                Assert.IsTrue(CanAttackLane(combat, creepActor, first.EnemyId));
+                Assert.IsFalse(CanAttackLane(combat, creepActor, "main"));
+                Assert.IsFalse(CanAttackLane(combat, mainActor, first.EnemyId));
+                Assert.IsTrue(CanAttackLane(combat, mainActor, "main"));
+                Assert.Throws<InvalidOperationException>(() =>
+                    combat.MoveCharacter(creepActor, 0, 0));
+                Assert.Throws<InvalidOperationException>(() =>
+                    combat.SetOriginalPoneglyphChanneling(creepActor, true));
+                Assert.AreEqual(1, combat.CreepDeployedCount);
+
+                using (var staged = combat.BeginOriginalUnitRemoval(creepActor)) { }
+                Assert.AreEqual(first.EnemyId, combat.CreepTargetOf(creepActor),
+                    "Aborted commerce must not recall a deployed unit.");
+                Assert.IsTrue(combat.TryRecallFromCreep(creepActor));
+                Assert.IsFalse(combat.TryRecallFromCreep(creepActor));
+                Assert.IsFalse(combat.IsCreepDeployed(creepActor));
+                Assert.AreEqual(-300, combat.Roster.Get(creepActor).X);
+                Assert.AreEqual(20, combat.Roster.Get(creepActor).Y);
+                Assert.IsTrue(CanAttackLane(combat, creepActor, "main"));
+                Assert.IsFalse(CanAttackLane(combat, creepActor, first.EnemyId));
+            }
+        }
+
+        [Test]
+        public void OnlyDefeatedPreviousStageCanAutoTransferToEligibleNextCreep()
+        {
+            var combat = EmptyCombat();
+            long follows = combat.SpawnCharacter("C-01", -300, 20);
+            long waits = combat.SpawnCharacter("C-02", -290, 20);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var first = creeps.SpawnPracticeStage(1, -100, 200);
+                var policy = new TestOnlyCreepAuthority {
+                    ExcludeOnStageTwo = waits, RestrictStageTwo = true
+                };
+                combat.ConfigureVerifiedCreepDispatch(creeps, policy);
+                Assert.IsTrue(combat.TryDispatchToCreep(follows, 1));
+                Assert.IsTrue(combat.TryDispatchToCreep(waits, 1));
+
+                // The stage change is an observed physical defeat in the
+                // shared resolution, not an invented stage-clear timer.
+                var resolver = (CombatResolution)typeof(CharacterCombatRuntime)
+                    .GetField("resolution", BindingFlags.Instance |
+                        BindingFlags.NonPublic).GetValue(combat);
+                long damage;
+                Assert.IsTrue(resolver.TryApplySkillDamage("TEST_ONLY", first.EnemyId,
+                    first.OriginalObject.ObjectBaseHitPoints, out damage));
+                Assert.AreEqual(Original323CreepEncounterState.Defeated, first.State);
+                Assert.IsNull(combat.CreepTargetOf(follows));
+                var second = creeps.SpawnPracticeStage(2, 500, 800);
+                Assert.AreEqual(second.EnemyId, combat.CreepTargetOf(follows));
+                Assert.AreEqual(2, combat.CreepStageOf(follows).Value);
+                Assert.IsNull(combat.CreepTargetOf(waits),
+                    "A failed next-stage authorization leaves the actor deployed and idle.");
+                Assert.AreEqual(1, combat.CreepStageOf(waits).Value);
+                Assert.AreEqual(2, combat.CreepDeployedCount);
+                Assert.IsFalse(combat.CanDispatchToCreep(waits, 2));
+                policy.RestrictStageTwo = false;
+                Assert.IsTrue(combat.TryDispatchToCreep(waits, 2));
+                Assert.AreEqual(second.EnemyId, combat.CreepTargetOf(waits));
+
+                Assert.IsTrue(resolver.TryApplySkillDamage("TEST_ONLY", second.EnemyId,
+                    second.OriginalObject.ObjectBaseHitPoints, out damage));
+                var third = creeps.SpawnPracticeStage(3, 500, 800);
+                Assert.AreEqual(third.EnemyId, combat.CreepTargetOf(follows));
+                Assert.AreEqual(third.EnemyId, combat.CreepTargetOf(waits));
+                Assert.IsTrue(resolver.TryApplySkillDamage("TEST_ONLY", third.EnemyId,
+                    third.OriginalObject.ObjectBaseHitPoints, out damage));
+                Assert.IsNull(combat.CreepTargetOf(follows));
+                Assert.IsNull(combat.CreepTargetOf(waits));
+                Assert.AreEqual(2, combat.CreepDeployedCount,
+                    "Defeating Shu Shu must not automatically recall anyone.");
+                Assert.IsTrue(combat.TryRecallFromCreep(follows));
+                Assert.IsTrue(combat.TryRecallFromCreep(waits));
+                Assert.AreEqual(0, combat.CreepDeployedCount);
+                Assert.AreEqual(0, combat.Game.DefeatedEnemies,
+                    "Creep kills must not count as standard wave kills.");
+            }
+        }
+
+        [Test]
+        public void CommittedConsumptionForgetsCreepAssignmentWithoutLeakingToMain()
+        {
+            var combat = EmptyCombat();
+            long id = combat.SpawnCharacter("C-01", 11, 22);
+            using (var creeps = new Original323CreepPracticeWorld(combat, SourceCatalog()))
+            {
+                var first = creeps.SpawnPracticeStage(1, -100, 200);
+                combat.ConfigureVerifiedCreepDispatch(creeps,
+                    new TestOnlyCreepAuthority());
+                Assert.IsTrue(combat.TryDispatchToCreep(id, 1));
+                using (var removal = combat.BeginOriginalUnitRemoval(id))
+                {
+                    Assert.IsTrue(combat.IsCreepDeployed(id));
+                    Assert.AreEqual(first.EnemyId, combat.CreepTargetOf(id));
+                    removal.Commit();
+                }
+                Assert.IsFalse(combat.IsCreepDeployed(id));
+                Assert.IsNull(combat.CreepTargetOf(id));
+                Assert.AreEqual(0, combat.CharacterCount);
+                Assert.AreEqual(0, combat.CreepDeployedCount);
             }
         }
 

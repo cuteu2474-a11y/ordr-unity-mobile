@@ -591,6 +591,13 @@ namespace Ordr.Mobile.Combat
         // fail before anyone can accidentally publish a partial checkpoint.
         public SourceCombatRuntimeCheckpoint CaptureRuntimeDraft()
         {
+            // Until the original creep route, exact deployment assignment
+            // and attack-placement evidence have a versioned save schema,
+            // reject rather than silently turn a loaded sortie into a
+            // duplicate main-lane attacker or erase manual-recall rights.
+            if (creepDeployments.Count != 0)
+                throw new NotSupportedException(
+                    "크립 출전 유닛의 목적지·복귀 위치는 저장 복원 근거가 부족합니다.");
             if (game.Phase != SessionPhase.Running ||
                 activeOriginalFusionSwap != null || processingStep ||
                 pendingStepSeconds != 0 ||
