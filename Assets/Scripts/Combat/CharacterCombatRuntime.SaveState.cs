@@ -64,6 +64,16 @@ namespace Ordr.Mobile.Combat
         public int Nutrients;
     }
 
+    // Active Bullet I-05 Rokushiki stance: absolute logical expiry and
+    // the owner's original-lane generation, not a replayed skill cast.
+    [Serializable]
+    public sealed class SourceCombatBulletStanceCheckpoint
+    {
+        public long OwnerId;
+        public long LaneRevision;
+        public double ExpiresAt;
+    }
+
     [Serializable]
     public sealed class SourceCombatDefenseCheckpoint
     {
@@ -161,6 +171,8 @@ namespace Ordr.Mobile.Combat
             new List<SourceCombatFormCheckpoint>();
         public List<SourceCombatForestCheckpoint> Forest =
             new List<SourceCombatForestCheckpoint>();
+        public List<SourceCombatBulletStanceCheckpoint> BulletStances =
+            new List<SourceCombatBulletStanceCheckpoint>();
         // Null means the equipment source was not configured in this world.
         public OriginalEquippedItemLedgerState EquippedItems;
         public List<SourceCombatEnemyCheckpoint> Enemies =
@@ -216,6 +228,7 @@ namespace Ordr.Mobile.Combat
         {
             if (state == null || state.Version != 4 || state.Actors == null ||
                 state.Summons == null || state.Forms == null || state.Forest == null ||
+                state.BulletStances == null ||
                 state.NextSummonId < 0 || double.IsNaN(state.Time) ||
                 double.IsInfinity(state.Time) || state.Time < 0)
                 throw new FormatException("소환/변신 저장 구성이 불완전합니다.");
@@ -278,9 +291,25 @@ namespace Ordr.Mobile.Combat
                     owner.CatalogId != "TR-06")
                     throw new FormatException("숲인간 양분 성장 장부가 잘못됐습니다.");
             }
+            seen.Clear();
+            foreach (var stance in state.BulletStances)
+            {
+                SourceCombatActorCheckpoint owner;
+                if (stance == null || stance.OwnerId <= 0 ||
+                    !seen.Add(stance.OwnerId) ||
+                    !owners.TryGetValue(stance.OwnerId, out owner) ||
+                    owner.CatalogId != "I-05" ||
+                    stance.LaneRevision != owner.SourceLaneRevision ||
+                    double.IsNaN(stance.ExpiresAt) ||
+                    double.IsInfinity(stance.ExpiresAt) ||
+                    stance.ExpiresAt <= state.Time ||
+                    stance.ExpiresAt - state.Time > 3.000001)
+                    throw new FormatException(
+                        "불릿 육식 체의 소유자·전장·남은 지속시간이 잘못됐습니다.");
+            }
             if (!state.HasSourceModelBasicAttacks &&
                 (state.Summons.Count != 0 || state.Forms.Count != 0 ||
-                 state.Forest.Count != 0))
+                 state.Forest.Count != 0 || state.BulletStances.Count != 0))
                 throw new FormatException("일반 전투에 원본 소환·폼을 주입할 수 없습니다.");
         }
 
@@ -319,13 +348,6 @@ namespace Ordr.Mobile.Combat
             if (HasUnexpiredSourceNamiZones())
                 throw new NotSupportedException(
                     "나미 크리마텍트 3초 여진의 위치·남은 시간이 저장되지 않아 진행 중 저장을 거부합니다.");
-            // Bullet's active three-second stance is not in the checkpoint
-            // yet. Equipped rawcodes can persist; this in-flight attack
-            // entitlement cannot be silently cleared by a resume.
-            if (sourceModelBulletRokushikiUntil.Count != 0 ||
-                sourceModelBulletRokushikiLane.Count != 0)
-                throw new NotSupportedException(
-                    "불릿 육식 체 예약 상태는 남은 시간·전장과 함께 저장되기 전까지 저장할 수 없습니다.");
             // Non-equipment summons and transform callbacks still require
             // independent reconstruction; never silently erase.
             if (sourceFormCastFinishes.Count != 0 ||
@@ -380,7 +402,9 @@ namespace Ordr.Mobile.Combat
             ValidateSourceSidecars(state);
             if (sourceTemporarySummons.Count != 0 || sourceNextSummonId != 0 ||
                 sourceIndependentAttackers.Count != 0 ||
-                sourceModelTenthForms.Count != 0 || sourceModelForestNutrients.Count != 0)
+                sourceModelTenthForms.Count != 0 || sourceModelForestNutrients.Count != 0 ||
+                sourceModelBulletRokushikiUntil.Count != 0 ||
+                sourceModelBulletRokushikiLane.Count != 0)
                 throw new InvalidOperationException("원본 소환·변신은 빈 그래프에만 복원합니다.");
             foreach (var a in state.Actors)
                 if (a.SourceLaneRevision > 0)
@@ -392,6 +416,15 @@ namespace Ordr.Mobile.Combat
                 });
             foreach (var f in state.Forest)
                 sourceModelForestNutrients.Add(f.OwnerId, f.Nutrients);
+            // Existing actor IDs and their lane revisions were validated
+            // before any state was introduced. No proc or skill is re-fired.
+            foreach (var stance in state.BulletStances)
+            {
+                sourceModelBulletRokushikiUntil.Add(
+                    stance.OwnerId, stance.ExpiresAt);
+                sourceModelBulletRokushikiLane.Add(
+                    stance.OwnerId, stance.LaneRevision);
+            }
             foreach (var s in state.Summons)
             {
                 var summoned = new SourceModelSummonState(s.Id, s.OwnerId,
@@ -723,6 +756,23 @@ namespace Ordr.Mobile.Combat
                         OwnerId = row.Key, Nutrients = row.Value
                     });
             draft.Forest.Sort((a, b) => a.OwnerId.CompareTo(b.OwnerId));
+            if (sourceModelBulletRokushikiUntil.Count !=
+                sourceModelBulletRokushikiLane.Count)
+                throw new InvalidOperationException(
+                    "불릿 육식 체의 지속시간·전장 장부가 일치하지 않습니다.");
+            foreach (var row in sourceModelBulletRokushikiUntil)
+            {
+                long lane;
+                if (!sourceModelBulletRokushikiLane.TryGetValue(row.Key, out lane))
+                    throw new InvalidOperationException(
+                        "불릿 육식 체의 원본 전장 리비전이 없습니다.");
+                if (row.Value <= draft.Time) continue;
+                draft.BulletStances.Add(new SourceCombatBulletStanceCheckpoint {
+                    OwnerId = row.Key, LaneRevision = lane,
+                    ExpiresAt = row.Value
+                });
+            }
+            draft.BulletStances.Sort((a, b) => a.OwnerId.CompareTo(b.OwnerId));
             foreach (var summon in sourceTemporarySummons)
             {
                 SourceIndependentAttacker independent = null;

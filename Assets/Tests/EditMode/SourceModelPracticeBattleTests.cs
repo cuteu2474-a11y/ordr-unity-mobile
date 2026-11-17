@@ -51,6 +51,59 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void BulletStanceCheckpointPreservesExpiryAndLaneWithoutRecasting()
+        {
+            // Directly inject the already-activated stance storage to isolate
+            // serialization from attack probability and source RNG.
+            using (var live = Create(1, attackerUnitId: "I-05"))
+            {
+                long owner = live.Combat.MobileUnitSnapshot()[0].InstanceId;
+                var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                var until = (System.Collections.Generic.Dictionary<long, double>)
+                    typeof(CharacterCombatRuntime).GetField(
+                        "sourceModelBulletRokushikiUntil", flags).GetValue(live.Combat);
+                var lanes = (System.Collections.Generic.Dictionary<long, long>)
+                    typeof(CharacterCombatRuntime).GetField(
+                        "sourceModelBulletRokushikiLane", flags).GetValue(live.Combat);
+                var before = live.Combat.CaptureRuntimeDraft();
+                long lane = before.Actors[0].SourceLaneRevision;
+                double expiry = live.Combat.Time + 2.25;
+                until.Add(owner, expiry);
+                lanes.Add(owner, lane);
+                var draft = live.Combat.CaptureRuntimeDraft();
+                Assert.AreEqual(1, draft.BulletStances.Count);
+                Assert.AreEqual(expiry, draft.BulletStances[0].ExpiresAt);
+
+                var roster = UnitRoster.Restore(live.Combat.Roster.CaptureState());
+                var session = GameSession.Restore(live.Combat.Game.CaptureState());
+                var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+                var skills = CharacterSkillCatalog.FromJson(
+                    Data("character-skill-profiles.json"));
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"), units);
+                var dice = new MinimumDice();
+                var rules = new SourceModelBasicCombatRules(map, dice);
+                rules.Enable();
+                var recovered = new CharacterCombatRuntime(units, skills,
+                    rules, rules, dice, roster, session);
+                recovered.ConfigureSourceModelBasicAttacksForRestore(rules);
+                recovered.RestoreEnemyWorldDraft(draft);
+                recovered.RestoreActorWorldDraft(draft);
+                var again = recovered.CaptureRuntimeDraft();
+                Assert.AreEqual(1, again.BulletStances.Count);
+                Assert.AreEqual(owner, again.BulletStances[0].OwnerId);
+                Assert.AreEqual(expiry, again.BulletStances[0].ExpiresAt);
+                Assert.AreEqual(draft.BulletStances[0].LaneRevision,
+                    again.BulletStances[0].LaneRevision);
+                // An expired stale dictionary entry no longer grants a
+                // resumable stance, even before its lazy combat cleanup.
+                until[owner] = live.Combat.Time;
+                Assert.AreEqual(0, live.Combat.CaptureRuntimeDraft()
+                    .BulletStances.Count);
+            }
+        }
+
+        [Test]
         public void SixtyFiveRoundMobileLayoutOptInKeepsFiniteRangeWithoutChangingFixtures()
         {
             using (var practice = Create(1, 65))

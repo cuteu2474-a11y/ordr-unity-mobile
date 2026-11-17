@@ -5,7 +5,7 @@
 ## 저장·비공개 복원 경로
 
 - `OrdrCoreCheckpoint.PrepareWorldRestore`는 `SourceCombatRuntimeCheckpoint.Version=4`만 인정하고, 공개 `Restore`는 전투 초안이 있는 경우 기존대로 차단합니다. `CharacterCombatRuntime.RestoreActorWorldDraft`는 전투 로스터 밖의 원본 진화체 `e0HP` 1기를 별도 실물로 인정하며 실제 액터 중복·신원은 그대로 검사합니다.
-- `OriginalEquippedItemLedger.CaptureState/RestoreState`는 장비별 원본 rawcode·개수·등급/타입, delta 영수증/소유자, native 전체 관측 리비전 및 삭제된 ID의 tombstone을 원자 재구성합니다. `CharacterCombatRuntime.ValidateEquipmentState`와 `OrdrCoreCheckpoint.ValidateCombatDraft`가 소유권·자료 형식/중복을 검사하고 원본 증거 공급자 재연결이 없으면 복원을 거부합니다. 불릿 3초 육식 체 활성 상태 및 다른 익명 예약은 현재 저장 거부 대상입니다. 아직 게임용 이어하기 UI/전체 씬 복원은 비활성입니다.
+- `OriginalEquippedItemLedger.CaptureState/RestoreState`는 장비별 원본 rawcode·개수·등급/타입, delta 영수증/소유자, native 전체 관측 리비전 및 삭제된 ID의 tombstone을 원자 재구성합니다. `CharacterCombatRuntime.ValidateEquipmentState`와 `OrdrCoreCheckpoint.ValidateCombatDraft`가 소유권·자료 형식/중복을 검사하고 원본 증거 공급자 재연결이 없으면 복원을 거부합니다. 불릿 육식 체 3초 효과는 `SourceCombatRuntimeCheckpoint.BulletStances`에 원본 유닛 ID·전장 리비전·절대 만료시각을 기록하고 `ValidateSourceSidecars`/비공개 `RestoreSourceSidecars`로 재시전 없이 연결합니다. 만료된 효과는 복원하지 않고, 잘못된 ID/폼·전장·시각/중복 레코드는 차단합니다. 나미 여진·모리아 기여·마리아 반복 및 기타 익명 예약과 실제 게임 이어하기 UI/전체 씬 복원은 비활성입니다.
 
 ## 원본 숫자·스탯 공급 경로
 

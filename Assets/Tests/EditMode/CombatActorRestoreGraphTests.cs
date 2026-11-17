@@ -151,6 +151,50 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void BulletStanceSaveRejectsForeignExpiredAndDuplicatedEntitlements()
+        {
+            var original = World();
+            original.Start();
+            original.BeginWave(1);
+            long id = original.SpawnCharacter("TEST-01", 0, 0);
+            var state = original.CaptureRuntimeDraft();
+            state.HasSourceModelBasicAttacks = true;
+            state.Actors[0].CatalogId = "I-05"; // validation-only fixture
+            state.BulletStances.Add(new SourceCombatBulletStanceCheckpoint {
+                OwnerId = id, LaneRevision = state.Actors[0].SourceLaneRevision,
+                ExpiresAt = state.Time + 2
+            });
+            Assert.DoesNotThrow(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+            state.BulletStances.Add(new SourceCombatBulletStanceCheckpoint {
+                OwnerId = id, LaneRevision = state.Actors[0].SourceLaneRevision,
+                ExpiresAt = state.Time + 2
+            });
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+            state.BulletStances.RemoveAt(1);
+            state.BulletStances[0].LaneRevision++;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+            state.BulletStances[0].LaneRevision--;
+            state.BulletStances[0].ExpiresAt = state.Time;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+            state.BulletStances[0].ExpiresAt = state.Time + 2;
+            state.Actors[0].CatalogId = "C-01";
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+            state.Actors[0].CatalogId = "I-05";
+            state.BulletStances[0].ExpiresAt = state.Time + 4;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+            state.BulletStances[0].ExpiresAt = state.Time + 2;
+            state.HasSourceModelBasicAttacks = false;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+        }
+
+        [Test]
         public void DeployedActorIsRejectedBeforeRestoringRuntime()
         {
             var original = World();
