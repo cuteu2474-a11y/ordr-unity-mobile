@@ -1,5 +1,7 @@
 # 코드 구조
 
+- 원본 Bnm/Bnp/Bnr e0KD 네이티브 지연 시전의 체크포인트/소유권 검증: `Assets/Scripts/Combat/CharacterCombatRuntime.OriginalNativeDummySaveState.cs`; 비공개 결합: `Assets/Scripts/Mobile/OrdrUnpublishedWorldRestoreGraph.cs` (시전/타격/보상 재실행 금지, 완료 주문 ID 묘비 복원).
+
 > 코드의 **현재 진입점**과 공통 엔진 경로만 기록합니다. 날짜별 개발 일지와 반복된 스킬 설명은 삭제했습니다. [현재 상태](START_HERE.md) / [개발 작업](PLAYABLE_ROADMAP.md)을 함께 확인하세요.
 
 ## 저장·비공개 복원 경로

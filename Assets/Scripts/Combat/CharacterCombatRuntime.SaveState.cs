@@ -180,6 +180,9 @@ namespace Ordr.Mobile.Combat
         public bool MobileMainLaneEnabled;
         public CombatAttackPipelineState Attacks;
         public CombatTimedEffectQueueState Timed;
+        // Native e0KD delayed casts, per-actor attacked-event sequences, and
+        // completed cast tombstones; no projectiles or rewards are replayed.
+        public SourceOriginalDummyLedgerCheckpoint OriginalNativeDummy;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -914,6 +917,7 @@ namespace Ordr.Mobile.Combat
             ValidateSourceSidecars(state);
             ValidateEquipmentState(state);
             ValidateSourceTransientState(state);
+            ValidateOriginalDummyState(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1071,7 +1075,8 @@ namespace Ordr.Mobile.Combat
                 EquippedItems = sourceModelEquippedItems == null ? null :
                     sourceModelEquippedItems.CaptureState(),
                 Attacks = attackPipeline.CaptureState(),
-                Timed = effectExecutor.CaptureTimedState()
+                Timed = effectExecutor.CaptureTimedState(),
+                OriginalNativeDummy = CaptureOriginalDummyState()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1225,6 +1230,7 @@ namespace Ordr.Mobile.Combat
             draft.NamiZones.Sort((a, b) =>
                 string.CompareOrdinal(a.Source, b.Source));
             ValidateSourceTransientState(draft);
+            ValidateOriginalDummyState(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);

@@ -42,6 +42,9 @@ namespace Ordr.Mobile.Mobile
         public IOriginal323SharedBfiRestoreWitness OriginalStateWitness;
         public IOriginal323ScriptRandomDrawWitness OriginalDrawWitness;
         public IOriginal323ScriptAttackProcWitness OriginalAttackEventWitness;
+        // Independent attestation for unfinished native e0KD casts. No
+        // guessed travel time or fresh cast is allowed on reconstruction.
+        public IOriginal323DummyCastRestoreWitness OriginalDummyCastRestoreWitness;
         public Func<CharacterCombatRuntime,
             IOriginal323VerifiedAttackDummySpellWorld> CreateOriginalAttackSpellWorld;
         // Must create NEW native purchase/settlement/restore witnesses bound
@@ -135,9 +138,19 @@ namespace Ordr.Mobile.Mobile
                  inputs.OriginalDrawWitness == null))
                 throw new NotSupportedException(
                     "원본 H6 난수는 현재 세션의 상태와 향후 호출 목격자가 모두 필요합니다.");
+            if (save.Combat?.OriginalNativeDummy == null)
+                throw new FormatException(
+                    "원본 보조 주문과 공격 사건 순번 저장 장부가 없습니다.");
+            CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
+                save.Combat, save.OriginalScriptAttackProcs);
+            if (save.Combat.OriginalNativeDummy.Pending.Count > 0 &&
+                inputs.OriginalDummyCastRestoreWitness == null)
+                throw new NotSupportedException(
+                    "진행 중 원본 e0KD 주문을 증명할 복원 공급자가 필요합니다.");
             if (save.OriginalScriptAttackProcs != null &&
                 (inputs.OriginalAttackEventWitness == null ||
-                 inputs.CreateOriginalAttackSpellWorld == null))
+                 (save.Combat.OriginalNativeDummy.OwnerConfigured &&
+                  inputs.CreateOriginalAttackSpellWorld == null)))
                 throw new NotSupportedException(
                     "원본 Bnm/Bnp/Bnr 사건은 같은 전투의 원본 충돌·공격 목격 공급자가 필요합니다.");
             if (save.OriginalMoneyGambling != null &&
@@ -203,14 +216,22 @@ namespace Ordr.Mobile.Mobile
                         inputs.OriginalAttackEventWitness);
                     originalAttackRolls.RestoreState(
                         save.OriginalScriptAttackProcs);
-                    var spellWorld = inputs.CreateOriginalAttackSpellWorld(
-                        combat.Combat);
-                    if (spellWorld == null)
-                        throw new NotSupportedException(
-                            "원본 공격 충돌 처리기를 새 전투에서 재생성하지 못했습니다.");
-                    combat.Combat.ConfigureOriginal323ScriptAttackEffectWorldForRestore(
-                        save.Combat, originalAttackRolls, spellWorld);
+                    if (save.Combat.OriginalNativeDummy.OwnerConfigured)
+                    {
+                        var spellWorld = inputs.CreateOriginalAttackSpellWorld(
+                            combat.Combat);
+                        if (spellWorld == null)
+                            throw new NotSupportedException(
+                                "원본 공격 충돌 처리기를 새 전투에서 재생성하지 못했습니다.");
+                        combat.Combat.ConfigureOriginal323ScriptAttackEffectWorldForRestore(
+                            save.Combat, originalAttackRolls, spellWorld);
+                    }
                 }
+                // Rebind native cast identities only after actor/clock restore
+                // and the attacked-event owner have both been reconstructed.
+                combat.Combat.RestoreOriginalDummyState(
+                    save.Combat.OriginalNativeDummy, save.SessionId,
+                    save.LogicalTime, inputs.OriginalDummyCastRestoreWitness);
                 Original323MoneyGamblingService originalMoneyGambling = null;
                 if (save.OriginalMoneyGambling != null)
                 {

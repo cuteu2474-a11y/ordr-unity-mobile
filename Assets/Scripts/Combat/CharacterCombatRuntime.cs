@@ -431,6 +431,7 @@ namespace Ordr.Mobile.Combat
             public readonly HashSet<string> ImpactIds =
                 new HashSet<string>(StringComparer.Ordinal);
             public double LastImpactAt;
+            public long AttackSequence;
         }
         private readonly Dictionary<string, PendingOriginalDummyCast>
             pendingOriginalDummyCasts =
@@ -616,7 +617,8 @@ namespace Ordr.Mobile.Combat
                 new PendingOriginalDummyCast {
                     Snapshot = cast,
                     IsStoryLane = IsStoryDeployed(id),
-                    LastImpactAt = scheduler.Time
+                    LastImpactAt = scheduler.Time,
+                    AttackSequence = originalScriptAttackSequences[attackerId]
                 });
             return true;
         }
