@@ -112,17 +112,20 @@ namespace Ordr.Mobile.Combat
                 CharacterCombatEventType.SkillActivated, attackerId, victimId,
                 "우솝 화염탄 · 리퀴드 파이어",
                 "MODEL_ONLY A0EG/Aliq: 150/초, 3초 화상 갱신 · 원본 틱·면역 미검증", 0));
+            bool story = IsStoryDeployed(actor.Id);
+            long lane = SourceModelLaneRevision(actor.Id);
             for (int second = 1; second <= 3; second++)
             {
-                effectExecutor.SchedulePracticeSourceAttack(attackerId,
-                    victimId, second, () => {
-                        long latest;
-                        if (!sourceLiquidFireRevision.TryGetValue(victimId, out latest) ||
-                            latest != revision || !characters.ContainsKey(actor.Id) ||
-                            !primary.Enemy.IsAlive) return;
-                        ApplySourceScriptHits(actor, primary, LiquidFireModel,
-                            LiquidFireModel.OnProc);
-                    });
+                var pulse = new SourceNativeDelayedEffectPayload {
+                    OwnerId = actor.Id, EnemyId = victimId,
+                    StoryLane = story, LaneRevision = lane,
+                    CastAt = effectExecutor.Time, Tick = second,
+                    Revision = revision
+                };
+                effectExecutor.ScheduleRestorableSourceAttack(attackerId,
+                    victimId, second, NativeLiquidFireKind,
+                    SerializeNativeDelayed(pulse),
+                    CreateNativeLiquidFirePulse(pulse));
             }
         }
 

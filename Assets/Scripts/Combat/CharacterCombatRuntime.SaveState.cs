@@ -183,6 +183,9 @@ namespace Ordr.Mobile.Combat
         // Native e0KD delayed casts, per-actor attacked-event sequences, and
         // completed cast tombstones; no projectiles or rewards are replayed.
         public SourceOriginalDummyLedgerCheckpoint OriginalNativeDummy;
+        // Source-backed, queue-owned native delayed hits and liquid-fire
+        // per-enemy generation counters (no lambda serialization).
+        public SourceNativeDelayedOwnerCheckpoint NativeDelayed;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -664,6 +667,7 @@ namespace Ordr.Mobile.Combat
                 sourceNamiAuraKeys.Add(zone.Source);
             }
             moriaParticipation.RestoreState(state.MoriaParticipation);
+            RestoreSourceNativeDelayedOwners(state.NativeDelayed);
         }
 
         private void RestoreManualOwners(SourceCombatRuntimeCheckpoint state)
@@ -918,6 +922,7 @@ namespace Ordr.Mobile.Combat
             ValidateEquipmentState(state);
             ValidateSourceTransientState(state);
             ValidateOriginalDummyState(state);
+            ValidateSourceNativeDelayedState(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1076,7 +1081,8 @@ namespace Ordr.Mobile.Combat
                     sourceModelEquippedItems.CaptureState(),
                 Attacks = attackPipeline.CaptureState(),
                 Timed = effectExecutor.CaptureTimedState(),
-                OriginalNativeDummy = CaptureOriginalDummyState()
+                OriginalNativeDummy = CaptureOriginalDummyState(),
+                NativeDelayed = CaptureSourceNativeDelayedOwners()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1231,6 +1237,7 @@ namespace Ordr.Mobile.Combat
                 string.CompareOrdinal(a.Source, b.Source));
             ValidateSourceTransientState(draft);
             ValidateOriginalDummyState(draft);
+            ValidateSourceNativeDelayedState(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);

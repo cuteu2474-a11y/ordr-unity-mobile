@@ -457,8 +457,12 @@ namespace Ordr.Mobile.Combat
             string payload, string casterId, string targetId)
         {
             if (kind != SourceMariaPulseKind)
-                return RestoreSourceModelKumaPhoenixFire(
+            {
+                var kuma = RestoreSourceModelKumaPhoenixFire(
                     kind, payload, casterId, targetId);
+                return kuma ?? RestoreSourceNativeDelayed(
+                    kind, payload, casterId, targetId);
+            }
             long id, token, lane;
             int tick;
             bool story;

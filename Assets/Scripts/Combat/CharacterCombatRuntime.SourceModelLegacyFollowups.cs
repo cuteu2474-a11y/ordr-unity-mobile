@@ -128,39 +128,18 @@ namespace Ordr.Mobile.Combat
             string actorId = InstanceKey(actor.Id);
             bool sourceStoryLane = IsStoryDeployed(actor.Id);
             long sourceLaneRevision = SourceModelLaneRevision(actor.Id);
-            effectExecutor.SchedulePracticeSourceAttack(actorId,
+            var pulse = new SourceNativeDelayedEffectPayload {
+                OwnerId = actor.Id, StoryLane = sourceStoryLane,
+                LaneRevision = sourceLaneRevision,
+                CastAt = effectExecutor.Time,
+                CenterX = centerX, CenterY = centerY,
+                OriginalAbilityRawcode = spec.AbilityRawcode
+            };
+            effectExecutor.ScheduleRestorableSourceAttack(actorId,
                 "practice-inferno:" + actorId + ":" + spec.AbilityRawcode,
-                spec.ImpactDelaySeconds, () => {
-                    if (!CanFinishSourceModelDelayedAttack(actor.Id,
-                            sourceStoryLane, sourceLaneRevision)) return;
-                    foreach (var enemy in enemies.Values)
-                    {
-                        if (!enemy.Enemy.IsAlive ||
-                            !CanAttackInThisLane(actor, enemy)) continue;
-                        double dx = enemy.X - centerX, dy = enemy.Y - centerY;
-                        if (dx * dx + dy * dy > spec.Radius * spec.Radius) continue;
-                        if (enemy.Kind != CharacterEnemyKind.Line)
-                        {
-                            events.Add(new CharacterCombatEvent(
-                                CharacterCombatEventType.EffectDeferred, actorId,
-                                enemy.Id, actor.Catalog.Name + " 인페르노",
-                                "MODEL_ONLY " + spec.AbilityRawcode +
-                                " 보스/특수 적 네이티브 기절 저항 미검증", 0));
-                            continue;
-                        }
-                        string source = "practice-inferno:" + spec.AbilityRawcode + ":" + actorId;
-                        enemy.Enemy.Status.RemoveSource(source);
-                        enemy.Enemy.Status.Apply(new CombatEffect(source,
-                            CombatEffectType.Stun, CombatEffectOrigin.TriggeredSkill,
-                            1, spec.NormalStunSeconds));
-                        events.Add(new CharacterCombatEvent(
-                            CharacterCombatEventType.SkillActivated, actorId,
-                            enemy.Id, actor.Catalog.Name + " 인페르노",
-                            "MODEL_ONLY " + spec.AbilityRawcode + " 원본 객체 기절 " +
-                            spec.NormalStunSeconds + "초 / " + spec.Radius +
-                            " 범위 · 네이티브 면역 미검증", 0));
-                    }
-                });
+                spec.ImpactDelaySeconds, NativeInfernoKind,
+                SerializeNativeDelayed(pulse),
+                CreateNativeInfernoPulse(pulse));
         }
 
         private void ScheduleSourceModelSentinelFaerie(CharacterInstance actor,
@@ -173,27 +152,17 @@ namespace Ordr.Mobile.Combat
             // DataA1=50 flat armor loss, Dur1=60; native cast execution can
             // follow the synchronous JASS Bcb, so use the map's .01 model
             // event interval rather than altering the same instant's AoE.
-            effectExecutor.SchedulePracticeSourceAttack(actorId, target.Id,
-                .01, () => {
-                    SpatialCombatEnemy current;
-                    if (!CanFinishSourceModelDelayedAttack(actor.Id,
-                            sourceStoryLane, sourceLaneRevision) ||
-                        !target.Enemy.IsAlive ||
-                        !enemies.TryGetValue(target.Id, out current) ||
-                        !ReferenceEquals(current, target) ||
-                        !CanAttackInThisLane(actor, target)) return;
-                    string source = "practice-native:A10I";
-                    target.Enemy.Status.RemoveSource(source);
-                    target.Enemy.Status.Apply(new CombatEffect(source,
-                        CombatEffectType.ArmorReduction,
-                        CombatEffectOrigin.TriggeredSkill,
-                        SourceModelLegacyNativeFollowupCatalog.SentinelArmorReduction,
-                        SourceModelLegacyNativeFollowupCatalog.SentinelFaerieDuration));
-                    events.Add(new CharacterCombatEvent(
-                        CharacterCombatEventType.SkillActivated, actorId,
-                        target.Id, "센토 이스즈 · 페어리 파이어",
-                        "MODEL_ONLY e0LE/A10I: 대상 방어 -50 / 60초, 원본 시전 지연·면역 미검증", 0));
-                });
+            var pulse = new SourceNativeDelayedEffectPayload {
+                OwnerId = actor.Id, StoryLane = sourceStoryLane,
+                LaneRevision = sourceLaneRevision,
+                CastAt = effectExecutor.Time, EnemyId = target.Id,
+                OriginalAbilityRawcode =
+                    SourceModelLegacyNativeFollowupCatalog.SentinelFaerieAbility
+            };
+            effectExecutor.ScheduleRestorableSourceAttack(actorId, target.Id,
+                .01, NativeSentinelFaerieKind,
+                SerializeNativeDelayed(pulse),
+                CreateNativeSentinelFaeriePulse(pulse));
         }
 
         private bool HasUnexpiredSourceNamiZones()

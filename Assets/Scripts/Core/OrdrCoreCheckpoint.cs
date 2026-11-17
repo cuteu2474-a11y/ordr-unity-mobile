@@ -418,6 +418,7 @@ namespace Ordr.Mobile.Core
                 throw new FormatException("전투 공격 순번 형식이 잘못됐습니다.");
             CombatTimedEffectQueue.ValidateState(world.Timed);
             CharacterCombatRuntime.ValidateOriginalDummyState(world);
+            CharacterCombatRuntime.ValidateSourceNativeDelayedState(world);
             CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
                 world, state.OriginalScriptAttackProcs);
             CharacterCombatRuntime.ValidateMariaPulseState(world);
