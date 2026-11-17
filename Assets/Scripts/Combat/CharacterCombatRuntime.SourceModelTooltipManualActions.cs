@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
 using Ordr.Mobile.Mobile;
@@ -378,27 +379,105 @@ namespace Ordr.Mobile.Combat
             SourceModelMariaCooldownRemaining(id) == 0 &&
             !IsOriginalUnitCasting(id) && !SourceFormIsCasting(id);
 
+        // One versioned descriptor per active CDh loop. The pending
+        // callback's original sequence/At are restored by the shared queue,
+        // so continue never restarts the 0.06s startup or spends a cast.
+        private const string SourceMariaPulseKind = "source-maria-cdh-v1";
+
+        private static string SourceMariaPulseTarget(long id, long token, int tick) =>
+            "practice-maria:" + id.ToString(CultureInfo.InvariantCulture) + ":" +
+            token.ToString(CultureInfo.InvariantCulture) + ":" +
+            tick.ToString(CultureInfo.InvariantCulture);
+
+        private static string SourceMariaPulsePayload(long id, long token,
+            bool story, long lane, int tick) =>
+            id.ToString(CultureInfo.InvariantCulture) + "|" +
+            token.ToString(CultureInfo.InvariantCulture) + "|" +
+            (story ? "1" : "0") + "|" +
+            lane.ToString(CultureInfo.InvariantCulture) + "|" +
+            tick.ToString(CultureInfo.InvariantCulture);
+
+        private static bool TryReadSourceMariaPulse(string payload,
+            out long id, out long token, out bool story, out long lane, out int tick)
+        {
+            id = 0; token = 0; lane = 0; story = false; tick = 0;
+            if (string.IsNullOrWhiteSpace(payload)) return false;
+            string[] parts = payload.Split('|');
+            if (parts.Length != 5 ||
+                !long.TryParse(parts[0], NumberStyles.None,
+                    CultureInfo.InvariantCulture, out id) ||
+                !long.TryParse(parts[1], NumberStyles.None,
+                    CultureInfo.InvariantCulture, out token) ||
+                (parts[2] != "0" && parts[2] != "1") ||
+                !long.TryParse(parts[3], NumberStyles.None,
+                    CultureInfo.InvariantCulture, out lane) ||
+                !int.TryParse(parts[4], NumberStyles.None,
+                    CultureInfo.InvariantCulture, out tick))
+                return false;
+            story = parts[2] == "1";
+            return id > 0 && token > 0 && lane >= 0 && tick >= 0 &&
+                tick < int.MaxValue &&
+                SourceMariaPulsePayload(id, token, story, lane, tick) == payload;
+        }
+
+        private Action CreateSourceMariaPulse(CharacterInstance actor,
+            long token, bool storyLane, long laneRevision, int tick)
+        {
+            return () => {
+                long active;
+                int stage;
+                if (!manualMariaToken.TryGetValue(actor.Id, out active) ||
+                    active != token ||
+                    !manualMariaMode.TryGetValue(actor.Id, out stage) ||
+                    !CanFinishSourceModelDelayedAttack(actor.Id,
+                        storyLane, laneRevision)) return;
+                TickSourceMaria(actor, stage, tick);
+                ScheduleSourceMariaPulse(actor, token, storyLane,
+                    laneRevision, 5, tick + 1);
+            };
+        }
+
         // Original CDh 42569-42613: .03+.03 startup, then a 5-second
         // recurring pulse (4.97+.03 phases) for the lifetime of its owner.
         // A0T5 changes the current mode; it never resets the CDh clock.
         private void ScheduleSourceMariaPulse(CharacterInstance actor,
             long token, bool storyLane, long laneRevision, double delay, int tick)
         {
-            effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
-                "practice-maria:" + actor.Id + ":" + token + ":" + tick,
-                delay, () => {
-                    long active;
-                    int stage;
-                    if (!manualMariaToken.TryGetValue(actor.Id, out active) ||
-                        active != token ||
-                        !manualMariaMode.TryGetValue(actor.Id, out stage) ||
-                        !CanFinishSourceModelDelayedAttack(actor.Id,
-                            storyLane, laneRevision))
-                        return;
-                    TickSourceMaria(actor, stage, tick);
-                    ScheduleSourceMariaPulse(actor, token, storyLane,
-                        laneRevision, 5, tick + 1);
-                });
+            if (tick < 0 || tick >= int.MaxValue)
+                throw new OverflowException("마리아 반복 주기 순번이 초과됐습니다.");
+            effectExecutor.ScheduleRestorableSourceAttack(InstanceKey(actor.Id),
+                SourceMariaPulseTarget(actor.Id, token, tick), delay,
+                SourceMariaPulseKind,
+                SourceMariaPulsePayload(actor.Id, token, storyLane,
+                    laneRevision, tick),
+                CreateSourceMariaPulse(actor, token, storyLane, laneRevision, tick));
+        }
+
+        private Action RestoreSourceModelTimedEffect(string kind,
+            string payload, string casterId, string targetId)
+        {
+            if (kind != SourceMariaPulseKind)
+                return RestoreSourceModelKumaPhoenixFire(
+                    kind, payload, casterId, targetId);
+            long id, token, lane;
+            int tick;
+            bool story;
+            if (!UsesSourceModelBasicAttacks ||
+                !TryReadSourceMariaPulse(payload, out id, out token,
+                    out story, out lane, out tick) ||
+                casterId != InstanceKey(id) ||
+                targetId != SourceMariaPulseTarget(id, token, tick))
+                return null;
+            CharacterInstance actor;
+            long active;
+            if (!characters.TryGetValue(id, out actor) ||
+                actor.Catalog.Id != "D-01" ||
+                !manualMariaToken.TryGetValue(id, out active) ||
+                active != token || token > manualMariaNextToken ||
+                story != IsStoryDeployed(id) ||
+                lane != SourceModelLaneRevision(id))
+                return null;
+            return CreateSourceMariaPulse(actor, token, story, lane, tick);
         }
 
         public bool TryCycleSourceModelMaria(long id)

@@ -196,6 +196,27 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void MoriaParticipationCheckpointPreservesOwnerAndSpentKill()
+        {
+            var original = new MoriaParticipationLedger();
+            original.Record("line", 17L, 4, CharacterEnemyKind.Line);
+            original.Record("line", 8L, 2, CharacterEnemyKind.Line);
+            var state = original.CaptureState();
+            Assert.AreEqual(1, state.Participated.Count);
+            Assert.AreEqual(2, state.Owners[0].OwnerIds.Count);
+            var resumed = new MoriaParticipationLedger();
+            resumed.RestoreState(state);
+            long owner;
+            Assert.IsTrue(resumed.TryCompleteWithOwner("line", out owner));
+            Assert.AreEqual(8L, owner);
+            Assert.IsFalse(resumed.TryCompleteWithOwner("line", out owner));
+            Assert.IsFalse(resumed.HasPending);
+            state.Owners[0].OwnerIds.Add(8L);
+            Assert.Throws<FormatException>(() =>
+                new MoriaParticipationLedger().RestoreState(state));
+        }
+
+        [Test]
         public void MoriaZeroDamageBossAndLeakDoNotProduceZombie()
         {
             var ledger = new MoriaParticipationLedger();

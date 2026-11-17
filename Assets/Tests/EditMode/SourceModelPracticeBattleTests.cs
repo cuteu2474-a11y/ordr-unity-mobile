@@ -116,6 +116,85 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void MariaCdhRestoresTheSameFuturePulseWithoutSecondCast()
+        {
+            using (var live = Create(1, attackerUnitId: "D-01"))
+            {
+                long owner = live.Combat.MobileUnitSnapshot()[0].InstanceId;
+                Assert.IsTrue(live.Combat.TryCycleSourceModelMaria(owner));
+                var before = live.Combat.CaptureRuntimeDraft();
+                var first = before.Timed.Pending.Single(x =>
+                    x.Kind == "source-maria-cdh-v1");
+                Assert.AreEqual(1, before.ManualOwners[0].MariaToken);
+                Assert.AreEqual(before.Time + .06, first.At, 1e-7);
+
+                var roster = UnitRoster.Restore(live.Combat.Roster.CaptureState());
+                var session = GameSession.Restore(live.Combat.Game.CaptureState());
+                var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+                var skills = CharacterSkillCatalog.FromJson(
+                    Data("character-skill-profiles.json"));
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"), units);
+                var dice = new MinimumDice();
+                var rules = new SourceModelBasicCombatRules(map, dice);
+                rules.Enable();
+                var restored = new CharacterCombatRuntime(
+                    units, skills, rules, rules, dice, roster, session);
+                restored.ConfigureSourceModelBasicAttacksForRestore(rules);
+                restored.RestoreEnemyWorldDraft(before);
+                restored.RestoreActorWorldDraft(before);
+                var after = restored.CaptureRuntimeDraft();
+                var resumed = after.Timed.Pending.Single(x =>
+                    x.Kind == "source-maria-cdh-v1");
+                Assert.AreEqual(first.At, resumed.At);
+                Assert.AreEqual(first.Sequence, resumed.Sequence);
+                Assert.AreEqual(first.Payload, resumed.Payload);
+                Assert.AreEqual(before.ManualOwners[0].MariaToken,
+                    after.ManualOwners[0].MariaToken);
+                Assert.AreEqual(before.ManualOwners[0].MariaReadyAt,
+                    after.ManualOwners[0].MariaReadyAt);
+            }
+        }
+
+        [Test]
+        public void MoriaParticipationCheckpointSurvivesUnpublishedActorRestore()
+        {
+            using (var live = Create(1, attackerUnitId: "S-09"))
+            {
+                long owner = live.Combat.MobileUnitSnapshot()[0].InstanceId;
+                live.Combat.SpawnEnemy("test-moria-line", 10000,
+                    CharacterEnemyKind.Line, -4800, 5000, 0);
+                var ledger = (Ordr.Mobile.Mobile.MoriaParticipationLedger)
+                    typeof(CharacterCombatRuntime).GetField(
+                        "moriaParticipation", BindingFlags.Instance |
+                        BindingFlags.NonPublic).GetValue(live.Combat);
+                ledger.Record("test-moria-line", owner, 1, CharacterEnemyKind.Line);
+                var before = live.Combat.CaptureRuntimeDraft();
+                Assert.AreEqual(1, before.MoriaParticipation.Participated.Count);
+                var roster = UnitRoster.Restore(live.Combat.Roster.CaptureState());
+                var game = GameSession.Restore(live.Combat.Game.CaptureState());
+                var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+                var skills = CharacterSkillCatalog.FromJson(
+                    Data("character-skill-profiles.json"));
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"), units);
+                var dice = new MinimumDice();
+                var rules = new SourceModelBasicCombatRules(map, dice);
+                rules.Enable();
+                var restored = new CharacterCombatRuntime(
+                    units, skills, rules, rules, dice, roster, game);
+                restored.ConfigureSourceModelBasicAttacksForRestore(rules);
+                restored.RestoreEnemyWorldDraft(before);
+                restored.RestoreActorWorldDraft(before);
+                var after = restored.CaptureRuntimeDraft();
+                Assert.AreEqual(owner,
+                    after.MoriaParticipation.Owners[0].OwnerIds[0]);
+                Assert.AreEqual("test-moria-line",
+                    after.MoriaParticipation.Participated[0]);
+            }
+        }
+
+        [Test]
         public void BulletStanceCheckpointPreservesExpiryAndLaneWithoutRecasting()
         {
             // Directly inject the already-activated stance storage to isolate

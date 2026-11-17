@@ -341,6 +341,8 @@ namespace Ordr.Mobile.Core
             if (world.Attacks.Version != 1 || world.Attacks.Events == null)
                 throw new FormatException("전투 공격 순번 형식이 잘못됐습니다.");
             CombatTimedEffectQueue.ValidateState(world.Timed);
+            CharacterCombatRuntime.ValidateMariaPulseState(world);
+            CharacterCombatRuntime.ValidateSourceTransientState(world);
             var registered = new HashSet<string>(StringComparer.Ordinal);
             foreach (var item in world.Attacks.Events)
                 if (item == null || string.IsNullOrWhiteSpace(item.UnitId) ||

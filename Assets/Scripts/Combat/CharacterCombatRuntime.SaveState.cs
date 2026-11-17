@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using Ordr.Mobile.Mobile;
 using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Combat
@@ -25,14 +27,14 @@ namespace Ordr.Mobile.Combat
         public CombatStatusEngineState Status;
     }
 
-    // S03 manual-owner states that have no future anonymous Action callbacks.
-    // Unserializable forms and active Maria periodic spells remain fail-closed.
+    // S03 manual owner state; active CDh is represented by one typed queue pulse.
     [Serializable]
     public sealed class SourceCombatManualOwnerCheckpoint
     {
         public long InstanceId;
         public int MariaStage = -1; // -1 = never used; 0..2 = last mode
         public double MariaReadyAt;
+        public long MariaToken; // 0=not active; unique CDh loop identity
         public string MarcoForm; // null = default human, or human/phoenix
         public double MarcoReadyAt;
     }
@@ -72,6 +74,15 @@ namespace Ordr.Mobile.Combat
         public long OwnerId;
         public long LaneRevision;
         public double ExpiresAt;
+    }
+
+    // e00K/A089 temporary zone has no owned summon/attack timer.
+    [Serializable]
+    public sealed class SourceCombatNamiZoneCheckpoint
+    {
+        public string Source;
+        public double X, Y, ExpiresAt;
+        public bool Story;
     }
 
     [Serializable]
@@ -173,6 +184,11 @@ namespace Ordr.Mobile.Combat
             new List<SourceCombatForestCheckpoint>();
         public List<SourceCombatBulletStanceCheckpoint> BulletStances =
             new List<SourceCombatBulletStanceCheckpoint>();
+        public long MariaNextToken;
+        public long NamiNextSequence;
+        public List<SourceCombatNamiZoneCheckpoint> NamiZones =
+            new List<SourceCombatNamiZoneCheckpoint>();
+        public MoriaParticipationLedgerState MoriaParticipation;
         // Null means the equipment source was not configured in this world.
         public OriginalEquippedItemLedgerState EquippedItems;
         public List<SourceCombatEnemyCheckpoint> Enemies =
@@ -188,7 +204,9 @@ namespace Ordr.Mobile.Combat
         {
             if (state == null || state.Version != 4 ||
                 state.Actors == null || state.ManualOwners == null ||
-                state.ManualOwners.Count != state.Actors.Count)
+                state.ManualOwners.Count != state.Actors.Count ||
+                state.MariaNextToken < 0 ||
+                (!state.HasSourceModelBasicAttacks && state.MariaNextToken != 0))
                 throw new FormatException("수동 스킬 보존 상태가 누락되거나 이전 버전입니다.");
             var actorCatalogs = new Dictionary<long, string>();
             foreach (var actor in state.Actors)
@@ -207,6 +225,8 @@ namespace Ordr.Mobile.Combat
                     !seen.Add(row.InstanceId) ||
                     !actorCatalogs.TryGetValue(row.InstanceId, out catalog) ||
                     row.MariaStage < -1 || row.MariaStage > 2 ||
+                    row.MariaToken < 0 || row.MariaToken > state.MariaNextToken ||
+                    (row.MariaToken > 0 && row.MariaStage < 0) ||
                     double.IsNaN(row.MariaReadyAt) ||
                     double.IsInfinity(row.MariaReadyAt) || row.MariaReadyAt < 0 ||
                     double.IsNaN(row.MarcoReadyAt) ||
@@ -219,7 +239,8 @@ namespace Ordr.Mobile.Combat
                        row.MarcoForm != "phoenix"))) ||
                     (row.MarcoReadyAt != 0 && row.MarcoForm == null) ||
                     (!state.HasSourceModelBasicAttacks &&
-                     (row.MariaStage != -1 || row.MarcoForm != null)))
+                     (row.MariaStage != -1 || row.MarcoForm != null ||
+                      row.MariaToken != 0 || state.MariaNextToken != 0)))
                     throw new FormatException("캐릭터별 수동 스킬/폼 상태가 잘못됐습니다.");
             }
         }
@@ -334,20 +355,151 @@ namespace Ordr.Mobile.Combat
             // to a sold or fused character: those are replay tombstones.
         }
 
+
+        // One in-flight CDh pulse per active Maria manual owner.
+        // Unknown Action callbacks still fail closed in CombatTimedEffectQueue.
+        public static void ValidateMariaPulseState(SourceCombatRuntimeCheckpoint state)
+        {
+            ValidateManualOwnerState(state);
+            CombatTimedEffectQueue.ValidateState(state.Timed);
+            var actors = new Dictionary<long, SourceCombatActorCheckpoint>();
+            foreach (var actor in state.Actors)
+                actors.Add(actor.InstanceId, actor);
+            var rows = new Dictionary<long, SourceCombatManualOwnerCheckpoint>();
+            foreach (var row in state.ManualOwners)
+                rows.Add(row.InstanceId, row);
+            var found = new HashSet<long>();
+            var consumedTokens = new HashSet<long>();
+            foreach (var row in state.ManualOwners)
+                if (row.MariaToken > 0 &&
+                    !consumedTokens.Add(row.MariaToken))
+                    throw new FormatException(
+                        "마리아 반복 기술 토큰이 다른 유닛과 중복됐습니다.");
+            foreach (var pending in state.Timed.Pending)
+            {
+                if (pending.Kind != SourceMariaPulseKind) continue;
+                long id, token, lane;
+                int tick;
+                bool story;
+                SourceCombatManualOwnerCheckpoint row;
+                SourceCombatActorCheckpoint actor;
+                if (!state.HasSourceModelBasicAttacks ||
+                    !TryReadSourceMariaPulse(pending.Payload, out id,
+                        out token, out story, out lane, out tick) ||
+                    pending.CasterId !=
+                        id.ToString(CultureInfo.InvariantCulture) ||
+                    pending.TargetId != SourceMariaPulseTarget(id, token, tick) ||
+                    !rows.TryGetValue(id, out row) ||
+                    !actors.TryGetValue(id, out actor) ||
+                    row.MariaToken != token || row.MariaStage < 0 ||
+                    actor.CatalogId != "D-01" ||
+                    actor.SourceLaneRevision != lane ||
+                    actor.StoryDeployed != story ||
+                    !found.Add(id) || pending.At <= state.Time ||
+                    pending.At - state.Time > 5.000001)
+                    throw new FormatException(
+                        "마리아 CDh 반복 타격의 소유자·시각·순번이 잘못됐습니다.");
+            }
+            foreach (var row in state.ManualOwners)
+                if ((row.MariaToken > 0) != found.Contains(row.InstanceId))
+                    throw new FormatException(
+                        "마리아 반복 효과의 다음 예약이 누락됐습니다.");
+        }
+
+        // Source-model transient state has no cast/reward side effects.
+        // A participating enemy must still be alive and in the line lane;
+        // zero-duration Nami aura leases must be backed by a live zone.
+        public static void ValidateSourceTransientState(
+            SourceCombatRuntimeCheckpoint state)
+        {
+            if (state == null || state.Version != 4 ||
+                state.NamiZones == null || state.NamiNextSequence < 0 ||
+                state.MoriaParticipation == null ||
+                state.Enemies == null || state.Actors == null)
+                throw new FormatException("전투 임시 효과 저장 형식이 불완전합니다.");
+            MoriaParticipationLedger.ValidateState(state.MoriaParticipation);
+            var actors = new Dictionary<long, SourceCombatActorCheckpoint>();
+            foreach (var actor in state.Actors)
+                if (actor == null || actor.InstanceId <= 0 ||
+                    actors.ContainsKey(actor.InstanceId))
+                    throw new FormatException("전투 임시 효과 소유자 ID가 잘못됐습니다.");
+                else actors.Add(actor.InstanceId, actor);
+            var enemyKinds = new Dictionary<string, CharacterEnemyKind>(
+                StringComparer.Ordinal);
+            foreach (var enemy in state.Enemies)
+                if (enemy == null || string.IsNullOrWhiteSpace(enemy.EnemyId) ||
+                    enemyKinds.ContainsKey(enemy.EnemyId))
+                    throw new FormatException("전투 임시 효과 대상이 잘못됐습니다.");
+                else enemyKinds.Add(enemy.EnemyId, enemy.Kind);
+            var contributed = new HashSet<string>(
+                state.MoriaParticipation.Participated, StringComparer.Ordinal);
+            foreach (string enemyId in contributed)
+            {
+                CharacterEnemyKind kind;
+                if (!enemyKinds.TryGetValue(enemyId, out kind) ||
+                    kind != CharacterEnemyKind.Line)
+                    throw new FormatException("모리아 기여 대상 라인 적이 존재하지 않습니다.");
+            }
+            var withOwners = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var row in state.MoriaParticipation.Owners)
+            {
+                withOwners.Add(row.EnemyId);
+                foreach (long id in row.OwnerIds)
+                {
+                    SourceCombatActorCheckpoint actor;
+                    if (!state.HasSourceModelBasicAttacks ||
+                        !actors.TryGetValue(id, out actor) ||
+                        actor.CatalogId != SpecialGradeMobilePolicy.Moria ||
+                        actor.StoryDeployed || actor.PoneglyphChanneling ||
+                        !string.IsNullOrEmpty(actor.SharedObjectiveEnemyId))
+                        throw new FormatException(
+                            "모리아 기여 기록에 유효하지 않은 소유 유닛이 있습니다.");
+                }
+            }
+            if (state.HasSourceModelBasicAttacks &&
+                !contributed.SetEquals(withOwners))
+                throw new FormatException("모리아 처치 기여 소유자가 누락됐습니다.");
+            var zoneSources = new HashSet<string>(StringComparer.Ordinal);
+            const string prefix = "practice-nami:A089:";
+            foreach (var zone in state.NamiZones)
+            {
+                long sequence;
+                if (!state.HasSourceModelBasicAttacks || zone == null ||
+                    string.IsNullOrEmpty(zone.Source) ||
+                    !zone.Source.StartsWith(prefix, StringComparison.Ordinal) ||
+                    !long.TryParse(zone.Source.Substring(prefix.Length),
+                        NumberStyles.None, CultureInfo.InvariantCulture,
+                        out sequence) || sequence <= 0 ||
+                    sequence > state.NamiNextSequence ||
+                    zone.Source != prefix + sequence.ToString(CultureInfo.InvariantCulture) ||
+                    !zoneSources.Add(zone.Source) ||
+                    double.IsNaN(zone.X) || double.IsInfinity(zone.X) ||
+                    double.IsNaN(zone.Y) || double.IsInfinity(zone.Y) ||
+                    double.IsNaN(zone.ExpiresAt) ||
+                    double.IsInfinity(zone.ExpiresAt) ||
+                    zone.ExpiresAt <= state.Time ||
+                    zone.ExpiresAt - state.Time >
+                        SourceModelLegacyNativeFollowupCatalog.NamiAftershockDurationSeconds
+                        + 0.000001)
+                    throw new FormatException(
+                        "나미 여진의 위치·기원·남은 시간이 잘못됐습니다.");
+            }
+            if (!state.HasSourceModelBasicAttacks && state.NamiNextSequence != 0)
+                throw new FormatException("원본 모드가 아닌 나미 여진 순번입니다.");
+            foreach (var enemy in state.Enemies)
+                if (enemy.Status?.Effects != null)
+                    foreach (var effect in enemy.Status.Effects)
+                        if (effect != null && effect.SourceId != null &&
+                            effect.SourceId.StartsWith(prefix,
+                                StringComparison.Ordinal) &&
+                            !zoneSources.Contains(effect.SourceId))
+                            throw new FormatException(
+                                "원본 영역이 없는 나미 이동속도 오라가 저장됐습니다.");
+        }
+
         private void RejectNonRestorableSourceSkillState()
         {
             if (!UsesSourceModelBasicAttacks) return;
-            // Active Moria damage contributors have no checkpoint sidecar
-            // yet; never silently drop their later on-kill entitlement.
-            if (moriaParticipation.HasPending)
-                throw new NotSupportedException(
-                    "모리아 처치 기여 장부가 저장 형식에 없어 진행 중 저장을 거부합니다.");
-            // The source-model save graph cannot reconstruct e00K locations,
-            // relative expiries, and 5% B010 aura leases. Never save a
-            // checkpoint that would silently lose an active 3s aftershock.
-            if (HasUnexpiredSourceNamiZones())
-                throw new NotSupportedException(
-                    "나미 크리마텍트 3초 여진의 위치·남은 시간이 저장되지 않아 진행 중 저장을 거부합니다.");
             // Non-equipment summons and transform callbacks still require
             // independent reconstruction; never silently erase.
             if (sourceFormCastFinishes.Count != 0 ||
@@ -390,16 +542,12 @@ namespace Ordr.Mobile.Combat
                 if (form.Form != "awakening" && form.Form != "forest")
                     throw new NotSupportedException(
                         "미확인 원본 네이티브 변신은 안전하게 복원할 수 없습니다.");
-            // CDh now has an unbounded 5-second Action loop. Until it has
-            // a restorable event descriptor, refuse partial save/resume.
-            if (manualMariaToken.Count != 0)
-                throw new NotSupportedException(
-                    "원본 마리아 지속 주기는 예약 복원 구현 전 저장할 수 없습니다.");
         }
 
         private void RestoreSourceSidecars(SourceCombatRuntimeCheckpoint state)
         {
             ValidateSourceSidecars(state);
+            ValidateSourceTransientState(state);
             if (sourceTemporarySummons.Count != 0 || sourceNextSummonId != 0 ||
                 sourceIndependentAttackers.Count != 0 ||
                 sourceModelTenthForms.Count != 0 || sourceModelForestNutrients.Count != 0 ||
@@ -444,17 +592,35 @@ namespace Ordr.Mobile.Combat
                 sourceTemporarySummons.Add(summoned);
             }
             sourceNextSummonId = state.NextSummonId;
+            if (sourceNamiZones.Count != 0 || sourceNamiAuraKeys.Count != 0 ||
+                sourceFollowupSequence != 0 || moriaParticipation.HasPending)
+                throw new InvalidOperationException(
+                    "나미·모리아 임시 상태는 비어 있는 월드에서만 복구합니다.");
+            sourceFollowupSequence = state.NamiNextSequence;
+            foreach (var zone in state.NamiZones)
+            {
+                sourceNamiZones.Add(new PracticeNamiZone {
+                    Source = zone.Source, X = zone.X, Y = zone.Y,
+                    Story = zone.Story, ExpiresAt = zone.ExpiresAt
+                });
+                // Restored enemy statuses already have these aura leases.
+                // The first live refresh must REMOVE them before reapplying.
+                sourceNamiAuraKeys.Add(zone.Source);
+            }
+            moriaParticipation.RestoreState(state.MoriaParticipation);
         }
 
         private void RestoreManualOwners(SourceCombatRuntimeCheckpoint state)
         {
             ValidateManualOwnerState(state);
             if (manualMariaMode.Count != 0 || manualMariaReady.Count != 0 ||
+                manualMariaToken.Count != 0 || manualMariaNextToken != 0 ||
                 sourceModelMarcoManualForms.Count != 0 ||
                 sourceModelMarcoTransformReadyAt.Count != 0)
                 throw new InvalidOperationException(
                     "수동 스킬 상태는 초기화된 복원 전투에서만 재구성할 수 있습니다.");
             // Validation is complete before changing any manual state.
+            manualMariaNextToken = state.MariaNextToken;
             foreach (var row in state.ManualOwners)
             {
                 if (row.MariaStage >= 0)
@@ -462,6 +628,8 @@ namespace Ordr.Mobile.Combat
                     manualMariaMode.Add(row.InstanceId, row.MariaStage);
                     manualMariaReady.Add(row.InstanceId, row.MariaReadyAt);
                 }
+                if (row.MariaToken > 0)
+                    manualMariaToken.Add(row.InstanceId, row.MariaToken);
                 if (row.MarcoForm != null)
                 {
                     sourceModelMarcoManualForms.Add(row.InstanceId, row.MarcoForm);
@@ -553,6 +721,8 @@ namespace Ordr.Mobile.Combat
             ValidateManualOwnerState(state);
             ValidateSourceSidecars(state);
             ValidateEquipmentState(state);
+            ValidateSourceTransientState(state);
+            ValidateMariaPulseState(state);
             var staged = new List<StagedRestoredActor>();
             var identifiers = new HashSet<long>();
             foreach (var record in state.Actors)
@@ -647,6 +817,7 @@ namespace Ordr.Mobile.Combat
             // Recreate exact summon attack identities before loading the
             // saved next-hit clocks and per-attacker event sequences.
             RestoreSourceSidecars(state);
+            RestoreManualOwners(state);
             attackPipeline.RestoreState(state.Attacks);
             effectExecutor.RestoreTimedState(state.Timed,
                 actorId => {
@@ -657,11 +828,10 @@ namespace Ordr.Mobile.Combat
                 }, enemyId => {
                     SpatialCombatEnemy live;
                     return enemies.TryGetValue(enemyId, out live) ? live : null;
-                }, RestoreSourceModelKumaPhoenixFire);
+                }, RestoreSourceModelTimedEffect);
             if (scheduler.Time != state.Time || effectExecutor.Time != state.Time ||
                 triggers.Time != state.Time)
                 throw new FormatException("복원된 평타·스킬·효과 시계가 맞지 않습니다.");
-            RestoreManualOwners(state);
             if (sourceModelEquippedItems != null)
                 sourceModelEquippedItems.RestoreState(state.EquippedItems);
         }
@@ -693,6 +863,9 @@ namespace Ordr.Mobile.Combat
             RejectNonRestorableSourceSkillState();
             var draft = new SourceCombatRuntimeCheckpoint {
                 Time = scheduler.Time, NextSummonId = sourceNextSummonId,
+                MariaNextToken = manualMariaNextToken,
+                NamiNextSequence = sourceFollowupSequence,
+                MoriaParticipation = moriaParticipation.CaptureState(),
                 HasSourceModelBasicAttacks = UsesSourceModelBasicAttacks,
                 MobileMainLaneEnabled = sourceModelMainLane != null,
                 EquippedItems = sourceModelEquippedItems == null ? null :
@@ -726,6 +899,7 @@ namespace Ordr.Mobile.Combat
                     Status = status.CaptureState()
                 });
                 int mariaStage;
+                long mariaToken;
                 double mariaReady, marcoReady;
                 string marcoForm;
                 draft.ManualOwners.Add(new SourceCombatManualOwnerCheckpoint {
@@ -734,6 +908,8 @@ namespace Ordr.Mobile.Combat
                         ? mariaStage : -1,
                     MariaReadyAt = manualMariaReady.TryGetValue(id, out mariaReady)
                         ? mariaReady : 0,
+                    MariaToken = manualMariaToken.TryGetValue(id, out mariaToken)
+                        ? mariaToken : 0,
                     MarcoForm = sourceModelMarcoManualForms.TryGetValue(
                         id, out marcoForm) ? marcoForm : null,
                     MarcoReadyAt = sourceModelMarcoTransformReadyAt.TryGetValue(
@@ -741,6 +917,7 @@ namespace Ordr.Mobile.Combat
                 });
             }
             ValidateManualOwnerState(draft);
+            ValidateMariaPulseState(draft);
             ValidateEquipmentState(draft);
             foreach (var row in sourceModelTenthForms)
                 draft.Forms.Add(new SourceCombatFormCheckpoint {
@@ -833,6 +1010,15 @@ namespace Ordr.Mobile.Combat
                     NativePassiveTargetRevision = live.Enemy.NativePassiveTargetRevision
                 });
             }
+            foreach (var zone in sourceNamiZones)
+                if (zone.ExpiresAt > draft.Time)
+                    draft.NamiZones.Add(new SourceCombatNamiZoneCheckpoint {
+                        Source = zone.Source, X = zone.X, Y = zone.Y,
+                        Story = zone.Story, ExpiresAt = zone.ExpiresAt
+                    });
+            draft.NamiZones.Sort((a, b) =>
+                string.CompareOrdinal(a.Source, b.Source));
+            ValidateSourceTransientState(draft);
             // e0HP is the original evolution world's SINGLE non-combat
             // starter, registered in the shared roster but not characters.
             // Never conflate it with a playable attacker or a phantom fusion

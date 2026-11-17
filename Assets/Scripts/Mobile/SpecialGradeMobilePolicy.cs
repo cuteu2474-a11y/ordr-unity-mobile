@@ -103,6 +103,22 @@ namespace Ordr.Mobile.Mobile
         bool TryCast(long lawId, long targetId, double time);
     }
 
+    [Serializable]
+    public sealed class MoriaParticipationOwnerState
+    {
+        public string EnemyId;
+        public List<long> OwnerIds = new List<long>();
+    }
+
+    [Serializable]
+    public sealed class MoriaParticipationLedgerState
+    {
+        public int Version = 1;
+        public List<string> Participated = new List<string>();
+        public List<MoriaParticipationOwnerState> Owners =
+            new List<MoriaParticipationOwnerState>();
+    }
+
     // 실제 양수 피해를 준 모리아의 처치 기여는 막타까지 유지한다.
     // 적 1기당 결과 1회, 일반 라인 몬스터만 허용한다. 시간 만료는 없다.
     public sealed class MoriaParticipationLedger
@@ -113,6 +129,60 @@ namespace Ordr.Mobile.Mobile
             new Dictionary<string, HashSet<long>>(StringComparer.Ordinal);
 
         public bool HasPending => participated.Count != 0;
+
+        public static void ValidateState(MoriaParticipationLedgerState state)
+        {
+            if (state == null || state.Version != 1 ||
+                state.Participated == null || state.Owners == null)
+                throw new FormatException("모리아 처치 기여 저장 형식이 잘못됐습니다.");
+            var enemies = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string id in state.Participated)
+                if (string.IsNullOrWhiteSpace(id) || !enemies.Add(id))
+                    throw new FormatException("중복되거나 누락된 모리아 대상입니다.");
+            var ownerRows = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var entry in state.Owners)
+            {
+                if (entry == null || !enemies.Contains(entry.EnemyId) ||
+                    !ownerRows.Add(entry.EnemyId) ||
+                    entry.OwnerIds == null || entry.OwnerIds.Count == 0)
+                    throw new FormatException("모리아 기여 소유자 장부가 잘못됐습니다.");
+                var ids = new HashSet<long>();
+                foreach (long id in entry.OwnerIds)
+                    if (id <= 0 || !ids.Add(id))
+                        throw new FormatException("중복되거나 유효하지 않은 모리아 ID입니다.");
+            }
+        }
+
+        public MoriaParticipationLedgerState CaptureState()
+        {
+            var state = new MoriaParticipationLedgerState();
+            state.Participated.AddRange(participated);
+            state.Participated.Sort(StringComparer.Ordinal);
+            var enemies = new List<string>(ownersByEnemy.Keys);
+            enemies.Sort(StringComparer.Ordinal);
+            foreach (string enemy in enemies)
+            {
+                var row = new MoriaParticipationOwnerState { EnemyId = enemy };
+                row.OwnerIds.AddRange(ownersByEnemy[enemy]);
+                row.OwnerIds.Sort();
+                state.Owners.Add(row);
+            }
+            ValidateState(state);
+            return state;
+        }
+
+        // No on-kill grant, spawn, damage, or callback is performed here.
+        public void RestoreState(MoriaParticipationLedgerState state)
+        {
+            ValidateState(state);
+            if (participated.Count != 0 || ownersByEnemy.Count != 0)
+                throw new InvalidOperationException(
+                    "모리아 기여 기록은 빈 월드에서만 복구합니다.");
+            foreach (string enemy in state.Participated)
+                participated.Add(enemy);
+            foreach (var row in state.Owners)
+                ownersByEnemy.Add(row.EnemyId, new HashSet<long>(row.OwnerIds));
+        }
 
         // Existing non-source combat and caller contracts stay unchanged.
         public void Record(string enemyId, bool isMoria, long actualDamage,

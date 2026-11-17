@@ -195,6 +195,82 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void NamiZoneAndMoriaOwnerCannotBeForgedOrDuplicated()
+        {
+            var original = World();
+            original.Start();
+            original.BeginWave(1);
+            long id = original.SpawnCharacter("TEST-01", 0, 0);
+            original.SpawnEnemy("line", 100, CharacterEnemyKind.Line, 0, 0, 0);
+            var state = original.CaptureRuntimeDraft();
+            state.HasSourceModelBasicAttacks = true;
+            state.Actors[0].CatalogId = "S-09";
+            state.MoriaParticipation.Participated.Add("line");
+            var row = new Ordr.Mobile.Mobile.MoriaParticipationOwnerState {
+                EnemyId = "line"
+            };
+            row.OwnerIds.Add(id);
+            state.MoriaParticipation.Owners.Add(row);
+            Assert.DoesNotThrow(() =>
+                CharacterCombatRuntime.ValidateSourceTransientState(state));
+            row.OwnerIds[0] = id + 9;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceTransientState(state));
+            row.OwnerIds[0] = id;
+            state.NamiNextSequence = 1;
+            state.NamiZones.Add(new SourceCombatNamiZoneCheckpoint {
+                Source = "practice-nami:A089:1", X = 100, Y = 0,
+                ExpiresAt = state.Time + 2
+            });
+            Assert.DoesNotThrow(() =>
+                CharacterCombatRuntime.ValidateSourceTransientState(state));
+            state.NamiZones.Add(new SourceCombatNamiZoneCheckpoint {
+                Source = "practice-nami:A089:1",
+                ExpiresAt = state.Time + 2
+            });
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceTransientState(state));
+            state.NamiZones.RemoveAt(1);
+            state.NamiZones[0].ExpiresAt = state.Time + 4;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceTransientState(state));
+        }
+
+        [Test]
+        public void MariaActiveLoopRequiresExactlyOneTypedFuturePulse()
+        {
+            var original = World();
+            original.Start();
+            original.BeginWave(1);
+            long id = original.SpawnCharacter("TEST-01", 0, 0);
+            var state = original.CaptureRuntimeDraft();
+            state.HasSourceModelBasicAttacks = true;
+            state.Actors[0].CatalogId = "D-01";
+            state.MariaNextToken = 1;
+            state.ManualOwners[0].MariaStage = 0;
+            state.ManualOwners[0].MariaToken = 1;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateMariaPulseState(state));
+            state.Timed.NextSequence = 1;
+            state.Timed.Pending.Add(new CombatTimedEffectState {
+                Sequence = 1, CasterId = id.ToString(),
+                TargetId = "practice-maria:" + id + ":1:0",
+                At = state.Time + .06, Kind = "source-maria-cdh-v1",
+                Payload = id + "|1|0|0|0"
+            });
+            Assert.DoesNotThrow(() =>
+                CharacterCombatRuntime.ValidateMariaPulseState(state));
+            state.Timed.Pending[0].TargetId = "practice-maria:999:1:0";
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateMariaPulseState(state));
+            state.Timed.Pending[0].TargetId =
+                "practice-maria:" + id + ":1:0";
+            state.Timed.Pending[0].At = state.Time + 6;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateMariaPulseState(state));
+        }
+
+        [Test]
         public void DeployedActorIsRejectedBeforeRestoringRuntime()
         {
             var original = World();

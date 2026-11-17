@@ -4,6 +4,11 @@
 
 ## 저장·비공개 복원 경로
 
+- `MoriaParticipationLedger.CaptureState/RestoreState`는 실제 라인 대상·기여한 소유자 ID를 보존하며, `CharacterCombatRuntime.ValidateSourceTransientState`가 살아 있는 적·원본 S-09 소유자·누락 영역 오라를 교차 검증합니다. `SourceCombatRuntimeCheckpoint.NamiZones`는 임시 `e00K/A089` 오라 영역의 좌표·전장/기한·안정된 원본 ID 순번을 저장하고 복원 시 기존 상태효과를 중복 계산하지 않습니다.
+- 마리아 `D-01`의 `ScheduleSourceMariaPulse`는 `CombatTimedEffectQueue.ScheduleRestorable` 종류 `source-maria-cdh-v1`을 사용합니다. 소유자 모드/토큰·소모한 토큰 순번(`MariaNextToken`)과 큐의 다음 정확한 `At/Sequence`를 함께 검증하며, `RestoreSourceModelTimedEffect`는 기존 쿠마 `A0EA` 복원도 보존합니다. 복원 중 새 마리아 시전·재추첨·보상 지급은 하지 않으며 익명 예약은 여전히 거부합니다.
+- 체크포인트 필드 추가 후 `OrdrCheckpointBinaryCodec`의 strict payload v3을 사용합니다. 기존 A/B 외피/손상 판정은 유지하며 전체 씬/게임용 이어하기는 미완성입니다.
+
+
 - 원본 장비 증거 공급자는 새 게임 시작 시 `ConfigureSourceModelEquippedItems`, 진행 라운드의 비공개 복원 시 `ConfigureSourceModelEquippedItemsForRestore`에서만 연결합니다. 복원 전용 경로는 공격자·적·시계가 없는 전투 월드에서 1회만 가능하며, 장비 구매/원본 관측/영수증 처리를 재실행하지 않습니다. `OrdrCheckpointBinaryCodec`은 장비·육식 체 상태 필드가 늘어난 저장본을 바이너리 payload v2로 구분하고, 옛 미완성 초안은 거부합니다.
 
 - `OrdrCoreCheckpoint.PrepareWorldRestore`는 `SourceCombatRuntimeCheckpoint.Version=4`만 인정하고, 공개 `Restore`는 전투 초안이 있는 경우 기존대로 차단합니다. `CharacterCombatRuntime.RestoreActorWorldDraft`는 전투 로스터 밖의 원본 진화체 `e0HP` 1기를 별도 실물로 인정하며 실제 액터 중복·신원은 그대로 검사합니다.
