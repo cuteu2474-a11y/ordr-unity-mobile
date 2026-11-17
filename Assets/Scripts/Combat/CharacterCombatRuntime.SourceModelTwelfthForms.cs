@@ -212,35 +212,38 @@ namespace Ordr.Mobile.Combat
             // subsequent hits refresh the ongoing single-target spell.
             for (int second = 1; second <= 3; second++)
             {
-                effectExecutor.SchedulePracticeSourceAttack(attacker, primary.Id,
-                    second, () => {
-                        long latest;
-                        SpatialCombatEnemy current;
-                        if (!CanFinishSourceModelDelayedAttack(actor.Id, lane, laneRevision) ||
-                            !sourceModelKingSlowRevision.TryGetValue(key, out latest) ||
-                            latest != revision || !enemies.TryGetValue(primary.Id, out current) ||
-                            !ReferenceEquals(primary, current)) return;
-                        ApplySourceModelSeventhTimedHit(actor, primary,
-                            skill.Name, 300000, "magical");
-                    });
+                var pulse = new SourceKingDelayedPulse {
+                    OwnerId = actor.Id, EnemyId = primary.Id,
+                    StoryLane = lane, LaneRevision = laneRevision,
+                    CastAt = effectExecutor.Time, Tick = second,
+                    Revision = revision
+                };
+                effectExecutor.ScheduleRestorableSourceAttack(attacker,
+                    primary.Id, second, KingSlowPulseKind,
+                    EncodeKingPulse(pulse), CreateKingSlowPulse(pulse));
             }
+        }
+
+        private static bool SourceModelTwelfthKingFireSkill(ImportedCombatSkill skill)
+        {
+            return SourceModelEleventhSkill(skill, "LI-10:skill:3", "화재",
+                    "onAttack", 2) && skill.ChancePercent == 14.25 &&
+                skill.Radius == 450 &&
+                skill.Components[0].Type == "magicalDoT" &&
+                skill.Components[0].Number("damagePerTick") == 42500 &&
+                skill.Components[0].Number("intervalSeconds") == .27 &&
+                skill.Components[0].Number("durationSeconds") == 2.7 &&
+                skill.Components[1].Type == "armorReduction" &&
+                skill.Components[1].Number("amount") == 20 &&
+                skill.Components[1].Number("additionalAmount") == 10 &&
+                skill.Components[1].Number("durationSeconds") == 2;
         }
 
         private void SourceModelTwelfthKingFire(CharacterInstance actor,
             SpatialCombatEnemy primary)
         {
             var skill = FindSourceSkill(actor, "화재");
-            if (!SourceModelEleventhSkill(skill, "LI-10:skill:3", "화재",
-                    "onAttack", 2) || skill.ChancePercent != 14.25 ||
-                skill.Radius != 450 ||
-                skill.Components[0].Type != "magicalDoT" ||
-                skill.Components[0].Number("damagePerTick") != 42500 ||
-                skill.Components[0].Number("intervalSeconds") != .27 ||
-                skill.Components[0].Number("durationSeconds") != 2.7 ||
-                skill.Components[1].Type != "armorReduction" ||
-                skill.Components[1].Number("amount") != 20 ||
-                skill.Components[1].Number("additionalAmount") != 10 ||
-                skill.Components[1].Number("durationSeconds") != 2 ||
+            if (!SourceModelTwelfthKingFireSkill(skill) ||
                 !SourceRollSkill(skill)) return;
             string attacker = InstanceKey(actor.Id);
             bool lane = IsStoryDeployed(actor.Id);
@@ -260,16 +263,14 @@ namespace Ordr.Mobile.Combat
                     "TOOLTIP_MODEL_ONLY / 추가 방어 감소10 발동 조건 미확인", 0));
                 for (int tick = 1; tick <= 10; tick++)
                 {
-                    var victim = target;
-                    effectExecutor.SchedulePracticeSourceAttack(attacker, victim.Id,
-                        tick * .27, () => {
-                            SpatialCombatEnemy current;
-                            if (!CanFinishSourceModelDelayedAttack(actor.Id, lane, revision) ||
-                                !enemies.TryGetValue(victim.Id, out current) ||
-                                !ReferenceEquals(victim, current)) return;
-                            ApplySourceModelSeventhTimedHit(actor, victim,
-                                skill.Name, 42500, "magical");
-                        });
+                    var pulse = new SourceKingDelayedPulse {
+                        OwnerId = actor.Id, EnemyId = target.Id,
+                        StoryLane = lane, LaneRevision = revision,
+                        CastAt = effectExecutor.Time, Tick = tick
+                    };
+                    effectExecutor.ScheduleRestorableSourceAttack(attacker,
+                        target.Id, tick * .27, KingFirePulseKind,
+                        EncodeKingPulse(pulse), CreateKingFirePulse(pulse));
                 }
             }
         }

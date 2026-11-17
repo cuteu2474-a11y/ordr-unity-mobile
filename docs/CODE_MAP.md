@@ -1,5 +1,7 @@
 # 코드 구조
 
+- 복합 스킬의 주기/성장/접근 영수증·킹 둔화/화재 예약 복원: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceCompositeSkillSaveState.cs`; 생산자 `.SourceModelEighthSkills.cs`, `.SourceModelTwelfthForms.cs`, `.SourceModelEleventhForms.cs`, 복원 라우터 `.SourceModelTooltipManualActions.cs`.
+
 - 베가펑크 B4a 구매 위성의 실물 ID/마나/공격·버프 시계/원본 기술 프로필 복원과 공유 지갑 영수증 대조: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceSatelliteSaveState.cs`; 기존 위성 생산자 `.SourceModelNativeCharacters.cs`와 독립 공격자 `.SourceModelIndependentAttacks.cs`를 재사용합니다.
 
 - TR-14 변신/EXPauseUnit 평타 해제/슈가 h06O 가상 투사체 예약 및 변신 이름·야마토 후속 소유권 복원: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceTemporaryOwnerSaveState.cs` (생산자: `.SourceModelTemporarySkills.cs`/`.SourceModelRemainingCallbacks.cs`).

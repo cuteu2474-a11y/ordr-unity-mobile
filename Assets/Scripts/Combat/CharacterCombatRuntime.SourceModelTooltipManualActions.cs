@@ -463,7 +463,8 @@ namespace Ordr.Mobile.Combat
                 return kuma ?? RestoreSourceNativeDelayed(
                     kind, payload, casterId, targetId) ??
                     RestoreSourceTemporaryTimedEffect(
-                        kind, payload, casterId, targetId);
+                        kind, payload, casterId, targetId) ??
+                    RestoreSourceKingTimedEffect(kind, payload, casterId, targetId);
             }
             long id, token, lane;
             int tick;

@@ -423,6 +423,7 @@ namespace Ordr.Mobile.Core
             CharacterCombatRuntime.ValidateSourceSatelliteWorldState(world);
             CharacterCombatRuntime.ValidateSatelliteWalletReceipts(
                 world, state.MissionGameplay?.Wallet);
+            CharacterCombatRuntime.ValidateCompositeSkillOwners(world);
             CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
                 world, state.OriginalScriptAttackProcs);
             CharacterCombatRuntime.ValidateMariaPulseState(world);

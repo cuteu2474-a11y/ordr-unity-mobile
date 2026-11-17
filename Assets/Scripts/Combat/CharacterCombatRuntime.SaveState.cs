@@ -190,6 +190,9 @@ namespace Ordr.Mobile.Combat
         // Purchased B4a satellites are permanent player units, even after
         // creator sale. Keep their independent attack, mana and aura clocks.
         public SourceSatelliteWorldCheckpoint SatelliteWorld;
+        // Owner-side attack clocks, once-per-enemy triggers, Koby growth
+        // and the King slow generation receipts live outside status engines.
+        public SourceCompositeSkillOwnerCheckpoint CompositeSkillOwners;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -671,6 +674,7 @@ namespace Ordr.Mobile.Combat
             moriaParticipation.RestoreState(state.MoriaParticipation);
             RestoreSourceNativeDelayedOwners(state.NativeDelayed);
             RestoreSourceTemporaryOwners(state.TemporaryOwners);
+            RestoreCompositeSkillOwners(state.CompositeSkillOwners);
         }
 
         private void RestoreManualOwners(SourceCombatRuntimeCheckpoint state)
@@ -928,6 +932,7 @@ namespace Ordr.Mobile.Combat
             ValidateSourceNativeDelayedState(state);
             ValidateSourceTemporaryOwners(state);
             ValidateSourceSatelliteWorldState(state);
+            ValidateCompositeSkillOwners(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1089,7 +1094,8 @@ namespace Ordr.Mobile.Combat
                 OriginalNativeDummy = CaptureOriginalDummyState(),
                 NativeDelayed = CaptureSourceNativeDelayedOwners(),
                 TemporaryOwners = CaptureSourceTemporaryOwners(),
-                SatelliteWorld = CaptureSourceSatelliteWorld()
+                SatelliteWorld = CaptureSourceSatelliteWorld(),
+                CompositeSkillOwners = CaptureCompositeSkillOwners()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1247,6 +1253,7 @@ namespace Ordr.Mobile.Combat
             ValidateOriginalDummyState(draft);
             ValidateSourceNativeDelayedState(draft);
             ValidateSourceTemporaryOwners(draft);
+            ValidateCompositeSkillOwners(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);
