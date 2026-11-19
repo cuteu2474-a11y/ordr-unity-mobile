@@ -429,6 +429,7 @@ namespace Ordr.Mobile.Core
             CharacterCombatRuntime.ValidateSourceVolleyOwners(world);
             CharacterCombatRuntime.ValidateSourceFusionNativeOwners(world);
             CharacterCombatRuntime.ValidateSourceUtaOwners(world);
+            CharacterCombatRuntime.ValidateSourceBulkOwners(world);
             CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
                 world, state.OriginalScriptAttackProcs);
             CharacterCombatRuntime.ValidateMariaPulseState(world);

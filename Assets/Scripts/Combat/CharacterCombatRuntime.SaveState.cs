@@ -204,6 +204,7 @@ namespace Ordr.Mobile.Combat
         // snapshots and already-booked packet owners.
         public SourceFusionNativeWorldCheckpoint FusionNative;
         public SourceUtaOwnerCheckpoint Uta;
+        public SourceBulkOwnerCheckpoint BulkOwners;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -1073,6 +1074,7 @@ namespace Ordr.Mobile.Combat
             ValidateSourceVolleyOwners(state);
             ValidateSourceFusionNativeOwners(state);
             ValidateSourceUtaOwners(state);
+            ValidateSourceBulkOwners(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1179,6 +1181,7 @@ namespace Ordr.Mobile.Combat
             // saved next-hit clocks and per-attacker event sequences.
             RestoreSourceSidecars(state);
             RestoreManualOwners(state);
+            RestoreSourceBulkOwners(state.BulkOwners);
             attackPipeline.RestoreState(state.Attacks);
             effectExecutor.RestoreTimedState(state.Timed,
                 actorId => {
@@ -1240,7 +1243,8 @@ namespace Ordr.Mobile.Combat
                 RemainingDelayed = CaptureRemainingDelayedOwners(),
                 VolleyOwners = CaptureSourceVolleyOwners(),
                 FusionNative = CaptureSourceFusionNativeOwners(),
-                Uta = CaptureSourceUtaOwners()
+                Uta = CaptureSourceUtaOwners(),
+                BulkOwners = CaptureSourceBulkOwners()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1407,6 +1411,7 @@ namespace Ordr.Mobile.Combat
             ValidateSourceVolleyOwners(draft);
             ValidateSourceFusionNativeOwners(draft);
             ValidateSourceUtaOwners(draft);
+            ValidateSourceBulkOwners(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);

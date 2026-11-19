@@ -21,6 +21,8 @@
 
 > 코드의 **현재 진입점**과 공통 엔진 경로만 기록합니다. 날짜별 개발 일지와 반복된 스킬 설명은 삭제했습니다. [현재 상태](START_HERE.md) / [개발 작업](PLAYABLE_ROADMAP.md)을 함께 확인하세요.
 
+- 추가 자동기술·선물 영수증·가반 방어깎·아냐 오라 수신자 상태의 비공개 복원: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceBulkOwnerSaveState.cs`; 생산자 `.SourceModelAdditionalAutoSkills.cs`/`.SourceModelBulkAutoSkills.cs`, 저장 호출 `.SaveState.cs`, 코어 검증 `Assets/Scripts/Core/OrdrCoreCheckpoint.cs`.
+
 ## 저장·비공개 복원 경로
 
 - `Original323ScriptAttackProcRolls.CaptureState/RestoreState`는 실제 원본 `Bnm/Bnp/Bnr` 공격 사건별 유닛 ID·원본 피해 대상·공격 이벤트 순번·소비한 글로벌 H6 호출 순번·확률 결과·관측 증거를 영수증으로 기록합니다. `OrdrCoreCheckpointState.OriginalScriptAttackProcs`를 `OriginalScriptRandom`과 함께 검증합니다. `OrdrWorldRestoreGraphBuilder`는 공통 H6 원본 복원 후 신규 `Original323ScriptAttackProcRolls`를 생성하여 `CharacterCombatRuntime.ConfigureOriginal323ScriptAttackEffectWorldForRestore`에서 **실제 저장 액터가 복원된 새 전투**에만 등록합니다. 같은 attacked event의 재발동/재추첨은 거부합니다. 기존 WC3 네이티브 크리티컬/별도 전투 확률 RNG는 미포함입니다.
