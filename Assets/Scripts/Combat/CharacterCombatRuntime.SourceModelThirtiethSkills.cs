@@ -166,33 +166,9 @@ namespace Ordr.Mobile.Combat
         }
 
         private void ScheduleSourceModelThirtiethKingBasicTick(
-            CharacterInstance actor, KingBasicDebuffState state,
-            string key)
+            CharacterInstance actor, KingBasicDebuffState state, string key)
         {
-            string attacker = InstanceKey(actor.Id);
-            effectExecutor.SchedulePracticeSourceAttack(attacker, state.Victim.Id, 1,
-                () => {
-                    KingBasicDebuffState currentState;
-                    SpatialCombatEnemy current;
-                    if (!thirtiethKingBasic.TryGetValue(key, out currentState) ||
-                        !ReferenceEquals(state, currentState) ||
-                        !enemies.TryGetValue(state.Victim.Id, out current) ||
-                        !ReferenceEquals(state.Victim, current) ||
-                        !state.Victim.Enemy.IsAlive ||
-                        !CanFinishSourceModelDelayedAttack(actor.Id,
-                            state.StoryLane, state.LaneRevision) ||
-                        Time > state.ExpiresAt + .000001) return;
-                    ApplySourceModelSeventhTimedHit(actor, state.Victim,
-                        "킹 평타 지속 피해",
-                        actor.Profile.Passives[2].Number("magicalDamagePerSecond").Value,
-                        "magical");
-                    if (state.Victim.Enemy.IsAlive &&
-                        Time + 1 <= state.ExpiresAt + .000001)
-                        ScheduleSourceModelThirtiethKingBasicTick(actor,
-                            state, key);
-                    else
-                        thirtiethKingBasic.Remove(key);
-                });
+            ScheduleKingBasicTick(actor, state, key);
         }
 
         private void ExecuteSourceModelThirtiethKatakuriApproach(

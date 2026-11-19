@@ -126,42 +126,14 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("코비 분신 기본 공격 근거가 올바르지 않습니다.");
             var clone = SpawnSourceTemporaryActor(actor, skill.Name,
                 component.Text("unit"), duration, null, false,
-                primary.X, primary.Y, true);
+                primary.X, primary.Y, false);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 InstanceKey(actor.Id), primary.Id, skill.Name,
                 "TOOLTIP_MODEL_ONLY / 5초 코비 분신, 조합 재료가 아닌 전투 임시 객체", 0));
             int hits = (int)Math.Floor(duration / interval + .000001);
-            bool lane = IsStoryDeployed(actor.Id);
-            long revision = SourceModelLaneRevision(actor.Id);
             for (int hit = 1; hit <= hits; hit++)
-                effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
-                    "practice-koby-clone:" + clone.Id, hit * interval, () => {
-                        if (!CanFinishSourceModelDelayedAttack(actor.Id, lane, revision))
-                            return;
-                        bool exists = false;
-                        foreach (var live in PracticeSummonsOf(actor.Id))
-                            if (live.Id == clone.Id) { exists = true; break; }
-                        if (!exists) return;
-                        var candidates = BuildTargetCandidates(actor);
-                        if (candidates.Count == 0) return;
-                        string chosen = ChoosePreviewTarget(actor, candidates);
-                        SpatialCombatEnemy victim;
-                        if (chosen == null || !enemies.TryGetValue(chosen, out victim) ||
-                            !victim.Enemy.IsAlive) return;
-                        var hitTargets = SourceScriptTargets(actor, victim,
-                            new SourceScriptHit(SourceScriptHitShape.Circle,
-                                component.Number("explosiveRadius").Value,
-                                0, 0, 1, 1, Ordr323AttackType.Spells));
-                        foreach (var target in hitTargets)
-                            ApplySourceModelSeventhTimedHit(actor, target,
-                                skill.Name, SourceModelSeventhKnownAttackBuff(actor.Id,
-                                    (attack + SourceModelUpgradeAttackBonus(actor.Id)) *
-                                    component.Number("basicAttackExplosivePercent").Value / 100),
-                                "explosive");
-                        ApplySourceModelSeventhTimedHit(actor, victim, skill.Name,
-                            component.Number("singleMagicalDamagePerHit").Value,
-                            "magical");
-                    });
+                ScheduleKobyCloneHit(actor, clone, skill, component,
+                    interval, duration, hit);
         }
     }
 }

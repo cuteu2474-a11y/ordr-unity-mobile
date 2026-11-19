@@ -471,7 +471,8 @@ namespace Ordr.Mobile.Combat
                     RestoreSourceUtaTimedEffect(kind, payload, casterId, targetId) ??
                     RestoreBulkDelayedAction(kind, payload, casterId, targetId) ??
                     RestoreSourceAdditionalTimedEffect(kind, payload,
-                        casterId, targetId);
+                        casterId, targetId) ??
+                    RestoreKingKobyTimed(kind, payload, casterId, targetId);
             }
             long id, token, lane;
             int tick;

@@ -27,6 +27,8 @@
 
 - 흰수염 I-12/나루토 RN-02/조로 TR-20의 추가 지연 둔화·주기 공격 복원: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceAdditionalTimedSaveState.cs`; 생성 `.SourceModelAdditionalAutoSkills.cs`/`.SourceModelSeventhSkills.cs`, 큐 복원 `.SourceModelTooltipManualActions.cs`, 전투/코어 검증 `.SaveState.cs`/`Assets/Scripts/Core/OrdrCoreCheckpoint.cs`. 조로 버프는 실행 시 재계산합니다.
 
+- 킹 L-34 평타 지속피해·카타쿠리 LI-08 버프·코비 TR-24 비보유 분신의 타입 예약 및 소유자 장부: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceKingKobySaveState.cs`; 현장 적용 `.SourceModelThirtiethSkills.cs`/`.SourceModelSeventhSkills.cs`/`.SourceModelTemporarySkills.cs`, 복원 분기 `.SourceModelTooltipManualActions.cs`, 코어 교차검증 `.SaveState.cs`/`Assets/Scripts/Core/OrdrCoreCheckpoint.cs`. strict payload `OrdrCheckpointBinaryCodec` v20. 아카이누 Bq9 미복원 소유권은 저장 거부 경계에서 명시 차단.
+
 ## 저장·비공개 복원 경로
 
 - `Original323ScriptAttackProcRolls.CaptureState/RestoreState`는 실제 원본 `Bnm/Bnp/Bnr` 공격 사건별 유닛 ID·원본 피해 대상·공격 이벤트 순번·소비한 글로벌 H6 호출 순번·확률 결과·관측 증거를 영수증으로 기록합니다. `OrdrCoreCheckpointState.OriginalScriptAttackProcs`를 `OriginalScriptRandom`과 함께 검증합니다. `OrdrWorldRestoreGraphBuilder`는 공통 H6 원본 복원 후 신규 `Original323ScriptAttackProcRolls`를 생성하여 `CharacterCombatRuntime.ConfigureOriginal323ScriptAttackEffectWorldForRestore`에서 **실제 저장 액터가 복원된 새 전투**에만 등록합니다. 같은 attacked event의 재발동/재추첨은 거부합니다. 기존 WC3 네이티브 크리티컬/별도 전투 확률 RNG는 미포함입니다.

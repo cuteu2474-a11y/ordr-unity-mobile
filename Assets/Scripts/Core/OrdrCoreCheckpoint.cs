@@ -434,6 +434,7 @@ namespace Ordr.Mobile.Core
                 world, state.MissionGameplay?.Wallet);
             CharacterCombatRuntime.ValidateSourceBulkDelayedState(world);
             CharacterCombatRuntime.ValidateSourceAdditionalTimedState(world);
+            CharacterCombatRuntime.ValidateKingKobyState(world);
             CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
                 world, state.OriginalScriptAttackProcs);
             CharacterCombatRuntime.ValidateMariaPulseState(world);

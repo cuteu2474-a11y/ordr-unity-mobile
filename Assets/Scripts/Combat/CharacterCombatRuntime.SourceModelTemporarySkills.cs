@@ -34,10 +34,9 @@ namespace Ordr.Mobile.Combat
                 sourceModelRules.SourceObjectAttack(sourceRawcode) != null;
             // Additional verified summons can use the same lifecycle. Never
             // advertise independent combat without a mapped source attack.
-            // For Koby's explicitly modeled clone, timed independent hits
-            // are already scheduled by its source skill handler. A missing
-            // rawcode cannot register an ordinary source-object attacker,
-            // but must not make the modeled clone appear noncombatant.
+            // Native autonomous hits require an original object rawcode.
+            // Koby's modeled clone uses the separate restorable timed-hit
+            // queue, not an independent source-object basic attacker.
             bool autonomous = modeledCombat ||
                 (nativeAutonomous && sourceModelRules != null &&
                  sourceModelRules.SourceObjectAttack(sourceRawcode) != null);
@@ -208,6 +207,12 @@ namespace Ordr.Mobile.Combat
             string targetId = null, double? deathX = null, double? deathY = null)
         {
             var summon = sourceTemporarySummons[index];
+            // Koby's modeled clone has queue-owned effects, not a native
+            // independent attacker. Selling/transferring its owner or
+            // expiring its lifetime cancels every remaining future hit.
+            if (summon.SourceUnitRawcode == null &&
+                summon.SkillName == "콤비네이션 어택")
+                effectExecutor.CancelTarget("practice-koby-clone:" + summon.Id);
             // One clock retires timed attack effects and their group membership.
             if (summon.SourceUnitRawcode == "h04O")
                 RetireSourceModelUtaSongSoldierKey(

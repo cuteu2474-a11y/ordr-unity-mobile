@@ -205,6 +205,8 @@ namespace Ordr.Mobile.Combat
         public SourceFusionNativeWorldCheckpoint FusionNative;
         public SourceUtaOwnerCheckpoint Uta;
         public SourceBulkOwnerCheckpoint BulkOwners;
+        public SourceKingKobyOwnerCheckpoint KingKoby =
+            new SourceKingKobyOwnerCheckpoint();
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -658,6 +660,14 @@ namespace Ordr.Mobile.Combat
             if (sourceModelMarcoVerifiedForm != null)
                 throw new NotSupportedException(
                     "외부 마르코 원본 형태 목격자 재연결 전에는 저장할 수 없습니다.");
+            // Bq9 preserves per-target stacks after the anonymous Bq8 hit.
+            // Without its owner ledger, a resumed Akainu would restart
+            // the counter and could deliver a different follow-up.
+            if (sourceAkainuBossTargets.Count != 0 ||
+                sourceAkainuBossStacks.Count != 0 ||
+                sourceAkainuBossSerial != 0)
+                throw new NotSupportedException(
+                    "아카이누 Bq9 중첩/연속 타격의 저장 목격자가 아직 없습니다.");
             int covered = 0;
             foreach (var summon in sourceTemporarySummons)
             {
@@ -1077,6 +1087,7 @@ namespace Ordr.Mobile.Combat
             ValidateSourceBulkOwners(state);
             ValidateSourceBulkDelayedState(state);
             ValidateSourceAdditionalTimedState(state);
+            ValidateKingKobyState(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1184,6 +1195,7 @@ namespace Ordr.Mobile.Combat
             RestoreSourceSidecars(state);
             RestoreManualOwners(state);
             RestoreSourceBulkOwners(state.BulkOwners);
+            RestoreKingKobyOwners(state.KingKoby);
             attackPipeline.RestoreState(state.Attacks);
             effectExecutor.RestoreTimedState(state.Timed,
                 actorId => {
@@ -1246,7 +1258,8 @@ namespace Ordr.Mobile.Combat
                 VolleyOwners = CaptureSourceVolleyOwners(),
                 FusionNative = CaptureSourceFusionNativeOwners(),
                 Uta = CaptureSourceUtaOwners(),
-                BulkOwners = CaptureSourceBulkOwners()
+                BulkOwners = CaptureSourceBulkOwners(),
+                KingKoby = CaptureKingKobyOwners()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1416,6 +1429,7 @@ namespace Ordr.Mobile.Combat
             ValidateSourceBulkOwners(draft);
             ValidateSourceBulkDelayedState(draft);
             ValidateSourceAdditionalTimedState(draft);
+            ValidateKingKobyState(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);
