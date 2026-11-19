@@ -282,6 +282,66 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        // Known native helpers retain their source creator and lifetime
+        // even when no independent attack object is present.
+        private static bool InvalidKnownSourceSummonIdentity(
+            SourceCombatSummonCheckpoint summon,
+            SourceCombatActorCheckpoint owner, double worldTime)
+        {
+            double remaining = summon.ExpiresAt - worldTime;
+            switch (summon.SourceUnitRawcode)
+            {
+                case "h00H": // S-09 ANba Black Arrow, 10s virtual attack.
+                    return owner.CatalogId != "S-09" ||
+                        !summon.HasIndependentCombat ||
+                        !summon.IsVirtualAttackEffect ||
+                        summon.SkillName != "모리아 · 블랙 애로우" ||
+                        summon.Name != "모리아 일시 좀비 공격 효과" ||
+                        remaining > 10.00000001;
+                case "h05D": // L-12 BsL, 18s; SLK attack optional.
+                    return owner.CatalogId != "L-12" ||
+                        !summon.IsVirtualAttackEffect ||
+                        summon.SkillName != "BsL · 그림자 소환" ||
+                        summon.Name != "모리아 그림자" ||
+                        remaining > 18.00000001;
+                case "h04O": // E-09 B6s, 7s song soldier.
+                    return owner.CatalogId != "E-09" ||
+                        !summon.HasIndependentCombat ||
+                        !summon.IsVirtualAttackEffect ||
+                        summon.SkillName != "B6s · 음표 병사" ||
+                        summon.Name != "우타 · 음표 병사" ||
+                        remaining > 7.00000001;
+                case "h085": // L-21 Bt2, duration comes from profile.
+                    return owner.CatalogId != "L-21" ||
+                        summon.IsVirtualAttackEffect ||
+                        summon.SkillName != "인술 분신";
+                case "h06N": // L-19 Btq: 4.5s toy, optional SLK attack.
+                    return owner.CatalogId != "L-19" ||
+                        summon.IsVirtualAttackEffect ||
+                        summon.SkillName != "장난감 No.31" ||
+                        summon.Name != "장난감 No.31" ||
+                        remaining > 4.50000001;
+                case "h06P": // L-19 Btq: 3s non-combat selfdestruct.
+                    return owner.CatalogId != "L-19" ||
+                        summon.HasIndependentCombat ||
+                        summon.IsVirtualAttackEffect ||
+                        summon.SkillName != "하비하비열매" ||
+                        summon.Name != "자폭 장난감" ||
+                        remaining > 3.00000001;
+                case "h06O": // R-24 BpT: 3.5s effect-only projectile.
+                    return owner.CatalogId != "R-24" ||
+                        summon.HasIndependentCombat ||
+                        !summon.IsVirtualAttackEffect ||
+                        summon.SkillName != "BpT · 장난감 자폭" ||
+                        summon.Name != "슈가 장난감 자폭" ||
+                        remaining > 3.50000001;
+                default:
+                    // An unknown object with independent combat is still
+                    // rejected by the explicit attack whitelist below.
+                    return false;
+            }
+        }
+
         public static void ValidateSourceSidecars(SourceCombatRuntimeCheckpoint state)
         {
             if (state == null || state.Version != 4 || state.Actors == null ||
@@ -318,35 +378,11 @@ namespace Ordr.Mobile.Combat
                     // inert visual state: no receipt/effect restore port can
                     // prove whether its future proc already ran. Fail closed.
                     s.HasUnresolvedOriginalLootAbility ||
-                    // Even non-attacking native helpers must belong to the
-                    // original caster; combat registration is optional, but
-                    // source unit identity is not.
-                    ((s.SourceUnitRawcode == "h05D" && owner.CatalogId != "L-12") ||
-                     (s.SourceUnitRawcode == "h085" && owner.CatalogId != "L-21") ||
-                     (s.SourceUnitRawcode == "h06N" && owner.CatalogId != "L-19") ||
-                     (s.SourceUnitRawcode == "h06P" && owner.CatalogId != "L-19") ||
-                     (s.SourceUnitRawcode == "h06O" && owner.CatalogId != "R-24")) ||
+                    InvalidKnownSourceSummonIdentity(s, owner, state.Time) ||
                     (s.OrderedAttackTargetId != null &&
                      (s.SourceUnitRawcode != "h04O" ||
                       string.IsNullOrWhiteSpace(s.OrderedAttackTargetId) ||
                       s.OrderedAttackTargetId.Length > 256)) ||
-                    // L-12 BsL's h05D is an 18s non-owned shadow effect.
-                    // When original attack dice are absent, retain the
-                    // non-attacking virtual marker without forging a hit.
-                    // When present, the native attack clock/status is
-                    // independently required by the check below.
-                    (s.SourceUnitRawcode == "h05D" &&
-                     (!s.IsVirtualAttackEffect ||
-                      s.SkillName != "BsL · 그림자 소환" ||
-                      s.Name != "모리아 그림자" ||
-                      s.HasUnresolvedOriginalLootAbility ||
-                      s.ExpiresAt > state.Time + 18.00000001)) ||
-                    (s.SourceUnitRawcode == "h04O" &&
-                     (!s.HasIndependentCombat || !s.IsVirtualAttackEffect ||
-                      s.SkillName != "B6s · 음표 병사" ||
-                      s.Name != "우타 · 음표 병사" ||
-                      s.HasUnresolvedOriginalLootAbility ||
-                      s.ExpiresAt > state.Time + 7.00000001)) ||
                     (s.HasIndependentCombat &&
                      (s.AttackStatus == null ||
                       s.AttackStatus.Time != state.Time ||
@@ -357,7 +393,9 @@ namespace Ordr.Mobile.Combat
                         (s.SourceUnitRawcode == "h04O" &&
                          owner.CatalogId == "E-09") ||
                         (s.SourceUnitRawcode == "h05D" &&
-                         owner.CatalogId == "L-12")))) ||
+                         owner.CatalogId == "L-12") ||
+                        (s.SourceUnitRawcode == "h00H" &&
+                         owner.CatalogId == "S-09")))) ||
                     (!s.HasIndependentCombat && (s.AttackStatus != null ||
                                                 s.AttackBlocked ||
                                                 s.OrderedAttackTargetId != null)))
@@ -635,7 +673,10 @@ namespace Ordr.Mobile.Combat
                         independent.ExpiresAt != summon.ExpiresAt ||
                         independent.StoryLane != summon.StoryLane ||
                         independent.X != summon.SpawnX || independent.Y != summon.SpawnY ||
-                        independent.ModelShadowZombie || independent.ModelBlackArrowEffect ||
+                        independent.ModelShadowZombie ||
+                        (independent.ModelBlackArrowEffect !=
+                            (summon.SourceUnitRawcode == "h00H" &&
+                             summon.IsVirtualAttackEffect)) ||
                         (independent.RenderAsTransientProjectile !=
                             (summon.SourceUnitRawcode == "h04O" ||
                              (summon.SourceUnitRawcode == "h05D" &&
@@ -736,6 +777,9 @@ namespace Ordr.Mobile.Combat
                         s.SourceUnitRawcode == "h04O" ||
                         (s.SourceUnitRawcode == "h05D" &&
                          s.IsVirtualAttackEffect);
+                    sourceIndependentAttackers[key].ModelBlackArrowEffect =
+                        s.SourceUnitRawcode == "h00H" &&
+                        s.IsVirtualAttackEffect;
                     unitStatuses[key] = CombatStatusEngine.Restore(s.AttackStatus);
                 }
                 sourceTemporarySummons.Add(summoned);
