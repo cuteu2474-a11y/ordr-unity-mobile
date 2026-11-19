@@ -318,6 +318,15 @@ namespace Ordr.Mobile.Combat
                      (s.SourceUnitRawcode != "h04O" ||
                       string.IsNullOrWhiteSpace(s.OrderedAttackTargetId) ||
                       s.OrderedAttackTargetId.Length > 256)) ||
+                    // L-12 BsL's h05D is an 18s non-owned shadow attack.
+                    // Its original object is optional; only an actually
+                    // registered, fully witnessed independent attack is saved.
+                    (s.SourceUnitRawcode == "h05D" &&
+                     (!s.HasIndependentCombat || !s.IsVirtualAttackEffect ||
+                      s.SkillName != "BsL · 그림자 소환" ||
+                      s.Name != "모리아 그림자" ||
+                      s.HasUnresolvedOriginalLootAbility ||
+                      s.ExpiresAt > state.Time + 18.00000001)) ||
                     (s.SourceUnitRawcode == "h04O" &&
                      (!s.HasIndependentCombat || !s.IsVirtualAttackEffect ||
                       s.SkillName != "B6s · 음표 병사" ||
@@ -332,7 +341,9 @@ namespace Ordr.Mobile.Combat
                         (s.SourceUnitRawcode == "h06N" &&
                          owner.CatalogId == "L-19") ||
                         (s.SourceUnitRawcode == "h04O" &&
-                         owner.CatalogId == "E-09")))) ||
+                         owner.CatalogId == "E-09") ||
+                        (s.SourceUnitRawcode == "h05D" &&
+                         owner.CatalogId == "L-12")))) ||
                     (!s.HasIndependentCombat && (s.AttackStatus != null ||
                                                 s.AttackBlocked ||
                                                 s.OrderedAttackTargetId != null)))
@@ -608,7 +619,9 @@ namespace Ordr.Mobile.Combat
                         independent.X != summon.SpawnX || independent.Y != summon.SpawnY ||
                         independent.ModelShadowZombie || independent.ModelBlackArrowEffect ||
                         (independent.RenderAsTransientProjectile !=
-                            (summon.SourceUnitRawcode == "h04O")) ||
+                            (summon.SourceUnitRawcode == "h04O" ||
+                             (summon.SourceUnitRawcode == "h05D" &&
+                              summon.IsVirtualAttackEffect))) ||
                         (independent.AttackOnceTargetId != null &&
                          summon.SourceUnitRawcode != "h04O") ||
                         independent.SatelliteRegenBeginsAt != 0 ||
@@ -701,7 +714,9 @@ namespace Ordr.Mobile.Combat
                     sourceIndependentAttackers[key].AttackOnceTargetId =
                         s.OrderedAttackTargetId;
                     sourceIndependentAttackers[key].RenderAsTransientProjectile =
-                        s.SourceUnitRawcode == "h04O";
+                        s.SourceUnitRawcode == "h04O" ||
+                        (s.SourceUnitRawcode == "h05D" &&
+                         s.IsVirtualAttackEffect);
                     unitStatuses[key] = CombatStatusEngine.Restore(s.AttackStatus);
                 }
                 sourceTemporarySummons.Add(summoned);
