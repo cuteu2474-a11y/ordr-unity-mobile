@@ -48,6 +48,7 @@ namespace Ordr.Mobile.Combat
         public bool StoryLane, HasIndependentCombat, IsVirtualAttackEffect;
         public bool HasUnresolvedOriginalLootAbility, AttackBlocked;
         public CombatStatusEngineState AttackStatus;
+        public string OrderedAttackTargetId; // h04O B6o pending next-attack target
     }
 
     [Serializable]
@@ -202,6 +203,7 @@ namespace Ordr.Mobile.Combat
         // Roger/Tesoro/Shark native purchase-bound cooldown, enemy-spawn
         // snapshots and already-booked packet owners.
         public SourceFusionNativeWorldCheckpoint FusionNative;
+        public SourceUtaOwnerCheckpoint Uta;
         public List<SourceCombatActorCheckpoint> Actors =
             new List<SourceCombatActorCheckpoint>();
         public List<SourceCombatManualOwnerCheckpoint> ManualOwners =
@@ -312,15 +314,28 @@ namespace Ordr.Mobile.Combat
                     double.IsNaN(s.SpawnX) || double.IsInfinity(s.SpawnX) ||
                     double.IsNaN(s.SpawnY) || double.IsInfinity(s.SpawnY) ||
                     (s.SourceUnitRawcode != null && s.SourceUnitRawcode.Length != 4) ||
+                    (s.OrderedAttackTargetId != null &&
+                     (s.SourceUnitRawcode != "h04O" ||
+                      string.IsNullOrWhiteSpace(s.OrderedAttackTargetId) ||
+                      s.OrderedAttackTargetId.Length > 256)) ||
+                    (s.SourceUnitRawcode == "h04O" &&
+                     (!s.HasIndependentCombat || !s.IsVirtualAttackEffect ||
+                      s.SkillName != "B6s · 음표 병사" ||
+                      s.Name != "우타 · 음표 병사" ||
+                      s.HasUnresolvedOriginalLootAbility ||
+                      s.ExpiresAt > state.Time + 7.00000001)) ||
                     (s.HasIndependentCombat &&
                      (s.AttackStatus == null ||
                       s.AttackStatus.Time != state.Time ||
                       !((s.SourceUnitRawcode == "h085" &&
                          owner.CatalogId == "L-21") ||
                         (s.SourceUnitRawcode == "h06N" &&
-                         owner.CatalogId == "L-19")))) ||
+                         owner.CatalogId == "L-19") ||
+                        (s.SourceUnitRawcode == "h04O" &&
+                         owner.CatalogId == "E-09")))) ||
                     (!s.HasIndependentCombat && (s.AttackStatus != null ||
-                                                s.AttackBlocked)))
+                                                s.AttackBlocked ||
+                                                s.OrderedAttackTargetId != null)))
                     throw new FormatException("원본 소환 실물/공격 ID/수명/전장이 잘못됐습니다.");
                 if (s.HasIndependentCombat) CombatStatusEngine.Restore(s.AttackStatus);
             }
@@ -592,8 +607,10 @@ namespace Ordr.Mobile.Combat
                         independent.StoryLane != summon.StoryLane ||
                         independent.X != summon.SpawnX || independent.Y != summon.SpawnY ||
                         independent.ModelShadowZombie || independent.ModelBlackArrowEffect ||
-                        independent.RenderAsTransientProjectile ||
-                        independent.AttackOnceTargetId != null ||
+                        (independent.RenderAsTransientProjectile !=
+                            (summon.SourceUnitRawcode == "h04O")) ||
+                        (independent.AttackOnceTargetId != null &&
+                         summon.SourceUnitRawcode != "h04O") ||
                         independent.SatelliteRegenBeginsAt != 0 ||
                         independent.SatelliteRegenEndsAt != 0 ||
                         independent.SatelliteRegenPerSecond != 0 ||
@@ -609,7 +626,8 @@ namespace Ordr.Mobile.Combat
                     "원본 소환·구매 위성 이외의 독립 공격자를 아직 복원할 수 없습니다.");
             // Finite and mana-lifetime transforms now share the strict
             // owner/skill/clock validation in ValidateSourceSidecars().
-            RejectUnrestorableSourceUtaState();
+            // Uta B6m/B61/B6r sidecars now carry the original owner,
+            // group, transform and independent attackonce receipts.
         }
 
         private void RestoreSourceSidecars(SourceCombatRuntimeCheckpoint state)
@@ -680,6 +698,10 @@ namespace Ordr.Mobile.Combat
                         s.StoryLane, s.SpawnX, s.SpawnY, s.OwnerId,
                         s.ExpiresAt, characters[s.OwnerId].Profile);
                     sourceIndependentAttackers[key].Blocked = s.AttackBlocked;
+                    sourceIndependentAttackers[key].AttackOnceTargetId =
+                        s.OrderedAttackTargetId;
+                    sourceIndependentAttackers[key].RenderAsTransientProjectile =
+                        s.SourceUnitRawcode == "h04O";
                     unitStatuses[key] = CombatStatusEngine.Restore(s.AttackStatus);
                 }
                 sourceTemporarySummons.Add(summoned);
@@ -709,6 +731,7 @@ namespace Ordr.Mobile.Combat
             RestoreRemainingDelayedOwners(state.RemainingDelayed);
             RestoreSourceVolleyOwners(state.VolleyOwners);
             RestoreSourceFusionNativeOwners(state.FusionNative);
+            RestoreSourceUtaOwners(state.Uta);
         }
 
         private void RestoreManualOwners(SourceCombatRuntimeCheckpoint state)
@@ -971,6 +994,7 @@ namespace Ordr.Mobile.Combat
             ValidateRemainingDelayedState(state);
             ValidateSourceVolleyOwners(state);
             ValidateSourceFusionNativeOwners(state);
+            ValidateSourceUtaOwners(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1137,7 +1161,8 @@ namespace Ordr.Mobile.Combat
                 BonneyAgeOwners = CaptureBonneyAgeOwners(),
                 RemainingDelayed = CaptureRemainingDelayedOwners(),
                 VolleyOwners = CaptureSourceVolleyOwners(),
-                FusionNative = CaptureSourceFusionNativeOwners()
+                FusionNative = CaptureSourceFusionNativeOwners(),
+                Uta = CaptureSourceUtaOwners()
             };
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -1246,6 +1271,8 @@ namespace Ordr.Mobile.Combat
                         summon.HasUnresolvedOriginalLootAbility,
                     SpawnX = summon.SpawnX, SpawnY = summon.SpawnY,
                     AttackBlocked = independent != null && independent.Blocked,
+                    OrderedAttackTargetId = independent == null ? null :
+                        independent.AttackOnceTargetId,
                     AttackStatus = status == null ? null : status.CaptureState()
                 });
             }
@@ -1301,6 +1328,7 @@ namespace Ordr.Mobile.Combat
             ValidateRemainingDelayedState(draft);
             ValidateSourceVolleyOwners(draft);
             ValidateSourceFusionNativeOwners(draft);
+            ValidateSourceUtaOwners(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);

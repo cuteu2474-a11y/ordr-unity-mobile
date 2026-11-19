@@ -165,8 +165,8 @@ namespace Ordr.Mobile.Combat
             if (p.Kind == FusionRogerImpactKind)
             {
                 SpatialCombatEnemy target = originalTarget;
-                if (target == null &&
-                    !enemies.TryGetValue(targetId, out target)) return null;
+                if (target == null)
+                    enemies.TryGetValue(targetId, out target);
                 return () =>
                 {
                     if (!CanFinishSourceModelDelayedAttack(actorId, lane, laneRevision))
@@ -175,8 +175,9 @@ namespace Ordr.Mobile.Combat
                     // then sends one CHAOS/NORMAL 800-area packet.
                     double multiplier = 1 +
                         sourceModelRules.NextScriptRoll(1000000) / 1000000.0;
-                    ApplySourceModelAreaPacket(actorKey, lane, target, 800,
-                        4000000 * multiplier, Ordr323AttackType.Chaos,
+                    ApplySourceModelAreaPacketAt(actorKey, lane, target,
+                        centerX, centerY, 800, 4000000 * multiplier,
+                        Ordr323AttackType.Chaos,
                         "로저 · 인페르노 광역");
                     SpatialCombatEnemy primary;
                     if (!enemies.TryGetValue(targetId, out primary) ||

@@ -467,7 +467,8 @@ namespace Ordr.Mobile.Combat
                     RestoreSourceKingTimedEffect(kind, payload, casterId, targetId) ??
                     RestoreRemainingDelayedHit(kind, payload, casterId, targetId) ??
                     RestoreSourceVolleyPulse(kind, payload, casterId, targetId) ??
-                    RestoreSourceFusionNativeTimedEffect(kind, payload, casterId, targetId);
+                    RestoreSourceFusionNativeTimedEffect(kind, payload, casterId, targetId) ??
+                    RestoreSourceUtaTimedEffect(kind, payload, casterId, targetId);
             }
             long id, token, lane;
             int tick;

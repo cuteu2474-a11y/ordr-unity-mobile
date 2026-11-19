@@ -546,19 +546,11 @@ namespace Ordr.Mobile.Combat
 
             // Original .4 + (.2 * 3) spectacle before B6s. Preserve the
             // native 100..150 polar offset and existing song-soldier lifetime.
-            effectExecutor.SchedulePracticeSourceAttack(caster,
-                "practice-native:ET09:B6x:intro-soldier", 1, () =>
-                {
-                    if (!CanFinishSourceModelDelayedAttack(actorId,
-                            isStory, laneRevision)) return;
-                    double radius = 100 + sourceModelRules.NextScriptRoll(500001) /
-                        10000.0;
-                    double angle = sourceModelRules.NextScriptRoll(360000) *
-                        Math.PI / 180000.0;
-                    AddSourceModelUtaSongSoldier(actor, null, 7,
-                        "우타 · 세계의 가희", centerX + radius * Math.Cos(angle),
-                        centerY + radius * Math.Sin(angle));
-                });
+            ScheduleSourceUtaPulse(new SourceUtaPulse {
+                Kind = UtaIntroSoldierKind, OwnerId = actorId,
+                StoryLane = isStory, LaneRevision = laneRevision,
+                CenterX = centerX, CenterY = centerY
+            }, 1);
             return true;
         }
 
@@ -618,43 +610,27 @@ namespace Ordr.Mobile.Combat
             // Native B6r/B6o issues attackonce to each living soldier after
             // .02s. It changes their next real target, not their attack
             // count, cooldown, or independent seven-second expiry.
-            effectExecutor.SchedulePracticeSourceAttack(attacker,
-                "practice-native:ET07:B6o", .02, () =>
-                {
-                    if (!CanFinishSourceModelDelayedAttack(id,
-                            storyLane, revision)) return;
-                    foreach (string key in songKeys)
-                        OrderSourceIndependentAttackOnce(key, targetId);
-                });
-            effectExecutor.SchedulePracticeSourceAttack(attacker,
-                "practice-native:ET07:B6r", SourceModelUtaB6rRules.WindupSeconds, () =>
-                {
-                    if (!CanFinishSourceModelDelayedAttack(id,
-                            storyLane, revision)) return;
-                    ApplySourceModelAreaPacketAt(attacker, storyLane, center,
-                        centerX, centerY, SourceModelUtaB6rRules.AreaRadius,
-                        SourceModelUtaB6rRules.AreaDamage(songCount),
-                        Ordr323AttackType.Spells, "우타 · 음표 병사 합창");
-                    SpatialCombatEnemy living;
-                    if (!enemies.TryGetValue(targetId, out living) ||
-                        !living.Enemy.IsAlive ||
-                        !CanAttackInThisLane(actor, living)) return;
-                    // Bdl = no A902/A911/A903/A904. The practice world
-                    // only has a line-enemy proxy for those native abilities;
-                    // do not invent eligibility for boss/story/enraged units.
-                    if (living.Kind == CharacterEnemyKind.Line)
-                        ApplySourceModelAreaPacket(attacker, storyLane,
-                            living, 0, SourceModelUtaB6rRules.ConditionalPrimaryDamage(
-                                songCount, living.Enemy.Health,
-                                SourceModelNativeTesoroCorrection(living), true),
-                            Ordr323AttackType.Melee,
-                            "우타 · 음표 병사 대상 체력 추가 타격");
-                    if (living.Enemy.IsAlive)
-                        ApplySourceModelAreaPacket(attacker, storyLane,
-                            living, 0, SourceModelUtaB6rRules.FinalPrimaryDamage,
-                            Ordr323AttackType.Spells,
-                            "우타 · 음표 병사 마무리 타격");
-                });
+            var songIds = new List<long>();
+            foreach (string key in songKeys)
+            {
+                long summonId;
+                if (!TryReadUtaSummonKey(key, out summonId))
+                    throw new InvalidOperationException(
+                        "우타 음표 병사의 원본 소환 ID가 없습니다.");
+                songIds.Add(summonId);
+            }
+            ScheduleSourceUtaPulse(new SourceUtaPulse {
+                Kind = UtaAttackOrderKind, OwnerId = id,
+                StoryLane = storyLane, LaneRevision = revision,
+                OriginalPrimaryId = targetId, SongCount = songCount,
+                SongIds = songIds, CenterX = centerX, CenterY = centerY
+            }, .02);
+            ScheduleSourceUtaPulse(new SourceUtaPulse {
+                Kind = UtaHarmonyImpactKind, OwnerId = id,
+                StoryLane = storyLane, LaneRevision = revision,
+                OriginalPrimaryId = targetId, SongCount = songCount,
+                CenterX = centerX, CenterY = centerY
+            }, SourceModelUtaB6rRules.WindupSeconds);
         }
 
         // JASS B7U/B6t is attack-declared on both h067 and h0AF.
@@ -848,6 +824,10 @@ namespace Ordr.Mobile.Combat
             sourceModelUtaCycleReadyAt.Remove(actorId);
             sourceModelUtaSleepUntil.Remove(actorId);
             sourceModelUtaManaGateUntil.Remove(actorId);
+            // Revoke all queued song attacks for a sold/fused owner.
+            effectExecutor.CancelCasterTargets(InstanceKey(actorId), target =>
+                target != null && target.StartsWith(
+                    "uta-native:", StringComparison.Ordinal));
             if (sourceModelRules != null &&
                 sourceModelRules.SourceFormRawcodeOf(InstanceKey(actorId)) == "h0AF")
                 sourceModelRules.ClearSourceForm(InstanceKey(actorId));

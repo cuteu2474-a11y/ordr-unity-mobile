@@ -258,9 +258,8 @@ namespace Ordr.Mobile.Combat
                         until != pulse.CastAt + 150 ||
                         string.IsNullOrWhiteSpace(pulse.TargetId) ||
                         pulse.TargetId.Length > 256 ||
-                        (pending.Kind == FusionRogerImpactKind &&
-                         !enemies.ContainsKey(pulse.TargetId) &&
-                         pulse.LaneRevision == actor.SourceLaneRevision) ||
+                        // A14V/Bcc area survives the primary target's death;
+                        // only the original target ID and cast position persist.
                         pulse.AllyId != 0 || pulse.GoldCap != 0 ||
                         pulse.ThirdImpact ||
                         pulse.DelaySeconds !=

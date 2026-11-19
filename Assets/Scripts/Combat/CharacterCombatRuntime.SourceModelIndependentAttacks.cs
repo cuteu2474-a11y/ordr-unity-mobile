@@ -399,7 +399,7 @@ namespace Ordr.Mobile.Combat
             foreach (var target in enemies.Values)
             {
                 if (!target.Enemy.IsAlive ||
-                    (radius == 0 && target.Id != center.Id) ||
+                    (radius == 0 && (center == null || target.Id != center.Id)) ||
                     (rosterActor != null ?
                         !CanAttackInThisLane(rosterActor, target) :
                         !CanSourceIndependentAttack(independentActor, target)))
@@ -421,9 +421,11 @@ namespace Ordr.Mobile.Combat
                     continue;
                 }
                 double amount = rawDamage;
-                if (target.Id == center.Id && target.Kind == CharacterEnemyKind.Boss)
+                if (center != null && target.Id == center.Id &&
+                    target.Kind == CharacterEnemyKind.Boss)
                     amount += target.Enemy.MaxHealth * primaryBossMaxHealthPercent / 100.0;
-                if (target.Id == center.Id && target.Kind == CharacterEnemyKind.Enraged)
+                if (center != null && target.Id == center.Id &&
+                    target.Kind == CharacterEnemyKind.Enraged)
                     amount += target.Enemy.MaxHealth * primaryEnragedMaxHealthPercent / 100.0;
                 double modeled = Ordr323MapDamageMath.ApplyVerifiedFactors(
                     amount, attackType, armor, true, true,

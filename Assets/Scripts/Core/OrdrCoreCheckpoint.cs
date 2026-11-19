@@ -428,6 +428,7 @@ namespace Ordr.Mobile.Core
             CharacterCombatRuntime.ValidateRemainingDelayedState(world);
             CharacterCombatRuntime.ValidateSourceVolleyOwners(world);
             CharacterCombatRuntime.ValidateSourceFusionNativeOwners(world);
+            CharacterCombatRuntime.ValidateSourceUtaOwners(world);
             CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
                 world, state.OriginalScriptAttackProcs);
             CharacterCombatRuntime.ValidateMariaPulseState(world);
