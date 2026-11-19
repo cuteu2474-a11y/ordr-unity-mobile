@@ -1056,6 +1056,37 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        // Stage the next serial BEFORE publishing the wallet reward:
+        // Granted observers may re-enter combat or throw after the wallet
+        // has already committed its durable receipt. Roll back only if the
+        // receipt did not commit, never let the serial rewind afterward.
+        private bool TryCommitBulkReward(long ownerId, long nextSerial,
+            string receipt, ResourceBundle reward)
+        {
+            long previous;
+            bool existed = bulkGiftSerials.TryGetValue(ownerId, out previous);
+            if (nextSerial <= 0 || previous == long.MaxValue ||
+                nextSerial != previous + 1 ||
+                bulkGiftWallet.HasCompletedTransaction(receipt))
+                throw new InvalidOperationException(
+                    "선물 보상 영수증/순번의 원자적 선행 상태가 잘못됐습니다.");
+            bulkGiftSerials[ownerId] = nextSerial;
+            try
+            {
+                if (bulkGiftWallet.TryGrantOnce(receipt, reward)) return true;
+            }
+            catch
+            {
+                if (bulkGiftWallet.HasCompletedTransaction(receipt)) throw;
+                if (existed) bulkGiftSerials[ownerId] = previous;
+                else bulkGiftSerials.Remove(ownerId);
+                throw;
+            }
+            if (existed) bulkGiftSerials[ownerId] = previous;
+            else bulkGiftSerials.Remove(ownerId);
+            return false;
+        }
+
         private void BulkGenerateAndOpenGift(CharacterInstance actor,
             ImportedCombatSkill sourceSkill)
         {
@@ -1085,8 +1116,8 @@ namespace Ordr.Mobile.Combat
             // Once receipt: a repeated callback can never pay the same gift
             // twice. Opening happens immediately in the mobile model.
             string receipt = "practice-gift:MY-08:" + actor.Id + ":" + serial;
-            if (!bulkGiftWallet.TryGrantOnce(receipt, reward)) return;
-            bulkGiftSerials[actor.Id] = serial;
+            if (!TryCommitBulkReward(actor.Id, serial, receipt, reward))
+                return;
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated,
                 InstanceKey(actor.Id), null, sourceSkill.Name,
@@ -1129,12 +1160,25 @@ namespace Ordr.Mobile.Combat
                 ":" + (serial + 1);
             double before = pool.Health;
             pool.Spend(75, 0);
-            if (!bulkGiftWallet.TryGrantOnce(receipt, reward))
+            bool committed;
+            try
+            {
+                committed = TryCommitBulkReward(actor.Id, serial + 1,
+                    receipt, reward);
+            }
+            catch
+            {
+                // If the wallet receipt committed before an observer failed,
+                // the 75 HP payment and serial must remain committed too.
+                if (!bulkGiftWallet.HasCompletedTransaction(receipt))
+                    pool.SetHealth(before);
+                throw;
+            }
+            if (!committed)
             {
                 pool.SetHealth(before);
                 return;
             }
-            bulkGiftSerials[actor.Id] = serial + 1;
             BulkDamage(actor, primary, skill, 5000000, "fixed");
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),

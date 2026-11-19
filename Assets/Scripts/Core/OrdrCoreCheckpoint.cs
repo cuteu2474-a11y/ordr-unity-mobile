@@ -430,6 +430,8 @@ namespace Ordr.Mobile.Core
             CharacterCombatRuntime.ValidateSourceFusionNativeOwners(world);
             CharacterCombatRuntime.ValidateSourceUtaOwners(world);
             CharacterCombatRuntime.ValidateSourceBulkOwners(world);
+            CharacterCombatRuntime.ValidateSourceBulkWalletReceipts(
+                world, state.MissionGameplay?.Wallet);
             CharacterCombatRuntime.ValidateOriginalDummyAttackReceipts(
                 world, state.OriginalScriptAttackProcs);
             CharacterCombatRuntime.ValidateMariaPulseState(world);

@@ -21,7 +21,7 @@
 
 > 코드의 **현재 진입점**과 공통 엔진 경로만 기록합니다. 날짜별 개발 일지와 반복된 스킬 설명은 삭제했습니다. [현재 상태](START_HERE.md) / [개발 작업](PLAYABLE_ROADMAP.md)을 함께 확인하세요.
 
-- 추가 자동기술·선물 영수증·가반 방어깎·아냐 오라 수신자 상태의 비공개 복원: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceBulkOwnerSaveState.cs`; 생산자 `.SourceModelAdditionalAutoSkills.cs`/`.SourceModelBulkAutoSkills.cs`, 저장 호출 `.SaveState.cs`, 코어 검증 `Assets/Scripts/Core/OrdrCoreCheckpoint.cs`.
+- 자동기술 공통 소유자/시계/수신자: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceBulkOwnerSaveState.cs`. 공유 지갑 선물·강탈 영수증, 아냐/가반 상태효과 역검증: `.SourceBulkWalletSaveState.cs`; 생성/예외 처리: `.SourceModelBulkAutoSkills.cs`, 기본 재사용 시계: `.SourceModelAdditionalAutoSkills.cs`. 코어 결합은 `Assets/Scripts/Core/OrdrCoreCheckpoint.cs`.
 
 ## 저장·비공개 복원 경로
 
