@@ -106,23 +106,11 @@ namespace Ordr.Mobile.Combat
             double interval = component.Number("tickIntervalSeconds").Value;
             double duration = component.Number("totalDurationSeconds").Value;
             int count = (int)Math.Floor(duration / interval + .000001);
-            bool lane = IsStoryDeployed(actor.Id);
-            long revision = SourceModelLaneRevision(actor.Id);
             foreach (var target in targets)
                 for (int tick = 1; tick <= count; tick++)
-                {
-                    var victim = target;
-                    effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
-                        victim.Id, tick * interval, () => {
-                            SpatialCombatEnemy current;
-                            if (!CanFinishSourceModelDelayedAttack(actor.Id, lane, revision) ||
-                                !enemies.TryGetValue(victim.Id, out current) ||
-                                !ReferenceEquals(victim, current)) return;
-                            ApplySourceModelSeventhTimedHit(actor, victim, skill.Name,
-                                SourceModelSeventhKnownAttackBuff(actor.Id,
-                                    component.Number("perTick").Value), "physical");
-                        });
-                }
+                    ScheduleSourceAdditionalTimed(actor, target, skill,
+                        AdditionalTimedZoroDotKind, tick, interval, duration,
+                        component.Number("perTick").Value, tick * interval);
         }
 
         private void SpawnSourceModelKobyClone(CharacterInstance actor,

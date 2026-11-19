@@ -25,6 +25,8 @@
 
 - 추가 자동기술의 예약 DoT/후속 둔화 타입별 복원: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceBulkDelayedSaveState.cs`; 생산자 `.SourceModelBulkAutoSkills.cs`, 복원 라우터 `.SourceModelTooltipManualActions.cs`, S03 전투·코어 검증 `.SaveState.cs` 및 `Assets/Scripts/Core/OrdrCoreCheckpoint.cs`.
 
+- 흰수염 I-12/나루토 RN-02/조로 TR-20의 추가 지연 둔화·주기 공격 복원: `Assets/Scripts/Combat/CharacterCombatRuntime.SourceAdditionalTimedSaveState.cs`; 생성 `.SourceModelAdditionalAutoSkills.cs`/`.SourceModelSeventhSkills.cs`, 큐 복원 `.SourceModelTooltipManualActions.cs`, 전투/코어 검증 `.SaveState.cs`/`Assets/Scripts/Core/OrdrCoreCheckpoint.cs`. 조로 버프는 실행 시 재계산합니다.
+
 ## 저장·비공개 복원 경로
 
 - `Original323ScriptAttackProcRolls.CaptureState/RestoreState`는 실제 원본 `Bnm/Bnp/Bnr` 공격 사건별 유닛 ID·원본 피해 대상·공격 이벤트 순번·소비한 글로벌 H6 호출 순번·확률 결과·관측 증거를 영수증으로 기록합니다. `OrdrCoreCheckpointState.OriginalScriptAttackProcs`를 `OriginalScriptRandom`과 함께 검증합니다. `OrdrWorldRestoreGraphBuilder`는 공통 H6 원본 복원 후 신규 `Original323ScriptAttackProcRolls`를 생성하여 `CharacterCombatRuntime.ConfigureOriginal323ScriptAttackEffectWorldForRestore`에서 **실제 저장 액터가 복원된 새 전투**에만 등록합니다. 같은 attacked event의 재발동/재추첨은 거부합니다. 기존 WC3 네이티브 크리티컬/별도 전투 확률 RNG는 미포함입니다.

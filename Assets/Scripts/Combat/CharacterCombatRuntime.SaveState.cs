@@ -1076,6 +1076,7 @@ namespace Ordr.Mobile.Combat
             ValidateSourceUtaOwners(state);
             ValidateSourceBulkOwners(state);
             ValidateSourceBulkDelayedState(state);
+            ValidateSourceAdditionalTimedState(state);
             ValidateMariaPulseState(state);
             ValidateKumaAutoMissileState(state);
             ValidateExternalLaneState(state, roster.CaptureState(),
@@ -1414,6 +1415,7 @@ namespace Ordr.Mobile.Combat
             ValidateSourceUtaOwners(draft);
             ValidateSourceBulkOwners(draft);
             ValidateSourceBulkDelayedState(draft);
+            ValidateSourceAdditionalTimedState(draft);
             foreach (var assignment in sharedObjectiveDeployed)
             {
                 var position = roster.Get(assignment.Key);

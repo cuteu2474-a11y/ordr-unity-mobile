@@ -138,32 +138,12 @@ namespace Ordr.Mobile.Combat
                     // The source describes a 10% lingering slow after 3.5s.
                     // Retain target/lane identity across the delayed transition.
                     var lingering = skill.Components[2];
-                    bool lane = IsStoryDeployed(actor.Id);
-                    long revision = SourceModelLaneRevision(actor.Id);
                     foreach (var victim in targets)
-                    {
-                        var captured = victim;
-                        effectExecutor.SchedulePracticeSourceAttack(
-                            InstanceKey(actor.Id), captured.Id,
-                            skill.Components[1].Number("durationSeconds").Value,
-                            () => {
-                                SpatialCombatEnemy current;
-                                if (!CanFinishSourceModelDelayedAttack(actor.Id,
-                                        lane, revision) ||
-                                    !enemies.TryGetValue(captured.Id, out current) ||
-                                    !ReferenceEquals(current, captured) ||
-                                    !captured.Enemy.IsAlive) return;
-                                var slow = new CombatEffect(
-                                    "practice-tooltip:" + InstanceKey(actor.Id) +
-                                        ":" + skill.Id + ":lingeringSlow",
-                                    CombatEffectType.MovementSlowPercent,
-                                    CombatEffectOrigin.TriggeredSkill,
-                                    lingering.Number("percent").Value,
-                                    lingering.Number("durationSeconds").Value);
-                                captured.Enemy.Status.RemoveSource(slow.SourceId);
-                                captured.Enemy.Status.Apply(slow);
-                            });
-                    }
+                        ScheduleSourceAdditionalTimed(actor, victim, skill,
+                            AdditionalTimedWhitebeardSlowKind, 0, 0,
+                            lingering.Number("durationSeconds").Value,
+                            lingering.Number("percent").Value,
+                            skill.Components[1].Number("durationSeconds").Value);
                 }
                 return;
             }
@@ -178,24 +158,11 @@ namespace Ordr.Mobile.Combat
                 if (pulses <= 0 || pulses > 60) return;
                 var targets = AdditionalAutoCircle(actor, primary,
                     skill.Number("radius").Value);
-                bool lane = IsStoryDeployed(actor.Id);
-                long revision = SourceModelLaneRevision(actor.Id);
                 foreach (var target in targets)
                     for (int pulse = 1; pulse <= pulses; pulse++)
-                    {
-                        var victim = target;
-                        effectExecutor.SchedulePracticeSourceAttack(
-                            InstanceKey(actor.Id), victim.Id, pulse, () => {
-                                SpatialCombatEnemy current;
-                                if (!CanFinishSourceModelDelayedAttack(actor.Id,
-                                        lane, revision) ||
-                                    !enemies.TryGetValue(victim.Id, out current) ||
-                                    !ReferenceEquals(current, victim)) return;
-                                ApplySourceModelSeventhTimedHit(actor, victim,
-                                    skill.Name, component.Number("perSecond").Value,
-                                    "magical");
-                            });
-                    }
+                        ScheduleSourceAdditionalTimed(actor, target, skill,
+                            AdditionalTimedNarutoDotKind, pulse, 1, seconds,
+                            component.Number("perSecond").Value, pulse);
                 return;
             }
             if (actor.Catalog.Id == "MY-09")
