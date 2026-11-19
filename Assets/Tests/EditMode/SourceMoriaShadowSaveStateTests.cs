@@ -73,7 +73,7 @@ namespace Ordr.Mobile.Tests
             Assert.Throws<FormatException>(() =>
                 CharacterCombatRuntime.ValidateSourceSidecars(state));
             state.Summons[0].LaneRevision = 4;
-            state.Summons[0].AttackStatus.Advance(1);
+            state.Summons[0].AttackStatus.Time = 11;
             Assert.Throws<FormatException>(() =>
                 CharacterCombatRuntime.ValidateSourceSidecars(state));
         }
