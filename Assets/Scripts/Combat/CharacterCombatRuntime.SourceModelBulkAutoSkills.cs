@@ -327,21 +327,10 @@ namespace Ordr.Mobile.Combat
             if (interval <= 0 || duration <= 0) return;
             int ticks = (int)Math.Floor(duration / interval + .000001);
             if (ticks <= 0 || ticks > 120) return;
-            bool lane = IsStoryDeployed(actor.Id);
-            long revision = SourceModelLaneRevision(actor.Id);
             foreach (var victim in victims)
                 for (int tick = 1; tick <= ticks; tick++)
-                {
-                    var target = victim;
-                    effectExecutor.SchedulePracticeSourceAttack(
-                        InstanceKey(actor.Id), target.Id, tick * interval, () => {
-                            SpatialCombatEnemy current;
-                            if (!CanFinishSourceModelDelayedAttack(actor.Id, lane,
-                                    revision) || !enemies.TryGetValue(target.Id, out current) ||
-                                !ReferenceEquals(current, target)) return;
-                            BulkDamage(actor, target, skill, raw, school);
-                        });
-                }
+                    ScheduleBulkDelayedDamage(actor, victim, skill,
+                        raw, school, interval, duration, tick);
         }
 
         private void BulkApplyDamagePacket(CharacterInstance actor,
@@ -1389,25 +1378,10 @@ namespace Ordr.Mobile.Combat
             foreach (var c in skill.Components)
                 if (c.Type == "lingeringSlow")
                 {
-                    bool story = IsStoryDeployed(actor.Id);
-                    long revision = SourceModelLaneRevision(actor.Id);
                     foreach (var enemy in targets)
-                    {
-                        var victim = enemy;
-                        effectExecutor.SchedulePracticeSourceAttack(
-                            InstanceKey(actor.Id), victim.Id, 3, () => {
-                                SpatialCombatEnemy current;
-                                if (!CanFinishSourceModelDelayedAttack(actor.Id,
-                                        story, revision) ||
-                                    !enemies.TryGetValue(victim.Id, out current) ||
-                                    !ReferenceEquals(current, victim)) return;
-                                BulkStatus(actor, victim, skill,
-                                    CombatEffectType.MovementSlowPercent,
-                                    c.Number("percent") ?? 0,
-                                    c.Number("durationSeconds") ?? 2,
-                                    "lingering-slow");
-                            });
-                    }
+                        ScheduleBulkDelayedSlow(actor, enemy, skill,
+                            c.Number("percent") ?? 0,
+                            c.Number("durationSeconds") ?? 2);
                 }
         }
 
