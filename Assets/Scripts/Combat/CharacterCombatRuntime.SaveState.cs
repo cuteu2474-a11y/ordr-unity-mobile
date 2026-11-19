@@ -314,15 +314,29 @@ namespace Ordr.Mobile.Combat
                     double.IsNaN(s.SpawnX) || double.IsInfinity(s.SpawnX) ||
                     double.IsNaN(s.SpawnY) || double.IsInfinity(s.SpawnY) ||
                     (s.SourceUnitRawcode != null && s.SourceUnitRawcode.Length != 4) ||
+                    // An unresolved native A0CY loot ability is not an
+                    // inert visual state: no receipt/effect restore port can
+                    // prove whether its future proc already ran. Fail closed.
+                    s.HasUnresolvedOriginalLootAbility ||
+                    // Even non-attacking native helpers must belong to the
+                    // original caster; combat registration is optional, but
+                    // source unit identity is not.
+                    ((s.SourceUnitRawcode == "h05D" && owner.CatalogId != "L-12") ||
+                     (s.SourceUnitRawcode == "h085" && owner.CatalogId != "L-21") ||
+                     (s.SourceUnitRawcode == "h06N" && owner.CatalogId != "L-19") ||
+                     (s.SourceUnitRawcode == "h06P" && owner.CatalogId != "L-19") ||
+                     (s.SourceUnitRawcode == "h06O" && owner.CatalogId != "R-24")) ||
                     (s.OrderedAttackTargetId != null &&
                      (s.SourceUnitRawcode != "h04O" ||
                       string.IsNullOrWhiteSpace(s.OrderedAttackTargetId) ||
                       s.OrderedAttackTargetId.Length > 256)) ||
-                    // L-12 BsL's h05D is an 18s non-owned shadow attack.
-                    // Its original object is optional; only an actually
-                    // registered, fully witnessed independent attack is saved.
+                    // L-12 BsL's h05D is an 18s non-owned shadow effect.
+                    // When original attack dice are absent, retain the
+                    // non-attacking virtual marker without forging a hit.
+                    // When present, the native attack clock/status is
+                    // independently required by the check below.
                     (s.SourceUnitRawcode == "h05D" &&
-                     (!s.HasIndependentCombat || !s.IsVirtualAttackEffect ||
+                     (!s.IsVirtualAttackEffect ||
                       s.SkillName != "BsL · 그림자 소환" ||
                       s.Name != "모리아 그림자" ||
                       s.HasUnresolvedOriginalLootAbility ||
@@ -607,6 +621,10 @@ namespace Ordr.Mobile.Combat
                     "외부 마르코 원본 형태 목격자 재연결 전에는 저장할 수 없습니다.");
             int covered = 0;
             foreach (var summon in sourceTemporarySummons)
+            {
+                if (summon.HasUnresolvedOriginalLootAbility)
+                    throw new NotSupportedException(
+                        "A0CY 등 미확인 원본 소환 능력은 목격·정산 복원 전 저장할 수 없습니다.");
                 if (summon.HasIndependentCombat)
                 {
                     SourceIndependentAttacker independent;
@@ -634,6 +652,7 @@ namespace Ordr.Mobile.Combat
                             "소환수의 원본 독립 공격자 부수상태를 복원할 수 없습니다.");
                     covered++;
                 }
+            }
             if (covered + sourceSatellites.Count != sourceIndependentAttackers.Count)
                 throw new NotSupportedException(
                     "원본 소환·구매 위성 이외의 독립 공격자를 아직 복원할 수 없습니다.");

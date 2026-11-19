@@ -49,6 +49,60 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void NativeShadowWithoutAttackDiceKeepsOnlyItsVirtualLifecycle()
+        {
+            var state = Sample();
+            state.Summons[0].HasIndependentCombat = false;
+            state.Summons[0].AttackStatus = null;
+            // Source object h05D may be known as a visual but lack a
+            // verified attack profile. Restoring it must not create hits.
+            CharacterCombatRuntime.ValidateSourceSidecars(state);
+            state.Summons[0].IsVirtualAttackEffect = false;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+            state.Summons[0].IsVirtualAttackEffect = true;
+            state.Actors[0].CatalogId = "L-21";
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+        }
+
+        [Test]
+        public void UnknownNativeLootCannotBeRestoredAsHarmlessSummon()
+        {
+            var state = Sample();
+            state.Actors[0].CatalogId = "L-19";
+            state.Summons[0].SourceUnitRawcode = "h06N";
+            state.Summons[0].Name = "장난감 No.31";
+            state.Summons[0].SkillName = "장난감 No.31";
+            state.Summons[0].IsVirtualAttackEffect = false;
+            state.Summons[0].HasIndependentCombat = false;
+            state.Summons[0].AttackStatus = null;
+            state.Summons[0].ExpiresAt = 13;
+            CharacterCombatRuntime.ValidateSourceSidecars(state);
+            state.Summons[0].HasUnresolvedOriginalLootAbility = true;
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+        }
+
+        [Test]
+        public void NativeHelperCannotChangeItsOwnerWhileInactive()
+        {
+            var state = Sample();
+            var summon = state.Summons[0];
+            summon.HasIndependentCombat = false;
+            summon.AttackStatus = null;
+            summon.SourceUnitRawcode = "h06O";
+            summon.Name = "슈가 장난감 자폭";
+            summon.SkillName = "BpT · 장난감 자폭";
+            summon.ExpiresAt = 13;
+            state.Actors[0].CatalogId = "R-24";
+            CharacterCombatRuntime.ValidateSourceSidecars(state);
+            state.Actors[0].CatalogId = "L-19";
+            Assert.Throws<FormatException>(() =>
+                CharacterCombatRuntime.ValidateSourceSidecars(state));
+        }
+
+        [Test]
         public void MoriaShadowRejectsForeignOwnerAndForgedNativeIdentity()
         {
             var state = Sample();
